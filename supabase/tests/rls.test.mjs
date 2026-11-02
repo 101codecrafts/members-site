@@ -101,7 +101,8 @@ export const tests = [
   t('SR-04: anon can execute only the allow-listed public RPCs', async (db) => {
     const r = await q(db, `select p.proname from pg_proc p join pg_namespace n on n.oid=p.pronamespace
                            where n.nspname='public' and has_function_privilege('anon', p.oid, 'execute') order by 1`);
-    assert.deepEqual(r.map((x) => x.proname), ['contest_leaderboard', 'practice_ai_policy', 'search_all', 'verify_certificate']);
+    // match_ai_documents (ai-features): SECURITY INVOKER FAQ/knowledge search, so anon only sees rows ai_documents RLS exposes.
+    assert.deepEqual(r.map((x) => x.proname), ['contest_leaderboard', 'match_ai_documents', 'practice_ai_policy', 'search_all', 'verify_certificate']);
   }),
   t('SR-00 PoC: learner cannot forge their own payment', async (db) => {
     await as(db, U.alice);
