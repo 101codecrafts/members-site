@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Checkout · 101 Marketplace" desc="Checkout on the 101 Marketplace with MTN MoMo, Airtel Money or card." path="checkout.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/market.css">
+</head>
+<body class="flow mk" data-role="learner" data-page="checkout">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Marketplace"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="mk-top" data-mk-top></div>
+<div class="page-h"><div><div class="kicker">Marketplace</div><h1>CHECKOUT</h1><p>Secure payment through Flutterwave. Your money is held in escrow until you confirm delivery.</p></div></div>
+<form class="mk-split" id="co-form" novalidate>
+ <div class="grid" style="gap:18px">
+  <section class="card co-step" aria-labelledby="h-addr"><h2 id="h-addr"><i>1</i> CONTACT &amp; ADDRESS</h2>
+   <div class="grid g2" style="gap:12px"><label class="field">Full name<input name="name" required autocomplete="name"></label><label class="field">Phone (MoMo / Airtel)<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX" pattern="^(\+?256|0)7\d{8}$"></label></div>
+   <div class="grid g2" style="gap:12px;margin-top:12px"><label class="field">District<select name="district" id="co-district"><option>Kampala</option><option>Wakiso</option><option>Mukono</option><option>Entebbe</option><option>Jinja</option><option>Mbarara</option><option>Gulu</option><option>Mbale</option><option>Fort Portal</option><option>Arua</option><option>Other</option></select></label><label class="field">Area / landmark<input name="area" placeholder="e.g. Kansanga, near Ggaba Rd"></label></div>
+  </section>
+  <section class="card co-step" aria-labelledby="h-del"><h2 id="h-del"><i>2</i> DELIVERY</h2><div id="co-deliv" class="co-opts" role="radiogroup" aria-labelledby="h-del"></div>
+   <label class="field" id="co-pp-wrap" hidden style="margin-top:12px">Pickup point<select name="pickupPoint" id="co-pp"></select></label></section>
+  <section class="card co-step" aria-labelledby="h-pay"><h2 id="h-pay"><i>3</i> PAYMENT</h2>
+   <div class="co-opts" role="radiogroup" aria-labelledby="h-pay">
+    <label class="co-opt"><input type="radio" name="pay" value="MTN MoMo" checked><span class="co-logo mtn" aria-hidden="true">MTN</span><span><b>MTN Mobile Money</b><small>Approve the prompt on your phone</small></span></label>
+    <label class="co-opt"><input type="radio" name="pay" value="Airtel Money"><span class="co-logo airtel" aria-hidden="true">airtel</span><span><b>Airtel Money</b><small>Approve the prompt on your phone</small></span></label>
+    <label class="co-opt"><input type="radio" name="pay" value="Card (Flutterwave)"><span class="co-logo card" aria-hidden="true">VISA·MC</span><span><b>Card</b><small>Visa / Mastercard via Flutterwave</small></span></label>
+   </div>
+   <p class="muted" style="margin-top:10px">Payments are processed by Flutterwave. 101 never sees or stores your card number or PIN.</p></section>
+ </div>
+ <aside class="card mk-sum" aria-labelledby="h-cosum"><h2 id="h-cosum">ORDER SUMMARY</h2><div id="co-lines" class="co-lines"></div><dl id="co-sum"></dl>
+  <button class="btn or" type="submit" id="co-place">Place order &amp; pay</button><p id="co-msg" role="status" class="muted"></p>
+  <p class="pi-escrow"><svg class="i" aria-hidden="true"><use href="#i-shieldc"/></svg> Escrow: the seller is paid only after you tap “Confirm delivery” (auto-release 72 hours after delivery if you do nothing). Something wrong? Open a return or dispute and we freeze the payment.</p></aside>
+</form>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/market-data.js" defer></script>
+<script src="js/market-api.js" defer></script>
+<script src="js/market.js" defer></script>
+</body></html>

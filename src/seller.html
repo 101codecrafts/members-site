@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Seller centre · 101 Marketplace" desc="Sell on the 101 Marketplace: add products, manage orders, payouts, analytics and reviews." path="seller.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/market.css">
+</head>
+<body class="flow mk" data-role="learner" data-page="seller" data-charts>
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Marketplace"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="mk-top" data-mk-top></div>
+<div class="page-h"><div><div class="kicker">Seller centre</div><h1>KATO BUILDS</h1><p>Your shop on 101 Market. Payouts go to mobile money once buyers confirm delivery.</p></div>
+ <div class="row"><a class="btn" href="#add">Add product</a><a class="btn or" href="#payouts">Request payout</a></div></div>
+<nav class="filters sl-nav" aria-label="Seller centre sections"><a class="chip" href="#overview">Overview</a><a class="chip" href="#add">Add product</a><a class="chip" href="#queue">Orders</a><a class="chip" href="#payouts">Payouts</a><a class="chip" href="#analytics">Analytics</a><a class="chip" href="#reviews">Reviews</a></nav>
+<section id="overview" class="grid g4 sl-kpis" aria-label="Shop overview"></section>
+
+<section class="card" id="add" aria-labelledby="h-add"><div class="sec-title"><h2 id="h-add">ADD A PRODUCT</h2><span class="tagx">Goes live after a quick review</span></div>
+<form id="sl-form" class="sl-form">
+ <div class="grid g2" style="gap:12px"><label class="field">Title<input name="title" required maxlength="120" placeholder="e.g. ESP32 DevKit V1 (pack of 2)"></label>
+  <label class="field">Category<select name="cat" id="sl-cat"></select></label></div>
+ <div class="grid g4" style="gap:12px;margin-top:12px"><label class="field">Price (UGX)<input name="price" type="number" min="0" step="500" required inputmode="numeric"></label><label class="field">Compare-at price<input name="compare" type="number" min="0" step="500" inputmode="numeric"></label><label class="field">Stock<input name="stock" type="number" min="0" value="10" inputmode="numeric"></label>
+  <label class="field">Condition<select name="condition"><option>New</option><option>Refurbished</option><option>Used</option></select></label></div>
+ <fieldset class="sl-fs"><legend>Images (up to 8, first is the cover)</legend><input type="file" id="sl-imgs" accept="image/*" multiple><div id="sl-prev" class="sl-prev"></div></fieldset>
+ <fieldset class="sl-fs"><legend>Variants</legend><div id="sl-vars"></div><button class="btn sm" type="button" id="sl-addvar">+ Add variant option</button></fieldset>
+ <fieldset class="sl-fs"><legend>Bulk pricing (optional)</legend><div class="grid g3" style="gap:10px"><label class="field">5+ units (UGX each)<input name="t5" type="number" min="0" inputmode="numeric"></label><label class="field">20+ units<input name="t20" type="number" min="0" inputmode="numeric"></label><label class="field">100+ units<input name="t100" type="number" min="0" inputmode="numeric"></label></div></fieldset>
+ <fieldset class="sl-fs"><legend>Delivery</legend><div class="row"><label class="mk-ck"><input type="checkbox" name="delivery" value="kampala" checked> Boda in Kampala</label><label class="mk-ck"><input type="checkbox" name="delivery" value="upcountry"> Upcountry courier</label><label class="mk-ck"><input type="checkbox" name="delivery" value="pickup"> Pickup point</label><label class="mk-ck"><input type="checkbox" name="delivery" value="digital"> Digital delivery</label></div></fieldset>
+ <label class="field" style="margin-top:12px">Description<textarea name="desc" rows="4" required></textarea></label>
+ <div class="row" style="margin-top:12px"><button class="btn or" type="submit">Submit for review</button><button class="btn" type="reset">Clear</button><span id="sl-msg" role="status" class="muted"></span></div>
+</form></section>
+
+<section class="card" id="queue" aria-labelledby="h-q"><div class="sec-title"><h2 id="h-q">ORDERS QUEUE</h2></div><div class="tbl-wrap"><table class="t" id="sl-queue"><caption class="sr-only">Orders to fulfil</caption><thead><tr><th scope="col">Order</th><th scope="col">Buyer</th><th scope="col">Item</th><th scope="col">Total</th><th scope="col">Delivery</th><th scope="col">Status</th><th scope="col">Next step</th><th scope="col">Action</th></tr></thead><tbody></tbody></table></div></section>
+
+<div class="grid g2" style="gap:18px">
+<section class="card" id="payouts" aria-labelledby="h-pay"><div class="sec-title"><h2 id="h-pay">PAYOUTS</h2></div><div id="sl-bal" class="sl-bal"></div>
+ <form class="row" id="sl-payout" style="margin-top:12px"><label class="field" style="flex:1;min-width:160px">Amount (UGX)<input name="amount" type="number" min="10000" step="1000" required inputmode="numeric"></label><label class="field" style="flex:1;min-width:160px">To<select name="to"><option>MTN MoMo ···· 226</option><option>Airtel Money ···· 118</option></select></label><button class="btn or" style="align-self:flex-end">Request payout</button></form><p id="sl-pmsg" role="status" class="muted"></p>
+ <div class="list" id="sl-plist" style="margin-top:12px"></div></section>
+<section class="card" id="analytics" aria-labelledby="h-an"><div class="sec-title"><h2 id="h-an">ANALYTICS · LAST 30 DAYS</h2></div><div class="chart-box"><canvas id="ch-sales" aria-label="Weekly sales in UGX" role="img"></canvas></div><div class="chart-box" style="margin-top:14px"><canvas id="ch-cat" aria-label="Sales share by category" role="img"></canvas></div><p class="sr-only" id="an-text"></p></section>
+</div>
+
+<section class="card" id="reviews" aria-labelledby="h-rv"><div class="sec-title"><h2 id="h-rv">REVIEWS TO REPLY</h2></div><div id="sl-reviews" class="grid" style="gap:12px"></div></section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/market-data.js" defer></script>
+<script src="js/market-api.js" defer></script>
+<script src="js/market.js" defer></script>
+</body></html>

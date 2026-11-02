@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Marketplace · 101 Codecrafts" desc="Buy and sell software, templates, course bundles, laptops, IoT components, services and books. Pay with MTN MoMo, Airtel Money or card; money held in escrow until you confirm delivery." path="marketplace.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/market.css">
+</head>
+<body class="flow mk" data-role="learner" data-page="marketplace">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Marketplace"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="mk-top" data-mk-top></div>
+<div class="page-h"><div><div class="kicker">Marketplace</div><h1>101 MARKET</h1><p>Gear, software and skills from 101 members and verified sellers. Pay with MoMo, Airtel Money or card. Your money stays in escrow until you confirm delivery.</p></div>
+ <div class="row"><a class="btn" href="rfq.html">Post a buying request</a><a class="btn or" href="seller.html">Sell on 101</a></div></div>
+
+<section class="mk-hero" aria-roledescription="carousel" aria-label="Featured deals" id="mk-hero">
+ <div class="mk-slides" id="mk-slides" aria-live="off"></div>
+ <div class="mk-hero-ctl"><button class="ib-sq" type="button" id="mk-prev" aria-label="Previous slide">‹</button><div class="mk-dots" id="mk-dots" role="group" aria-label="Choose slide"></div><button class="ib-sq" type="button" id="mk-next" aria-label="Next slide">›</button><button class="ib-sq" type="button" id="mk-pause" aria-label="Pause carousel" aria-pressed="false">❚❚</button></div>
+</section>
+
+<section class="mk-sec mk-deals" aria-labelledby="h-deals">
+ <header class="mk-sec-h"><h2 id="h-deals">DEALS OF THE DAY</h2><div class="mk-cd" role="timer" aria-live="off"><span>Ends in</span><b id="cd-h">00</b>:<b id="cd-m">00</b>:<b id="cd-s">00</b><small>midnight EAT</small></div><a class="mk-more" href="#browse" data-quick="deal">See all deals →</a></header>
+ <div class="mk-row" id="row-deals"></div>
+</section>
+
+<section class="mk-sec mk-made" aria-labelledby="h-made">
+ <header class="mk-sec-h"><h2 id="h-made">MADE BY 101 MEMBERS</h2><p>Apps, templates, kits and services built by people in this community.</p><a class="mk-more" href="#browse" data-quick="member">Browse all →</a></header>
+ <div class="mk-row" id="row-made"></div>
+</section>
+
+<section class="mk-sec mk-aff" aria-labelledby="h-aff">
+ <header class="mk-sec-h"><h2 id="h-aff">FROM AMAZON / ALIBABA</h2><p>Hand-picked items on other sites. Opens in a new tab. Prices are indicative and change on the seller's site.</p></header>
+ <div class="mk-row" id="row-aff"></div>
+ <p class="mk-aff-note"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg> We may earn a commission when you buy through these links. It never changes your price, and 101 members' own listings always come first.</p>
+</section>
+
+<section class="mk-browse" id="browse" aria-labelledby="h-browse">
+ <details class="mk-filters-wrap" id="mk-fwrap" open>
+  <summary class="btn">Filters <span id="f-count" class="mk-fc"></span></summary>
+  <form class="mk-filters" id="mk-filters" aria-label="Filter products">
+   <fieldset><legend>Category</legend><select id="f-cat" name="cat" aria-label="Category"></select></fieldset>
+   <fieldset><legend>Price (UGX)</legend><div class="mk-price"><label><span class="sr-only">Minimum price</span><input type="number" name="min" min="0" step="1000" placeholder="Min" inputmode="numeric"></label><span aria-hidden="true">–</span><label><span class="sr-only">Maximum price</span><input type="number" name="max" min="0" step="1000" placeholder="Max" inputmode="numeric"></label></div>
+    <div class="mk-presets"><button type="button" class="chip" data-range="0-100000">Under 100k</button><button type="button" class="chip" data-range="100000-500000">100k–500k</button><button type="button" class="chip" data-range="500000-">500k+</button></div></fieldset>
+   <fieldset><legend>Rating</legend><label class="mk-ck"><input type="radio" name="rating" value="0" checked> Any</label><label class="mk-ck"><input type="radio" name="rating" value="4.5"> ★ 4.5 &amp; up</label><label class="mk-ck"><input type="radio" name="rating" value="4"> ★ 4 &amp; up</label></fieldset>
+   <fieldset><legend>Seller type</legend><label class="mk-ck"><input type="checkbox" name="seller" value="member"> 101 member</label><label class="mk-ck"><input type="checkbox" name="seller" value="business"> Verified business</label><label class="mk-ck"><input type="checkbox" name="seller" value="individual"> Individual</label></fieldset>
+   <fieldset><legend>Delivery</legend><label class="mk-ck"><input type="checkbox" name="delivery" value="kampala"> Boda in Kampala</label><label class="mk-ck"><input type="checkbox" name="delivery" value="upcountry"> Upcountry courier</label><label class="mk-ck"><input type="checkbox" name="delivery" value="pickup"> Pickup point</label><label class="mk-ck"><input type="checkbox" name="delivery" value="digital"> Digital / instant</label></fieldset>
+   <fieldset><legend>Condition</legend><label class="mk-ck"><input type="checkbox" name="condition" value="New"> New</label><label class="mk-ck"><input type="checkbox" name="condition" value="Refurbished"> Refurbished</label><label class="mk-ck"><input type="checkbox" name="condition" value="Used"> Used</label></fieldset>
+   <button class="btn sm" type="reset">Clear filters</button>
+  </form>
+ </details>
+ <div class="mk-results">
+  <div class="mk-toolbar">
+   <h2 id="h-browse">ALL PRODUCTS</h2><span id="mk-count" class="muted" aria-live="polite"></span>
+   <span class="sp"></span>
+   <label class="mk-sort">Sort<select id="mk-sort"><option value="rel">Best match</option><option value="pop">Best selling</option><option value="asc">Price: low to high</option><option value="desc">Price: high to low</option><option value="rating">Top rated</option><option value="new">Newest</option></select></label>
+   <div class="mk-view" role="group" aria-label="Layout"><button type="button" class="ib-sq" data-view="grid" aria-pressed="true" aria-label="Grid view"><svg aria-hidden="true"><use href="#i-grid"/></svg></button><button type="button" class="ib-sq" data-view="list" aria-pressed="false" aria-label="List view"><svg aria-hidden="true"><use href="#i-list"/></svg></button></div>
+  </div>
+  <div class="mk-active" id="mk-active"></div>
+  <div class="mk-grid" id="mk-grid"></div>
+  <nav class="mk-pages" id="mk-pages" aria-label="Pagination"></nav>
+ </div>
+</section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/market-data.js" defer></script>
+<script src="js/market-api.js" defer></script>
+<script src="js/market.js" defer></script>
+</body></html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="My orders · 101 Marketplace" desc="Track your 101 Marketplace orders, confirm delivery to release escrow, or open a return/dispute." path="orders.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/market.css">
+</head>
+<body class="flow mk" data-role="learner" data-page="orders">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Marketplace"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="mk-top" data-mk-top></div>
+<div class="page-h"><div><div class="kicker">Marketplace</div><h1>MY ORDERS</h1><p>Track every order. Tap “Confirm delivery” when it arrives so the seller gets paid from escrow.</p></div><div class="row"><a class="btn" href="marketplace.html">Keep shopping</a></div></div>
+<div id="ord-placed" role="status"></div>
+<div class="filters" role="group" aria-label="Filter orders" id="ord-filter"><button class="chip" aria-pressed="true" data-f="all">All</button><button class="chip" aria-pressed="false" data-f="active">In progress</button><button class="chip" aria-pressed="false" data-f="done">Completed</button><button class="chip" aria-pressed="false" data-f="dispute">Disputes</button></div>
+<div id="ord-list" class="grid" style="gap:18px;margin-top:14px"></div>
+<dialog id="dsp" class="mk-dialog" aria-labelledby="dsp-h"><form method="dialog" id="dsp-form">
+ <h2 id="dsp-h">RETURN OR DISPUTE</h2><p class="muted" id="dsp-sub"></p>
+ <label class="field">What happened?<select name="reason" required><option value="">Choose a reason</option><option>Item not received</option><option>Wrong item or variant</option><option>Damaged or not working</option><option>Not as described</option><option>Missing parts</option><option>Digital item / licence does not work</option></select></label>
+ <label class="field">I want<select name="want"><option>Refund</option><option>Replacement</option><option>Return for refund</option></select></label>
+ <label class="field">Details<textarea name="details" rows="3" placeholder="Tell us what went wrong. Add photos on the next step."></textarea></label>
+ <label class="field">Photos (optional)<input type="file" name="photos" accept="image/*" multiple></label>
+ <div class="row"><button class="btn or" value="submit">Open dispute</button><button class="btn" value="cancel" formnovalidate>Cancel</button></div>
+ <p class="muted">Opening a dispute freezes the escrow payment. 101 support replies within 24 hours.</p>
+</form></dialog>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/market-data.js" defer></script>
+<script src="js/market-api.js" defer></script>
+<script src="js/market.js" defer></script>
+</body></html>

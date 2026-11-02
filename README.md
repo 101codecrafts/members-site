@@ -10,3 +10,10 @@ All ad logic lives in `js/ads.js` (styles at the end of `css/app.css`). Nothing 
 - **AdSense dashboard:** Auto ads ON with only *Anchor* and *Vignette* formats (In-page OFF).
 - **Preview locally:** `courses.html?adpreview=1&as=free` (also `anon`, `minor`, `pro`) shows dashed placeholder slots without any network call.
 - **CSP** for the AdSense hosts is in `vercel.json`.
+
+## Marketplace (front-end, stubbed)
+Pages: `marketplace.html` (mega-menu, autocomplete search, deals carousel + countdown to midnight EAT, Made by 101 members, Amazon/Alibaba affiliate row via `go.html`, filters/sort/grid-list/pagination), `product-item.html?id=` (gallery + zoom, variants, bulk tiers, RFQ, Kampala/upcountry delivery estimate, tabs), `cart.html`, `checkout.html` (MTN MoMo / Airtel Money / card via Flutterwave stub; boda, pickup point, courier), `orders.html` (tracking timeline, Confirm delivery = escrow release, return/dispute), `seller.html` (seller centre), `rfq.html`.
+- Data placeholders: `js/market-data.js`; every call: `js/market-api.js` (endpoints listed at the top); page logic: `js/market.js`; styles: `css/market.css`.
+- Images are local SVG placeholders from `tools/market_svgs.py` (`assets/img/market/`).
+- Affiliate URLs are plain search pages: **TODO** add the Amazon Associates tag and Alibaba affiliate links (server-side, `/market/affiliates`).
+- No ads: `js/ads.js` has no placements for these pages; keep cart/checkout/orders/seller ad-free.

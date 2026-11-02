@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Product · 101 Marketplace" desc="Product details, prices in UGX, delivery estimates for Kampala and upcountry, reviews and bulk pricing on the 101 Marketplace." path="product-item.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/market.css">
+</head>
+<body class="flow mk" data-role="learner" data-page="product-item">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Marketplace"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="mk-top" data-mk-top></div>
+<nav class="mk-crumbs" aria-label="Breadcrumb" id="pi-crumbs"></nav>
+<section class="pi" id="pi" aria-labelledby="pi-title">
+ <div class="pi-gallery">
+  <div class="pi-main" id="pi-main" tabindex="0" aria-label="Product image. Move the pointer or press Z to zoom."><img id="pi-img" src="assets/img/market/placeholder.svg" alt="" width="400" height="400"><button type="button" class="ib-sq pi-zoombtn" id="pi-zoom" aria-pressed="false" aria-label="Toggle zoom">⤢</button></div>
+  <div class="pi-thumbs" id="pi-thumbs" role="group" aria-label="Product images"></div>
+ </div>
+ <div class="pi-info">
+  <div class="pi-badges" id="pi-badges"></div>
+  <h1 id="pi-title">Loading…</h1>
+  <div class="pi-rating" id="pi-rating"></div>
+  <div class="pi-price" id="pi-price"></div>
+  <div id="pi-variants" class="pi-variants"></div>
+  <div class="pi-stock" id="pi-stock"></div>
+  <div class="pi-qty"><label for="pi-q">Quantity</label><div class="stepper"><button type="button" class="ib-sq" data-step="-1" aria-label="Decrease quantity">−</button><input id="pi-q" type="number" min="1" value="1" inputmode="numeric"><button type="button" class="ib-sq" data-step="1" aria-label="Increase quantity">+</button></div><small id="pi-tierhint" class="muted"></small></div>
+  <div class="pi-deliv card"><label class="field">Deliver to<select id="pi-region"><option value="kampala">Kampala (Kampala, Wakiso, Mukono)</option><option value="upcountry">Upcountry (other districts)</option><option value="pickup">Pickup point</option></select></label><p id="pi-eta" aria-live="polite"></p></div>
+  <div class="pi-cta"><button class="btn or" type="button" id="pi-add"><svg aria-hidden="true"><use href="#i-store"/></svg>Add to cart</button><button class="btn ink" type="button" id="pi-buy">Buy now</button><button class="btn" type="button" id="pi-wish" aria-pressed="false"><svg aria-hidden="true"><use href="#i-heart"/></svg><span>Wishlist</span></button></div>
+  <p class="pi-escrow"><svg class="i" aria-hidden="true"><use href="#i-shieldc"/></svg> <b>101 Buyer Protection:</b> your payment is held in escrow and released to the seller only after you confirm delivery. Returns within 7 days.</p>
+  <p id="pi-msg" role="status" class="muted"></p>
+ </div>
+ <aside class="pi-side">
+  <div class="card pi-seller" id="pi-seller"></div>
+  <div class="card pi-bulk" id="pi-bulk"></div>
+ </aside>
+</section>
+
+<section class="card pi-tabs-wrap">
+ <div class="pi-tabs" role="tablist" aria-label="Product details">
+  <button role="tab" id="t-desc" aria-controls="p-desc" aria-selected="true">Description</button>
+  <button role="tab" id="t-specs" aria-controls="p-specs" aria-selected="false" tabindex="-1">Specs</button>
+  <button role="tab" id="t-rev" aria-controls="p-rev" aria-selected="false" tabindex="-1">Reviews</button>
+  <button role="tab" id="t-qa" aria-controls="p-qa" aria-selected="false" tabindex="-1">Q&amp;A</button>
+ </div>
+ <div role="tabpanel" id="p-desc" aria-labelledby="t-desc" class="pi-panel"></div>
+ <div role="tabpanel" id="p-specs" aria-labelledby="t-specs" class="pi-panel" hidden></div>
+ <div role="tabpanel" id="p-rev" aria-labelledby="t-rev" class="pi-panel" hidden></div>
+ <div role="tabpanel" id="p-qa" aria-labelledby="t-qa" class="pi-panel" hidden></div>
+</section>
+
+<section class="mk-sec" aria-labelledby="h-also"><header class="mk-sec-h"><h2 id="h-also">CUSTOMERS ALSO BOUGHT</h2></header><div class="mk-row" id="row-also"></div></section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/market-data.js" defer></script>
+<script src="js/market-api.js" defer></script>
+<script src="js/market.js" defer></script>
+</body></html>

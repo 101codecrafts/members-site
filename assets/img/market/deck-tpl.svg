@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="PITCH DECK placeholder">
+<rect width="400" height="400" fill="#f7f8f9"/><rect x="0" y="330" width="400" height="70" fill="#0B1236"/>
+<g><rect x="80" y="90" width="240" height="190" fill="#fc8c0c" stroke="#0B1236" stroke-width="10"/><rect x="100" y="110" width="200" height="40" fill="#0B1236"/><rect x="100" y="165" width="90" height="95" fill="#0B1236" opacity=".6"/><rect x="205" y="165" width="95" height="40" fill="#0B1236" opacity=".35"/><rect x="205" y="220" width="95" height="40" fill="#0B1236" opacity=".35"/></g>
+<text x="20" y="376" font-family="Archivo Black, Impact, Arial Black, sans-serif" font-size="26" fill="#f7f8f9">PITCH DECK</text>
+</svg>
