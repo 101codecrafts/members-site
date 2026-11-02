@@ -28,7 +28,7 @@
     return location.protocol === "file:" ? "go.html?id=" + encodeURIComponent(id) : "/go/" + encodeURIComponent(id);
   }
   function lookupGo(id) {
-    const all = [...(D().resources || []), ...(D().externalCourses || []), ...(D().aiTools || []).flatMap(t => [{ id: "ai-" + t.id, url: t.keyUrl }, { id: "ai-" + t.id + "-docs", url: t.docsUrl }]), ...(JSON.parse(localStorage.getItem("cc_ext_drafts") || "[]")), ...(D().news || []), ...((D().course && D().course.books) || []), ...(window.__ccNewsCache || [])];
+    const all = [...(D().resources || []), ...(D().externalCourses || []), ...(D().aiTools || []).flatMap(t => [{ id: "ai-" + t.id, url: t.keyUrl }, { id: "ai-" + t.id + "-docs", url: t.docsUrl }]), ...(JSON.parse(localStorage.getItem("cc_ext_drafts") || "[]")), ...(D().news || []), ...((D().course && D().course.books) || []), ...(window.__ccNewsCache || []), ...(window.CC_FEED_GO ? window.CC_FEED_GO() : [])];
     return all.find(x => x.id === id) || null;
   }
 

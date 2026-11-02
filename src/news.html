@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-{{HEAD title="Daily Tech News · 101 Codecrafts" desc="Today in tech: AI, Africa tech, dev, security, cloud, startups and jobs — curated daily for the 101 community." path="news.html"}}
+{{HEAD title="Daily Tech News · 101 Codecrafts" desc="Today in tech: Africa &amp; Uganda, AI, dev and startups — short AI summaries with links to the original sources, curated daily for the 101 community." path="news.html"}}
 <link rel="stylesheet" href="css/brutal.css">
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/feed.css">
 </head>
 <body class="flow" data-role="learner" data-page="news">
 <a class="skip" href="#main">Skip to content</a>
@@ -13,12 +14,16 @@
 <div class="main">
 {{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
 <main id="main" class="content">
-<div class="page-h"><div><div class="kicker">Daily news</div><h1>TODAY IN TECH</h1><p id="news-date"></p></div><a class="btn" data-wa-share="Today in tech on 101 Codecrafts:" href="#"><svg><use href="#i-wa"/></svg>Share on WhatsApp</a></div>
-<div class="filters" id="news-cats" role="group" aria-label="Category"></div>
-<div class="rgrid" id="news-grid"></div>
+<div class="page-h"><div><div class="kicker">Daily tech news</div><h1>DAILY TECH NEWS</h1><p><time id="news-date"></time> · East Africa Time</p></div>
+ <div class="row"><button type="button" class="btn" id="news-saved" aria-pressed="false"><svg aria-hidden="true"><use href="#i-heart"/></svg><span>Saved (<b id="news-saved-n">0</b>)</span></button><a class="btn or" data-wa-share="Today in tech on 101 Codecrafts:" href="#"><svg aria-hidden="true"><use href="#i-wa"/></svg>Share on WhatsApp</a></div></div>
+<div class="feed-bar"><div class="ftabs" id="news-tabs" aria-label="News topics"></div><small id="news-count" aria-live="polite"></small></div>
+<div class="fgrid" id="news-grid" role="tabpanel" aria-labelledby="tab-all"></div>
+<p class="muted fnote">Summaries are written by 101 AI from each source; tap “Read on source” for the full story. Links open the original site in a new tab.</p>
 </main>
 {{FOOTER}}
 </div></div>
 {{SCRIPTS}}
-<script src="js/pages.js" defer></script>
+<script src="js/feed-data.js" defer></script>
+<script src="js/feed-api.js" defer></script>
+<script src="js/feed.js" defer></script>
 </body></html>

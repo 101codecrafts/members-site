@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Opportunities · 101 Codecrafts" desc="Scholarships, internships, jobs, hackathons, grants, fellowships, competitions and bootcamps for students and young techies in Uganda and Africa." path="opportunities.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/feed.css">
+</head>
+<body class="flow" data-role="learner" data-page="opportunities">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Opportunities"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="page-h"><div><div class="kicker">Opportunities</div><h1>OPPORTUNITIES</h1><p>Scholarships, internships, jobs, hackathons and more — checked by the 101 team. Deadlines are shown in East Africa Time.</p></div>
+ <div class="row"><a class="btn or" href="#submit-opp"><svg><use href="#i-plusc"/></svg>Submit an opportunity</a></div></div>
+
+<section class="closing" id="closing" aria-labelledby="h-closing" hidden>
+ <h2 id="h-closing"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg> CLOSING THIS WEEK</h2>
+ <div class="cw-row" id="closing-row"></div>
+</section>
+
+<section class="card ofilters" aria-label="Filter opportunities">
+ <label class="search csearch"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Search opportunities</span><input id="of-q" type="search" placeholder="Search title, organisation, eligibility…"></label>
+ <label class="field">Type<select id="of-type"></select></label>
+ <label class="field">Level<select id="of-level"></select></label>
+ <label class="field">Location<select id="of-where"><option value="">Anywhere</option><option value="remote">Remote</option><option value="uganda">Uganda</option><option value="africa">Africa</option></select></label>
+ <div class="row of-tg"><button type="button" class="chip" id="of-soon" aria-pressed="false">Deadline soon (7 days)</button><button type="button" class="chip" id="of-saved" aria-pressed="false">Saved</button></div>
+</section>
+
+<div class="feed-bar"><h2 class="sr-only">All opportunities</h2><small id="opp-count" aria-live="polite"></small></div>
+<div class="fgrid" id="opp-grid"></div>
+
+<section class="card" id="submit-opp" aria-labelledby="h-sub">
+ <div class="sec-title"><h2 id="h-sub">SUBMIT AN OPPORTUNITY</h2><span class="tagx">Goes to admin review</span></div>
+ <p class="muted">Found a scholarship, internship or hackathon? Share the official link. An admin checks it before it goes live.</p>
+ <form class="grid g2 sub-form" id="opp-form" style="margin-top:12px">
+  <label class="field">Title<input name="title" required maxlength="140" placeholder="e.g. Software Engineering Internship 2027"></label>
+  <label class="field">Organisation<input name="org" required maxlength="100"></label>
+  <label class="field">Official link<input name="url" type="url" required inputmode="url" placeholder="https://…"></label>
+  <label class="field">Type<select name="type" id="os-type" required></select></label>
+  <label class="field">Level<select name="level" id="os-level"></select></label>
+  <label class="field">Deadline (EAT)<input name="deadline" type="date" required></label>
+  <label class="field">Location<input name="location" required placeholder="Kampala, Uganda / Remote"></label>
+  <label class="field ck-row"><span><input type="checkbox" name="remote"> Remote-friendly</span></label>
+  <label class="field span2">Eligibility<textarea name="eligibility" rows="2" required maxlength="400"></textarea></label>
+  <label class="field span2">Your email (so we can follow up)<input name="contact" type="email" autocomplete="email"></label>
+  <div class="row span2"><button class="btn ink" type="submit">Submit for review</button><span id="opp-msg" role="status" class="muted"></span></div>
+ </form>
+</section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/feed-data.js" defer></script>
+<script src="js/feed-api.js" defer></script>
+<script src="js/feed.js" defer></script>
+</body></html>

@@ -19,6 +19,7 @@
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else if(localStorage.theme==="dark")d.dataset.theme="dark";}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
+<link rel="stylesheet" href="css/feed.css">
 <link rel="stylesheet" href="css/bundle-app.css">
 </head>
 <body class="flow" data-role="admin" data-page="admin" data-charts>
@@ -93,12 +94,13 @@
 <div class="shell">
 <aside class="sbar" aria-label="Main navigation">
   <a class="logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="101 Codecrafts home" width="82" height="46"><div><b>101<br>Codecrafts</b><small>Build. Learn. Grow.</small></div></a>
-  <nav><a href="admin.html" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Overview</span></a><a href="admin.html#analytics"><svg aria-hidden="true"><use href="#i-chart"/></svg><span>Analytics</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-users"/></svg><span>Members</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-cap"/></svg><span>Learners</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-teacher"/></svg><span>Tutors</span></a><a href="admin.html#approvals"><svg aria-hidden="true"><use href="#i-clipboard"/></svg><span>Approvals</span><i class=badge>17</i></a><a href="admin.html#courses"><svg aria-hidden="true"><use href="#i-learning"/></svg><span>Courses & Paths</span></a><a href="#"><svg aria-hidden="true"><use href="#i-code"/></svg><span>Projects</span></a><a href="#"><svg aria-hidden="true"><use href="#i-toolbox"/></svg><span>Tools/Software</span></a><a href="admin.html#add-resource"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Library</span></a><a href="admin.html#events"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Events</span></a><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a><a href="admin.html#payments"><svg aria-hidden="true"><use href="#i-cash"/></svg><span>Payments & Payouts</span></a><a href="#"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>Messages</span><i class=badge>4</i></a><a href="admin.html#moderation"><svg aria-hidden="true"><use href="#i-report"/></svg><span>Reports</span></a><a href="admin.html#audit"><svg aria-hidden="true"><use href="#i-list"/></svg><span>Audit Log</span></a><a href="admin.html#settings"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></a></nav>
+  <nav><a href="admin.html" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Overview</span></a><a href="admin.html#analytics"><svg aria-hidden="true"><use href="#i-chart"/></svg><span>Analytics</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-users"/></svg><span>Members</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-cap"/></svg><span>Learners</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-teacher"/></svg><span>Tutors</span></a><a href="admin.html#approvals"><svg aria-hidden="true"><use href="#i-clipboard"/></svg><span>Approvals</span><i class=badge>17</i></a><a href="admin.html#courses"><svg aria-hidden="true"><use href="#i-learning"/></svg><span>Courses & Paths</span></a><a href="#"><svg aria-hidden="true"><use href="#i-code"/></svg><span>Projects</span></a><a href="#"><svg aria-hidden="true"><use href="#i-toolbox"/></svg><span>Tools/Software</span></a><a href="admin.html#add-resource"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Library</span></a><a href="admin.html#announcements"><svg aria-hidden="true"><use href="#i-megaphone"/></svg><span>Announcements</span></a><a href="admin.html#opp-queue"><svg aria-hidden="true"><use href="#i-briefcase"/></svg><span>Opportunity review</span></a><a href="admin.html#events"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Events</span></a><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a><a href="admin.html#payments"><svg aria-hidden="true"><use href="#i-cash"/></svg><span>Payments & Payouts</span></a><a href="#"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>Messages</span><i class=badge>4</i></a><a href="admin.html#moderation"><svg aria-hidden="true"><use href="#i-report"/></svg><span>Reports</span></a><a href="admin.html#audit"><svg aria-hidden="true"><use href="#i-list"/></svg><span>Audit Log</span></a><a href="admin.html#settings"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></a></nav>
   <hr><a class="btn or side-extra" href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" style="width:100%"><svg aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp community</a>
 </aside>
 <div class="main">
 <header class="topbar">
   <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Search</span><input type="search" placeholder="Search courses, projects, people, or resources..."></label>
+  <nav class="top-links" aria-label="Quick links"><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a></nav>
   <span class="sp"></span>
   <nav class="role-tabs" aria-label="Switch role view"><a href="dashboard.html">Learner</a><a href="tutor.html">Tutor</a><a href="admin.html" aria-current=page>Admin</a></nav>
   <a class="ib" href="#" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
@@ -208,16 +210,27 @@
       <div class="sec-title" style="margin-top:18px"><h2>COMMISSION</h2></div>
       <form class="row" id="commission-form"><label class="field" style="flex:1">Platform commission on paid courses and sessions (%)<input type="number" min="0" max="50" step="0.5" id="commission"></label><button class="btn or" style="align-self:flex-end">Save</button></form>
     </div>
-    <div class="card">
-      <div class="sec-title"><h2>BROADCAST ANNOUNCEMENT</h2></div>
+    <div class="card" id="announcements">
+      <div class="sec-title"><h2>COMPOSE ANNOUNCEMENT</h2><a class="viewall" href="announcements.html">View all →</a></div>
       <form class="grid" id="announce-form" style="gap:10px">
-        <label class="field">Title<input name="title" required placeholder="Hackathon 2025 registration is open"></label>
-        <label class="field">Message<textarea name="body" rows="3" required></textarea></label>
-        <label class="field">Audience<select name="aud"><option>Everyone</option><option>Learners</option><option>Tutors</option><option>Admins</option></select></label>
-        <div class="row"><label class="row"><span class="toggle"><input type="checkbox" name="push" checked><span></span></span> Push + in-app</label><label class="row"><span class="toggle"><input type="checkbox" name="wa"><span></span></span> WhatsApp channel</label></div>
-        <button class="btn ink">Send announcement</button>
+        <label class="field">Title<input name="title" required maxlength="120" placeholder="Hackathon registration is open"></label>
+        <label class="field">Message<textarea name="body" rows="3" required maxlength="600"></textarea></label>
+        <fieldset class="aud-fs"><legend>Audience <small>(leave all empty = everyone)</small></legend>
+          <div class="ck-grp"><b>Role</b><div id="an-roles" class="ck-wrap"></div></div>
+          <div class="ck-grp"><b>Level</b><div id="an-levels" class="ck-wrap"></div></div>
+          <div class="ck-grp"><b>Group</b><div id="an-groups" class="ck-wrap"></div></div>
+        </fieldset>
+        <div class="grid g2" style="gap:10px"><label class="field">Publish at (EAT, empty = now)<input name="publishAt" type="datetime-local"></label><label class="field">Expires (EAT)<input name="expiresAt" type="datetime-local"></label></div>
+        <div class="row"><label class="row"><span class="toggle"><input type="checkbox" name="pinned"><span></span></span> Pin as banner</label><label class="row"><span class="toggle"><input type="checkbox" name="email"><span></span></span> Also email</label><label class="row"><span class="toggle"><input type="checkbox" name="push" checked><span></span></span> Push + in-app</label></div>
+        <div class="row"><button class="btn ink">Publish announcement</button><span id="an-msg" role="status" class="muted"></span></div>
       </form>
     </div>
+  </section>
+
+  <section id="opp-queue" class="card" aria-labelledby="oq-h">
+    <div class="sec-title"><h2 id="oq-h">OPPORTUNITY &amp; EVENT SUBMISSIONS <i class="badge" id="opp-review-n">0</i></h2><a class="viewall" href="opportunities.html">Open Opportunities →</a></div>
+    <div class="list" id="opp-review"></div>
+    <div class="list" id="ev-review" style="margin-top:10px"></div>
   </section>
 
   <section id="social" class="card" aria-labelledby="so-h">
@@ -235,7 +248,7 @@
 </main>
 <footer class="flow-foot">
   <span>© 2025 101 Codecrafts. All rights reserved.</span>
-  <nav aria-label="Footer"><a href="index.html">Home</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
   <div class="socials" data-socials><a href="#" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="X"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="Discord"><svg><use href="#i-discord"/></svg></a></div>
 </footer>
 </div>
@@ -258,5 +271,9 @@
 <script src="js/motion.js" defer></script>
 <script src="js/ads.js" defer></script>
 <script src="js/admin.js" defer></script>
+<script src="js/feed-data.js" defer></script>
+<script src="js/events-data.js" defer></script>
+<script src="js/feed-api.js" defer></script>
+<script src="js/feed.js" defer></script>
 </body>
 </html>

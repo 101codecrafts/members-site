@@ -19,6 +19,7 @@
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else if(localStorage.theme==="dark")d.dataset.theme="dark";}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
+<link rel="stylesheet" href="css/feed.css">
 <link rel="stylesheet" href="css/bundle-dashboard.css">
 <link rel="stylesheet" id="fitcss" href="css/dashboard.fit.css">
 </head>
@@ -243,9 +244,11 @@ COLLABORATE</h1>
 
 <!-- ============ BELOW THE MOCKUP (not part of the 1v1 comparison) ============ -->
 <section id="below-fold" class="below" aria-label="More for you">
-  <div class="below-col">
-    <div class="sec-title"><h2>DAILY NEWS</h2><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div>
-    <div id="daily-news-list" class="rgrid"></div>
+  <div class="below-col fwidget" id="feed-widget">
+    <div class="sec-title"><div class="ftabs sm" id="fw-tabs" aria-label="Today in tech, opportunities and events"></div></div>
+    <div id="fw-tit" role="tabpanel" aria-labelledby="tab-tit"><div class="fw-h"><b>TODAY IN TECH</b> <small id="tit-date"></small><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="tit-list"></ol></div>
+    <div id="fw-dopp" role="tabpanel" aria-labelledby="tab-dopp" hidden><div class="fw-h"><b>OPEN NOW</b> <small>Deadlines in EAT</small><a class="viewall" href="opportunities.html">All opportunities <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dopp-list"></ol></div>
+    <div id="fw-dev" role="tabpanel" aria-labelledby="tab-dev" hidden><div class="fw-h"><b>COMING UP</b> <small>Times in EAT</small><a class="viewall" href="events.html">All events <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dev-list"></ol></div>
   </div>
   <div class="below-col">
     <div class="sec-title"><h2>FROM THE LIBRARY</h2><a class="viewall" href="resources.html">Open Library <svg class="i"><use href="#i-arrow"/></svg></a></div>
@@ -261,5 +264,9 @@ COLLABORATE</h1>
 <script src="js/ui.js" defer></script>
 <script src="js/motion.js" defer></script>
 <script src="js/ads.js" defer></script>
+<script src="js/feed-data.js" defer></script>
+<script src="js/events-data.js" defer></script>
+<script src="js/feed-api.js" defer></script>
+<script src="js/feed.js" defer></script>
 </body>
 </html>

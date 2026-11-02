@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="css/brutal.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/feed.css">
 <link rel="stylesheet" id="fitcss" href="css/dashboard.fit.css">
 </head>
 <body data-page="dashboard" data-role="member">
@@ -162,9 +163,11 @@ COLLABORATE</h1>
 
 <!-- ============ BELOW THE MOCKUP (not part of the 1v1 comparison) ============ -->
 <section id="below-fold" class="below" aria-label="More for you">
-  <div class="below-col">
-    <div class="sec-title"><h2>DAILY NEWS</h2><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div>
-    <div id="daily-news-list" class="rgrid"></div>
+  <div class="below-col fwidget" id="feed-widget">
+    <div class="sec-title"><div class="ftabs sm" id="fw-tabs" aria-label="Today in tech, opportunities and events"></div></div>
+    <div id="fw-tit" role="tabpanel" aria-labelledby="tab-tit"><div class="fw-h"><b>TODAY IN TECH</b> <small id="tit-date"></small><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="tit-list"></ol></div>
+    <div id="fw-dopp" role="tabpanel" aria-labelledby="tab-dopp" hidden><div class="fw-h"><b>OPEN NOW</b> <small>Deadlines in EAT</small><a class="viewall" href="opportunities.html">All opportunities <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dopp-list"></ol></div>
+    <div id="fw-dev" role="tabpanel" aria-labelledby="tab-dev" hidden><div class="fw-h"><b>COMING UP</b> <small>Times in EAT</small><a class="viewall" href="events.html">All events <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dev-list"></ol></div>
   </div>
   <div class="below-col">
     <div class="sec-title"><h2>FROM THE LIBRARY</h2><a class="viewall" href="resources.html">Open Library <svg class="i"><use href="#i-arrow"/></svg></a></div>
@@ -172,5 +175,9 @@ COLLABORATE</h1>
   </div>
 </section>
 {{SCRIPTS}}
+<script src="js/feed-data.js" defer></script>
+<script src="js/events-data.js" defer></script>
+<script src="js/feed-api.js" defer></script>
+<script src="js/feed.js" defer></script>
 </body>
 </html>

@@ -41,6 +41,8 @@
     resources: [{ type: "infeed", list: "#res-grid" }, { type: "banner", after: "#res-grid" }],
     courses:   [{ type: "infeed", list: "#gfree" }, { type: "banner", append: "#cfree" }],     // Free Courses Worldwide region only
     launchpad: [{ type: "infeed", list: "#lp-list", li: true }, { type: "banner", after: "#lp-list" }],
+    opportunities: [{ type: "infeed", list: "#opp-grid" }, { type: "banner", after: "#opp-grid" }],   // list only, never the submit form
+    events:    [{ type: "infeed", list: "#ev-list" }, { type: "banner", after: "#ev-list" }],          // list view only, never RSVP/submit forms
     dashboard: [{ type: "sidebar", append: "#below-fold", member: true }],
     learn:     [{ type: "infeed", list: "#learn-grid" }, { type: "banner", after: "#learn-grid" }],   // 101 Learn library (never on practice/problem/ide/contest pages)
     article:   [{ type: "banner", after: "#art-related" }],

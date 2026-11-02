@@ -4,6 +4,7 @@
 {{HEAD title="Admin · 101 Codecrafts" desc="101 Codecrafts admin console: members, tutors, approvals, payments, moderation and settings." path="admin.html" noindex}}
 <link rel="stylesheet" href="css/brutal.css">
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/feed.css">
 </head>
 <body class="flow" data-role="admin" data-page="admin" data-charts>
 <a class="skip" href="#main">Skip to content</a>
@@ -115,16 +116,27 @@
       <div class="sec-title" style="margin-top:18px"><h2>COMMISSION</h2></div>
       <form class="row" id="commission-form"><label class="field" style="flex:1">Platform commission on paid courses and sessions (%)<input type="number" min="0" max="50" step="0.5" id="commission"></label><button class="btn or" style="align-self:flex-end">Save</button></form>
     </div>
-    <div class="card">
-      <div class="sec-title"><h2>BROADCAST ANNOUNCEMENT</h2></div>
+    <div class="card" id="announcements">
+      <div class="sec-title"><h2>COMPOSE ANNOUNCEMENT</h2><a class="viewall" href="announcements.html">View all →</a></div>
       <form class="grid" id="announce-form" style="gap:10px">
-        <label class="field">Title<input name="title" required placeholder="Hackathon 2025 registration is open"></label>
-        <label class="field">Message<textarea name="body" rows="3" required></textarea></label>
-        <label class="field">Audience<select name="aud"><option>Everyone</option><option>Learners</option><option>Tutors</option><option>Admins</option></select></label>
-        <div class="row"><label class="row"><span class="toggle"><input type="checkbox" name="push" checked><span></span></span> Push + in-app</label><label class="row"><span class="toggle"><input type="checkbox" name="wa"><span></span></span> WhatsApp channel</label></div>
-        <button class="btn ink">Send announcement</button>
+        <label class="field">Title<input name="title" required maxlength="120" placeholder="Hackathon registration is open"></label>
+        <label class="field">Message<textarea name="body" rows="3" required maxlength="600"></textarea></label>
+        <fieldset class="aud-fs"><legend>Audience <small>(leave all empty = everyone)</small></legend>
+          <div class="ck-grp"><b>Role</b><div id="an-roles" class="ck-wrap"></div></div>
+          <div class="ck-grp"><b>Level</b><div id="an-levels" class="ck-wrap"></div></div>
+          <div class="ck-grp"><b>Group</b><div id="an-groups" class="ck-wrap"></div></div>
+        </fieldset>
+        <div class="grid g2" style="gap:10px"><label class="field">Publish at (EAT, empty = now)<input name="publishAt" type="datetime-local"></label><label class="field">Expires (EAT)<input name="expiresAt" type="datetime-local"></label></div>
+        <div class="row"><label class="row"><span class="toggle"><input type="checkbox" name="pinned"><span></span></span> Pin as banner</label><label class="row"><span class="toggle"><input type="checkbox" name="email"><span></span></span> Also email</label><label class="row"><span class="toggle"><input type="checkbox" name="push" checked><span></span></span> Push + in-app</label></div>
+        <div class="row"><button class="btn ink">Publish announcement</button><span id="an-msg" role="status" class="muted"></span></div>
       </form>
     </div>
+  </section>
+
+  <section id="opp-queue" class="card" aria-labelledby="oq-h">
+    <div class="sec-title"><h2 id="oq-h">OPPORTUNITY &amp; EVENT SUBMISSIONS <i class="badge" id="opp-review-n">0</i></h2><a class="viewall" href="opportunities.html">Open Opportunities →</a></div>
+    <div class="list" id="opp-review"></div>
+    <div class="list" id="ev-review" style="margin-top:10px"></div>
   </section>
 
   <section id="social" class="card" aria-labelledby="so-h">
@@ -152,5 +164,9 @@
 </script> -->
 {{SCRIPTS}}
 <script src="js/admin.js" defer></script>
+<script src="js/feed-data.js" defer></script>
+<script src="js/events-data.js" defer></script>
+<script src="js/feed-api.js" defer></script>
+<script src="js/feed.js" defer></script>
 </body>
 </html>

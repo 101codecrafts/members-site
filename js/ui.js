@@ -70,7 +70,7 @@
   async function dashboardExtras() {
     const host = $("#below-fold"); if (!host) return;
     const [news, res] = await Promise.all([API.fetchNews(), API.fetchResources()]);
-    $("#daily-news-list").innerHTML = news.slice(0, 4).map(n => newsCard(n)).join("");
+    const dl = $("#daily-news-list"); if (dl) dl.innerHTML = news.slice(0, 4).map(n => newsCard(n)).join("");
     $("#library-row").innerHTML = res.slice(0, 4).map(resourceCard).join("");
   }
   async function landingExtras() {

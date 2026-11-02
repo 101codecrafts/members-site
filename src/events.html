@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Events &amp; Meetups · 101 Codecrafts" desc="Tech events in Kampala, Uganda, Africa and online: hackathons, GDG DevFest, Microsoft, AWS, Hugging Face and 101 Codecrafts meetups. Times in East Africa Time." path="events.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/feed.css">
+<link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
+</head>
+<body class="flow" data-role="learner" data-page="events">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Events &amp; Meetups"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="page-h"><div><div class="kicker">Events &amp; meetups</div><h1>EVENTS &amp; MEETUPS</h1><p>Hackathons, community meetups, conferences and workshops — in Kampala, across Africa and online. All times are East Africa Time (EAT).</p></div>
+ <div class="row"><a class="btn" href="#organiser"><svg aria-hidden="true"><use href="#i-clipboard"/></svg>Organiser view</a><a class="btn or" href="#submit-event"><svg aria-hidden="true"><use href="#i-plusc"/></svg>Submit an event</a></div></div>
+
+<section class="card efilters" aria-label="Filter events">
+ <div class="filters ef-region" id="ef-region" role="group" aria-label="Where"></div>
+ <div class="ef-row">
+  <label class="field">Type<select id="ef-type"></select></label>
+  <label class="field">Organiser<select id="ef-org"></select></label>
+  <label class="field">From<input type="date" id="ef-from"></label>
+  <label class="field">To<input type="date" id="ef-to"></label>
+  <label class="field">Price<select id="ef-price"><option value="">Free &amp; paid</option><option value="free">Free</option><option value="paid">Paid</option></select></label>
+  <button type="button" class="chip" id="ef-saved" aria-pressed="false">Saved</button>
+ </div>
+</section>
+
+<div class="feed-bar"><div class="vtoggle" id="ev-views" role="group" aria-label="View"><button type="button" class="chip" data-view="list" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-list"/></svg>List</button><button type="button" class="chip" data-view="cal" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Calendar</button><button type="button" class="chip" data-view="map" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-flag"/></svg>Map</button></div><small id="ev-count" aria-live="polite"></small></div>
+
+<div class="fgrid" id="ev-list"></div>
+<section class="card ev-cal" id="ev-cal" aria-labelledby="cal-title" hidden>
+ <div class="cal-h"><button type="button" class="btn sm" id="cal-prev" aria-label="Previous month">←</button><h2 id="cal-title"></h2><button type="button" class="btn sm" id="cal-next" aria-label="Next month">→</button></div>
+ <div class="cal-wd" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+ <div class="cal-grid" id="cal-grid" role="grid"></div>
+</section>
+<section class="card" id="ev-mapwrap" aria-label="Events map" hidden><div id="ev-map" class="ev-map"></div><p class="muted" id="map-online"></p></section>
+
+<section class="card" id="my-tickets" aria-labelledby="h-tk" hidden>
+ <div class="sec-title"><h2 id="h-tk">MY TICKETS</h2><span class="tagx">101-hosted events</span></div>
+ <ul class="list" id="tk-list"></ul>
+</section>
+
+<section class="card" id="organiser" aria-labelledby="h-org">
+ <div class="sec-title"><h2 id="h-org">ORGANISER VIEW</h2><span class="tagx">101 hosts &amp; admins</span></div>
+ <div class="org-top"><label class="field">Event<select id="org-ev"></select></label>
+  <form class="row" id="org-check"><label class="field" style="flex:1"><span>Check in by ticket code (or scan the QR with any scanner app)</span><input id="org-code" required placeholder="101-HACK-XXXXXX" autocomplete="off"></label><button class="btn ink" style="align-self:flex-end">Check in</button></form></div>
+ <p id="org-msg" role="status" class="muted"></p>
+ <div class="grid g3 org-stats" id="org-stats"></div>
+ <div class="sec-title" style="margin-top:12px"><h3 class="mini-h">Attendees</h3><button type="button" class="btn sm" id="org-csv"><svg aria-hidden="true"><use href="#i-download"/></svg>CSV</button></div>
+ <div class="tbl-wrap"><table class="t" id="org-tb"><thead><tr><th>Name</th><th>Level</th><th>Ticket</th><th>Check-in</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section class="card" id="submit-event" aria-labelledby="h-sev">
+ <div class="sec-title"><h2 id="h-sev">SUBMIT AN EVENT</h2><span class="tagx">Goes to admin review</span></div>
+ <p class="muted">Running a meetup, hackathon or workshop? Share the official page. An admin checks it before it goes live.</p>
+ <form class="grid g2 sub-form" id="ev-form" style="margin-top:12px">
+  <label class="field">Event title<input name="title" required maxlength="140"></label>
+  <label class="field">Official link (RSVP page)<input name="url" type="url" required inputmode="url" placeholder="https://…"></label>
+  <label class="field">Organiser<select name="org" id="es-org"></select></label>
+  <label class="field">Type<select name="type" id="es-type"></select></label>
+  <label class="field">Starts (EAT)<input name="start" type="datetime-local" required></label>
+  <label class="field">Ends (EAT)<input name="end" type="datetime-local"></label>
+  <label class="field">Where<select name="region"><option value="kampala">Kampala</option><option value="uganda">Uganda</option><option value="africa">Africa</option><option value="online">Online</option><option value="worldwide">Worldwide</option></select></label>
+  <label class="field">Venue / address (or “Online”)<input name="venue" required></label>
+  <label class="field">Price (0 = free)<input name="price" type="number" min="0" step="1" value="0"></label>
+  <label class="field">Currency<select name="currency"><option>UGX</option><option>USD</option><option>KES</option></select></label>
+  <label class="field span2">Short description<textarea name="desc" rows="2" required maxlength="400"></textarea></label>
+  <label class="field span2">Your email (so we can follow up)<input name="contact" type="email" autocomplete="email"></label>
+  <div class="row span2"><button class="btn ink" type="submit">Submit for review</button><span id="ev-msg" role="status" class="muted"></span></div>
+ </form>
+</section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/feed-data.js" defer></script>
+<script src="js/events-data.js" defer></script>
+<script src="js/feed-api.js" defer></script>
+<script src="js/feed.js" defer></script>
+<script src="js/events.js" defer></script>
+</body></html>

@@ -17,3 +17,9 @@ Pages: `marketplace.html` (mega-menu, autocomplete search, deals carousel + coun
 - Images are local SVG placeholders from `tools/market_svgs.py` (`assets/img/market/`).
 - Affiliate URLs are plain search pages: **TODO** add the Amazon Associates tag and Alibaba affiliate links (server-side, `/market/affiliates`).
 - No ads: `js/ads.js` has no placements for these pages; keep cart/checkout/orders/seller ad-free.
+
+## Announcements, News, Opportunities, Events
+- Pages: `announcements.html`, `news.html` (Daily Tech News: All / Africa & Uganda / AI / Dev / Startups), `opportunities.html`, `events.html` (Events & Meetups: list / calendar / map). Dashboard: pinned banner, bell dropdown with unread count, "Today in tech / Opportunities / Events" widget. Admin: announcement composer (audience role/level/group, schedule, pin, expiry, email) and the submission review queue.
+- Code: `js/feed-data.js` + `js/events-data.js` (PLACEHOLDER data, relative dates), `js/feed-api.js` (stubs for `/api/v1/announcements`, `/news`, `/opportunities`, `/events`, with localStorage fallback), `js/feed.js`, `js/events.js`, `css/feed.css`.
+- External links go through `go.html`. Map = Leaflet 1.9.4 + OpenStreetMap tiles (jsDelivr + SRI, lazy, off in Lite mode). Ticket QR = qrcode-generator 1.4.4 (jsDelivr + SRI, lazy).
+- Ads: in-feed + banner on the news, opportunities and events lists only (never the submit/RSVP forms or admin).
