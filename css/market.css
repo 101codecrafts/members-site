@@ -345,3 +345,11 @@
 /* horizontal rows contain their absolutely-positioned bits (sr-only labels, source chips) so they can't widen the page on mobile */
 .mk-row{position:relative}
 main.content{overflow-x:clip}
+/* product rows: whole cards only at the container edge (the rest scroll), no half-cut card */
+@media (min-width:761px){
+  .mk-sec{container-type:inline-size}
+  .mk-row{--n:3;grid-auto-columns:calc((100% - (var(--n) - 1) * 16px) / var(--n));scroll-padding-inline:16px}
+  @container (min-width:920px){.mk-row{--n:4}}
+  @container (min-width:1146px){.mk-row{--n:5}}
+  @container (min-width:1372px){.mk-row{--n:6}}
+}

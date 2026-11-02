@@ -383,3 +383,21 @@ button:disabled{opacity:.6;cursor:progress}
 /* guest state links in the top bar */
 .chip-me small a,.me-role a{color:inherit;text-decoration:underline}
 html.signed-out .bell-n{display:none}
+
+/* ---- app shell (2026-11): fluid main column beside a full-height sticky sidebar, centred content ---- */
+@media (min-width:761px){
+  html:not(.static) .shell{background:linear-gradient(90deg,var(--ink) 0 244px,transparent 244px)} /* navy runs the full page height even if the page is zoomed out */
+  html:not(.static) .sbar{height:100vh;height:100dvh;align-self:start}
+  html:not(.static) .main{display:flex;flex-direction:column;min-height:100vh;min-width:0}
+  html:not(.static) .main>.content{width:100%;max-width:1480px;margin-inline:auto;flex:1 0 auto}
+}
+/* role switcher: only for signed-in members with more than one role (auth.js adds .has-roles and hides roles they don't hold) */
+html:not(.static):not(.has-roles) .role-tabs,html:not(.static):not(.has-roles) .role-switch{display:none!important}
+.role-tabs a[hidden]{display:none!important}
+/* view-settings widget: a small button that opens Lite / language / theme */
+.cc-toolbar .cc-tb-toggle{min-width:var(--touch-min-target);justify-content:center;padding:0;background:transparent}
+.cc-toolbar .cc-tb-toggle svg{width:20px;height:20px}
+.cc-toolbar:not(.open){padding:2px;box-shadow:3px 3px 0 var(--or);opacity:.85}
+.cc-toolbar:not(.open):hover{opacity:1}
+.cc-toolbar:not(.open)>:not(.cc-tb-toggle){display:none!important}
+@media (max-width:760px){.cc-toolbar:not(.open){left:auto;right:10px;bottom:10px}}

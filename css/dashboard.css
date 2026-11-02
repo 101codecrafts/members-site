@@ -189,3 +189,21 @@ html:not(.static) .app{zoom:var(--fit,1)}
 
 /* live site 1024-1535px: the 1536px below-the-fold grid must not cause sideways scroll */
 @media (max-width:1535px){html:not(.static) .below{width:auto;max-width:100%;padding-left:24px}html:not(.static) body{overflow-x:clip}}
+
+/* ---- app shell (2026-11) ---- */
+/* 761–1099px (incl. Android Chrome "Desktop site" at 980px): sidebar is a fixed full-height column, content flows beside it */
+@media (min-width:761px) and (max-width:1099px){
+  html:not(.static) body{padding-left:224px}
+  html:not(.static) .app>.side{position:fixed!important;left:0!important;top:0!important;bottom:0;width:224px!important;height:100vh;height:100dvh;overflow-y:auto;z-index:60;padding:16px 12px 24px;gap:4px}
+  html:not(.static) .side .brand-name{margin:6px 0 10px}
+  html:not(.static) .side .nav{flex-direction:column;overflow:visible;gap:2px}
+  html:not(.static) .side .nav a{width:100%;min-height:42px}
+  html:not(.static) .app>.side>.side-rule{display:block!important;width:auto;margin:8px 0}
+  html:not(.static) .app>.side>.side-h{display:block!important;margin:4px 0 2px 10px}
+}
+/* ≥1100px (mockup canvas): the navy sidebar column continues down the whole page, and the below-the-fold grid lines up with the content column */
+@media (min-width:1100px){
+  html:not(.static) body[data-page=dashboard]{background:transparent}
+  html:not(.static) body[data-page=dashboard]::before{content:"";position:fixed;top:0;bottom:0;left:max(0px,calc((100% - 1536px) / 2));width:calc(244px * var(--fit,1));background:#0B1236;z-index:-1;pointer-events:none}
+  html:not(.static) .below{background:transparent;padding-left:calc(244px * var(--fit,1) + 24px)}
+}

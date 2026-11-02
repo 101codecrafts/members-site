@@ -43,15 +43,12 @@
     const role = document.body.dataset.role || "learner";
     const bar = document.createElement("div"); bar.className = "cc-toolbar"; bar.setAttribute("role", "region"); bar.setAttribute("aria-label", "View settings");
     bar.innerHTML = `
-      <label>View <select id="cc-role" aria-label="Switch role view">
-        <option value="dashboard.html" ${role === "member" || role === "learner" ? "selected" : ""}>Learner</option>
-        <option value="tutor.html" ${role === "tutor" ? "selected" : ""}>Tutor</option>
-        <option value="admin.html" ${role === "admin" ? "selected" : ""}>Admin</option></select></label>
+      <button type="button" class="cc-tb-toggle" aria-expanded="false" aria-label="View settings: Lite mode, language, theme">${ico("gear")}</button>
       <button type="button" id="cc-lite" aria-pressed="${html.classList.contains("lite")}">${ico("download")} Lite</button>
       <label>${ico("chat")}<select id="cc-lang" aria-label="Language"><option value="en">English</option><option value="lg">Luganda</option><option value="sw">Kiswahili</option><option value="fr">Français</option></select></label>
       <button type="button" id="cc-theme" aria-pressed="${html.dataset.theme === "dark"}" aria-label="Toggle dark theme">◐</button>`;
     document.body.appendChild(bar);
-    $("#cc-role").onchange = e => location.href = e.target.value;
+    const tg = bar.querySelector(".cc-tb-toggle"); tg.onclick = () => { const o = bar.classList.toggle("open"); tg.setAttribute("aria-expanded", o); };
     $("#cc-lite").onclick = e => { const on = !html.classList.contains("lite"); html.classList.toggle("lite", on); localStorage.setItem("lite", on ? "1" : "0"); e.currentTarget.setAttribute("aria-pressed", on); if (!on) location.reload(); };
     const lang = localStorage.getItem("lang") || "en"; $("#cc-lang").value = lang; if (lang !== "en") setLang(lang);
     $("#cc-lang").onchange = e => setLang(e.target.value);

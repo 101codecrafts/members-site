@@ -34,10 +34,11 @@
       if (sm) sm.innerHTML = user ? "Member" : '<a href="signin.html">Sign in</a> · <a href="signup.html">Join</a>';
     });
     // no fake notification dots / badges; real unread count fills them in below
-    $$(".dot, .sbar nav .badge").forEach(e => { e.hidden = true; e.style.display = "none"; });
+    $$(".dot, .sbar nav .badge, .side .nav .badge").forEach(e => { e.hidden = true; e.style.display = "none"; });
     // fake community stat on the dashboard (was a hard-coded 10K+)
     $$(".stat.s1 b[data-count]").forEach(b => { b.removeAttribute("data-count"); b.textContent = "—"; });
-    if (user) unread();
+    document.documentElement.classList.remove("has-roles");
+    if (user) { unread(); roles(); }
     AUTH.user = user; AUTH.ready = true; listeners.forEach(f => { try { f(user); } catch (e) {} });
   }
   async function unread() {
@@ -47,6 +48,20 @@
       const n = Array.isArray(items) ? items.filter(x => !x.read_at).length : 0;
       if (n) $$(".dot").forEach(e => { e.hidden = false; e.style.display = ""; });
     } catch (e) { /* offline: stay quiet */ }
+  }
+  /* Learner / Tutor / Admin switcher: only the roles this member holds (GET /api/v1/me -> roles), and only if more than one */
+  async function roles() {
+    try {
+      const h = { Accept: "application/json" };
+      try { const t = AUTH.clerk && AUTH.clerk.session && await AUTH.clerk.session.getToken(); if (t) h.Authorization = "Bearer " + t; } catch (e) {}
+      const r = await fetch("/api/v1/me", { credentials: "include", headers: h });
+      if (!r.ok) return; const j = await r.json(); const me = (j && (j.data || j)) || {};
+      const rs = new Set((me.roles || []).map(String));
+      const has = { learner: true, tutor: rs.has("tutor"), admin: rs.has("admin") || rs.has("super_admin") };
+      const n = Object.values(has).filter(Boolean).length;
+      $$(".role-tabs a").forEach(a => { const k = (a.textContent || "").trim().toLowerCase(); a.hidden = !has[k]; });
+      document.documentElement.classList.toggle("has-roles", n > 1);
+    } catch (e) { /* offline / API down: keep the switcher hidden */ }
   }
   function mountAuthUi(clerk) {
     const page = document.body && document.body.dataset.page;
