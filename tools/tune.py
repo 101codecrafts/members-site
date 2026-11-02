@@ -22,14 +22,15 @@ JS_COLLECT = r"""
   const out = [];
   const path = el => { const p=[]; while (el && el !== root) { const i=[...el.parentElement.children].indexOf(el)+1; p.unshift(`:nth-child(${i})`); el = el.parentElement; } return (root.classList.contains('app')?'.app':'.page')+' > '+p.join(' > '); };
   root.querySelectorAll('*').forEach(el => {
-    if (el.closest('svg')) return;
-    const own = [...el.childNodes].some(n => n.nodeType===3 && n.textContent.trim().length>1);
+    const isIcon = el.tagName.toLowerCase()==='svg' && !el.parentElement.closest('svg');
+    if (el.closest('svg') && !isIcon) return;
+    const own = isIcon || [...el.childNodes].some(n => n.nodeType===3 && n.textContent.trim().length>1);
     if (!own) return;
     const r = el.getBoundingClientRect();
     if (r.width<4 || r.height<4) return;
     const cs = getComputedStyle(el);
     const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize)*1.25;
-    out.push({sel:path(el), x:r.left, y:r.top, w:r.width, h:r.height, fs:parseFloat(cs.fontSize), single: r.height < lh*1.6});
+    out.push({sel:path(el), x:r.left, y:r.top, w:r.width, h:r.height, fs:parseFloat(cs.fontSize), single: !isIcon && r.height < lh*1.6, icon:isIcon});
   });
   return out;
 }"""

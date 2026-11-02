@@ -10,3 +10,5 @@ Screenshots taken with headless Chromium at the mockup viewport, `?static=1` (an
 | landing | 1 | 0.7358 | testimonials 0.538, hero_text 0.609, features 0.630 | first full draft |
 | landing | 2 | 0.7611 | testimonials 0.577, features 0.643, hero_text 0.677 | Archivo Black hero (glyph-SSIM font search) + automatic per-element text fit (tools/tune.py) |
 | dashboard | 8 | 0.8399 | activity 0.756, latest 0.772, featured 0.789 | automatic per-element text fit (tools/tune.py, 5 passes) |
+| landing | 3 | 0.7638 | testimonials 0.586, features 0.658, hero_text 0.678 | mockup line breaks forced, icon sizes, tuner now also aligns icons |
+| dashboard | 9 | 0.8425 | activity 0.763, latest 0.773, featured 0.791 | mockup line breaks forced, tuner re-run with icons |

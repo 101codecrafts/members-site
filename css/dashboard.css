@@ -131,3 +131,5 @@
 .foot>*{position:absolute}
 .foot a{top:16px;font-size:10px;color:#e5eaee}
 .foot svg{top:15px;width:18px;height:18px;color:#fff}
+
+.hero p,.tool p,.act q{white-space:nowrap;width:auto}

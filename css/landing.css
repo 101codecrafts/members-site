@@ -26,9 +26,9 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .feat{background:#03203f;color:#fff}
 .feat>*{position:absolute}
 .feat .ib{left:14px;width:61px;height:56px;display:flex;align-items:center;justify-content:center;color:var(--nv)}
-.feat .ib svg{width:34px;height:34px}
-.feat h3{font-family:var(--disp2);font-weight:400;font-size:13.5px;line-height:15px;letter-spacing:.4px}
-.feat p{font-size:10.5px;line-height:14px;color:#dfe6ee}
+.feat .ib svg{width:40px;height:40px}
+.feat h3{font-family:var(--disp2);font-weight:400;font-size:12.5px;line-height:15px;letter-spacing:.3px;white-space:nowrap}
+.feat p{font-size:10.5px;line-height:14px;color:#dfe6ee;white-space:nowrap;width:auto!important}
 .feat .ar{width:15px;height:15px;color:var(--lor)}
 
 /* community */
@@ -36,8 +36,8 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .comm>*{position:absolute}
 .tile{color:var(--nv)}
 .tile>*{position:absolute}
-.tile svg{width:30px;height:30px}
-.tile b{font-family:var(--disp);font-weight:400;font-size:24px;line-height:1;transform:scaleY(1.05);transform-origin:0 0}
+.tile svg{width:36px;height:36px}
+.tile b{font-family:var(--disp);font-weight:400;font-size:25px;line-height:1;transform:scaleY(1.1);transform-origin:0 0}
 .tile small{font-size:12px;font-weight:700;letter-spacing:.6px}
 
 /* paths */
@@ -55,7 +55,7 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .tcard img{left:9px;top:6px;width:51px;height:47px}
 .tcard b{left:69px;top:9px;font-size:12px;font-weight:600}
 .tcard small{left:69px;top:24px;font-size:9.5px;color:#cdd8e3}
-.tcard p{left:69px;top:42px;width:150px;font-size:8.8px;line-height:12.3px;color:#e6edf3}
+.tcard p{left:69px;top:42px;white-space:nowrap;font-size:8.8px;line-height:12.3px;color:#e6edf3}
 .tcard .stars{left:13px;top:82px;display:flex;gap:1px;color:#f99a1a}
 .tcard .stars svg{width:12px;height:12px}
 
@@ -66,3 +66,5 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .lfoot>*{position:absolute}
 .lfoot a{top:43px;font-size:9.5px}
 .lfoot svg{top:40px;width:17px;height:17px}
+
+.page p{white-space:nowrap}
