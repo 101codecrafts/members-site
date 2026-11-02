@@ -28,7 +28,7 @@
     return location.protocol === "file:" ? "go.html?id=" + encodeURIComponent(id) : "/go/" + encodeURIComponent(id);
   }
   function lookupGo(id) {
-    const all = [...(D().resources || []), ...(D().news || []), ...((D().course && D().course.books) || []), ...(window.__ccNewsCache || [])];
+    const all = [...(D().resources || []), ...(D().externalCourses || []), ...(JSON.parse(localStorage.getItem("cc_ext_drafts") || "[]")), ...(D().news || []), ...((D().course && D().course.books) || []), ...(window.__ccNewsCache || [])];
     return all.find(x => x.id === id) || null;
   }
 
@@ -82,6 +82,29 @@
     return { title: decodeURIComponent((u.pathname.split("/").filter(Boolean).pop() || host).replace(/[-_]/g, " ")), desc: "Preview generated in the browser — the backend unfurl adds the real title and description.", thumb: yt ? `https://i.ytimg.com/vi/${yt}/hqdefault.jpg` : "", site: host, favicon: `https://${host}/favicon.ico`, type, url, tags: [] };
   }
   async function publishResource(card) { return tryChain(() => backend("/resources", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(card) })); }
+
+
+  /* ---------- Courses catalog ---------- */
+  /** GET /api/courses → 101 courses taught on the platform [{id,title,tutor,level,category,rating,reviews,price,lessons,cover}] */
+  const fetchCourses101 = async () => (await tryChain(() => backend("/courses"))) || D().courses101;
+  /** GET /api/courses/external → [{id,provider,title,url,level,category,access,free_until?,free_until_status?,certFree,aid?,desc}] */
+  const fetchExternalCourses = async () => (await tryChain(() => backend("/courses/external"))) || D().externalCourses;
+  /** Paste-a-link preview for an external course. Backend: POST /api/courses/external/unfurl {url} → {title, desc, provider, ...}.
+      Stub: reuses the generic unfurl and guesses the provider from the hostname. */
+  const PROVIDER_HOSTS = [["coursera", /coursera\.org$/], ["edx", /edx\.org$/], ["freecodecamp", /freecodecamp\.org$/], ["google", /(google\.com|grow\.google|withgoogle\.com)$/], ["microsoft", /microsoft\.com$/], ["cisco", /netacad\.com$/], ["khan", /khanacademy\.org$/], ["alison", /alison\.com$/]];
+  async function unfurlExternalCourse(url) {
+    const v = await tryChain(() => backend("/courses/external/unfurl", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) }));
+    if (v) return v;
+    const base = await fetchUnfurl(url); const host = new URL(url).hostname.replace(/^www\./, "");
+    const provider = (PROVIDER_HOSTS.find(([, re]) => re.test(host)) || ["other"])[0];
+    return { ...base, provider, title: base.title.replace(/\b\w/g, c => c.toUpperCase()), access: "Free", certFree: false, level: "University", category: "Computer Science" };
+  }
+  /** POST /api/courses/external (tutor/admin; goes to admin review). Fallback keeps a local draft so go.html can resolve it. */
+  async function addExternalCourse(course) {
+    const r = await tryChain(() => backend("/courses/external", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(course) }));
+    if (!r) { const k = "cc_ext_drafts"; const a = JSON.parse(localStorage.getItem(k) || "[]"); a.push(course); localStorage.setItem(k, JSON.stringify(a)); }
+    return r;
+  }
 
   /* ---------- Admin ---------- */
   const A = () => D().admin;
@@ -193,7 +216,7 @@
   }
   function downloadCSV(name, rows) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([toCSV(rows)], { type: "text/csv" })); a.download = name; a.click(); }
 
-  window.CC_API = { STATIC, goHref, lookupGo, fetchRepoStats, fetchNews, fetchResources, fetchUnfurl, publishResource,
+  window.CC_API = { STATIC, goHref, lookupGo, fetchRepoStats, fetchNews, fetchResources, fetchUnfurl, publishResource, fetchCourses101, fetchExternalCourses, unfurlExternalCourse, addExternalCourse,
     fetchAdminKpis, fetchAnalytics, fetchUsers, fetchPendingMembers, fetchRecentSignups, fetchCourseApprovals, fetchPayouts, fetchTransactions,
     fetchModerationQueue, fetchEventsAdmin, fetchAuditLog, fetchFlags, adminAction, fetchTutorOverview, requestPayout, flutterwaveCheckout, downloadCSV, fetchSocialLinks, saveSocialLinks,
     fetchProducts, fetchProduct, upvoteProduct, commentProduct, fetchCampaigns, joinCampaign, becomeTester, submitBugReport, fetchTriage, moveBug,

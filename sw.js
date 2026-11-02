@@ -1,8 +1,8 @@
 /* 101 Codecrafts service worker — cached app shell + offline fallback.
    Strategy: HTML = network-first (falls back to cache, then offline.html); static assets = stale-while-revalidate;
    API and cross-origin requests are never cached here (except CDN libraries pinned by version). Small cache for mobile data. */
-const VERSION = "cc-v1";
-const SHELL = ["./", "index.html", "dashboard.html", "offline.html", "404.html", "resources.html", "news.html", "course.html",
+const VERSION = "cc-v2";
+const SHELL = ["./", "index.html", "dashboard.html", "offline.html", "404.html", "courses.html", "resources.html", "news.html", "course.html",
   "css/bundle-app.css", "css/bundle-dashboard.css", "css/bundle-landing.css", "css/dashboard.fit.css", "css/landing.fit.css",
   "js/data.js", "js/api.js", "js/ui.js", "js/motion.js", "js/pages.js",
   "assets/fonts/archivo-black-400.woff2", "assets/fonts/russo-one-400.woff2", "assets/fonts/barlow-400.woff2", "assets/fonts/barlow-500.woff2", "assets/fonts/barlow-600.woff2", "assets/fonts/barlow-700.woff2",

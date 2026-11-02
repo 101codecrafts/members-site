@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="SCRATCH &amp; CODE cover">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0B1236"/><stop offset="1" stop-color="#111A45"/></linearGradient>
+<pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="24" fill="#ffffff" opacity=".05"/></pattern></defs>
+<rect width="640" height="360" fill="url(#g)"/><rect width="640" height="360" fill="url(#p)"/>
+<rect x="430" y="-40" width="260" height="260" fill="#05e6f2" opacity=".9" transform="rotate(18 560 90)"/>
+<rect x="470" y="40" width="120" height="120" fill="none" stroke="#0B1236" stroke-width="10" transform="rotate(18 530 100)"/>
+<rect x="36" y="300" width="96" height="14" fill="#05e6f2"/>
+<text x="36" y="187" font-family="Archivo Black, Impact, Arial Black, sans-serif" font-size="34" fill="#ffffff">SCRATCH &amp; CODE</text>
+<text x="36" y="282" font-family="Barlow, Arial, sans-serif" font-weight="700" font-size="22" letter-spacing="3" fill="#ffffff" opacity=".85">101 CODECRAFTS · TUTOR-LED</text>
+</svg>

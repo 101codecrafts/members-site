@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Courses · 101 Codecrafts" desc="Courses taught by 101 Codecrafts tutors, plus the best free courses worldwide from Coursera, edX, freeCodeCamp, Google, Microsoft Learn, Cisco NetAcad, Khan Academy and Alison." path="courses.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-role="learner" data-page="courses">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Learning"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="page-h"><div><div class="kicker">Learning</div><h1>COURSES</h1><p>Learn with 101 tutors, or take the best free courses from around the world. Filters apply to both sections.</p></div>
+ <div class="row"><a class="btn" href="#c101">101 Courses</a><a class="btn or" href="#cfree">Free Courses Worldwide</a></div></div>
+
+<section class="card" aria-label="Course filters"><div class="cfilters">
+ <label class="search csearch"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Search courses</span><input id="cf-q" type="search" placeholder="Search courses, tutors, providers…"></label>
+ <label class="field">Category<select id="cf-cat"></select></label>
+ <label class="field">Provider<select id="cf-prov"></select></label>
+ <label class="field">Access type<select id="cf-acc"></select></label>
+ <div class="filters cf-lv" data-levels></div>
+</div></section>
+
+<!-- ============ REGION 1: 101 COURSES ============ -->
+<section class="region r101" id="c101" aria-labelledby="h101">
+ <header class="region-h"><div><span class="region-tag">ON 101 CODECRAFTS</span><h2 id="h101">101 COURSES</h2><p>Taught by our own tutors. Video lessons, notes, quizzes and a 101 certificate.</p></div><small id="n101" aria-live="polite"></small></header>
+ <div class="cgrid" id="g101"></div>
+</section>
+
+<!-- ============ REGION 2: FREE COURSES WORLDWIDE ============ -->
+<section class="region rfree" id="cfree" aria-labelledby="hfree">
+ <header class="region-h"><div><span class="region-tag cy">EXTERNAL · OPENS IN A NEW TAB</span><h2 id="hfree">FREE COURSES WORLDWIDE</h2><p>Hand-picked free courses on other sites. Check the badge: some are fully free, some are free to audit, some are free only for a limited time.</p></div><small id="nfree" aria-live="polite"></small></header>
+ <div class="expiring" id="expiring" aria-labelledby="hexp" hidden>
+  <h3 id="hexp"><svg class="i" aria-hidden="true" style="width:20px;height:20px"><use href="#i-calendar"/></svg> EXPIRING SOON <small>Limited-time free offers</small></h3>
+  <div class="exp-row" id="exp-row"></div>
+ </div>
+ <div class="cgrid" id="gfree"></div>
+</section>
+
+<!-- ============ TUTOR / ADMIN: ADD BY LINK ============ -->
+<section class="card add-ext" id="add-external" aria-labelledby="hadd">
+ <div class="sec-title"><h2 id="hadd">ADD EXTERNAL COURSE BY LINK</h2><span class="tagx">Tutors &amp; admins</span></div>
+ <p class="muted">Paste a course URL. We fetch a preview, you check the details, and it goes to admin review before it appears in Free Courses Worldwide.</p>
+ <form class="row" id="xc-form" style="margin-top:10px">
+  <label class="field" style="flex:1;min-width:240px"><span>Course URL</span><input id="xc-url" type="url" required placeholder="https://www.coursera.org/learn/…" inputmode="url"></label>
+  <button class="btn or" type="submit" style="align-self:flex-end">Fetch preview</button>
+ </form>
+ <div class="grid add-out" id="xc-out" hidden>
+  <form class="grid" id="xc-edit" style="gap:10px">
+   <label class="field">Title<input name="title" required></label>
+   <div class="grid g2" style="gap:10px"><label class="field">Provider<select name="provider"></select></label><label class="field">Level<select name="level"></select></label></div>
+   <div class="grid g2" style="gap:10px"><label class="field">Category<select name="category"></select></label><label class="field">Access type<select name="access"></select></label></div>
+   <div class="grid g2" style="gap:10px"><label class="field">Free until (if limited-time)<input name="free_until" type="date"></label><label class="field row" style="align-self:end;font-weight:700"><input name="certFree" type="checkbox" style="width:22px;height:22px;min-height:0"> Certificate is free</label></div>
+   <label class="field">Short description<textarea name="desc" rows="2"></textarea></label>
+   <div class="row"><button class="btn ink" type="submit">Submit for review</button><span id="xc-msg" role="status" class="muted"></span></div>
+  </form>
+  <div><div class="mini-h">Card preview</div><div id="xc-card"></div></div>
+ </div>
+</section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/pages.js" defer></script>
+</body></html>

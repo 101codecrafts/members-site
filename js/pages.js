@@ -30,6 +30,70 @@
       $("#f-q").oninput = e => { st.q = e.target.value.trim().toLowerCase(); draw(); };
       levelChips(l => { st.level = l; draw(); }); draw();
     },
+    /* ---------------- Courses catalog: 101 Courses + Free Courses Worldwide ---------------- */
+    async courses() {
+      const [c101, ext] = await Promise.all([API.fetchCourses101(), API.fetchExternalCourses()]);
+      const P = D.providers, ACC = ["Free", "Free audit", "Free trial", "Free until", "Financial aid"];
+      const st = { q: "", cat: "", prov: "", acc: "", level: "" };
+      const prov = k => P[k] || { name: "Other", short: "↗", bg: "#0B1236", fg: "#fff" };
+      const fmtDate = iso => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+      const left = iso => { const ms = Date.parse(iso) - Date.now(); if (ms <= 0) return "Offer ended"; const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `${d}d ${h}h ${m}m left`; };
+      const accLabel = x => x.access === "Free until" && x.free_until ? `Free until ${fmtDate(x.free_until)}` : x.access;
+      const accCls = a => ({ "Free": "a-free", "Free audit": "a-audit", "Free trial": "a-trial", "Free until": "a-until", "Financial aid": "a-aid" }[a] || "a-free");
+      const stars = r => `<span class="rating" aria-label="Rated ${r} out of 5">${ico("star")}<b>${r.toFixed(1)}</b></span>`;
+      const cover = (src, label, bg) => `<div class="cthumb" style="--pbg:${bg}"><span class="cph" aria-hidden="true">${esc(label)}</span><img class="heavy" src="${esc(src)}" alt="" width="640" height="360" loading="lazy" decoding="async" onerror="this.remove()">`;
+      const card101 = c => `<a class="ccard c101 hov" href="course.html?id=${encodeURIComponent(c.id)}" data-id="${esc(c.id)}">
+        ${cover(c.cover, c.category, "#0B1236")}<span class="price ${c.price ? "" : "free"}">${c.price ? ugx(c.price) : "Free"}</span></div>
+        <div class="cbody"><h3>${esc(c.title)}</h3><div class="tutor">${ico("teacher")}<span>Tutor: <b>${esc(c.tutor)}</b></span></div>
+          <div class="row">${levelBadge(c.level)}${stars(c.rating)}<small>(${c.reviews})</small></div>
+          <div class="meta"><span>${esc(c.category)}</span><span>${c.lessons} lessons</span></div>
+          <span class="open">Start learning →</span></div></a>`;
+      const extCard = x => { const p = prov(x.provider);
+        return `<article class="ccard ext" data-id="${esc(x.id)}">
+        ${cover(x.cover || `assets/img/courses/${x.provider}.svg`, p.name, p.bg)}<span class="acc ${accCls(x.access)}">${esc(accLabel(x))}</span></div>
+        <a class="btn or cbtn" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(x.title)} on ${esc(p.name)} (opens in a new tab)">Open on ${esc(p.name)} ↗</a>
+        <div class="cbody"><h3>${esc(x.title)}</h3>
+          <div class="prov"><span class="pmark" style="background:${p.bg};color:${p.fg}" aria-hidden="true">${esc(p.short)}</span><span>${esc(p.name)}</span></div>
+          <p>${esc(x.desc || "")}</p>
+          <div class="row">${levelBadge(x.level)}${x.certFree ? `<span class="cert">${ico("check")}Certificate free</span>` : ""}${x.aid && x.access !== "Financial aid" ? `<span class="aidc">Financial aid</span>` : ""}</div>
+          ${x.free_until ? `<div class="cdm"><b data-until="${esc(x.free_until)}">${left(x.free_until)}</b>${x.free_until_status === "TODO-CONFIRM" ? `<small>Date to be confirmed</small>` : ""}</div>` : ""}
+        </div></article>`; };
+      window.CC_UI.extCourseCard = extCard;
+      /* filters */
+      $("#cf-cat").innerHTML = `<option value="">All categories</option>` + D.categories.map(c => `<option>${esc(c)}</option>`).join("");
+      $("#cf-prov").innerHTML = `<option value="">All providers</option><option value="101">101 Codecrafts</option>` + Object.entries(P).map(([k, p]) => `<option value="${k}">${esc(p.name)}</option>`).join("");
+      $("#cf-acc").innerHTML = `<option value="">Any access</option>` + ACC.map(a => `<option>${a}</option>`).join("");
+      const hit = (s) => !st.q || s.toLowerCase().includes(st.q);
+      const draw = () => {
+        const a = c101.filter(c => (!st.prov || st.prov === "101") && (!st.cat || c.category === st.cat) && (!st.level || c.level === st.level) && (!st.acc || (st.acc === "Free" && !c.price)) && hit(c.title + c.tutor + c.category + " 101 codecrafts"));
+        const b = ext.filter(x => (!st.prov || st.prov === x.provider) && (!st.cat || x.category === st.cat) && (!st.level || x.level === st.level) && (!st.acc || x.access === st.acc || (st.acc === "Financial aid" && x.aid)) && hit(x.title + x.desc + prov(x.provider).name + x.category));
+        $("#g101").innerHTML = a.map(card101).join("") || `<p class="muted empty">No 101 courses match these filters.</p>`;
+        $("#gfree").innerHTML = b.map(extCard).join("") || `<p class="muted empty">No free courses match these filters.</p>`;
+        $("#n101").textContent = a.length + " of " + c101.length; $("#nfree").textContent = b.length + " of " + ext.length;
+      };
+      const on = (sel, k) => $(sel).addEventListener(sel === "#cf-q" ? "input" : "change", e => { st[k] = k === "q" ? e.target.value.trim().toLowerCase() : e.target.value; draw(); });
+      on("#cf-q", "q"); on("#cf-cat", "cat"); on("#cf-prov", "prov"); on("#cf-acc", "acc");
+      if (q.get("q")) { $("#cf-q").value = q.get("q"); st.q = q.get("q").toLowerCase(); }
+      /* expiring soon: limited-time free offers ending within 60 days, soonest first (not affected by filters) */
+      const soon = ext.filter(x => x.free_until && Date.parse(x.free_until) > Date.now() && Date.parse(x.free_until) - Date.now() < 60 * 864e5).sort((x, y) => Date.parse(x.free_until) - Date.parse(y.free_until));
+      if (soon.length) { $("#expiring").hidden = false;
+        $("#exp-row").innerHTML = soon.map(x => { const p = prov(x.provider); return `<a class="exp hov" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(x.title)} on ${esc(p.name)}, free until ${fmtDate(x.free_until)} (opens in a new tab)">
+          <span class="pmark" style="background:${p.bg};color:${p.fg}" aria-hidden="true">${esc(p.short)}</span><span class="grow"><b>${esc(x.title)}</b><small>${esc(p.name)} · free until ${fmtDate(x.free_until)}${x.free_until_status === "TODO-CONFIRM" ? " (TBC)" : ""}</small></span>
+          <span class="cdx" data-until="${esc(x.free_until)}">${left(x.free_until)}</span></a>`; }).join(""); }
+      setInterval(() => $$("[data-until]").forEach(el => el.textContent = left(el.dataset.until)), 30000);
+      levelChips(l => { st.level = l; draw(); }); draw();
+      /* tutor/admin: add an external course by link → preview → submit for review */
+      const f = $("#xc-edit"); let draft = null;
+      f.provider.innerHTML = Object.entries(P).map(([k, p]) => `<option value="${k}">${esc(p.name)}</option>`).join("") + `<option value="other">Other</option>`;
+      f.level.innerHTML = D.levels.map(l => `<option>${l}</option>`).join(""); f.category.innerHTML = D.categories.map(c => `<option>${esc(c)}</option>`).join(""); f.access.innerHTML = ACC.map(a => `<option>${a}</option>`).join("");
+      const sync = () => { Object.assign(draft, { title: f.title.value, provider: f.provider.value, level: f.level.value, category: f.category.value, access: f.access.value, desc: f.desc.value, certFree: f.certFree.checked, free_until: f.free_until.value ? f.free_until.value + "T23:59:00+03:00" : "", free_until_status: f.free_until.value ? "TODO-CONFIRM" : "" }); $("#xc-card").innerHTML = extCard(draft); };
+      $("#xc-form").onsubmit = async e => { e.preventDefault(); const url = $("#xc-url").value.trim(); let u; try { u = new URL(url); } catch (err) { $("#xc-msg").textContent = "That doesn't look like a full link (https://…)."; return; }
+        draft = { ...(await API.unfurlExternalCourse(u.href)), url: u.href, id: "x-draft-" + Date.now().toString(36) };
+        ["title", "provider", "level", "category", "access", "desc"].forEach(k => { if (draft[k] != null) f[k].value = draft[k]; }); f.certFree.checked = !!draft.certFree;
+        $("#xc-out").hidden = false; $("#xc-msg").textContent = ""; sync(); };
+      f.addEventListener("input", sync); f.addEventListener("change", sync);
+      f.onsubmit = async e => { e.preventDefault(); const r = await API.addExternalCourse(draft); $("#xc-msg").textContent = r ? "Sent to admin review." : "Saved as a draft on this device — POST /api/courses/external is not connected yet."; };
+    },
     /* ---------------- News ---------------- */
     async news() {
       $("#news-date").textContent = "Today · " + new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });

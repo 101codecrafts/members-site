@@ -15,6 +15,51 @@ window.CC_DATA = {
   ],
   paths: ["Software Engineering", "Data Science & Analytics", "Cybersecurity & Ethical Hacking", "AI & Machine Learning", "Cloud & DevOps", "IT Infrastructure & Networking"],
 
+  /* ---------------- Courses catalog (courses.html) ----------------
+     courses101: taught by 101 tutors on the platform (open course.html?id=…).
+     externalCourses: free courses elsewhere; every button goes through go.html?id=<id> (→ /go/<id>).
+     URLs are real public pages, or the provider homepage where we were not sure of a deep link.
+     free_until dates are PLACEHOLDERS — each carries free_until_status:"TODO-CONFIRM" until an admin checks the offer. */
+  categories: ["Web Development", "Data & AI", "Cybersecurity", "Networking", "Cloud", "Computer Science", "Study Skills"],
+  providers: {
+    coursera: { name: "Coursera", short: "Co", bg: "#0056D2", fg: "#ffffff" },
+    edx: { name: "edX", short: "eX", bg: "#02262B", fg: "#ffffff" },
+    freecodecamp: { name: "freeCodeCamp", short: "fC", bg: "#0A0A23", fg: "#ffffff" },
+    google: { name: "Google", short: "G", bg: "#0B57D0", fg: "#ffffff" },
+    microsoft: { name: "Microsoft Learn", short: "MS", bg: "#0067B8", fg: "#ffffff" },
+    cisco: { name: "Cisco NetAcad", short: "Ci", bg: "#005073", fg: "#ffffff" },
+    khan: { name: "Khan Academy", short: "KA", bg: "#0B3D35", fg: "#ffffff" },
+    alison: { name: "Alison", short: "Al", bg: "#8F1020", fg: "#ffffff" }
+  },
+  courses101: [
+    { id: "web-basics", title: "Web Development Basics", tutor: "David Kato", level: "University", category: "Web Development", rating: 4.8, reviews: 212, price: 0, lessons: 6, cover: "assets/img/courses/101-web.svg" },
+    { id: "log-python", title: "Log Analysis with Python", tutor: "David Kato", level: "Professional", category: "Data & AI", rating: 4.7, reviews: 96, price: 45000, lessons: 12, cover: "assets/img/courses/101-python.svg" },
+    { id: "git-teams", title: "Git & GitHub for Teams", tutor: "David Kato", level: "University", category: "Web Development", rating: 4.9, reviews: 64, price: 25000, lessons: 8, cover: "assets/img/courses/101-cloud.svg" },
+    { id: "ethical-hacking-101", title: "Ethical Hacking Foundations", tutor: "Ruth Atim", level: "A-Level", category: "Cybersecurity", rating: 4.6, reviews: 141, price: 60000, lessons: 14, cover: "assets/img/courses/101-security.svg" },
+    { id: "scratch-kids", title: "Coding with Scratch for Kids", tutor: "Grace Mutesi", level: "Primary", category: "Computer Science", rating: 4.9, reviews: 88, price: 0, lessons: 10, cover: "assets/img/courses/101-kids.svg" },
+    { id: "ict-olevel", title: "O-Level ICT: Networks & the Internet", tutor: "Brian Ochieng", level: "O-Level", category: "Networking", rating: 4.5, reviews: 57, price: 15000, lessons: 9, cover: "assets/img/courses/101-network.svg" },
+    { id: "data-uganda", title: "Data Analysis with Ugandan Open Data", tutor: "Aisha Nalwoga", level: "University", category: "Data & AI", rating: 4.7, reviews: 73, price: 50000, lessons: 11, cover: "assets/img/courses/101-data.svg" }
+  ],
+  externalCourses: [
+    { id: "x-fcc-rwd", provider: "freecodecamp", title: "Responsive Web Design Certification", url: "https://www.freecodecamp.org/learn/2022/responsive-web-design/", level: "O-Level", category: "Web Development", access: "Free", certFree: true, hours: 300, desc: "HTML & CSS through 20 projects, with a free certification at the end." },
+    { id: "x-fcc-learn", provider: "freecodecamp", title: "JavaScript, Python & more: full curriculum", url: "https://www.freecodecamp.org/learn", level: "University", category: "Computer Science", access: "Free", certFree: true, hours: 3000, desc: "The whole freeCodeCamp curriculum: JavaScript, Python, data analysis, ML and more." },
+    { id: "x-coursera-ml", provider: "coursera", title: "Machine Learning (Andrew Ng)", url: "https://www.coursera.org/learn/machine-learning", level: "University", category: "Data & AI", access: "Free audit", aid: true, certFree: false, hours: 33, desc: "Stanford & DeepLearning.AI's classic intro. Audit for free; the certificate is paid or via financial aid." },
+    { id: "x-coursera-lhtl", provider: "coursera", title: "Learning How to Learn", url: "https://www.coursera.org/learn/learning-how-to-learn", level: "A-Level", category: "Study Skills", access: "Free audit", aid: true, certFree: false, hours: 15, desc: "Practical techniques for studying smarter — great before exams." },
+    { id: "x-coursera-gits", provider: "coursera", title: "Google IT Support Professional Certificate", url: "https://www.coursera.org/professional-certificates/google-it-support", level: "Professional", category: "Networking", access: "Financial aid", aid: true, certFree: false, hours: 180, desc: "Entry-level IT support: troubleshooting, networking, OS, admin and security." },
+    { id: "x-coursera-aiess", provider: "coursera", title: "Google AI Essentials", url: "https://www.coursera.org/learn/google-ai-essentials", level: "Professional", category: "Data & AI", access: "Free until", free_until: "2026-11-16T23:59:00+03:00", free_until_status: "TODO-CONFIRM", certFree: true, hours: 10, desc: "Use generative AI tools at work. Limited-time free certificate offer (placeholder date)." },
+    { id: "x-edx-cs50", provider: "edx", title: "CS50: Introduction to Computer Science", url: "https://www.edx.org/learn/computer-science/harvard-university-cs50-s-introduction-to-computer-science", level: "University", category: "Computer Science", access: "Free audit", certFree: false, hours: 120, desc: "Harvard's famous intro: C, Python, SQL, algorithms and the web." },
+    { id: "x-edx-cs", provider: "edx", title: "Computer Science courses on edX", url: "https://www.edx.org/learn/computer-science", level: "University", category: "Computer Science", access: "Free trial", certFree: false, hours: 0, desc: "Browse university CS courses; most can be audited, some offer a free trial of paid tracks." },
+    { id: "x-google-mlcc", provider: "google", title: "Machine Learning Crash Course", url: "https://developers.google.com/machine-learning/crash-course", level: "University", category: "Data & AI", access: "Free", certFree: false, hours: 15, desc: "Google's fast-paced, practical intro to ML with interactive visualisations." },
+    { id: "x-google-grow", provider: "google", title: "Grow with Google: digital skills", url: "https://grow.google/", level: "A-Level", category: "Study Skills", access: "Free", certFree: false, hours: 0, desc: "Free digital-skills training and career resources from Google." },
+    { id: "x-ms-training", provider: "microsoft", title: "Microsoft Learn: Azure & cloud training", url: "https://learn.microsoft.com/en-us/training/", level: "Professional", category: "Cloud", access: "Free until", free_until: "2026-11-30T23:59:00+03:00", free_until_status: "TODO-CONFIRM", certFree: true, hours: 0, desc: "Free self-paced learning paths. Placeholder for a limited-time free exam voucher offer." },
+    { id: "x-ms-browse", provider: "microsoft", title: "Microsoft Learn: browse all modules", url: "https://learn.microsoft.com/en-us/training/browse/", level: "University", category: "Cloud", access: "Free", certFree: false, hours: 0, desc: "Thousands of free modules on Azure, Power Platform, GitHub, security and more." },
+    { id: "x-cisco-netbasics", provider: "cisco", title: "Networking Basics", url: "https://www.netacad.com/courses/networking-basics", level: "O-Level", category: "Networking", access: "Free", certFree: true, hours: 22, desc: "How networks work: IP addressing, Ethernet, wireless and routing. Free badge on completion." },
+    { id: "x-cisco-cyber", provider: "cisco", title: "Introduction to Cybersecurity", url: "https://www.netacad.com/courses/introduction-to-cybersecurity", level: "A-Level", category: "Cybersecurity", access: "Free until", free_until: "2026-12-20T23:59:00+03:00", free_until_status: "TODO-CONFIRM", certFree: true, hours: 6, desc: "Threats, attacks and how to protect yourself online. Placeholder free-until date." },
+    { id: "x-khan-prog", provider: "khan", title: "Computer Programming: JS & ProcessingJS", url: "https://www.khanacademy.org/computing/computer-programming", level: "Primary", category: "Computer Science", access: "Free", certFree: false, hours: 0, desc: "Draw, animate and make games with code in the browser — perfect for beginners." },
+    { id: "x-khan-apcsp", provider: "khan", title: "AP Computer Science Principles", url: "https://www.khanacademy.org/computing/ap-computer-science-principles", level: "A-Level", category: "Computer Science", access: "Free", certFree: false, hours: 0, desc: "Data, the internet, algorithms and programming at secondary-school level." },
+    { id: "x-alison", provider: "alison", title: "Free IT & programming courses", url: "https://alison.com/", level: "Professional", category: "Web Development", access: "Free", certFree: false, hours: 0, desc: "Free CPD-style courses; learning is free, certificates are paid." }
+  ],
+
   /* ---------------- Daily news (placeholders; live data comes from fetchNews) ---------------- */
   news: [
     { id: "n1", cat: "AI", title: "Open-weight models keep closing the gap on frontier benchmarks", source: "Hacker News", url: "https://news.ycombinator.com/", ago: "1h", summary: "Developers are shipping more on-device and self-hosted AI as small models improve." },

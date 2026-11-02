@@ -56,8 +56,8 @@ def scripts(charts=False):
     return '\n'.join(tags)
 
 NAV = {
- 'learner': [("Home", "home", "dashboard.html"), ("Community", "users", "profile.html"), ("Learning", "learning", "resources.html"), ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"), ("Groups", "people", "groups.html"), ("Library", "folder", "resources.html"), ("Daily News", "doc", "news.html"), ("Marketplace", "store", "#"), ("Events", "calendar", "competitions.html"), ("Messages", "chat", "#", 3), ("Notifications", "bell", "#", 5)],
- 'tutor': [("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "tutor.html#sessions"), ("Earnings & Payouts", "cash", "tutor.html#earnings"), ("Library", "folder", "resources.html"), ("Daily News", "doc", "news.html"), ("Messages", "chat", "#", 2), ("Settings", "gear", "#")],
+ 'learner': [("Home", "home", "dashboard.html"), ("Community", "users", "profile.html"), ("Learning", "learning", "courses.html"), ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"), ("Groups", "people", "groups.html"), ("Library", "folder", "resources.html"), ("Daily News", "doc", "news.html"), ("Marketplace", "store", "#"), ("Events", "calendar", "competitions.html"), ("Messages", "chat", "#", 3), ("Notifications", "bell", "#", 5)],
+ 'tutor': [("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "tutor.html#sessions"), ("Earnings & Payouts", "cash", "tutor.html#earnings"), ("Courses", "learning", "courses.html"), ("Library", "folder", "resources.html"), ("Daily News", "doc", "news.html"), ("Messages", "chat", "#", 2), ("Settings", "gear", "#")],
  'admin': [("Overview", "home", "admin.html"), ("Analytics", "chart", "admin.html#analytics"), ("Members", "users", "admin.html#users"), ("Learners", "cap", "admin.html#users"), ("Tutors", "teacher", "admin.html#users"), ("Approvals", "clipboard", "admin.html#approvals", 17), ("Courses & Paths", "learning", "admin.html#courses"), ("Projects", "code", "#"), ("Tools/Software", "toolbox", "#"), ("Library", "folder", "admin.html#add-resource"), ("Events", "calendar", "admin.html#events"), ("Marketplace", "store", "#"), ("Payments & Payouts", "cash", "admin.html#payments"), ("Messages", "chat", "#", 4), ("Reports", "report", "admin.html#moderation"), ("Audit Log", "list", "admin.html#audit"), ("Settings", "gear", "admin.html#settings")],
 }
 
@@ -85,7 +85,7 @@ def topbar(a):
 
 FOOTER = '''<footer class="flow-foot">
   <span>© 2025 101 Codecrafts. All rights reserved.</span>
-  <nav aria-label="Footer"><a href="index.html">Home</a><a href="resources.html">Learn</a><a href="news.html">News</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="courses.html">Learn</a><a href="news.html">News</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
   <div class="socials" data-socials><a href="#" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="X"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="Discord"><svg><use href="#i-discord"/></svg></a></div>
 </footer>'''
 
