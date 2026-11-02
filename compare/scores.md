@@ -13,3 +13,4 @@ Screenshots taken with headless Chromium at the mockup viewport, `?static=1` (an
 | landing | 3 | 0.7638 | testimonials 0.586, features 0.658, hero_text 0.678 | mockup line breaks forced, icon sizes, tuner now also aligns icons |
 | dashboard | 9 | 0.8425 | activity 0.763, latest 0.773, featured 0.791 | mockup line breaks forced, tuner re-run with icons |
 | landing | 4 | 0.7730 | features 0.669, hero_text 0.687, testimonials 0.659 | testimonial heading block re-positioned, tuner may scale multi-line text |
+| landing | 5 | 0.7796 | testimonials 0.659, features 0.686, hero_text 0.687 | Russo One for MORE THAN A COMMUNITY (glyph test), row-2 feature title sizes |
