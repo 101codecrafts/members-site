@@ -1,5 +1,5 @@
 /* Members dashboard — laid out on the 1536x1024 mockup grid */
-.app{position:relative;width:1536px;height:1024px;margin:0 auto;overflow:hidden;background:#f3f5f6}
+.app{position:relative;width:1536px;height:1024px;margin:0 auto;overflow:hidden;background:#f7f8f8}
 .app>*{position:absolute}
 
 /* sidebar */
@@ -74,7 +74,7 @@
 .tool .ib svg{width:28px;height:28px}
 .tool h3{left:18px;top:63px;font-size:14.5px;font-weight:600}
 .tool p{left:18px;top:85px;font-size:10.5px;line-height:13.5px;color:#d5dce2;width:112px}
-.tool .tag{left:17px;top:120px;height:19px;padding:0 9px;border:1px solid #34424e;border-radius:3px;font-size:9.5px;line-height:17px;color:#d8e0e6;background:#16212b}
+.tool .tag{left:17px;top:120px;height:19px;padding:0 9px;border:1px solid #34424e;border-radius:3px;font-size:9px;line-height:17px;color:#d8e0e6;background:#16212b}
 .tool .go{left:156px;top:117px;width:16px;height:16px;color:#fff}
 
 /* learning paths */
@@ -89,16 +89,16 @@
 .lp.d{background:#12191f;color:#fff}.lp.d .ib{background:var(--or);color:#10181f}.lp.d small{color:#d8dee3}
 
 /* activity */
-.act{top:852px;height:110px;background:#f8fafb;border:1px solid #dfe5ea;border-radius:4px}
+.act{top:853px;height:101px;background:#f3f6f7;border:1px solid #e3e8eb;box-shadow:0 1px 3px rgba(16,24,31,.06);border-radius:4px}
 .act>*{position:absolute}
 .act img{left:13px;top:6px;width:38px;height:38px;border-radius:50%}
 .act b{left:59px;top:9px;font-size:10px;font-weight:600}
 .act .who{left:59px;top:23px;font-size:9.5px;color:#5f6d78}
 .act q{left:20px;top:44px;font-size:10.8px;line-height:14.5px;color:#2d4b62;width:186px;quotes:none}
-.act .ago{left:21px;top:80px;font-size:9.5px;color:#5f6d78}
-.act .meta{top:79px;display:flex;gap:6px;font-size:10px;color:#203040;align-items:center}
+.act .ago{left:21px;top:76px;font-size:9.5px;color:#5f6d78}
+.act .meta{top:75px;display:flex;gap:6px;font-size:10px;color:#203040;align-items:center}
 .act .meta svg{width:13px;height:13px}
-.study{left:946px;top:852px;width:276px;height:104px;background:#10181f;color:#fff;overflow:hidden}
+.study{left:946px;top:851px;width:276px;height:102px;background:#10181f;color:#fff;overflow:hidden}
 .study>*{position:absolute}
 
 /* right column */
