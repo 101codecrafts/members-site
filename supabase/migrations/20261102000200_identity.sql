@@ -298,3 +298,6 @@ end;
 $$;
 create trigger membership_applications_guard before insert or update on public.membership_applications for each row execute function app.guard_application();
 create trigger tutor_applications_guard before insert or update on public.tutor_applications for each row execute function app.guard_application();
+
+-- SR-01: RLS on for every table created above (deny-by-default until policies in 0990).
+select app.enable_rls_all();

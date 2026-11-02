@@ -352,3 +352,6 @@ begin
 end;
 $$;
 create trigger external_resources_guard before insert or update on public.external_resources for each row execute function app.guard_external_resource();
+
+-- SR-01: RLS on for every table created above (deny-by-default until policies in 0990).
+select app.enable_rls_all();

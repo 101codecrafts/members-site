@@ -148,3 +148,6 @@ returns boolean language sql stable security definer set search_path = '' as $$
      where n.ingested_at > now() - interval '3 days'
        and extensions.similarity(n.title_norm, lower(regexp_replace(p_title, '[^[:alnum:] ]+', '', 'g'))) >= 0.8)
 $$;
+
+-- SR-01: RLS on for every table created above (deny-by-default until policies in 0990).
+select app.enable_rls_all();

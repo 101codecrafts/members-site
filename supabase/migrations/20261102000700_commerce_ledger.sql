@@ -35,7 +35,7 @@ insert into public.site_settings (key, value, is_public, description) values
   ('payments.split_enabled', 'true', false, 'Use Flutterwave subaccount splits when the payee has a subaccount'),
   ('payouts.min_ugx', '20000', false, 'Minimum payout request'),
   ('payouts.super_admin_threshold_ugx', '1000000', false, 'Payouts above this need a super_admin approval'),
-  ('payouts.hold_days', '7', false, 'Earnings become withdrawable N days after payment (refund window)'),
+  ('payouts.hold_days', '14', false, 'Earnings become withdrawable N days after payment (never less than refunds.window_days)'),
   ('refunds.window_days', '14', true, 'Refund request window'),
   ('contact', '{"email":"hello@101codecrafts.com","phone":"+256754129226","address":"Kampala, Uganda"}', true, 'Public contact details'),
   ('hero_stats', '{"members":null,"courses":null,"events":null}', true, 'Overrides for landing hero counters (null = live)'),
@@ -449,7 +449,9 @@ select a.owner_id as user_id,
 -- Withdrawable = balance − earnings still inside the hold window − open payout requests.
 create or replace function app.available_balance(p_user text)
 returns bigint language plpgsql stable security definer set search_path = '' as $$
-declare bal bigint; held bigint; pending bigint; hold_days int := coalesce((app.setting('payouts.hold_days'))::int, 7);
+declare bal bigint; held bigint; pending bigint;
+        -- SR-14: earnings stay held at least as long as learners can request refunds
+        hold_days int := greatest(coalesce((app.setting('payouts.hold_days'))::int, 14), coalesce((app.setting('refunds.window_days'))::int, 14));
 begin
   select coalesce(sum(case when e.direction = 'credit' then e.amount_ugx else -e.amount_ugx end), 0) into bal
     from public.ledger_entries e join public.ledger_accounts a on a.id = e.account_id where a.owner_id = p_user;
@@ -511,6 +513,8 @@ begin
       raise exception 'event not purchasable' using errcode = 'P0002'; end if;
     if exists (select 1 from public.event_registrations r where r.event_id = ev.id and r.user_id = me and r.status in ('registered','attended')) then
       raise exception 'already registered' using errcode = '23505'; end if;
+    if ev.capacity is not null and (select count(*) from public.event_registrations r where r.event_id = ev.id and r.status in ('registered','attended')) >= ev.capacity then
+      raise exception 'event is sold out' using errcode = 'P0001'; end if;
     unit := ev.price_ugx; title := ev.title; comm_key := 'event_ticket'; qty := 1; prefix := 'evt';
     payee := case when exists (select 1 from public.user_roles r where r.user_id = ev.created_by and r.role = 'tutor')
                    and not exists (select 1 from public.user_roles r where r.user_id = ev.created_by and r.role in ('admin','super_admin'))
@@ -527,6 +531,9 @@ begin
     if not found or se.status <> 'scheduled' or se.starts_at < now() or se.price_ugx = 0 then
       raise exception 'session not purchasable' using errcode = 'P0002'; end if;
     if se.tutor_id = me then raise exception 'cannot book your own session' using errcode = '22023'; end if;
+    if (select count(*) from public.session_bookings b where b.session_id = se.id and b.status in ('confirmed','attended')
+         or (b.session_id = se.id and b.status = 'pending_payment' and b.created_at > now() - interval '30 minutes')) >= se.capacity then
+      raise exception 'session is full' using errcode = 'P0001'; end if;
     unit := se.price_ugx; payee := se.tutor_id; title := se.title; comm_key := 'tutor_session'; qty := 1; prefix := 'ses';
   when 'subscription' then
     select * into pl from public.subscription_plans where id = p_reference_id and is_active;
@@ -595,7 +602,7 @@ begin
   end if;
 
   if amt = 0 then          -- 100% coupon: fulfil immediately, no gateway
-    perform public.apply_flutterwave_payment(p.tx_ref, null, 'successful', 0, 'UGX', 'coupon', null);
+    perform app.apply_payment_internal(p.tx_ref, null, 'successful', 0, 'UGX', 'coupon', null);
   end if;
 
   return jsonb_build_object(
@@ -611,8 +618,11 @@ $$;
 
 -- Service-role only: store the hosted checkout link.
 create or replace function public.set_payment_checkout_link(p_tx_ref text, p_link text)
-returns void language sql security definer set search_path = '' as $$
-  update public.payments set checkout_link = p_link where tx_ref = p_tx_ref and status = 'pending'
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+  perform app.require_backend();
+  update public.payments set checkout_link = p_link where tx_ref = p_tx_ref and status = 'pending';
+end;
 $$;
 
 -- Grants the purchased thing. Internal.
@@ -652,7 +662,7 @@ $$;
 
 -- Service-role only. Apply a VERIFIED Flutterwave result (the server
 -- re-fetches /v3/transactions/:id/verify first). Idempotent.
-create or replace function public.apply_flutterwave_payment(
+create or replace function app.apply_payment_internal(
   p_tx_ref text, p_flw_id bigint, p_status text, p_amount numeric, p_currency text,
   p_payment_type text default null, p_raw jsonb default null)
 returns public.payments language plpgsql security definer set search_path = '' as $$
@@ -727,6 +737,17 @@ begin
 end;
 $$;
 
+-- SR-00: the only public entry point; service role only (revoked from API roles in 0990 too).
+create or replace function public.apply_flutterwave_payment(
+  p_tx_ref text, p_flw_id bigint, p_status text, p_amount numeric, p_currency text,
+  p_payment_type text default null, p_raw jsonb default null)
+returns public.payments language plpgsql security definer set search_path = '' as $$
+begin
+  perform app.require_backend();
+  return app.apply_payment_internal(p_tx_ref, p_flw_id, p_status, p_amount, p_currency, p_payment_type, p_raw);
+end;
+$$;
+
 -- Service-role only: Flutterwave-initiated subscription renewal (tx_ref is
 -- generated by Flutterwave, so we create the payment row here).
 create or replace function public.record_subscription_renewal(p_flw_plan_id bigint, p_customer_email text, p_flw_id bigint,
@@ -734,6 +755,7 @@ create or replace function public.record_subscription_renewal(p_flw_plan_id bigi
 returns public.payments language plpgsql security definer set search_path = '' as $$
 declare s public.subscriptions; pl public.subscription_plans; uid text; p public.payments;
 begin
+  perform app.require_backend();
   select * into p from public.payments where flw_transaction_id = p_flw_id;
   if found then return p; end if;
   select pp.user_id into uid from public.profile_private pp where lower(pp.email) = lower(p_customer_email);
@@ -743,7 +765,7 @@ begin
   insert into public.payments (user_id, tx_ref, purpose, reference_id, list_price_ugx, amount_ugx, flw_plan_id)
   values (uid, left(regexp_replace(coalesce(p_tx_ref, 'flw-' || p_flw_id), '[^A-Za-z0-9_\-]', '-', 'g'), 80), 'subscription', s.id, pl.amount_ugx, pl.amount_ugx, p_flw_plan_id)
   on conflict (tx_ref) do nothing;
-  return public.apply_flutterwave_payment(left(regexp_replace(coalesce(p_tx_ref, 'flw-' || p_flw_id), '[^A-Za-z0-9_\-]', '-', 'g'), 80),
+  return app.apply_payment_internal(left(regexp_replace(coalesce(p_tx_ref, 'flw-' || p_flw_id), '[^A-Za-z0-9_\-]', '-', 'g'), 80),
                                           p_flw_id, 'successful', p_amount, p_currency, 'subscription_renewal', p_raw);
 end;
 $$;
@@ -773,6 +795,7 @@ declare r public.refunds; p public.payments; payee_part bigint; plat_part bigint
   cash uuid := app.ledger_account('platform:cash_flutterwave', 'asset', null, 'Flutterwave balance');
   contra uuid := app.ledger_account('platform:refunds', 'contra_revenue', null, 'Refunds');
 begin
+  perform app.require_backend();
   select * into r from public.refunds where id = p_refund_id for update;
   if not found then raise exception 'refund not found' using errcode = 'P0002'; end if;
   if r.status in ('completed','failed','rejected') then return r; end if;
@@ -821,6 +844,9 @@ begin
   if p_amount_ugx is null or p_amount_ugx < minimum then raise exception 'minimum payout is % UGX', minimum using errcode = '22023'; end if;
   perform pg_advisory_xact_lock(hashtext('payout:' || me));        -- no double-spend via parallel requests
   if p_amount_ugx > app.available_balance(me) then raise exception 'insufficient available balance' using errcode = 'P0001'; end if;
+  if (select coalesce(sum(case when e.direction='credit' then e.amount_ugx else -e.amount_ugx end),0)
+        from public.ledger_entries e join public.ledger_accounts a on a.id = e.account_id where a.owner_id = me) < 0 then
+    raise exception 'balance has an outstanding clawback' using errcode = 'P0001'; end if;
   insert into public.payouts (tutor_id, amount_ugx, method_id) values (me, p_amount_ugx, m) returning * into po;
   return po;
 end;
@@ -828,9 +854,14 @@ $$;
 
 -- Service-role only: transfer initiated at Flutterwave.
 create or replace function public.mark_payout_processing(p_payout_id uuid, p_flw_transfer_id bigint)
-returns public.payouts language sql security definer set search_path = '' as $$
+returns public.payouts language plpgsql security definer set search_path = '' as $$
+declare po public.payouts;
+begin
+  perform app.require_backend();
   update public.payouts set status = 'processing', flw_transfer_id = p_flw_transfer_id
-   where id = p_payout_id and status = 'approved' returning *
+   where id = p_payout_id and status = 'approved' returning * into po;
+  return po;
+end;
 $$;
 
 -- Service-role only: transfer webhook / verification result. Idempotent.
@@ -838,6 +869,7 @@ create or replace function public.complete_payout(p_reference text, p_success bo
 returns public.payouts language plpgsql security definer set search_path = '' as $$
 declare po public.payouts; cash uuid := app.ledger_account('platform:cash_flutterwave', 'asset', null, 'Flutterwave balance');
 begin
+  perform app.require_backend();
   select * into po from public.payouts where reference = p_reference for update;
   if not found then raise exception 'payout not found' using errcode = 'P0002'; end if;
   if po.status in ('paid','failed','rejected') then return po; end if;
@@ -854,3 +886,6 @@ begin
   return po;
 end;
 $$;
+
+-- SR-01: RLS on for every table created above (deny-by-default until policies in 0990).
+select app.enable_rls_all();

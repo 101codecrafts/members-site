@@ -167,7 +167,6 @@ create table public.tutor_sessions (
   capacity          integer not null default 1 check (capacity between 1 and 500),
   price_ugx         bigint not null default 0 check (price_ugx >= 0 and price_ugx <= 50000000),
   cal_com_url       text check (cal_com_url is null or cal_com_url ~ '^https://(app\.)?cal\.com/'),
-  meeting_url       text check (meeting_url is null or meeting_url ~ '^https://'),   -- exposed via session_join_info()
   status            public.session_status not null default 'scheduled',
   bookings_count    integer not null default 0,
   created_at        timestamptz not null default now(),
@@ -177,6 +176,14 @@ create table public.tutor_sessions (
 create index tutor_sessions_tutor_idx on public.tutor_sessions (tutor_id, starts_at);
 create index tutor_sessions_upcoming_idx on public.tutor_sessions (starts_at) where status = 'scheduled';
 create trigger tutor_sessions_updated_at before update on public.tutor_sessions for each row execute function app.set_updated_at();
+
+-- SR-02: join link lives outside the catalog row.
+create table public.tutor_session_private (
+  session_id   uuid primary key references public.tutor_sessions(id) on delete cascade,
+  meeting_url  text check (meeting_url is null or meeting_url ~ '^https://'),
+  updated_at   timestamptz not null default now()
+);
+alter table public.tutor_session_private enable row level security;
 
 create table public.session_bookings (
   id             uuid primary key default gen_random_uuid(),
@@ -278,13 +285,14 @@ returns jsonb language plpgsql stable security definer set search_path = '' as $
 declare s public.tutor_sessions;
 begin
   select * into s from public.tutor_sessions where id = p_session;
-  if not found then raise exception 'not found' using errcode = 'P0002'; end if;
-  if not (s.tutor_id = app.requesting_user_id() or app.is_admin() or exists (
+  -- SR-09: one generic error for "missing" and "not allowed"
+  if not found or not (s.tutor_id = app.requesting_user_id() or app.is_admin() or exists (
           select 1 from public.session_bookings b where b.session_id = s.id and b.learner_id = app.requesting_user_id()
              and b.status in ('confirmed','attended'))) then
-    raise exception 'not booked' using errcode = '42501';
+    raise exception 'session not available' using errcode = '42501';
   end if;
-  return jsonb_build_object('meeting_url', s.meeting_url, 'cal_com_url', s.cal_com_url, 'starts_at', s.starts_at);
+  return jsonb_build_object('meeting_url', (select meeting_url from public.tutor_session_private where session_id = s.id),
+                            'cal_com_url', s.cal_com_url, 'starts_at', s.starts_at);
 end;
 $$;
 
@@ -367,3 +375,6 @@ end;
 $$;
 create trigger study_group_members_rules_ins before insert on public.study_group_members for each row execute function app.study_group_member_rules();
 create trigger study_group_members_rules_del after delete on public.study_group_members for each row execute function app.study_group_member_rules();
+
+-- SR-01: RLS on for every table created above (deny-by-default until policies in 0990).
+select app.enable_rls_all();

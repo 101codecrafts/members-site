@@ -244,7 +244,7 @@ create table public.moderation_flags (
   reporter_id     text references public.profiles(id) on delete set null,
   target_type     public.flag_target not null,
   target_id       text not null check (char_length(target_id) <= 64),
-  reason          text not null check (reason in ('spam','harassment','hate','nsfw','scam','plagiarism','off_topic','other')),
+  reason          text not null check (reason in ('spam','harassment','hate','nsfw','scam','plagiarism','off_topic','safeguarding','other')),
   details         text check (char_length(details) <= 2000),
   status          public.flag_status not null default 'open',
   resolved_by     text references public.profiles(id) on delete set null,
@@ -277,9 +277,14 @@ create or replace function app.flag_autohide()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare n int;
 begin
-  select count(distinct reporter_id) into n from public.moderation_flags
-   where target_type = new.target_type and target_id = new.target_id and status in ('open','reviewing');
-  if n >= 3 then
+  -- SR-07: only reporters whose accounts are older than 7 days count; staff
+  -- content is never auto-hidden (it goes to the admin queue instead).
+  select count(distinct f.reporter_id) into n from public.moderation_flags f
+    join public.profiles rp on rp.id = f.reporter_id and rp.created_at < now() - interval '7 days'
+   where f.target_type = new.target_type and f.target_id = new.target_id and f.status in ('open','reviewing');
+  if n >= 3 and not exists (
+       select 1 from public.posts p join public.user_roles ur on ur.user_id = p.author_id and ur.role in ('admin','super_admin')
+        where new.target_type = 'post' and p.id = app.try_uuid(new.target_id)) then
     case new.target_type
       when 'post' then update public.posts set hidden_at = coalesce(hidden_at, now()), hidden_reason = 'auto: community reports' where id = app.try_uuid(new.target_id);
       when 'post_comment' then update public.post_comments set hidden_at = coalesce(hidden_at, now()) where id = app.try_uuid(new.target_id);
@@ -312,3 +317,6 @@ create table public.announcements (
 );
 create index announcements_live_idx on public.announcements (published_at desc);
 create trigger announcements_updated_at before update on public.announcements for each row execute function app.set_updated_at();
+
+-- SR-01: RLS on for every table created above (deny-by-default until policies in 0990).
+select app.enable_rls_all();
