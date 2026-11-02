@@ -4,6 +4,7 @@ import { AppError, forbidden, unauthenticated } from '@/lib/errors';
 import { anonClient, userClient, type Db } from '@/lib/supabase/user';
 import { can, effectiveRole, type Action, type Resource, type Role } from '@/lib/rbac';
 import { env } from '@/lib/env';
+import { createLogger } from '@/lib/logger';
 
 export interface Session {
   userId: string;
@@ -40,9 +41,22 @@ export async function getSession(): Promise<Session | null> {
   };
 }
 
+/**
+ * Public routes: a signed-in caller gets their RLS-scoped client, but if the
+ * token check or the my_access lookup fails (e.g. the DB cannot verify the
+ * JWT), fall back to anonymous instead of failing the whole public request.
+ * Routes that need a user use requireUser/requireMember, which still throw.
+ */
 export async function optionalSession(): Promise<{ session: Session | null; db: Db }> {
-  const session = await getSession();
-  return { session, db: session?.db ?? anonClient() };
+  try {
+    const session = await getSession();
+    return { session, db: session?.db ?? anonClient() };
+  } catch (err) {
+    createLogger({ mod: 'auth' }).warn('optionalSession: session check failed, continuing as anonymous', {
+      error: err instanceof Error ? err.message : String((err as { message?: unknown })?.message ?? err),
+    });
+    return { session: null, db: anonClient() };
+  }
 }
 
 export async function requireUser(): Promise<Session> {
