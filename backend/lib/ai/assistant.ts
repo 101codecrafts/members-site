@@ -46,7 +46,7 @@ export async function runAssistant(opts: {
     tools: createAssistantTools(opts.toolDeps ?? defaultToolDeps),
     stopWhen: stepCountIs(5),
     maxOutputTokens: cfg.maxOutputTokens,
-    temperature: 0.3,
+    temperature: 0.2,
     providerOptions: fallbackProviderOptions(cfg),
     abortSignal: opts.abortSignal,
     onError: ({ error }) => {

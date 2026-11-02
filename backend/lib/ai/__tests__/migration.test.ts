@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import { vector } from "@electric-sql/pglite-pgvector";
@@ -10,7 +10,11 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
  * schema), then exercises RLS exactly as PostgREST would: SET ROLE + JWT claims.
  */
 
-const MIGRATION = readFileSync(path.join(process.cwd(), "supabase", "migrations", "20261102120000_ai_features.sql"), "utf8");
+// Tests run from backend/; migrations live at the repo root (../supabase).
+const MIGRATION_FILE = ["..", "."]
+  .map((base) => path.join(process.cwd(), base, "supabase", "migrations", "20261102120000_ai_features.sql"))
+  .find((p) => existsSync(p))!;
+const MIGRATION = readFileSync(MIGRATION_FILE, "utf8");
 
 const SUPABASE_STUBS = `
   create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
