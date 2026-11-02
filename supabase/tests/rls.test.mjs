@@ -70,6 +70,8 @@ async function fails(db, sql, p, code) {
 const t = (name, run) => ({ name, run: async (db) => { await begin(db); await run(db); } });
 const courseId = async (db, slug) => (await one(db, `select id from public.courses where slug=$1`, [slug])).id;
 
+export const helpers = { begin, as, q, one, fails, t, courseId };
+
 export const tests = [
   // ------------------------------------------------------------ structural ----
   t('every table in public/app/analytics has RLS enabled', async (db) => {

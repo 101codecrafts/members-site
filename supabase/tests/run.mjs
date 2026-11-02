@@ -44,7 +44,11 @@ async function main() {
   }
   if (onlyMigrate) { await db.end(); return; }
 
-  const { tests } = await import('./rls.test.mjs');
+  const tests = [];
+  for (const f of readdirSync(here).filter((f) => f.endsWith('.test.mjs')).sort((a, b) => (a === 'rls.test.mjs' ? -1 : b === 'rls.test.mjs' ? 1 : a.localeCompare(b)))) {
+    const mod = await import(join(here, f));
+    tests.push(...mod.tests);
+  }
   let pass = 0, fail = 0;
   for (const t of tests) {
     try {
