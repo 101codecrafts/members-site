@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Sign in · 101 Codecrafts" desc="Sign in to your 101 Codecrafts account." path="signin.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-page="signin">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<main id="main" class="center">
+<div class="panel-x">
+<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.png" alt="" width="82" height="41"><b>Codecrafts</b></a>
+
+<h1>WELCOME BACK</h1>
+<form id="si" class="grid" style="gap:12px">
+ <label class="field">Email or phone<input name="email" type="text" autocomplete="username" required></label>
+ <label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label>
+ <button class="btn or">Sign in</button>
+ <a class="btn" href="#">Continue with Google</a>
+ <p class="muted">New here? <a href="signup.html"><b>Create an account</b></a></p><p id="si-msg" role="status"></p>
+</form>
+</div>
+</main>
+{{SCRIPTS}}
+<script src="js/pages.js" defer></script>
+</body></html>

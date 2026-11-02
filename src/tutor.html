@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Tutor · 101 Codecrafts" desc="Your 101 Codecrafts tutor space: courses, learner progress, earnings, payouts and sessions." path="tutor.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-role="tutor" data-page="tutor">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="tutor" active="Overview"}}
+<div class="main">
+{{TOPBAR role="tutor" name="David Kato" label="Tutor · Verified"}}
+<main id="main" class="content">
+  <div class="page-h">
+    <div><div class="kicker">Tutor space</div><h1>WELCOME BACK, DAVID</h1><p>Your courses, your learners and what you have earned this month.</p></div>
+    <div class="row"><button class="btn or" id="new-course"><svg><use href="#i-plusc"/></svg>New course</button><a class="btn" href="#" data-wa-share="Learn with me on 101 Codecrafts:"><svg><use href="#i-wa"/></svg>Share profile</a></div>
+  </div>
+  <section id="t-kpis" class="grid g4" aria-label="Key numbers"></section>
+  <section class="grid g2">
+    <div class="card" id="courses"><div class="sec-title"><h2>MY COURSES</h2></div><div class="tbl-wrap"><table class="t" id="tb-tc"><thead><tr><th>Course</th><th>Learners</th><th>Status</th><th>Avg. completion</th></tr></thead><tbody></tbody></table></div></div>
+    <div class="card" id="sessions"><div class="sec-title"><h2>UPCOMING SESSIONS</h2><a class="btn sm cy" href="#" data-cal-link="101codecrafts">Open Cal.com</a></div><div class="list" id="ls-sessions"></div></div>
+  </section>
+  <section class="card" id="learners"><div class="sec-title"><h2>MY LEARNERS' PROGRESS</h2></div><div class="tbl-wrap"><table class="t" id="tb-tl"><thead><tr><th>Learner</th><th>Course</th><th style="width:34%">Progress</th><th>Last active</th></tr></thead><tbody></tbody></table></div></section>
+  <section class="grid g2" id="earnings">
+    <div class="card dark"><div class="sec-title"><h2 style="color:#fff">REQUEST A PAYOUT</h2></div>
+      <form class="grid" id="payout-form" style="gap:10px">
+        <p style="color:#d5dce2">Available balance: <b style="color:var(--or)" id="bal">UGX 1,070,000</b> · paid in 1–2 working days.</p>
+        <label class="field" style="color:#fff">Amount (UGX)<input type="number" name="amount" min="20000" step="1000" value="500000" required></label>
+        <label class="field" style="color:#fff">Method<select name="method"><option>MTN Mobile Money</option><option>Airtel Money</option><option>Bank transfer</option></select></label>
+        <button class="btn or">Request payout</button><p id="payout-msg" role="status" style="color:#d5dce2"></p>
+      </form></div>
+    <div class="card"><div class="sec-title"><h2>PAYOUT HISTORY</h2></div><div class="list" id="ls-payouts"></div></div>
+  </section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/tutor.js" defer></script>
+</body></html>

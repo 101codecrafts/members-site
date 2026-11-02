@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Join 101 Codecrafts" desc="Create your free 101 Codecrafts account — learners and tutors welcome." path="signup.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-page="signup">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<main id="main" class="center">
+<div class="panel-x">
+<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.png" alt="" width="82" height="41"><b>Codecrafts</b></a>
+
+<h1>JOIN 101 CODECRAFTS</h1>
+<form id="su" class="grid" style="gap:12px">
+ <label class="field">Full name<input name="name" autocomplete="name" required></label>
+ <label class="field">Email<input name="email" type="email" autocomplete="email" required></label>
+ <label class="field">Phone (for Mobile Money)<input name="phone" type="tel" autocomplete="tel" placeholder="+256…"></label>
+ <label class="field">Date of birth<input name="dob" type="date" required></label>
+ <fieldset id="guardian" class="card" hidden style="box-shadow:none"><legend><b>Parent / guardian consent</b></legend>
+  <p class="muted">You're under 18, so a parent or guardian must agree before we store your data (Uganda Data Protection and Privacy Act, 2019). We'll send them a consent link.</p>
+  <label class="field">Guardian's name<input name="g_name"></label><label class="field">Guardian's email<input name="g_email" type="email"></label><label class="field">Guardian's phone<input name="g_phone" type="tel"></label></fieldset>
+ <label class="field">Password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
+ <label class="row"><input type="checkbox" required style="width:20px;height:20px"> I agree to the <a href="terms.html"><b>Terms</b></a> and <a href="privacy.html"><b>Privacy Policy</b></a></label>
+ <button class="btn or">Create account</button>
+ <p class="muted">Already a member? <a href="signin.html"><b>Sign in</b></a></p>
+</form>
+</div>
+</main>
+{{SCRIPTS}}
+<script src="js/pages.js" defer></script>
+</body></html>

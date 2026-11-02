@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Get started · 101 Codecrafts" desc="Set up your 101 Codecrafts account." path="onboarding.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-page="onboarding">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<main id="main" class="center">
+<div class="panel-x">
+<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.png" alt="" width="82" height="41"><b>Codecrafts</b></a>
+
+<p class="kicker" id="ob-n"></p>
+<p id="minor-note" class="muted" hidden>We've emailed your guardian. You can explore now; messaging and payments unlock after they consent.</p>
+<section class="step"><h1>HOW WILL YOU USE 101?</h1><div class="opts"><button type="button" class="opt" data-role="learner" data-single aria-pressed="true">Learner</button><button type="button" class="opt" data-role="tutor" data-single aria-pressed="false">Tutor</button></div></section>
+<section class="step" hidden><h1>YOUR LEVEL</h1>
+ <div id="learner-level"><p>What best describes where you are now?</p><div class="opts"><button type="button" class="opt" data-mylevel data-single aria-pressed="false">Primary</button><button type="button" class="opt" data-mylevel data-single aria-pressed="false">O-Level</button><button type="button" class="opt" data-mylevel data-single aria-pressed="false">A-Level</button><button type="button" class="opt" data-mylevel data-single aria-pressed="true">University</button><button type="button" class="opt" data-mylevel data-single aria-pressed="false">Professional</button></div></div>
+ <div id="tutor-levels" hidden><p>Which levels do you teach? Pick all that apply.</p><div class="opts"><button type="button" class="opt" data-teach aria-pressed="false">Primary</button><button type="button" class="opt" data-teach aria-pressed="false">O-Level</button><button type="button" class="opt" data-teach aria-pressed="false">A-Level</button><button type="button" class="opt" data-teach aria-pressed="false">University</button><button type="button" class="opt" data-teach aria-pressed="false">Professional</button></div></div></section>
+<section class="step" hidden><h1>WHAT INTERESTS YOU?</h1><div class="opts"><button type="button" class="opt" data-int aria-pressed="false">Software Engineering</button><button type="button" class="opt" data-int aria-pressed="false">Data Science</button><button type="button" class="opt" data-int aria-pressed="false">Cybersecurity</button><button type="button" class="opt" data-int aria-pressed="false">AI & ML</button><button type="button" class="opt" data-int aria-pressed="false">Cloud & DevOps</button><button type="button" class="opt" data-int aria-pressed="false">Networking</button><button type="button" class="opt" data-int aria-pressed="false">Design</button><button type="button" class="opt" data-int aria-pressed="false">Startups</button></div></section>
+<div class="row" style="justify-content:space-between;margin-top:14px"><button type="button" class="btn" id="ob-back">Back</button><button type="button" class="btn or" id="ob-next">Next</button></div>
+</div>
+</main>
+{{SCRIPTS}}
+<script src="js/pages.js" defer></script>
+</body></html>

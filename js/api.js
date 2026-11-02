@@ -124,6 +124,39 @@
     const s = document.createElement("script"); s.src = "https://checkout.flutterwave.com/v3.js"; s.onload = run; document.head.appendChild(s);
   }
 
+  /* ---------- Launchpad / testing / competitions / groups / projects ---------- */
+  const lvl = (arr, level) => level ? arr.filter(x => x.level === level) : arr;
+  const fetchProducts = async (level = "") => lvl((await tryChain(() => backend("/launchpad/today?level=" + level))) || D().products, level).slice().sort((a, b) => b.votes - a.votes);
+  const fetchProduct = async id => (await tryChain(() => backend("/launchpad/" + id))) || { ...(D().products.find(p => p.id === id) || D().products[0]), changelog: D().changelog, comments: D().productComments };
+  const upvoteProduct = id => post(`/launchpad/${id}/upvote`);
+  const commentProduct = (id, text) => post(`/launchpad/${id}/comments`, { text });
+  const fetchCampaigns = async (level = "") => lvl((await tryChain(() => backend("/testing/campaigns"))) || D().campaigns, level);
+  const joinCampaign = id => post(`/testing/campaigns/${id}/join`);
+  const becomeTester = profile => post("/testing/testers", profile);
+  /** multipart: fields + optional screenshot file → POST /api/testing/reports */
+  async function submitBugReport(formData) { return tryChain(() => getJSON(API_BASE + "/testing/reports", { method: "POST", body: formData })); }
+  const fetchTriage = async () => (await tryChain(() => backend("/testing/triage"))) || D().triage;
+  const moveBug = (id, column) => post(`/testing/reports/${id}/move`, { column });
+  const fetchCompetitions = async (level = "", track = "") => { const all = (await tryChain(() => backend("/competitions"))) || D().competitions; return lvl(all, level).filter(c => !track || c.track === track); };
+  const registerCompetition = (id, entry) => post(`/competitions/${id}/register`, entry);
+  const submitEntry = (id, entry) => post(`/competitions/${id}/submissions`, entry);
+  const fetchLeaderboard = async id => (await tryChain(() => backend(`/competitions/${id}/leaderboard`))) || D().leaderboard;
+  const fetchGroups = async (level = "", kind = "") => lvl((await tryChain(() => backend("/groups"))) || D().groups, level).filter(g => !kind || g.kind === kind);
+  const fetchGroup = async id => (await tryChain(() => backend("/groups/" + id))) || { ...(D().groups.find(g => g.id === id) || D().groups[0]), feed: D().groupFeed, projects: D().projects.slice(0, 2) };
+  const joinGroup = id => post(`/groups/${id}/join`);
+  const fetchProjects = async () => (await tryChain(() => backend("/projects?mine=1"))) || D().projects;
+  const toggleMilestone = (pid, i, done) => post(`/projects/${pid}/milestones/${i}`, { done });
+  const promoteToLaunchpad = pid => post(`/projects/${pid}/promote`);
+
+  /* ---------- Auth, onboarding, profile, certificates ---------- */
+  const signIn = (email, password) => post("/auth/sign-in", { email, password });
+  const signUp = data => post("/auth/sign-up", data);
+  const saveOnboarding = data => post("/me/onboarding", data);
+  /** Guardian consent for under-18 sign-ups (Uganda DPPA 2019 s.8: personal data of a child needs a parent/guardian's consent). */
+  const requestGuardianConsent = data => post("/auth/guardian-consent", data);
+  const fetchProfile = async handle => (await tryChain(() => backend("/u/" + handle))) || { handle, name: "Sarah Namubiru", role: "Learner", level: "University", bio: "Software engineering student in Kampala. Building BodaSafe.", badges: ["Python Basics", "Hackathon 2025 Finalist", "Beta Tester"], projects: D().projects.slice(0, 2) };
+  const verifyCertificate = async code => (await tryChain(() => backend("/certificates/" + encodeURIComponent(code)))) || (/^101-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code) ? (code === "101-SE24-7Q3K" ? { valid: true, name: "Sarah Namubiru", course: "Software Engineering Path — Level 1", issued: "2025-10-30" } : { valid: false }) : { valid: false, malformed: true });
+
   /* ---------- Social links ---------- */
   /** GET /api/social → [{key,label,icon,url,active}] in display order. Fallback = mockup icons with '#'. */
   async function fetchSocialLinks() { return (await tryChain(() => backend("/social"))) || null; }
@@ -139,5 +172,8 @@
 
   window.CC_API = { STATIC, goHref, lookupGo, fetchRepoStats, fetchNews, fetchResources, fetchUnfurl, publishResource,
     fetchAdminKpis, fetchAnalytics, fetchUsers, fetchPendingMembers, fetchRecentSignups, fetchCourseApprovals, fetchPayouts, fetchTransactions,
-    fetchModerationQueue, fetchEventsAdmin, fetchAuditLog, fetchFlags, adminAction, fetchTutorOverview, requestPayout, flutterwaveCheckout, downloadCSV, fetchSocialLinks, saveSocialLinks };
+    fetchModerationQueue, fetchEventsAdmin, fetchAuditLog, fetchFlags, adminAction, fetchTutorOverview, requestPayout, flutterwaveCheckout, downloadCSV, fetchSocialLinks, saveSocialLinks,
+    fetchProducts, fetchProduct, upvoteProduct, commentProduct, fetchCampaigns, joinCampaign, becomeTester, submitBugReport, fetchTriage, moveBug,
+    fetchCompetitions, registerCompetition, submitEntry, fetchLeaderboard, fetchGroups, fetchGroup, joinGroup, fetchProjects, toggleMilestone, promoteToLaunchpad,
+    signIn, signUp, saveOnboarding, requestGuardianConsent, fetchProfile, verifyCertificate };
 })();

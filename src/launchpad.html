@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Launchpad · products built by 101 members" desc="Discover and upvote the products 101 Codecrafts members are building, from ideas to launched apps." path="launchpad.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-role="learner" data-page="launchpad">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Launchpad"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="page-h"><div><div class="kicker">Launchpad</div><h1>BUILT BY 101 MEMBERS</h1><p>Today's ranking · <span id="lp-date"></span></p></div><a class="btn or" href="projects.html"><svg><use href="#i-plusc"/></svg>Submit your product</a></div>
+<div class="filters" data-levels></div>
+<div class="grid" style="grid-template-columns:minmax(0,1fr) 280px;align-items:start" id="lp-wrap">
+ <ol class="list" id="lp-list" aria-label="Today's products"></ol>
+ <aside class="grid" style="gap:12px"><div id="lp-featured"></div><div class="card dark"><b>How ranking works</b><p style="color:#d5dce2;margin-top:6px">One upvote per member per product per day. Rankings reset at midnight EAT. Admins review every product before it appears.</p></div></aside>
+</div>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/pages.js" defer></script>
+</body></html>

@@ -18,6 +18,8 @@
     new Chart($("#ch-revenue"), { type: "bar", data: { labels: a.revenue.labels, datasets: [{ label: "UGX (M)", data: a.revenue.ugx, backgroundColor: INK, borderColor: INK }] }, options: { ...base, plugins: { legend: { display: false } } } });
     new Chart($("#ch-funnel"), { type: "bar", data: { labels: a.funnel.labels, datasets: [{ label: "People", data: a.funnel.values, backgroundColor: [CY, OR, INK, "#13a35c"] }] }, options: { ...base, plugins: { legend: { display: false } } } });
     new Chart($("#ch-enrol"), { type: "bar", data: { labels: a.enrolments.labels, datasets: [{ label: "Enrolments", data: a.enrolments.values, backgroundColor: [OR, CY, INK, OR, CY, INK] }] }, options: { ...base, plugins: { legend: { display: false } } } });
+    const lv = (D.admin.byLevel);
+    new Chart($("#ch-level"), { type: "bar", data: { labels: lv.labels, datasets: [{ label: "Learners", data: lv.learners, backgroundColor: OR }, { label: "Under 18", data: lv.under18, backgroundColor: CY }] }, options: base });
     new Chart($("#ch-complete"), { type: "radar", data: { labels: a.completion.labels.map(l => l.split(" ")[0]), datasets: [{ label: "% completed", data: a.completion.values, borderColor: OR, backgroundColor: "rgba(252,140,12,.25)", borderWidth: 2 }] }, options: { ...base, scales: { r: { suggestedMin: 0, suggestedMax: 100 } } } });
   }
   async function pending() {
