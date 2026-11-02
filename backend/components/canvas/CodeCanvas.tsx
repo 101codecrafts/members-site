@@ -46,7 +46,6 @@ export function CodeCanvas() {
   useEffect(() => {
     if (ready) run();
     // run once when the sandbox is ready
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
   const askAi = () => {
