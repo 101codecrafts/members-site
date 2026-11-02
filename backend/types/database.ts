@@ -5,6 +5,138 @@ export type Database = {
   __InternalSupabase: { PostgrestVersion: "12" };
   public: {
     Tables: {
+      ai_moderation_events: {
+        Row: {
+          id: number;
+          user_id: string | null;
+          feature: string;
+          is_minor: boolean;
+          category: string;
+          action: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          user_id?: string | null;
+          feature: string;
+          is_minor?: boolean;
+          category: string;
+          action: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          user_id?: string | null;
+          feature?: string;
+          is_minor?: boolean;
+          category?: string;
+          action?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_tools: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          category: string;
+          logo_url: string | null;
+          free_tier_summary: string | null;
+          signup_url: string | null;
+          docs_url: string | null;
+          student_perk: string | null;
+          how_to_key_md: string | null;
+          tags: string[];
+          verified_at: string | null;
+          approved: boolean;
+          suggested_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          category: string;
+          logo_url?: string | null;
+          free_tier_summary?: string | null;
+          signup_url?: string | null;
+          docs_url?: string | null;
+          student_perk?: string | null;
+          how_to_key_md?: string | null;
+          tags?: string[];
+          verified_at?: string | null;
+          approved?: boolean;
+          suggested_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          category?: string;
+          logo_url?: string | null;
+          free_tier_summary?: string | null;
+          signup_url?: string | null;
+          docs_url?: string | null;
+          student_perk?: string | null;
+          how_to_key_md?: string | null;
+          tags?: string[];
+          verified_at?: string | null;
+          approved?: boolean;
+          suggested_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_usage: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          day: string;
+          feature: string;
+          status: string;
+          provider: string | null;
+          model: string | null;
+          input_tokens: number;
+          output_tokens: number;
+          est_tokens: number;
+          latency_ms: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          day?: string;
+          feature: string;
+          status?: string;
+          provider?: string | null;
+          model?: string | null;
+          input_tokens?: number;
+          output_tokens?: number;
+          est_tokens?: number;
+          latency_ms?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          day?: string;
+          feature?: string;
+          status?: string;
+          provider?: string | null;
+          model?: string | null;
+          input_tokens?: number;
+          output_tokens?: number;
+          est_tokens?: number;
+          latency_ms?: number | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       analytics_events: {
         Row: {
           id: number;
@@ -5845,6 +5977,9 @@ export type Database = {
       admin_set_setting: { Args: { p_key: string; p_value: Json; p_is_public?: boolean }; Returns: undefined };
       admin_set_store_kyc: { Args: { p_store: string; p_status: Database["public"]["Enums"]["mkt_kyc_status"]; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_stores"]["Row"] };
       admin_verify_guardian: { Args: { p_consent_id: string }; Returns: undefined };
+      ai_commit: { Args: { p_usage: string; p_status: string; p_provider?: string; p_model?: string; p_input_tokens?: number; p_output_tokens?: number; p_latency_ms?: number }; Returns: undefined };
+      ai_log_moderation: { Args: { p_user: string; p_feature: string; p_is_minor: boolean; p_category: string; p_action: string }; Returns: undefined };
+      ai_reserve: { Args: { p_user: string; p_feature: string; p_est_tokens?: number }; Returns: Json };
       apply_flutterwave_payment: { Args: { p_tx_ref: string; p_flw_id: number; p_status: string; p_amount: number; p_currency: string; p_payment_type?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["payments"]["Row"] };
       attach_referral: { Args: { p_referred: string; p_code: string }; Returns: undefined };
       claim_promo_reminder: { Args: Record<PropertyKey, never>; Returns: string };
@@ -5873,6 +6008,7 @@ export type Database = {
       mkt_release_due: { Args: Record<PropertyKey, never>; Returns: number };
       mkt_vendor_update_order: { Args: { p_order: string; p_status: Database["public"]["Enums"]["mkt_order_status"]; p_carrier?: string; p_tracking?: string; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_orders"]["Row"] };
       my_access: { Args: Record<PropertyKey, never>; Returns: Json };
+      my_ai_quota: { Args: Record<PropertyKey, never>; Returns: Json };
       my_plan: { Args: Record<PropertyKey, never>; Returns: Json };
       my_practice_progress: { Args: Record<PropertyKey, never>; Returns: Json };
       my_referral_code: { Args: Record<PropertyKey, never>; Returns: string };

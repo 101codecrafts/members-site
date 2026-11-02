@@ -37,6 +37,13 @@ const schema = z.object({
   GOOGLE_BOOKS_API_KEY: z.string().optional(),
   AI_GATEWAY_API_KEY: z.string().optional(), // Vercel AI Gateway (news summaries)
   AI_MODEL: z.string().default('openai/gpt-4o-mini'),
+  // On-site AI fallbacks (server-only keys; tried in order after the Vercel AI Gateway)
+  OPENROUTER_API_KEY: z.string().optional(),
+  OPENROUTER_FREE_MODEL: z.string().default('meta-llama/llama-3.3-70b-instruct:free'),
+  GROQ_API_KEY: z.string().optional(),
+  GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
   // Judge (self-hosted Judge0 CE). Unset → submissions stay 'pending' and are retried by cron.
   JUDGE0_URL: z.string().url().optional(),
   JUDGE0_AUTH_TOKEN: z.string().optional(),
