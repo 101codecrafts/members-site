@@ -1,14 +1,20 @@
 /* 101 Codecrafts — brutalist UI kit. Colours sampled from the mockups. */
+@font-face{font-family:"Archivo Black";src:url(../assets/fonts/archivo-black-400.woff2) format("woff2");font-weight:400;font-display:block}
 @font-face{font-family:"Russo One";src:url(../assets/fonts/russo-one-400.woff2) format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-400.woff2) format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-500.woff2) format("woff2");font-weight:500;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-600.woff2) format("woff2");font-weight:600;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-700.woff2) format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-400.woff2) format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-500.woff2) format("woff2");font-weight:500;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-600.woff2) format("woff2");font-weight:600;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-700.woff2) format("woff2");font-weight:700;font-display:block}
+
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-400.woff2) format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-500.woff2) format("woff2");font-weight:500;font-display:block}
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-600.woff2) format("woff2");font-weight:600;font-display:block}
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-700.woff2) format("woff2");font-weight:700;font-display:block}
 
 :root{
   --or:#fc8c0c; --or2:#fd880f; --cy:#05e6f2; --ink:#10181f; --ink2:#0f171e; --navy:#0c1f34;
   --bg:#f3f5f6; --line:#e0e6ea; --mut:#4f6b80; --blue:#1786c9; --white:#fff;
-  --disp:"Russo One",Impact,sans-serif; --body:"Body","Saira Semi Condensed",system-ui,sans-serif;
+  --disp:"Archivo Black","Russo One",Impact,sans-serif; --disp2:"Russo One",Impact,sans-serif; --body:"Body","Barlow",system-ui,sans-serif; --cond:"Cond","Saira Semi Condensed",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}

@@ -3,10 +3,10 @@
 .app>*{position:absolute}
 
 /* sidebar */
-.side{left:0;top:0;width:244px;height:972px;background:#10181f;color:#fff}
+.side{left:0;top:0;width:244px;height:972px;background:#10181f;color:#fff;font-family:var(--cond)}
 .side>*{position:absolute}
 .brand-logo{left:16px;top:16px;width:82px;height:46px}
-.brand-name{left:106px;top:20px;font-family:var(--disp);font-size:16.3px;line-height:18.5px;color:#fff}
+.brand-name{left:106px;top:20px;font-family:var(--disp2);font-size:16.3px;line-height:18.5px;color:#fff}
 .brand-tag{left:106px;top:59px;font-size:10px;font-weight:500;color:#dfe5ea}
 .side-arrow{left:210px;top:24px;width:17px;height:17px;color:#dfe5ea}
 .nav{left:16px;width:212px}
@@ -19,7 +19,7 @@
 .side-h{left:26px;top:492px;font-size:13px;font-weight:700;letter-spacing:1.3px;color:#fff}
 .invite{left:23px;top:769px;width:204px;height:155px;border:1px solid #273643;border-radius:4px;background:#0e161d}
 .invite img{position:absolute;left:0;top:0}
-.invite .t{position:absolute;left:101px;top:25px;font-family:var(--disp);font-size:15px;line-height:17px;color:#fff}
+.invite .t{position:absolute;left:101px;top:25px;font-family:var(--disp2);font-size:15px;line-height:17px;color:#fff}
 .invite .btn{position:absolute;left:20px;top:94px;width:168px;height:42px;border:2px solid #e8edf1;border-radius:5px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;font-weight:600;color:#fff}
 .copy{left:34px;top:984px;font-size:10.5px;color:#c9d0d6;z-index:2}
 
@@ -40,9 +40,9 @@
 .hero-photo{left:680px;top:79px;width:545px;height:341px;z-index:2}
 .cyanp,.stat{z-index:3}
 .hero>*{position:absolute}
-.hero .kick{left:21px;top:14px;font-size:12px;font-weight:700;color:#141a1f;letter-spacing:.95px}
-.hero h1{left:20px;top:35px;transform:scaleY(1.03);transform-origin:0 0;font-family:var(--disp);font-weight:400;font-size:51.6px;line-height:48px;color:#141a1f;white-space:pre}
-.hero p{left:21px;top:141px;width:350px;font-size:14.5px;line-height:19.8px;font-weight:500;color:#1c1f22}
+.hero .kick{font-family:var(--cond);left:21px;top:14px;font-size:12px;font-weight:700;color:#141a1f;letter-spacing:.95px}
+.hero h1{left:20px;top:35px;transform:scaleY(1.153);transform-origin:0 0;font-family:var(--disp);font-weight:400;font-size:46.4px;line-height:42px;color:#141a1f;white-space:pre;word-spacing:4.5px}
+.hero p{font-family:var(--cond);left:21px;top:141px;width:350px;font-size:14.5px;line-height:19.8px;font-weight:500;color:#1c1f22}
 .hero .cta{left:22px;top:212px;width:168px;height:36px;background:#10181f;color:var(--or);font-size:14px;font-weight:600;display:flex;align-items:center;gap:22px;padding-left:18px}
 .cyanp{left:1120px;top:79px;width:105px;height:292px;background:#05e6f1}
 .cyanp>*{position:absolute}
@@ -62,7 +62,7 @@
 /* section heads */
 .rule{left:260px;width:962px;height:1px;background:#dfe5ea}
 .sec-ic{width:13px;height:12px;background:linear-gradient(var(--or) 0 4px,transparent 4px 8px,var(--or) 8px)}
-.sec-h{font-family:var(--disp);font-size:17.5px;line-height:20px;color:#10181f;white-space:nowrap}
+.sec-h{font-family:var(--disp);font-size:15.7px;line-height:20px;transform:scaleY(1.115);transform-origin:0 0;color:#10181f;white-space:nowrap}
 .sec-sub{font-size:12.5px;color:#3e5d74;font-weight:500}
 .viewall{font-size:12.5px;font-weight:500;color:#1b8acb;display:flex;align-items:center;gap:20px}
 .viewall svg{width:14px;height:14px}
