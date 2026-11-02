@@ -21,6 +21,12 @@ export async function trackClick(id: string, kindHint: string | null, req: NextR
     target = await rpc(db, 'register_click', { p_kind: k, p_id: id });
     if (target) { kind = k; break; }
   }
+  if (!target && (!kindHint || kindHint === 'product')) {
+    // marketplace v2 external (affiliate) products: logged in external_product_clicks with a hashed IP
+    const s0 = await getSession().catch(() => null);
+    const { data } = await db.rpc('external_product_go', { p_id: id, p_user: s0?.userId, p_ip_hash: sha256(env().HASH_SALT + _ip) });
+    if (typeof data === 'string') { target = data; kind = 'external_product'; }
+  }
   if (!target || !target.startsWith('https://')) return null;
   const session = await getSession().catch(() => null);
   await db.from('analytics_events').insert({ event_name: 'outbound_click', user_id: session?.userId ?? null, path: `/go/${id}`,

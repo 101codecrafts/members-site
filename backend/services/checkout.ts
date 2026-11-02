@@ -49,3 +49,20 @@ export async function createCheckout(s: Session, input: z.infer<typeof checkoutB
   await rpc(serviceClient(), 'set_payment_checkout_link', { p_tx_ref: row.tx_ref, p_link: link });
   return { status: 'pending' as const, payment_id: row.payment_id, tx_ref: row.tx_ref, amount_ugx: row.amount_ugx, checkout_url: link };
 }
+
+/** Marketplace v2: server-priced multi-vendor cart checkout -> Flutterwave hosted link (funds held in escrow). */
+export async function createMarketplaceCheckout(s: Session, shipping: Record<string, unknown>, coupon?: string) {
+  await rateLimit(LIMITS.checkout, s.userId);
+  const row = (await rpc(s.db, 'mkt_checkout', { p_shipping: shipping as never, p_coupon: coupon })) as unknown as CheckoutRow & { group_id: string };
+  if (row.free) return { status: 'fulfilled' as const, payment_id: row.payment_id, tx_ref: row.tx_ref, amount_ugx: 0, group_id: row.group_id };
+  const e = env();
+  const contact = (await s.db.from('profile_private').select('email, phone').eq('user_id', s.userId).maybeSingle()).data;
+  if (!contact?.email) throw new AppError('unprocessable', 'Add an email address to your account before paying');
+  const link = await flutterwave(e.FLW_SECRET_KEY).initPayment({
+    tx_ref: row.tx_ref, amount: row.amount_ugx, customer: { email: contact.email, phonenumber: contact.phone ?? undefined },
+    redirect_url: `${e.APP_URL}/api/v1/payments/return`, title: '101 Codecrafts Marketplace', description: row.description,
+    payment_plan: null, subaccounts: [], meta: { payment_id: row.payment_id, purpose: 'marketplace_order' },
+  });
+  await rpc(serviceClient(), 'set_payment_checkout_link', { p_tx_ref: row.tx_ref, p_link: link });
+  return { status: 'pending' as const, payment_id: row.payment_id, tx_ref: row.tx_ref, amount_ugx: row.amount_ugx, checkout_url: link, group_id: row.group_id };
+}

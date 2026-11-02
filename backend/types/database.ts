@@ -1349,6 +1349,78 @@ export type Database = {
         };
         Relationships: [];
       };
+      external_product_clicks: {
+        Row: {
+          id: number;
+          product_id: string;
+          user_id: string | null;
+          ip_hash: string | null;
+          referrer: string | null;
+          at: string;
+        };
+        Insert: {
+          id?: number;
+          product_id: string;
+          user_id?: string | null;
+          ip_hash?: string | null;
+          referrer?: string | null;
+          at?: string;
+        };
+        Update: {
+          id?: number;
+          product_id?: string;
+          user_id?: string | null;
+          ip_hash?: string | null;
+          referrer?: string | null;
+          at?: string;
+        };
+        Relationships: [];
+      };
+      external_products: {
+        Row: {
+          id: string;
+          source: Database["public"]["Enums"]["external_source"];
+          title: string;
+          url: string;
+          image_url: string | null;
+          price_text: string | null;
+          category_id: string | null;
+          affiliate_tag: string | null;
+          approved: boolean;
+          clicks: number;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          source: Database["public"]["Enums"]["external_source"];
+          title: string;
+          url: string;
+          image_url?: string | null;
+          price_text?: string | null;
+          category_id?: string | null;
+          affiliate_tag?: string | null;
+          approved?: boolean;
+          clicks?: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          source?: Database["public"]["Enums"]["external_source"];
+          title?: string;
+          url?: string;
+          image_url?: string | null;
+          price_text?: string | null;
+          category_id?: string | null;
+          affiliate_tag?: string | null;
+          approved?: boolean;
+          clicks?: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       external_resources: {
         Row: {
           id: string;
@@ -2447,6 +2519,747 @@ export type Database = {
           edited_at?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+        };
+        Relationships: [];
+      };
+      mkt_cart_items: {
+        Row: {
+          user_id: string;
+          product_id: string;
+          variant_id: string | null;
+          qty: number;
+          added_at: string;
+        };
+        Insert: {
+          user_id: string;
+          product_id: string;
+          variant_id?: string | null;
+          qty: number;
+          added_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          product_id?: string;
+          variant_id?: string | null;
+          qty?: number;
+          added_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_categories: {
+        Row: {
+          id: string;
+          parent_id: string | null;
+          slug: string;
+          name: string;
+          sort: number;
+        };
+        Insert: {
+          id?: string;
+          parent_id?: string | null;
+          slug: string;
+          name: string;
+          sort?: number;
+        };
+        Update: {
+          id?: string;
+          parent_id?: string | null;
+          slug?: string;
+          name?: string;
+          sort?: number;
+        };
+        Relationships: [];
+      };
+      mkt_coupons: {
+        Row: {
+          id: string;
+          store_id: string | null;
+          code: string;
+          kind: string;
+          value: number;
+          min_subtotal: number;
+          max_uses: number | null;
+          used: number;
+          expires_at: string | null;
+          active: boolean;
+        };
+        Insert: {
+          id?: string;
+          store_id?: string | null;
+          code: string;
+          kind: string;
+          value: number;
+          min_subtotal?: number;
+          max_uses?: number | null;
+          used?: number;
+          expires_at?: string | null;
+          active?: boolean;
+        };
+        Update: {
+          id?: string;
+          store_id?: string | null;
+          code?: string;
+          kind?: string;
+          value?: number;
+          min_subtotal?: number;
+          max_uses?: number | null;
+          used?: number;
+          expires_at?: string | null;
+          active?: boolean;
+        };
+        Relationships: [];
+      };
+      mkt_digital_assets: {
+        Row: {
+          id: string;
+          product_id: string;
+          storage_path: string;
+          filename: string;
+          license_template: string | null;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          storage_path: string;
+          filename: string;
+          license_template?: string | null;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          storage_path?: string;
+          filename?: string;
+          license_template?: string | null;
+        };
+        Relationships: [];
+      };
+      mkt_disputes: {
+        Row: {
+          id: string;
+          order_id: string;
+          opened_by: string;
+          kind: string;
+          reason: string;
+          evidence: string[];
+          status: Database["public"]["Enums"]["mkt_dispute_status"];
+          refund_ugx: number | null;
+          resolution_note: string | null;
+          resolved_by: string | null;
+          created_at: string;
+          resolved_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          opened_by: string;
+          kind: string;
+          reason: string;
+          evidence?: string[];
+          status?: Database["public"]["Enums"]["mkt_dispute_status"];
+          refund_ugx?: number | null;
+          resolution_note?: string | null;
+          resolved_by?: string | null;
+          created_at?: string;
+          resolved_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          opened_by?: string;
+          kind?: string;
+          reason?: string;
+          evidence?: string[];
+          status?: Database["public"]["Enums"]["mkt_dispute_status"];
+          refund_ugx?: number | null;
+          resolution_note?: string | null;
+          resolved_by?: string | null;
+          created_at?: string;
+          resolved_at?: string | null;
+        };
+        Relationships: [];
+      };
+      mkt_order_events: {
+        Row: {
+          id: number;
+          order_id: string;
+          status: Database["public"]["Enums"]["mkt_order_status"];
+          note: string | null;
+          actor_id: string | null;
+          at: string;
+        };
+        Insert: {
+          id?: number;
+          order_id: string;
+          status: Database["public"]["Enums"]["mkt_order_status"];
+          note?: string | null;
+          actor_id?: string | null;
+          at?: string;
+        };
+        Update: {
+          id?: number;
+          order_id?: string;
+          status?: Database["public"]["Enums"]["mkt_order_status"];
+          note?: string | null;
+          actor_id?: string | null;
+          at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_order_groups: {
+        Row: {
+          id: string;
+          buyer_id: string;
+          payment_id: string | null;
+          total_ugx: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          buyer_id: string;
+          payment_id?: string | null;
+          total_ugx: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          buyer_id?: string;
+          payment_id?: string | null;
+          total_ugx?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_order_items: {
+        Row: {
+          id: string;
+          order_id: string;
+          product_id: string;
+          variant_id: string | null;
+          title: string;
+          type: Database["public"]["Enums"]["mkt_product_type"];
+          unit_price_ugx: number;
+          qty: number;
+          line_total_ugx: number;
+          license_key: string | null;
+          downloads: number;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          product_id: string;
+          variant_id?: string | null;
+          title: string;
+          type: Database["public"]["Enums"]["mkt_product_type"];
+          unit_price_ugx: number;
+          qty: number;
+          line_total_ugx: number;
+          license_key?: string | null;
+          downloads?: number;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          product_id?: string;
+          variant_id?: string | null;
+          title?: string;
+          type?: Database["public"]["Enums"]["mkt_product_type"];
+          unit_price_ugx?: number;
+          qty?: number;
+          line_total_ugx?: number;
+          license_key?: string | null;
+          downloads?: number;
+        };
+        Relationships: [];
+      };
+      mkt_orders: {
+        Row: {
+          id: string;
+          group_id: string;
+          buyer_id: string;
+          store_id: string;
+          status: Database["public"]["Enums"]["mkt_order_status"];
+          subtotal_ugx: number;
+          shipping_ugx: number;
+          discount_ugx: number;
+          total_ugx: number;
+          commission_pct: number;
+          shipping_method: Database["public"]["Enums"]["mkt_ship_method"];
+          shipping_zone_id: string | null;
+          pickup_point_id: string | null;
+          shipping_address: Json | null;
+          carrier: string | null;
+          tracking_code: string | null;
+          paid_at: string | null;
+          delivered_at: string | null;
+          auto_release_at: string | null;
+          released_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          group_id: string;
+          buyer_id: string;
+          store_id: string;
+          status?: Database["public"]["Enums"]["mkt_order_status"];
+          subtotal_ugx: number;
+          shipping_ugx?: number;
+          discount_ugx?: number;
+          total_ugx: number;
+          commission_pct: number;
+          shipping_method: Database["public"]["Enums"]["mkt_ship_method"];
+          shipping_zone_id?: string | null;
+          pickup_point_id?: string | null;
+          shipping_address?: Json | null;
+          carrier?: string | null;
+          tracking_code?: string | null;
+          paid_at?: string | null;
+          delivered_at?: string | null;
+          auto_release_at?: string | null;
+          released_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          group_id?: string;
+          buyer_id?: string;
+          store_id?: string;
+          status?: Database["public"]["Enums"]["mkt_order_status"];
+          subtotal_ugx?: number;
+          shipping_ugx?: number;
+          discount_ugx?: number;
+          total_ugx?: number;
+          commission_pct?: number;
+          shipping_method?: Database["public"]["Enums"]["mkt_ship_method"];
+          shipping_zone_id?: string | null;
+          pickup_point_id?: string | null;
+          shipping_address?: Json | null;
+          carrier?: string | null;
+          tracking_code?: string | null;
+          paid_at?: string | null;
+          delivered_at?: string | null;
+          auto_release_at?: string | null;
+          released_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_pickup_points: {
+        Row: {
+          id: string;
+          name: string;
+          address: string;
+          lat: number | null;
+          lng: number | null;
+          hours: string | null;
+          active: boolean;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          address: string;
+          lat?: number | null;
+          lng?: number | null;
+          hours?: string | null;
+          active?: boolean;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          address?: string;
+          lat?: number | null;
+          lng?: number | null;
+          hours?: string | null;
+          active?: boolean;
+        };
+        Relationships: [];
+      };
+      mkt_price_tiers: {
+        Row: {
+          product_id: string;
+          min_qty: number;
+          unit_price_ugx: number;
+        };
+        Insert: {
+          product_id: string;
+          min_qty: number;
+          unit_price_ugx: number;
+        };
+        Update: {
+          product_id?: string;
+          min_qty?: number;
+          unit_price_ugx?: number;
+        };
+        Relationships: [];
+      };
+      mkt_products: {
+        Row: {
+          id: string;
+          store_id: string;
+          slug: string;
+          title: string;
+          description_md: string | null;
+          type: Database["public"]["Enums"]["mkt_product_type"];
+          category_id: string | null;
+          images: string[];
+          price_ugx: number;
+          compare_at_ugx: number | null;
+          stock: number | null;
+          moq: number;
+          tags: string[];
+          attributes: Json;
+          status: Database["public"]["Enums"]["content_status"];
+          age_rating: Database["public"]["Enums"]["age_rating"];
+          rating_avg: number;
+          rating_count: number;
+          sold_count: number;
+          search: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          store_id: string;
+          slug: string;
+          title: string;
+          description_md?: string | null;
+          type: Database["public"]["Enums"]["mkt_product_type"];
+          category_id?: string | null;
+          images?: string[];
+          price_ugx: number;
+          compare_at_ugx?: number | null;
+          stock?: number | null;
+          moq?: number;
+          tags?: string[];
+          attributes?: Json;
+          status?: Database["public"]["Enums"]["content_status"];
+          age_rating?: Database["public"]["Enums"]["age_rating"];
+          rating_avg?: number;
+          rating_count?: number;
+          sold_count?: number;
+          search?: never;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          store_id?: string;
+          slug?: string;
+          title?: string;
+          description_md?: string | null;
+          type?: Database["public"]["Enums"]["mkt_product_type"];
+          category_id?: string | null;
+          images?: string[];
+          price_ugx?: number;
+          compare_at_ugx?: number | null;
+          stock?: number | null;
+          moq?: number;
+          tags?: string[];
+          attributes?: Json;
+          status?: Database["public"]["Enums"]["content_status"];
+          age_rating?: Database["public"]["Enums"]["age_rating"];
+          rating_avg?: number;
+          rating_count?: number;
+          sold_count?: number;
+          search?: never;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_questions: {
+        Row: {
+          id: string;
+          product_id: string;
+          user_id: string;
+          body: string;
+          answer: string | null;
+          answered_by: string | null;
+          answered_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          user_id: string;
+          body: string;
+          answer?: string | null;
+          answered_by?: string | null;
+          answered_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          user_id?: string;
+          body?: string;
+          answer?: string | null;
+          answered_by?: string | null;
+          answered_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_reviews: {
+        Row: {
+          id: string;
+          product_id: string;
+          user_id: string;
+          order_id: string;
+          rating: number;
+          body: string | null;
+          vendor_reply: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          user_id: string;
+          order_id: string;
+          rating: number;
+          body?: string | null;
+          vendor_reply?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          user_id?: string;
+          order_id?: string;
+          rating?: number;
+          body?: string | null;
+          vendor_reply?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_rfq_quotes: {
+        Row: {
+          id: string;
+          rfq_id: string;
+          store_id: string;
+          unit_price_ugx: number;
+          moq: number;
+          valid_until: string;
+          note: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          rfq_id: string;
+          store_id: string;
+          unit_price_ugx: number;
+          moq?: number;
+          valid_until: string;
+          note?: string | null;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          rfq_id?: string;
+          store_id?: string;
+          unit_price_ugx?: number;
+          moq?: number;
+          valid_until?: string;
+          note?: string | null;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_rfqs: {
+        Row: {
+          id: string;
+          buyer_id: string;
+          product_id: string | null;
+          store_id: string | null;
+          title: string;
+          details: string | null;
+          qty: number;
+          target_unit_ugx: number | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          buyer_id: string;
+          product_id?: string | null;
+          store_id?: string | null;
+          title: string;
+          details?: string | null;
+          qty: number;
+          target_unit_ugx?: number | null;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          buyer_id?: string;
+          product_id?: string | null;
+          store_id?: string | null;
+          title?: string;
+          details?: string | null;
+          qty?: number;
+          target_unit_ugx?: number | null;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_shipping_zones: {
+        Row: {
+          id: string;
+          store_id: string | null;
+          name: string;
+          method: Database["public"]["Enums"]["mkt_ship_method"];
+          fee_ugx: number;
+          eta_days: number;
+          areas: string[];
+          active: boolean;
+        };
+        Insert: {
+          id?: string;
+          store_id?: string | null;
+          name: string;
+          method: Database["public"]["Enums"]["mkt_ship_method"];
+          fee_ugx?: number;
+          eta_days?: number;
+          areas?: string[];
+          active?: boolean;
+        };
+        Update: {
+          id?: string;
+          store_id?: string | null;
+          name?: string;
+          method?: Database["public"]["Enums"]["mkt_ship_method"];
+          fee_ugx?: number;
+          eta_days?: number;
+          areas?: string[];
+          active?: boolean;
+        };
+        Relationships: [];
+      };
+      mkt_store_private: {
+        Row: {
+          store_id: string;
+          legal_name: string | null;
+          phone: string | null;
+          kyc_documents: string[];
+          updated_at: string;
+        };
+        Insert: {
+          store_id: string;
+          legal_name?: string | null;
+          phone?: string | null;
+          kyc_documents?: string[];
+          updated_at?: string;
+        };
+        Update: {
+          store_id?: string;
+          legal_name?: string | null;
+          phone?: string | null;
+          kyc_documents?: string[];
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_stores: {
+        Row: {
+          id: string;
+          owner_id: string;
+          slug: string;
+          name: string;
+          description: string | null;
+          logo_url: string | null;
+          kyc_status: Database["public"]["Enums"]["mkt_kyc_status"];
+          kyc_note: string | null;
+          commission_pct: number | null;
+          rating_avg: number;
+          rating_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_id: string;
+          slug: string;
+          name: string;
+          description?: string | null;
+          logo_url?: string | null;
+          kyc_status?: Database["public"]["Enums"]["mkt_kyc_status"];
+          kyc_note?: string | null;
+          commission_pct?: number | null;
+          rating_avg?: number;
+          rating_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          owner_id?: string;
+          slug?: string;
+          name?: string;
+          description?: string | null;
+          logo_url?: string | null;
+          kyc_status?: Database["public"]["Enums"]["mkt_kyc_status"];
+          kyc_note?: string | null;
+          commission_pct?: number | null;
+          rating_avg?: number;
+          rating_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      mkt_variants: {
+        Row: {
+          id: string;
+          product_id: string;
+          sku: string | null;
+          name: string;
+          options: Json;
+          price_ugx: number | null;
+          stock: number | null;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          sku?: string | null;
+          name: string;
+          options?: Json;
+          price_ugx?: number | null;
+          stock?: number | null;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          sku?: string | null;
+          name?: string;
+          options?: Json;
+          price_ugx?: number | null;
+          stock?: number | null;
+        };
+        Relationships: [];
+      };
+      mkt_wishlist: {
+        Row: {
+          user_id: string;
+          product_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          product_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          product_id?: string;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -5018,6 +5831,7 @@ export type Database = {
       admin_moderate: { Args: { p_flag_id: string; p_action: string; p_note?: string }; Returns: Database["public"]["Tables"]["moderation_flags"]["Row"] };
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
       admin_reorder_social_links: { Args: { p_ids: string[] }; Returns: undefined };
+      admin_resolve_dispute: { Args: { p_dispute: string; p_outcome: string; p_refund_ugx?: number; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_disputes"]["Row"] };
       admin_review_article: { Args: { p_article: string; p_decision: string; p_note?: string }; Returns: Database["public"]["Tables"]["articles"]["Row"] };
       admin_review_membership: { Args: { p_application_id: string; p_decision: Database["public"]["Enums"]["application_status"]; p_note?: string }; Returns: Database["public"]["Tables"]["membership_applications"]["Row"] };
       admin_review_payout: { Args: { p_payout_id: string; p_decision: string; p_note?: string }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
@@ -5029,6 +5843,7 @@ export type Database = {
       admin_set_launch_promo: { Args: { p_enabled: boolean; p_starts_at?: string; p_ends_at?: string; p_banner_text?: string }; Returns: Json };
       admin_set_role: { Args: { p_user: string; p_role: Database["public"]["Enums"]["app_role"]; p_grant: boolean }; Returns: undefined };
       admin_set_setting: { Args: { p_key: string; p_value: Json; p_is_public?: boolean }; Returns: undefined };
+      admin_set_store_kyc: { Args: { p_store: string; p_status: Database["public"]["Enums"]["mkt_kyc_status"]; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_stores"]["Row"] };
       admin_verify_guardian: { Args: { p_consent_id: string }; Returns: undefined };
       apply_flutterwave_payment: { Args: { p_tx_ref: string; p_flw_id: number; p_status: string; p_amount: number; p_currency: string; p_payment_type?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["payments"]["Row"] };
       attach_referral: { Args: { p_referred: string; p_code: string }; Returns: undefined };
@@ -5042,6 +5857,7 @@ export type Database = {
       erase_user: { Args: { p_user: string; p_actor?: string }; Returns: undefined };
       expire_external_courses: { Args: Record<PropertyKey, never>; Returns: number };
       export_my_data: { Args: Record<PropertyKey, never>; Returns: Json };
+      external_product_go: { Args: { p_id: string; p_user?: string; p_ip_hash?: string; p_referrer?: string }; Returns: string };
       fanout_announcement: { Args: { p_announcement_id: string }; Returns: number };
       finalize_competition: { Args: { p_comp: string }; Returns: number };
       flag_plagiarism: { Args: { p_contest: string; p_threshold?: number }; Returns: number };
@@ -5050,6 +5866,12 @@ export type Database = {
       judge_record_result: { Args: { p_submission: string; p_verdict: Database["public"]["Enums"]["submission_verdict"]; p_passed: number; p_total: number; p_score?: number; p_runtime_ms?: number; p_memory_kb?: number; p_compile_output?: string; p_judge_ref?: string }; Returns: Database["public"]["Tables"]["submissions"]["Row"] };
       mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number };
       mark_payout_processing: { Args: { p_payout_id: string; p_flw_transfer_id: number }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
+      mkt_checkout: { Args: { p_shipping?: Json; p_coupon?: string }; Returns: Json };
+      mkt_confirm_delivery: { Args: { p_order: string }; Returns: Database["public"]["Tables"]["mkt_orders"]["Row"] };
+      mkt_download: { Args: { p_item: string }; Returns: Json };
+      mkt_open_dispute: { Args: { p_order: string; p_kind: string; p_reason: string }; Returns: Database["public"]["Tables"]["mkt_disputes"]["Row"] };
+      mkt_release_due: { Args: Record<PropertyKey, never>; Returns: number };
+      mkt_vendor_update_order: { Args: { p_order: string; p_status: Database["public"]["Enums"]["mkt_order_status"]; p_carrier?: string; p_tracking?: string; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_orders"]["Row"] };
       my_access: { Args: Record<PropertyKey, never>; Returns: Json };
       my_plan: { Args: Record<PropertyKey, never>; Returns: Json };
       my_practice_progress: { Args: Record<PropertyKey, never>; Returns: Json };
@@ -5097,6 +5919,7 @@ export type Database = {
       enrollment_status: "active" | "completed" | "dropped" | "refunded";
       event_status: "draft" | "published" | "cancelled" | "completed";
       external_access_type: "free" | "free_audit" | "free_trial" | "free_until" | "paid_with_aid";
+      external_source: "amazon" | "alibaba" | "aliexpress" | "jumia" | "other";
       flag_status: "open" | "reviewing" | "resolved" | "dismissed";
       flag_target: "post" | "post_comment" | "project" | "project_comment" | "listing" | "message" | "profile" | "resource" | "event" | "course" | "review" | "launch_product" | "launch_comment" | "test_feedback" | "competition_submission" | "group" | "job";
       group_role: "owner" | "moderator" | "member";
@@ -5105,6 +5928,11 @@ export type Database = {
       listing_kind: "digital" | "service" | "physical";
       listing_status: "draft" | "active" | "sold_out" | "archived";
       member_plan: "free" | "pro";
+      mkt_dispute_status: "open" | "vendor_accepted" | "escalated" | "resolved_refund" | "resolved_release";
+      mkt_kyc_status: "pending" | "verified" | "rejected" | "suspended";
+      mkt_order_status: "pending_payment" | "paid" | "processing" | "shipped" | "out_for_delivery" | "delivered" | "completed" | "cancelled" | "refunded" | "disputed";
+      mkt_product_type: "digital" | "physical" | "service" | "software_license" | "course_bundle";
+      mkt_ship_method: "boda" | "pickup" | "courier" | "digital";
       order_status: "pending_payment" | "paid" | "fulfilled" | "cancelled" | "refunded";
       payment_purpose: "course" | "subscription" | "event_ticket" | "marketplace_order" | "tutor_session" | "donation";
       payment_status: "pending" | "successful" | "failed" | "cancelled" | "abandoned" | "refunded" | "partially_refunded";
