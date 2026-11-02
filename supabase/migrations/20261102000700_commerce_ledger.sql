@@ -838,7 +838,8 @@ declare me text := app.requesting_user_id(); m uuid; po public.payouts;
         minimum bigint := coalesce((app.setting('payouts.min_ugx'))::bigint, 20000);
 begin
   if not app.is_tutor() then raise exception 'verified tutors only' using errcode = '42501'; end if;
-  m := coalesce(p_method_id, (select default_payout_method_id from public.tutor_profiles where user_id = me));
+  m := coalesce(p_method_id, (select default_payout_method_id from public.tutor_profiles where user_id = me),
+                (select id from public.payout_methods where tutor_id = me and is_default and deleted_at is null limit 1));
   if m is null or not exists (select 1 from public.payout_methods where id = m and tutor_id = me and deleted_at is null) then
     raise exception 'add a payout method first' using errcode = '22023'; end if;
   if p_amount_ugx is null or p_amount_ugx < minimum then raise exception 'minimum payout is % UGX', minimum using errcode = '22023'; end if;

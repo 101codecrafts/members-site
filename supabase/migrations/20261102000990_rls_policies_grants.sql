@@ -176,7 +176,8 @@ create policy certificates_select on public.certificates for select to authentic
   using (user_id = (select app.requesting_user_id()) or (select app.is_admin()));
 
 -- ===================================================== projects & catalog ====
-create policy projects_select on public.projects for select to anon, authenticated using (app.can_view_project(id));
+create policy projects_select on public.projects for select to anon, authenticated using (
+  owner_id = (select app.requesting_user_id()) or app.can_view_project(id));
 create policy projects_insert on public.projects for insert to authenticated
   with check ((select app.is_member()) and owner_id = (select app.requesting_user_id())
               and (group_id is null or app.is_group_member(group_id)));
@@ -393,7 +394,9 @@ create policy newsletter_select on public.newsletter_subscribers for select to a
   using (user_id = (select app.requesting_user_id()) or (select app.is_admin()));
 
 -- ============================================================= launchpad ====
-create policy launch_select on public.launch_products for select to anon, authenticated using (app.can_view_product(id));
+create policy launch_select on public.launch_products for select to anon, authenticated using (
+  (status = 'published' and hidden_at is null and app.age_ok(age_rating)) or owner_id = (select app.requesting_user_id())
+  or app.is_maker(id) or (select app.is_admin()));
 create policy launch_insert on public.launch_products for insert to authenticated
   with check ((select app.is_member()) and owner_id = (select app.requesting_user_id()));
 create policy launch_update on public.launch_products for update to authenticated
@@ -454,6 +457,11 @@ create policy feedback_update on public.test_feedback for update to authenticate
   with check (tester_id = (select app.requesting_user_id()) or app.is_campaign_maker(campaign_id) or (select app.is_admin()));
 
 -- ========================================================= competitions ====
+create or replace function app.in_team(p_team uuid)
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.competition_entrants e where e.team_id = p_team and e.user_id = app.requesting_user_id())
+$$;
+grant execute on function app.in_team(uuid) to authenticated, service_role;
 create policy competitions_select on public.competitions for select to anon, authenticated using (status <> 'draft' or (select app.is_admin()));
 create policy competitions_admin on public.competitions for all to authenticated using ((select app.is_admin())) with check ((select app.is_admin()));
 create policy comp_tracks_select on public.competition_tracks for select to anon, authenticated using (exists (select 1 from public.competitions c where c.id = competition_id));
@@ -467,17 +475,17 @@ create policy comp_teams_delete on public.competition_teams for delete to authen
   using (captain_id = (select app.requesting_user_id()) or (select app.is_admin()));
 create policy comp_entrants_select on public.competition_entrants for select to authenticated
   using (user_id = (select app.requesting_user_id()) or app.is_judge(competition_id) or (select app.is_admin())
-         or (team_id is not null and exists (select 1 from public.competition_entrants e2 where e2.team_id = competition_entrants.team_id and e2.user_id = (select app.requesting_user_id()))));
+         or (team_id is not null and app.in_team(team_id)));
 create policy comp_entrants_insert on public.competition_entrants for insert to authenticated
   with check ((select app.is_member()) and user_id = (select app.requesting_user_id()));
 create policy comp_entrants_delete on public.competition_entrants for delete to authenticated
   using (user_id = (select app.requesting_user_id()) or (select app.is_admin()));
 create policy comp_subs_select on public.competition_submissions for select to authenticated using (
-  app.owns_submission(id) or app.is_judge(competition_id) or (select app.is_admin())
+  user_id = (select app.requesting_user_id()) or (team_id is not null and app.in_team(team_id)) or app.owns_submission(id) or app.is_judge(competition_id) or (select app.is_admin())
   or exists (select 1 from public.competitions c where c.id = competition_id and c.status = 'completed'));
 create policy comp_subs_insert on public.competition_submissions for insert to authenticated
   with check ((select app.is_member()) and app.is_entrant(competition_id)
-              and (team_id is null or exists (select 1 from public.competition_entrants e where e.team_id = competition_submissions.team_id and e.user_id = (select app.requesting_user_id()))));
+              and (team_id is null or app.in_team(team_id)));
 create policy comp_subs_update on public.competition_submissions for update to authenticated
   using (app.owns_submission(id) or (select app.is_admin())) with check (app.owns_submission(id) or (select app.is_admin()));
 create policy comp_judges_select on public.competition_judges for select to authenticated using ((select app.is_member()));
