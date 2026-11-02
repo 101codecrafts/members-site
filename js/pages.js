@@ -168,7 +168,7 @@
       $("#c-meta").innerHTML = `${levelBadge(c.level)}<span class="tagx">Tutor: ${esc(c.tutor)}</span><span class="tagx">${c.lessons.length} lessons</span>`;
       const lite = () => document.documentElement.classList.contains("lite");
       const progress = () => { const p = Math.round(done.size / c.lessons.length * 100); $("#c-pct").textContent = `${p}% complete · ${done.size}/${c.lessons.length} lessons`; $("#c-bar").style.width = p + "%"; };
-      const list = () => { $("#c-lessons").innerHTML = c.lessons.map((l, i) => `<li><a href="?lesson=${l.id}" data-i="${i}" ${i === cur ? 'aria-current="true"' : ""}><span class="tick ${done.has(l.id) ? "on" : ""}" aria-label="${done.has(l.id) ? "Completed" : "Not completed"}">${done.has(l.id) ? ico("check") : i + 1}</span><span>${esc(l.title)}</span></a></li>`).join(""); };
+      const list = () => { $("#c-lessons").innerHTML = c.lessons.map((l, i) => `<li><a href="?lesson=${l.id}" data-i="${i}" ${i === cur ? 'aria-current="true"' : ""}><span class="tick ${done.has(l.id) ? "on" : ""}" role="img" aria-label="${done.has(l.id) ? "Completed" : "Not completed"}">${done.has(l.id) ? ico("check") : i + 1}</span><span>${esc(l.title)}</span></a></li>`).join(""); };
       const video = l => {
         if (!l.yt) { $("#c-video").innerHTML = `<div class="facade"><div class="thumb-ph">${ico("clipboard")}</div><span class="play-lbl">Hands-on lesson · no video</span></div>`; return; }
         /* facade: only the thumbnail loads until the learner presses play (saves data); Lite mode uses the small thumbnail */

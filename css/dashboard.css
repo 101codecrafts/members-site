@@ -184,3 +184,5 @@ html:not(.static) .app{zoom:var(--fit,1)}
 }
 @media (max-width:1099px){html:not(.static) .hero>.fx-canvas{position:absolute!important;inset:0!important}
   html:not(.static) .study{height:auto;min-height:104px;padding:12px 12px 12px 94px}html:not(.static) .study>*{position:static!important}html:not(.study) .study>img{display:none}html:not(.static) .study>svg{position:absolute!important;left:20px;top:18px}html:not(.static) .study a{margin-top:8px}}
+
+@media (max-width:1099px){html:not(.static) .app :is(p,small,span,a,b,h3,h4,q,i,div){font-size:max(13px,1em)!important}html:not(.static) .app .badge{font-size:11px!important}}

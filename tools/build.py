@@ -89,8 +89,29 @@ FOOTER = '''<footer class="flow-foot">
   <div class="socials" data-socials><a href="#" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="X"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="Discord"><svg><use href="#i-discord"/></svg></a></div>
 </footer>'''
 
+# CSS bundles (fewer render-blocking requests; sources stay in css/*.css)
+def bundle(name, parts):
+    out = '/* GENERATED bundle: ' + ' + '.join(parts) + ' — edit the sources, then run tools/build.py */\n'
+    out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
+    (root / 'css' / name).write_text(out)
+bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'dashboard.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'landing.css'])
+CSS_LINKS = {
+    'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
+    'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',
+    'app': '<link rel="stylesheet" href="css/bundle-app.css">',
+}
+import re as _re
+def css_links(s):
+    if 'href="css/dashboard.css"' in s: k = 'dashboard'
+    elif 'href="css/landing.css"' in s: k = 'landing'
+    else: k = 'app'
+    s = _re.sub(r'<link rel="stylesheet" href="css/(brutal|app|dashboard|landing)\.css">\n?', '', s)
+    return s.replace('{{CSS}}', CSS_LINKS[k]) if '{{CSS}}' in s else s.replace('</head>', CSS_LINKS[k] + '\n</head>', 1) if 'id="fitcss"' not in s else s.replace('<link rel="stylesheet" id="fitcss"', CSS_LINKS[k] + '\n<link rel="stylesheet" id="fitcss"', 1)
+
 for f in (root / 'src').glob('*.html'):
-    s = f.read_text(); name = f.name
+    s = css_links(f.read_text()); name = f.name
     charts = 'data-charts' in s
     s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts)).replace('{{FOOTER}}', FOOTER)
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)

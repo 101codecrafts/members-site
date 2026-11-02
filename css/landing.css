@@ -45,7 +45,7 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .path>*{position:absolute}
 .path .ib{left:12px;top:7px;width:39px;height:37px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--nv)}
 .path .ib svg{width:24px;height:24px}
-.path h4{left:12px;top:49px;font-size:12px;line-height:14.5px;font-weight:600;color:var(--nv)}
+.path h4,.path h3.ph{left:12px;top:49px;font-size:12px;line-height:14.5px;font-weight:600;color:var(--nv)}
 .path .ar{left:12px;top:83px;width:18px;height:14px;color:#14b4e6}
 
 /* testimonials */
@@ -129,3 +129,5 @@ html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
   html:not(.static) .tit-cards{grid-template-columns:1fr}
   html:not(.static) .tit-head{flex-direction:column;align-items:flex-start}
 }
+
+@media (max-width:1023px){html:not(.static) .page :is(p,small,span,a,b,h3,h4,div){font-size:max(13px,1em)!important}}
