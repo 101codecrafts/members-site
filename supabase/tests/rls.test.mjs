@@ -418,6 +418,31 @@ export const tests = [
     await q(db, `insert into public.submission_scores (submission_id, criterion_id, judge_id, score) values ($1,$2,$3,8)`, [s.id, crit, U.tutorB]);
   }),
 
+  // ------------------------------------------------- external courses ----
+  t('external courses: public sees approved only; tutors suggest, admins approve; expiry cron', async (db) => {
+    await as(db, 'anon');
+    const before = (await q(db, `select id from public.external_courses`)).length;
+    await as(db, U.tutorA);
+    const c = await one(db, `insert into public.external_courses (title, provider, source_url, url_hash, access_type, free_until, approved)
+      values ('Promo AI course','Coursera','https://www.coursera.org/learn/x', repeat('a',64), 'free_until', now() + interval '3 days', true) returning id, approved`);
+    assert.equal(c.approved, false, 'tutor cannot self-approve');
+    await as(db, U.alice);
+    await fails(db, `insert into public.external_courses (title, provider, source_url, url_hash) values ('x','y','https://a.b/c', repeat('b',64))`, [], '42501');
+    await as(db, 'anon');
+    assert.equal((await q(db, `select id from public.external_courses`)).length, before);
+    await as(db, U.tutorA);
+    await fails(db, `select public.admin_approve_external_course($1, true)`, [c.id], '42501');
+    await as(db, U.admin);
+    await q(db, `select public.admin_approve_external_course($1, true)`, [c.id]);
+    assert.equal((await q(db, `select * from public.admin_expiring_external_courses(7)`)).length, 1);
+    await as(db, 'postgres');
+    await q(db, `update public.external_courses set free_until = now() - interval '1 hour' where id=$1`, [c.id]);
+    await as(db, 'service');
+    assert.equal((await one(db, `select public.expire_external_courses() n`)).n, 1);
+    await as(db, 'anon');
+    assert.equal((await q(db, `select id from public.external_courses`)).length, before);
+  }),
+
   // ----------------------------------------------------------------- misc ----
   t('social links: per-platform domain validation in the database', async (db) => {
     await as(db, U.admin);
