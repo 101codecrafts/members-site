@@ -7,8 +7,8 @@ Companion docs: [`THREAT_MODEL.md`](THREAT_MODEL.md) · [`../SECURITY.md`](../SE
 
 | Surface | State on GitHub at review time (`origin`, polled 16:11–16:45 EAT) | What I reviewed instead |
 |---|---|---|
-| `main` (front end) | Only `Initial commit 18845d8` (README, LICENSE, .gitignore). Nothing pushed. | The front-end engineer's **unpushed** working copy (landing + dashboard static HTML/CSS, commits `e0b562a`…): accessibility + headers only. No JS, no CDN scripts, no Cal.com / Chatwoot / Flutterwave / API calls exist yet. |
-| `backend` | **Branch does not exist on origin.** | The backend engineer's **unpushed** working copy of `supabase/migrations/0100–0600` (rewrite with learner/tutor/admin/super_admin roles), run in a local Postgres 18 (PGlite) lab with a Supabase shim. An earlier draft (v1, member/mentor roles, migrations 0100–1000 incl. RLS + storage) was read line by line before it was replaced; findings that the rewrite already fixed are listed in §4. |
+| `main` (front end) | Only `Initial commit 18845d8` (README, LICENSE, .gitignore). Nothing pushed. | The front-end engineer's **unpushed** working copy: `index.html`, `dashboard.html` (learner), `tutor.html`, `admin.html`, `js/{api,ui,admin,tutor,data,motion}.js` (backend calls are stubs falling back to placeholder data). |
+| `backend` | **Branch does not exist on origin.** | The backend engineer's **unpushed** working copy of `supabase/migrations/0100–0700` (0700 = commerce ledger, payments, payouts, refunds, coupons; 0800 = growth, DPPA export/erase, referrals) (rewrite with learner/tutor/admin/super_admin roles), run in a local Postgres 18 (PGlite) lab with a Supabase shim. An earlier draft (v1, member/mentor roles, migrations 0100–1000 incl. RLS + storage) was read line by line before it was replaced; findings that the rewrite already fixed are listed in §4. |
 | `docs/BACKEND.md` RBAC matrix, RLS tests | Not written yet (no `docs/` dir; `supabase/tests/rls.test.mjs` is a 25-byte stub). | Matrix audit **not possible yet** — see §3 for the matrix the policies must satisfy and the escalation suite to run against it. |
 | Next.js route handlers, Clerk/svix + Flutterwave webhooks, Resend, Vercel Cron, `/api/resources/unfurl`, `/go/[id]` | No code anywhere (pushed or local). | Requirements + reference fixes only (§5). **Marked NOT REVIEWED.** |
 
@@ -18,7 +18,7 @@ Companion docs: [`THREAT_MODEL.md`](THREAT_MODEL.md) · [`../SECURITY.md`](../SE
 
 | Critical | High | Medium | Low | Info |
 |---:|---:|---:|---:|---:|
-| 0 | 2 | 6 | 5 | 2 |
+| 2 | 2 | 9 | 9 | 3 |
 
 Accessibility findings are counted separately in §7 (WCAG 2.2 AA: 2 fail-level, 3 risk-level).
 
@@ -28,7 +28,9 @@ Accessibility findings are counted separately in §7 (WCAG 2.2 AA: 2 fail-level,
 
 | ID | Sev | File:line (working copy) | Issue | Fix |
 |---|---|---|---|---|
-| SR-01 | **High** (go-live blocker) | `supabase/migrations/20261102000100…0600_*.sql` — every `create table` | 22 tables are created **without RLS**; RLS is deferred to a later migration that does not exist yet. With Supabase's default grants, the anon key can read/write them. Lab proof: `anon` read all 6 `profile_private` rows (emails/phones) and both `payout_methods` rows; tutor A **updated** tutor B's payout method (`E2`, `E4e/f`). | Enable RLS in the same migration that creates each table, and fail CI if any table lacks it (snippet A). |
+| SR-00 | **Critical** (go-live blocker) | `…/20261102000700_commerce_ledger.sql:613-731, 769-856` (+ no `revoke execute` anywhere) | Service-role-only money functions are **executable by every learner**: `apply_flutterwave_payment`, `set_payment_checkout_link`, `complete_refund`, `mark_payout_processing`, `complete_payout`, `record_subscription_renewal` (Supabase grants EXECUTE on new `public` functions to `anon`/`authenticated`; the comments say "service-role only" but nothing enforces it). **Lab PoC:** learner runs `create_checkout('course', <paid course>)`, then `select public.apply_flutterwave_payment('<own tx_ref>', 424242, 'successful', 50000, 'UGX')` → payment `successful`, enrollment `active`, and the tutor's ledger is credited **UGX 40,000** with no money received. A colluding tutor+learner pair can then `request_payout` real cash after the hold window. | Revoke from everyone, grant to `service_role` only, **and** assert inside each function (snippet G). Add the E3/E5 lab cases to CI. |
+| SR-00b | **Critical** (go-live blocker) | `…/20261102000800_growth_engagement.sql:421-447` `public.erase_user(p_user, p_actor)` | SECURITY DEFINER, **no authorization check**, executable by `anon` under default grants. **Lab PoC:** anonymous `select public.erase_user('user_victim')` → victim's `profile_private` deleted, messages/posts overwritten, payout methods erased. Same root cause as SR-00; `attach_referral(p_referred, …)` likewise lets any caller attach referrals for **other** users (referral-reward fraud). | `erase_user`: service-role only (snippet G) **plus** `if not (app.is_privileged() or app.is_admin()) then raise …`; self-erasure goes through `data_requests` + admin/cron. `attach_referral`: drop `p_referred`, use `app.requesting_user_id()`, only within N hours of sign-up, once per user. |
+| SR-01 | **High** (go-live blocker) | `supabase/migrations/20261102000100…0700_*.sql` — every `create table` | 53 tables (after migration 0700) are created **without RLS**; RLS is deferred to a later migration that does not exist yet. With Supabase's default grants, the anon key can read/write them. Lab proof: `anon` read all 6 `profile_private` rows (emails/phones) and both `payout_methods` rows; tutor A **updated** tutor B's payout method (`E2`, `E4e/f`). | Enable RLS in the same migration that creates each table, and fail CI if any table lacks it (snippet A). |
 | SR-02 | **High** | `…/20261102000500_events_sessions_groups.sql:157` (`tutor_sessions.meeting_url`), `:37` (`event_private` ok) | Paid-session join link sits in the catalog table. Any SELECT policy that lets learners browse sessions leaks `meeting_url` to non-payers, bypassing `session_join_info()`. | Move to `tutor_session_private(session_id pk, meeting_url)` with RLS (tutor/admin/confirmed booking), or `revoke select (meeting_url) on tutor_sessions from anon, authenticated` (snippet B). |
 | SR-03 | Medium | `…0100_foundation.sql:65-68` `app.is_privileged()` | Trust is `current_user in ('service_role','postgres',…)`. Inside **every** SECURITY DEFINER function `current_user = postgres`, so all guard triggers (`guard_profile_update`, `guard_user_roles`, `guard_tutor_profile`…) are bypassed by any definer RPC. One definer RPC that writes a user-supplied column = privilege escalation. | Distinguish *trusted caller* from *definer context* (snippet C), and keep every user-callable definer RPC doing its own `app.is_admin()`/ownership check first. |
 | SR-04 | Medium | all migrations (no `alter default privileges`) | Supabase grants EXECUTE on new `public` functions and ALL on new tables to `anon`/`authenticated`. Lab: `public.my_access` and `public.session_join_info` are executable by `anon`. Any future admin RPC is public until someone remembers to revoke. | `alter default privileges … revoke` (snippet D) at the top of the first migration, then grant per function. |
@@ -41,10 +43,33 @@ Accessibility findings are counted separately in §7 (WCAG 2.2 AA: 2 fail-level,
 | SR-11 | Low | v1 `payments.raw`, `webhook_events.payload` | Full Flutterwave / Clerk payloads (email, phone, card BIN/last4, IP) kept forever. | Store only needed fields; purge payloads after 30–90 days in the daily cron (DPPA s.18). |
 | SR-12 | Low | v1 `…0800_platform.sql` `search_all` | `ilike '%'||q||'%'` without escaping `%`/`_` (not injection; wildcard abuse/slow scans). | `replace(replace(q,'%','\%'),'_','\_')` or use trigram index. |
 | SR-13 | Low | v1 Realtime publication (`messages`, `notifications` with `replica identity full`) | Postgres Changes cannot RLS-filter DELETE events; deleted row PKs reach every subscriber of the table. | Soft-delete (UPDATE `deleted_at`) instead of DELETE on realtime tables; subscribe with filters. |
-| SR-I1 | Info | front-end working copy | No `<script>` tags, CDN scripts or `innerHTML` yet — SRI/XSS review pending. | When GSAP/three.js land: exact versions + `integrity` + `crossorigin` (snippet F). |
+| SR-14 | Medium | `…0700:450-464` `available_balance` (hold default 7 d) vs `request_refund` (window default 14 d) | Tutor earnings become withdrawable **before** the learner's refund window closes; a refund after payout drives the tutor payable negative = platform loss (or deliberate cash-out-then-refund fraud with a sock-puppet learner). | `payouts.hold_days >= refunds.window_days` (enforce in `app.setting` validation), and block payout while the tutor has any negative/clawback balance. |
+| SR-15 | Low | `…0700:563-569` `create_checkout` | Coupon redemption is recorded when checkout **starts**; abandoned checkouts consume `max_redemptions` until a failure webhook arrives (coupon exhaustion by sock-puppets). Also no capacity check for paid `event_ticket`/`tutor_session` → paid but over capacity. | Count redemptions on `successful`; add capacity check under `for update`; rate limit `create_checkout` per user. |
+| SR-16 | Low | `…0700:655-731` `apply_flutterwave_payment` | Function trusts the caller to pass the *verified* Flutterwave data; it does not check that `p_flw_id` belongs to `p_tx_ref`. | Route handler must use `tx_ref`, `amount`, `currency`, `status` **from the `/transactions/{id}/verify` response** (snippet E), never from the webhook body. |
+| SR-17 | Medium | `members-site/js/api.js:119-122` `flutterwaveCheckout` | Inline checkout takes `amount` and `tx_ref` from the page (`txRef \|\| "cc-"+Date.now()`). Anyone can open the modal with UGX 1 and an arbitrary tx_ref. | Only open checkout with the `tx_ref`/`amount` returned by server `create_checkout`; the webhook already compares to the stored amount — keep it that way and never fulfil from the client `callback`. |
+| SR-18 | Medium | `members-site/js/api.js:166-170` `toCSV` | Admin CSV exports (users, transactions, audit) don't neutralise formulas: a display name like `=HYPERLINK("http://evil","click")` executes in Excel/Sheets on the admin's machine (CWE-1236). | Prefix cells starting with `= + - @ \t \r` with `'`: `const s=String(v??""); const safe=/^[=+\-@\t\r]/.test(s)?"'"+s:s;` |
+| SR-19 | Low | `members-site/js/ui.js:94-95` `socialRow` | `href="${esc(l.url)}"` escapes HTML but allows `javascript:` URLs (admin-editable social links → stored XSS on every page if an admin account is phished). | Allow only `https:` (`new URL(u).protocol === "https:"`) client- and server-side. |
+| SR-20 | Low | `members-site/js/admin.js:9-63` | Most `innerHTML` templates use `esc()` ✅, but some values are interpolated raw (`${x.key}`, `${x.m}`/`${x.d}`, `data-id="${r.id}"`, `id="role-${u.id}"`). Server data today, but one schema change away from XSS in the admin console. | Escape every interpolation, or build rows with `textContent`. Admin pages are static files reachable by anyone — fine only because the API enforces roles; never rely on hiding `admin.html`. |
+| SR-I3 | Info | `*.html` CDN tags | **SRI verified**: gsap 3.13.0, chart.js 4.4.6, lenis 1.3.4 hashes match the jsDelivr files (sha384 recomputed). One inline `<script>` per page and an inline `onerror=` attribute need CSP hashes (`'sha256-…'`, `'unsafe-hashes'`) before CSP is enforced. CSP proposal narrowed to `cdn.jsdelivr.net`. |
+| SR-I1 | Info | front-end working copy | three.js, Cal.com, Chatwoot are not on any page yet — SRI/CSP for them pending. | Same pattern as gsap (snippet F); evergreen vendor scripts contained by CSP. |
 | SR-I2 | Info | repo settings | Private vulnerability reporting not confirmed enabled; my account (`bd197412-maker`) has **read-only** access, so this branch could not be pushed (see final note). | Enable PVR; grant the security reviewer push to `security` or install the Hark GitHub App on the org. |
 
 ### Fix snippets
+
+**G — lock service-role money functions (SR-00)**
+```sql
+revoke execute on function public.apply_flutterwave_payment(text,bigint,text,numeric,text,text,jsonb),
+  public.set_payment_checkout_link(text,text), public.complete_refund(uuid,boolean,bigint,text,jsonb),
+  public.mark_payout_processing(uuid,bigint), public.complete_payout(text,boolean,text,jsonb),
+  public.record_subscription_renewal  -- (full signature)
+  from public, anon, authenticated;
+grant execute on function public.apply_flutterwave_payment(text,bigint,text,numeric,text,text,jsonb) to service_role;  -- etc.
+-- belt and braces, first line of each body:
+if coalesce(auth.jwt() ->> 'role', '') <> 'service_role' and not (auth.jwt() is null and session_user = 'postgres') then
+  raise exception 'service role only' using errcode = '42501';
+end if;
+```
+Note `create_checkout` calls `apply_flutterwave_payment` for 100 % coupons; move that path into a private `app.apply_payment_internal()` so the public wrapper can stay service-role only.
 
 **A — RLS in the same migration + CI guard (SR-01)**
 ```sql
@@ -171,16 +196,22 @@ Both scanners are now in `.github/workflows/security.yml`: Gitleaks over `--all`
 | E2 learner reads tutor B `payout_methods` | deny | **FAIL** |
 | E2 tutor A **updates** tutor B `payout_methods` | deny | **FAIL** – 1 row updated |
 | E2 anon reads `payout_methods` | deny | **FAIL** – 2 rows |
-| E2 tutor reads another tutor's **earnings/payouts** | deny | **NOT RUN** – no earnings/payout tables yet |
-| E3 learner EXECUTE on admin RPCs | deny | **NOT RUN** – no admin RPCs yet (`admin_set_role()` referenced but not defined) |
-| E4a/b/c/d IDOR on `payments` (read other, mark successful, forge successful) | deny | **NOT RUN** – no `payments` table in rewrite yet (v1 design was correct: definer-only writes, `apply_flutterwave_payment` service-role only) |
+
+| E3 learner EXECUTE on service/admin money RPCs | deny | **FAIL** – `execute=true` for `apply_flutterwave_payment`, `set_payment_checkout_link`, `complete_refund`, `mark_payout_processing`, `complete_payout` (SR-00). `admin_set_role()` referenced but not defined yet. |
+| E3-PoC learner forges own course payment via `apply_flutterwave_payment` | deny | **FAIL** – payment `successful`, enrollment `active`, tutor credited UGX 40,000 (SR-00) |
+| E5b/d/f learner/tutor call `complete_payout` / `complete_refund` / `request_payout` | deny | executes; stopped only by data checks (`payout not found`, `verified tutors only`) – privilege still wrong (SR-00) |
+| E5c/e `mark_payout_processing` / `set_payment_checkout_link` as learner/tutor | deny | **FAIL** – executed (no matching row in lab, would update real rows) |
+| E5g/h wallet_balances other tutor / anon | deny | PASS (security_invoker view; 0 rows) – re-test with seeded ledger once RLS exists |
+| E5i/j tutor reads/approves another tutor's payouts | deny | inconclusive (seed row not created) |
+| E5k tutor inserts a payout row directly (bypassing balance check in `request_payout`) | deny | **FAIL** – 1 row inserted for UGX 9,999,999 (no RLS/guard on `payouts`, SR-01) |
+| E4a/b/c/d IDOR on `payments` (read other, mark successful, forge successful via INSERT) | deny | inconclusive – direct INSERT blocked only by a NOT NULL column, seed row missing; the real forgery path is the RPC (E3-PoC) |
 | E4e learner reads another learner's email/phone | deny | **FAIL** (no RLS yet) |
 | E4f anon reads `profile_private` | deny | **FAIL** – all 6 rows |
 | E4g learner lists all admins via `user_roles` | deny (or badges only) | **FAIL** (no RLS yet) |
 | E4h learner reads `tutor_applications` (ID documents) | deny | PASS (0 rows seeded – inconclusive) |
 | P1/P2 positive controls (own private row, own payout methods) | allow | PASS |
 
-Reading: the **guard-trigger layer is solid** (all column/role escalation attempts blocked). Every FAIL is the **missing RLS layer** (SR-01). Re-run after the RLS migration lands; all E2/E4 rows must flip to PASS and E3 must show `execute=false` for learners.
+Reading: the **guard-trigger layer is solid** (all column/role escalation attempts blocked). Every other FAIL is either the **missing RLS layer** (SR-01, 53 tables open after 0700) or **missing EXECUTE revokes** (SR-00/SR-04). Re-run after the RLS migration lands; all E2/E4 rows must flip to PASS and E3 must show `execute=false` for learners.
 
 ### Software-engineering / DB principles check
 - ✅ Least privilege by design: identity from verified JWT `sub` (`app.requesting_user_id()`), text Clerk IDs (no `auth.uid()` cast bugs), PII split into `profile_private`, payout numbers encrypted app-side with last-4 only.
@@ -209,6 +240,7 @@ Required controls (review again when code lands):
 9. Cache results by normalised URL (24 h) to stop amplification.
 
 ### 5.2 `/go/[id]` outbound redirect — open redirect
+Partial design found: `public.register_click(p_kind, p_id)` (`…0800:529-542`) returns only the **stored** URL of a `published` resource/news/job ✅ (lookup-only, no URL parameter). Route handler not written. Note: anyone can call it repeatedly to inflate `click_count` (Low) — count unique (user/IP, day).
 - Look up `id` (uuid) → stored `resources.url` with status `approved`; 404 otherwise. **Never** accept a `url`/`to` query parameter.
 - Re-validate the stored URL scheme (`http/https` only) at redirect time; `302` with `Referrer-Policy: no-referrer`, `Cache-Control: no-store`; optional interstitial for unverified domains.
 - Rate limit + click logging without IP retention beyond 30 days (DPPA s.18).
@@ -216,23 +248,54 @@ Required controls (review again when code lands):
 ### 5.3 Other not-yet-written surfaces
 Route handlers (authZ on each, Origin check for cookie POSTs), Clerk/svix webhook, Flutterwave webhook (snippet E), Resend (per-user/day cap; free tier 100/day), Vercel Cron (`CRON_SECRET`), Chatwoot identity HMAC, Cal.com webhook signature, service-role key placement (`import 'server-only'`, never `NEXT_PUBLIC_`). CDN SRI (snippet F).
 
+### 5.4 Minors (primary & O-level learners) — child safety. NOT IMPLEMENTED in DB yet
+Found: only a front-end stub `requestGuardianConsent()` → `POST /auth/guardian-consent` (`js/api.js:155-156`) and a "Guardian consent required" label on a school group (`js/data.js:160`). No age, guardian, block or minor-protection columns/tables/policies exist in migrations 0100–0800. **Treat as a go-live blocker for any under-18 account.**
+
+Legal basis: DPPA 2019 **s.8** — a child's personal data may only be collected/processed with the prior consent of a parent/guardian (or where the law requires it); a child is a person under 18 (also the Children Act definition). The Children Act (as amended 2016) places a duty on everyone caring for or dealing with children to protect them from abuse and exploitation — design for that, and get Ugandan legal review before launch.
+
+Required controls (to verify when built):
+1. **Age gate at sign-up**: date of birth (store year-month only + `is_minor` derived server-side; never trust a client flag). Under 18 → account created in `pending_guardian` state with **no** community, DM, marketplace, Launchpad or payment features until consent.
+2. **Verifiable guardian consent**: guardian name, phone (MoMo-capable), relationship; OTP to the guardian's phone (not the child's), record in `consent_records` (who, when, what version, IP) and let the guardian withdraw. Schools: teacher-verified chapter + school consent letter for class sign-ups.
+3. **Adult→minor messaging**: `start_direct_conversation()` must refuse when exactly one party is a minor unless the adult is a verified tutor **booked by the guardian** and the conversation is in a group/class context visible to the guardian/teacher; no private 1:1 adult–minor DMs; no image/file attachments to/from minors; links in minor chats rendered as text.
+4. **PII minimisation for minors**: `profiles_select` hides minors from anon and from search (`search_all` person branch), no surname (display name + initial), no avatar photo (initials/illustrated avatar), no school + location combination, `is_public = false` forced by trigger, never in Launchpad maker lists or leaderboards by real name.
+5. **Report & block**: one-tap report on every message/profile/post with `child_safety` reason routed to a priority queue; `user_blocks(blocker, blocked)` table enforced in DM/comment/mention policies; auto-freeze an adult's messaging on first child-safety report pending review; retain evidence (don't hard-delete reported content).
+6. **Tutors working with minors**: verified ID + police clearance/reference for tutors who teach minors; sessions with minors only in group or recorded/observed mode; guardian receives booking + join notifications.
+7. **Payments by minors**: guardian pays (guardian phone on the Flutterwave charge), never the child's own MoMo.
+8. **Retention/erasure**: guardian can export/erase the child's data (`export_my_data`/`erase_user` flows, once SR-00b is fixed).
+9. Lab cases to add: minor visible to anon (deny), adult starts DM with minor (deny), minor uploads attachment (deny), blocked user comments on blocker's post (deny).
+
+### 5.5 Beta-testing area (user-submitted test URLs in iframes, downloadable builds). NOT IMPLEMENTED (front-end stubs `becomeTester`, `submitBugReport`, `fetchCampaigns` only)
+1. **Never iframe arbitrary URLs inside the app origin's pages with privileges.** If embedding: `<iframe src=… sandbox="allow-scripts allow-forms" referrerpolicy="no-referrer" allow="" loading="lazy">` — **never** `allow-same-origin` together with `allow-scripts`, no `allow-top-navigation`, no `allow-popups-to-escape-sandbox`, no `allow-modals` (phishing prompts).
+2. CSP: do **not** add `frame-src https:`. Either allow-list approved test hosts per campaign (stored, admin-approved, `https:` only), or open test builds in a new tab via `/go/[id]` with an interstitial ("You are leaving 101 Codecrafts; this is a member's beta"). Keep `frame-ancestors 'none'` on our pages.
+3. Admin approval before a campaign is visible; re-approve on URL change; check URLs against Google Safe Browsing (free API) and block IP literals, URL shorteners, `data:`/`javascript:`/`file:`.
+4. **Downloadable builds (APK/EXE/ZIP)**: upload to a private bucket only; MIME/extension allow-list (`.apk`, `.aab`, `.zip`), size cap; hash (SHA-256) shown to testers; scan with VirusTotal free API (public-file caveat) or ClamAV before approval; serve with `Content-Disposition: attachment` and short-lived signed URLs; never auto-download; minors cannot download builds.
+5. Tester PII (devices, emails) visible only to the campaign owner and admins; bug reports with screenshots are private by default.
+
+### 5.6 Launchpad upvotes (vote manipulation, sockpuppets). NOT IMPLEMENTED (front-end stub `POST /launchpad/{id}/upvote`; sorting by `votes` client-side)
+1. Votes table `launchpad_votes(product_id, user_id, created_at, primary key(product_id,user_id))`, insert via RPC only; `votes` counter maintained by trigger, never client-writable (same guard pattern as `stars_count`).
+2. Eligibility: active account ≥ 7 days old, email + phone verified (Clerk), at least one completed lesson or prior activity; makers cannot vote for own product; one vote per product per person.
+3. Rank by **weighted, decayed** score (e.g. weight = account-age/reputation factor, Hacker-News-style time decay), not raw count; hide exact counts for the first hours.
+4. Sockpuppet signals (for the moderation queue, not auto-ban): many votes from accounts created the same day, same device fingerprint/IP /24, same referral code (ties into `attach_referral` fix), vote bursts within minutes; admins can void votes, logged in `audit_log`.
+5. Rate limit voting (e.g. 30/hour/user) with `rate_limit_hit`; Cloudflare Turnstile (already loaded by Clerk) on sign-up.
+6. Minors' products: makers shown by first name + initial only; no voting rewards with cash value.
+
 ## 6. Reproducing the RLS lab
 ```bash
 npm i @electric-sql/pglite
 node harness.mjs supabase/migrations "" cases.mjs   # Supabase shim: anon/authenticated/service_role, auth.jwt(), storage.*
 ```
-Harness + cases are attached to the PR description (they live outside the allowed paths for this branch); they set `request.jwt.claims` and `set role authenticated|anon` per case and print PASS/FAIL, tables without RLS, definer functions without `search_path`, and definer functions executable by anon/authenticated.
+Harness + cases (`harness.mjs`, `cases.mjs`, `poc.mjs` payment forgery, `poc2.mjs` anonymous erase) are kept outside this branch's allowed paths and handed to the backend engineer; they set `request.jwt.claims` and `set role authenticated|anon` per case and print PASS/FAIL, tables without RLS, definer functions without `search_path`, and definer functions executable by anon/authenticated.
 
 ## 7. Accessibility (WCAG 2.2 AA) — front-end working copy (landing + learner dashboard)
 
-Tutor and admin UIs do not exist yet → **not reviewed**.
+Learner (`dashboard.html`), tutor (`tutor.html`) and admin (`admin.html`) pages appeared late in the window; A-01/A-02 measured on landing + learner dashboard, A-03/A-04 checked in shared CSS/JS. Tutor/admin contrast not measured individually.
 
 | ID | WCAG | Level | Finding | Fix |
 |---|---|---|---|---|
 | A-01 | 1.4.3 Contrast | **Fail** | Orange text on light backgrounds: `STARTS HERE` (`--lor #fd9104` on hero `#eeeff1`, 46 px) = **1.98:1** (large text needs 3:1); eyebrow `WHAT WE OFFER` (#fd9104 on `#f3f6f7`, small) = **2.08:1** (needs 4.5:1). Cyan `#05e6f2`/`#00d5f9` on white = 1.54 / 1.77:1 — fine only on navy (9.4–11:1). | Keep bright orange/cyan as **fills** with dark text (dark on orange 7+:1 ✅) or on navy; for text on light use `#a84f00` (5.11:1 on #f3f6f7) / `#9a4a00` (5.77:1) and cyan `#006b80` (5.66:1). |
 | A-02 | 1.4.10 Reflow / 1.4.4 Resize | **Fail** | Pages are absolutely positioned at fixed pixels (`.app{width:1536px;height:1024px;overflow:hidden}`, landing 1024 px) with `<meta name="viewport" content="width=1024">`: no reflow at 320 CSS px, content clipped by `overflow:hidden` at 200% zoom. | Rebuild layout with flex/grid + `max-width`, `width=device-width, initial-scale=1`, no `overflow:hidden` on page wrappers. |
-| A-03 | 2.4.7 / 2.4.11 Focus visible / not obscured | Risk | Zero `:focus`/`:focus-visible` rules; relies on browser default ring, which is low-contrast on orange/cyan fills; absolutely positioned layers may obscure focused items. | `:focus-visible{outline:3px solid #10181f;outline-offset:2px}` and a light variant on navy (`#fff`). |
-| A-04 | 2.3.3 / 2.2.2 Motion | Risk | No `prefers-reduced-motion`; hover transforms now, GSAP/three.js + count-up (`data-count`) planned. | Wrap all animation in `@media (prefers-reduced-motion: no-preference)`; in JS `if (matchMedia('(prefers-reduced-motion: reduce)').matches) gsap.globalTimeline.timeScale(0)` / skip three.js render loop; pause control for anything > 5 s. |
+| A-03 | 2.4.7 / 2.4.11 Focus visible / not obscured | **Fixed in latest WIP** (`brutal.css:39` `:focus-visible{outline:3px…}`); was: | Zero `:focus`/`:focus-visible` rules; relies on browser default ring, which is low-contrast on orange/cyan fills; absolutely positioned layers may obscure focused items. | `:focus-visible{outline:3px solid #10181f;outline-offset:2px}` and a light variant on navy (`#fff`). |
+| A-04 | 2.3.3 / 2.2.2 Motion | **Fixed in latest WIP** (`brutal.css:41` reduced-motion reset; `motion.js:7` skips GSAP/Lenis); was: | No `prefers-reduced-motion`; hover transforms now, GSAP/three.js + count-up (`data-count`) planned. | Wrap all animation in `@media (prefers-reduced-motion: no-preference)`; in JS `if (matchMedia('(prefers-reduced-motion: reduce)').matches) gsap.globalTimeline.timeScale(0)` / skip three.js render loop; pause control for anything > 5 s. |
 | A-05 | 2.1.1 / 4.1.2 Keyboard, name/role | Risk | Interactive elements are `<a>` (keyboard-reachable ✅) but `RESOURCES`/`ABOUT` are `href="#"` dead links, icon-only SVGs have no `aria-hidden`/labels, no skip link, no landmark `<nav>/<main>`. | Real hrefs or `<button>`; `aria-hidden="true"` on decorative SVG; "Skip to content" link; landmarks. |
 | ✅ | 1.1.1 | Pass | All 13 / 9 `<img>` have `alt`. `lang="en"` set. Dark-on-orange (`#10181f` on `#fc8b0e` = 7.54:1) and dark-on-cyan pass. |
 
@@ -263,6 +326,8 @@ Tutor and admin UIs do not exist yet → **not reviewed**.
 - [ ] Clerk `unsafe_metadata` never used for authorization.
 
 **Server / payments**
+- [ ] SR-00: every service-role money function revoked from `public, anon, authenticated` and self-checks `service_role`; lab E3-PoC fails to forge a payment.
+- [ ] `payouts.hold_days >= refunds.window_days`; no payout while balance has clawbacks.
 - [ ] Service-role key only in Vercel env (no `NEXT_PUBLIC_`), `import 'server-only'`.
 - [ ] Clerk (svix) and Flutterwave webhooks verified + idempotent; Flutterwave re-verify via API, amount/currency/tx_ref match.
 - [ ] `CRON_SECRET` on every cron route; rate limits on posting, messaging, unfurl, checkout, email.
@@ -274,6 +339,11 @@ Tutor and admin UIs do not exist yet → **not reviewed**.
 - [ ] `tools/`, `compare/`, `src/`, `*.py` excluded from deployed output.
 - [ ] HSTS `preload` only after every subdomain serves HTTPS.
 - [ ] WCAG A-01…A-05 fixed.
+
+**Children, beta testing, Launchpad**
+- [ ] Age gate + verified guardian consent (DPPA s.8) before any under-18 feature; adult↔minor 1:1 DM blocked; minors hidden from anon/search; report + block with child-safety priority queue.
+- [ ] Beta builds: admin approval, Safe Browsing + malware scan, sandboxed iframes without `allow-same-origin`+`allow-scripts`, no wildcard `frame-src`.
+- [ ] Launchpad: one vote per eligible account via RPC, maker can't self-vote, weighted/decayed ranking, sockpuppet review queue.
 
 **Ops / privacy (Uganda DPPA 2019)**
 - [ ] PDPO registration; privacy notice; consent at sign-up; under-18 parental consent path; export/delete flow; retention purge cron; vendor DPAs.
