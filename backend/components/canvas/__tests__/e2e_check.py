@@ -90,6 +90,14 @@ with sync_playwright() as p:
         check("assistant: streamed answer", False, str(e)[:160])
     page.screenshot(path=os.path.join(OUT, "assistant.png"), full_page=False)
 
+    # ---- 101 AI hub (Clerk dummy key in local dev → session unknown; checks render + model picker)
+    page.goto(f"{BASE}/ai", wait_until="domcontentloaded", timeout=120_000)
+    page.wait_for_selector("select#model option:nth-child(2)", state="attached", timeout=120_000)
+    opts = page.locator("select#model option").all_inner_texts()
+    check("ai hub: renders with free-model picker", len(opts) >= 2 and "Auto" in opts[0], ", ".join(opts)[:160])
+    check("ai hub: tools listed (chat, code helper, lesson, image soon)", page.get_by_role("button", name="Code helper").count() == 1 and page.get_by_text("Coming soon").count() == 1)
+    page.screenshot(path=os.path.join(OUT, "ai-hub.png"))
+
     real_errors = [e for e in errors if "clerk" not in e.lower()]
     check("no uncaught page errors (excluding Clerk dummy-key noise)", not real_errors, "; ".join(real_errors)[:200])
     browser.close()
