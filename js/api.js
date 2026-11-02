@@ -29,7 +29,7 @@
   ];
   function toV1(path) { if (path.startsWith("/v1/")) return path; for (const [re, to] of V1_MAP) if (re.test(path)) return to && path.replace(re, to); return null; }
   /* backend envelope is {data}; list endpoints put rows in data.items */
-  const unwrap = j => { const d = j && Object.prototype.hasOwnProperty.call(j, "data") ? j.data : j; return d && Array.isArray(d.items) ? d.items : d; };
+  const unwrap = j => { const d = j && Object.prototype.hasOwnProperty.call(j, "data") ? j.data : j; return d && Array.isArray(d.items) ? d.items : d && Array.isArray(d.rows) ? d.rows : d; };
   window.CC_V1 = { toV1, unwrap };
 
   async function getJSON(url, opts = {}, ms = 6000) {
