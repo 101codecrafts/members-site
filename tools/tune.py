@@ -30,7 +30,7 @@ JS_COLLECT = r"""
     if (r.width<4 || r.height<4) return;
     const cs = getComputedStyle(el);
     const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize)*1.25;
-    out.push({sel:path(el), x:r.left, y:r.top, w:r.width, h:r.height, fs:parseFloat(cs.fontSize), single: !isIcon && r.height < lh*1.6, icon:isIcon});
+    out.push({sel:path(el), x:r.left, y:r.top, w:r.width, h:r.height, fs:parseFloat(cs.fontSize), single: !isIcon && (r.height < lh*1.6 || cs.whiteSpace==='nowrap' || el.querySelector('br')!==null), icon:isIcon});
   });
   return out;
 }"""

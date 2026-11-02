@@ -5,25 +5,25 @@
 .page > :nth-child(1) > :nth-child(4) > :nth-child(5){translate:1.00px 0.00px;font-size:9.86px !important;scale:1 1.0645;transform-origin:0 0}
 .page > :nth-child(4){translate:-1.00px 0.00px;font-size:46.81px !important;scale:1 0.9955;transform-origin:0 0}
 .page > :nth-child(6){translate:-1.00px 0.00px;font-size:47.38px !important;scale:1 1.0228;transform-origin:0 0}
-.page > :nth-child(7){translate:-1.00px 1.00px;font-size:13.00px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(7){translate:-1.00px 1.00px;font-size:12.63px !important;scale:1 1.0148;transform-origin:0 0}
 .page > :nth-child(8) > :nth-child(1){translate:1.00px -1.00px;font-size:11.00px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(15){translate:0.00px -1.00px;font-size:15.19px !important;scale:1 1.0300;transform-origin:0 0}
 .page > :nth-child(16){translate:-2.00px 0.00px;font-size:10.58px !important;scale:1 1.0396;transform-origin:0 0}
 .page > :nth-child(21){translate:-2.00px -1.00px;font-size:29.47px !important;scale:1 1.0659;transform-origin:0 0}
 .page > :nth-child(22) > :nth-child(1){translate:-6.00px 1.00px;font-size:11.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(24) > :nth-child(3){translate:1.00px -2.00px;font-size:10.50px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(24) > :nth-child(3){translate:1.00px -1.00px;font-size:10.95px !important;scale:1 1.0116;transform-origin:0 0}
 .page > :nth-child(24) > :nth-child(4){translate:-1.00px 0.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(25) > :nth-child(2){translate:1.00px 0.00px;font-size:12.50px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(25) > :nth-child(3){translate:1.00px -2.00px;font-size:10.50px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(25) > :nth-child(2){translate:1.00px 0.00px;font-size:12.61px !important;scale:1 1.0736;transform-origin:0 0}
+.page > :nth-child(25) > :nth-child(3){translate:1.00px -1.00px;font-size:10.88px !important;scale:1 0.9914;transform-origin:0 0}
 .page > :nth-child(25) > :nth-child(4){translate:-1.00px 0.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(26) > :nth-child(2){translate:2.00px 0.00px;font-size:12.50px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(26) > :nth-child(2){translate:2.00px 2.00px;font-size:12.96px !important;scale:1 1.0091;transform-origin:0 0}
 .page > :nth-child(26) > :nth-child(3){translate:1.00px -2.00px;font-size:10.50px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(26) > :nth-child(4){translate:-1.00px 0.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(27) > :nth-child(1) > :nth-child(1){translate:-2.00px 1.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(27) > :nth-child(2){translate:1.00px -2.00px;font-size:11.61px !important;scale:1 1.1960;transform-origin:0 0}
 .page > :nth-child(28) > :nth-child(1) > :nth-child(1){translate:-2.00px 3.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(28) > :nth-child(4){translate:-2.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(29) > :nth-child(3){translate:-1.00px 0.00px;font-size:9.00px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(29) > :nth-child(3){translate:-1.00px 0.00px;font-size:9.06px !important;scale:1 0.9929;transform-origin:0 0}
 .page > :nth-child(29) > :nth-child(4){translate:-3.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(30) > :nth-child(2){translate:6.00px 0.00px;font-size:9.10px !important;scale:1 1.0438;transform-origin:0 0}
 .page > :nth-child(31) > :nth-child(1){translate:1.00px 0.00px;font-size:11.00px !important;scale:1 1.0000;transform-origin:0 0}
@@ -43,21 +43,22 @@
 .page > :nth-child(36) > :nth-child(3){translate:0.00px -2.00px;font-size:12.31px !important;scale:1 1.0969;transform-origin:0 0}
 .page > :nth-child(39){translate:-2.00px -1.00px;font-size:9.61px !important;scale:1 1.0568;transform-origin:0 0}
 .page > :nth-child(40){translate:-1.00px 0.00px;font-size:30.21px !important;scale:1 0.9930;transform-origin:0 0}
-.page > :nth-child(41){translate:-1.00px -2.00px;font-size:12.50px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(41){translate:-1.00px -3.00px;font-size:11.89px !important;scale:1 1.0108;transform-origin:0 0}
 .page > :nth-child(42){translate:0.00px 0.00px;font-size:11.41px !important;scale:1 0.9640;transform-origin:0 0}
 .page > :nth-child(43) > :nth-child(2){translate:2.00px -2.00px;font-size:12.00px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(43) > :nth-child(3){translate:-2.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(44) > :nth-child(2){translate:3.00px -2.00px;font-size:12.00px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(44) > :nth-child(2){translate:3.00px -2.00px;font-size:12.00px !important;scale:1 1.0400;transform-origin:0 0}
 .page > :nth-child(44) > :nth-child(3){translate:-1.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(45) > :nth-child(2){translate:3.00px -2.00px;font-size:12.00px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(45) > :nth-child(2){translate:3.00px -2.00px;font-size:12.13px !important;scale:1 0.9892;transform-origin:0 0}
 .page > :nth-child(45) > :nth-child(3){translate:0.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(46) > :nth-child(2){translate:3.00px -2.00px;font-size:12.00px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(46) > :nth-child(2){translate:5.00px -2.00px;font-size:12.20px !important;scale:1 1.0539;transform-origin:0 0}
 .page > :nth-child(46) > :nth-child(3){translate:-1.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
 .page > :nth-child(47) > :nth-child(2){translate:3.00px -2.00px;font-size:11.86px !important;scale:1 1.1134;transform-origin:0 0}
 .page > :nth-child(47) > :nth-child(3){translate:0.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(48) > :nth-child(2){translate:5.00px -2.00px;font-size:12.00px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(48) > :nth-child(2){translate:5.00px -2.00px;font-size:11.59px !important;scale:1 1.0357;transform-origin:0 0}
 .page > :nth-child(48) > :nth-child(3){translate:1.00px 2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
-.page > :nth-child(51){translate:0.00px -6.00px;font-size:18.67px !important;scale:1 1.0000;transform-origin:0 0}
+.page > :nth-child(51){translate:0.00px -5.00px;font-size:18.81px !important;scale:1 1.0039;transform-origin:0 0}
+.page > :nth-child(52){translate:-1.00px 0.00px;font-size:11.74px !important;scale:1 1.1243;transform-origin:0 0}
 .page > :nth-child(53) > :nth-child(2){translate:-1.00px -3.00px;font-size:11.98px !important;scale:1 1.0149;transform-origin:0 0}
 .page > :nth-child(53) > :nth-child(3){translate:0.00px -3.00px;font-size:9.88px !important;scale:1 1.0060;transform-origin:0 0}
 .page > :nth-child(53) > :nth-child(5) > :nth-child(2){translate:0.00px -2.00px;font-size:16.00px !important;scale:1 1.0000;transform-origin:0 0}
