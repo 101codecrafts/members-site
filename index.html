@@ -17,7 +17,7 @@
 <link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else if(localStorage.theme==="dark")d.dataset.theme="dark";}catch(e){}})(document.documentElement)</script>
-<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}, {"@context": "https://schema.org", "@type": "Course", "name": "Software Engineering Learning Path", "description": "12 courses for beginners: programming fundamentals, web development and real projects.", "provider": {"@type": "Organization", "name": "101 Codecrafts"}}, {"@context": "https://schema.org", "@type": "Course", "name": "Cybersecurity & Ethical Hacking Learning Path", "description": "8 intermediate courses on security fundamentals, ethical hacking and defence.", "provider": {"@type": "Organization", "name": "101 Codecrafts"}}, {"@context": "https://schema.org", "@type": "Event", "name": "Hackathon 2025", "startDate": "2025-11-22", "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode", "eventStatus": "https://schema.org/EventScheduled", "location": {"@type": "VirtualLocation", "url": "https://101codecrafts.github.io/members-site/"}, "organizer": {"@type": "Organization", "name": "101 Codecrafts"}}]</script>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}, {"@context": "https://schema.org", "@type": "Course", "name": "Software Engineering Learning Path", "description": "12 courses for beginners: programming fundamentals, web development and real projects.", "provider": {"@type": "Organization", "name": "101 Codecrafts"}}, {"@context": "https://schema.org", "@type": "Course", "name": "Cybersecurity & Ethical Hacking Learning Path", "description": "8 intermediate courses on security fundamentals, ethical hacking and defence.", "provider": {"@type": "Organization", "name": "101 Codecrafts"}}, {"@context": "https://schema.org", "@type": "Event", "name": "Hackathon 2025", "startDate": "2026-11-22", "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode", "eventStatus": "https://schema.org/EventScheduled", "location": {"@type": "VirtualLocation", "url": "https://101codecrafts.github.io/members-site/"}, "organizer": {"@type": "Organization", "name": "101 Codecrafts"}}]</script>
 <link rel="stylesheet" href="css/brutal.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/landing.css">
@@ -96,19 +96,19 @@
 
 <!-- ============ HEADER ============ -->
 <header class="hdr">
-  <img src="assets/img/logo-101-header.png" alt="101" style="left:30px;top:6px;width:92px;height:46px">
+  <img src="assets/img/logo-101-header.webp" alt="101" style="left:30px;top:6px;width:92px;height:46px">
   <div class="wm">Codecrafts</div>
   <div class="tg">Start at 101. Craft your way up.</div>
   <nav>
-    <a class="on" href="index.html" style="left:385px">HOME</a>
-    <a href="#paths" style="left:439px">LEARN</a>
-    <a href="#community" style="left:492px">COMMUNITY</a>
-    <a href="#" style="left:573px">RESOURCES</a>
-    <a href="#" style="left:652px">ABOUT</a>
+    <a class="on" href="index.html" data-i18n="nav.home" style="left:385px">HOME</a>
+    <a href="#paths" data-i18n="nav.learn" style="left:439px">LEARN</a>
+    <a href="#community" data-i18n="nav.community" style="left:492px">COMMUNITY</a>
+    <a href="#" data-i18n="nav.resources" style="left:573px">RESOURCES</a>
+    <a href="#" data-i18n="nav.about" style="left:652px">ABOUT</a>
   </nav>
   <svg class="i" style="left:742px;top:20px;width:17px;height:17px;color:#fff"><use href="#i-search"/></svg>
-  <a class="login hov on-dark" href="dashboard.html">LOGIN</a>
-  <a class="join hov on-dark" href="dashboard.html">JOIN COMMUNITY <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
+  <a class="login hov on-dark" href="signin.html" data-i18n="cta.login">LOGIN</a>
+  <a class="join hov on-dark" href="signup.html">JOIN COMMUNITY <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
 </header>
 
 <!-- ============ HERO ============ -->
@@ -120,15 +120,15 @@
 <p style="left:34px;top:257px;width:385px;font-size:12.6px;line-height:15px;font-weight:500;color:var(--nv)">Join our vibrant community to grow in IT as a programmer, <br>computer scientist, Data Analyst, ethical hacker, software engineer, <br>or other tech professional. We welcome all skill levels to share <br>knowledge, collaborate, and innovate.</p>
 <a class="btn-or hov" href="dashboard.html" style="left:33px;top:331px;width:180px;height:35px">JOIN OUR COMMUNITY <svg class="i" style="width:15px;height:15px"><use href="#i-arrow"/></svg></a>
 <a class="btn-ol hov" href="#paths" style="left:228px;top:331px;width:176px;height:35px">EXPLORE LEARNING PATHS</a>
-<img src="assets/img/avatar-row-1.png" alt="" style="left:34px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-2.png" alt="" style="left:65px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-3.png" alt="" style="left:96px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-4.png" alt="" style="left:127px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-5.png" alt="" style="left:158px;top:383px;width:30px;height:31px">
+<img src="assets/img/avatar-row-1.webp" alt="" style="left:34px;top:383px;width:30px;height:31px">
+<img src="assets/img/avatar-row-2.webp" alt="" style="left:65px;top:383px;width:30px;height:31px">
+<img src="assets/img/avatar-row-3.webp" alt="" style="left:96px;top:383px;width:30px;height:31px">
+<img src="assets/img/avatar-row-4.webp" alt="" style="left:127px;top:383px;width:30px;height:31px">
+<img src="assets/img/avatar-row-5.webp" alt="" style="left:158px;top:383px;width:30px;height:31px">
 <b style="left:202px;top:381px;font-size:14px;font-weight:700" data-count="10000" data-suffix="+" data-sep="1">10,000+</b>
 <span style="left:203px;top:398px;font-size:11px;font-weight:500">members and growing</span>
 
-<img src="assets/img/landing-hero-photo.png" alt="Member coding on a 101 Codecrafts laptop" style="left:405px;top:64px;width:443px;height:370px">
+<img fetchpriority="high" decoding="async" src="assets/img/landing-hero-photo.webp" alt="Member coding on a 101 Codecrafts laptop" style="left:405px;top:64px;width:443px;height:370px">
 <div class="hov" style="left:855px;top:70px;width:144px;height:190px;background:var(--lor)">
   <div class="disp" style="position:absolute;left:15px;top:23px;font-family:var(--disp2);font-size:20px;line-height:28px;color:var(--nv);white-space:pre">LEARN
 BUILD
@@ -136,7 +136,7 @@ COLLABORATE
 GROW</div>
   <svg class="i" style="position:absolute;left:15px;top:146px;width:24px;height:22px;color:var(--nv)"><use href="#i-arrow"/></svg>
 </div>
-<img class="hov on-dark" src="assets/img/logo-101-tile.png" alt="101 Codecrafts" style="left:856px;top:270px;width:142px;height:154px">
+<img class="hov on-dark" src="assets/img/logo-101-tile.webp" alt="101 Codecrafts" style="left:856px;top:270px;width:142px;height:154px">
 
 <!-- ============ WHAT WE OFFER ============ -->
 <div class="eyebrow t-or" style="left:35px;top:453px;color:var(--lor)"><i></i>WHAT WE OFFER</div>
@@ -187,19 +187,19 @@ GROW</div>
 <div class="eyebrow" style="left:35px;top:1298px;color:var(--lcy);font-size:10.5px"><i style="border-color:var(--lor);width:14px;height:8px"></i>SUCCESS STORIES</div>
 <h2 class="disp split" style="left:34px;top:1324px;font-size:19.5px;transform:scaleY(1.15);color:#fff">WHAT OUR MEMBERS SAY</h2>
 <p style="left:34px;top:1346px;font-size:12px;color:#e7edf3">Real people. Real skills. Real growth.</p>
-<article class="tcard" style="left:325px;width:223px"><img src="assets/img/t-emmanuel.png" alt=""><b>Emmanuel K.</b><small>Software Engineer</small><p>"101 Codecrafts helped me go from <br>zero to building real projects. The <br>community is amazing!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
-<article class="tcard" style="left:558px;width:222px"><img src="assets/img/t-grace.png" alt=""><b>Grace N.</b><small>Data Analyst</small><p>"The workshops and mentorship <br>programs gave me the confidence <br>to switch careers into data analysis."</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
-<article class="tcard" style="left:790px;width:207px"><img src="assets/img/t-david.png" alt=""><b>David M.</b><small>Cybersecurity Analyst</small><p style="width:135px">"Great resources, supportive peers, <br>and practical learning. This community <br>is a game-changer!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
+<article class="tcard" style="left:325px;width:223px"><img loading="lazy" decoding="async" src="assets/img/t-emmanuel.webp" alt=""><b>Emmanuel K.</b><small>Software Engineer</small><p>"101 Codecrafts helped me go from <br>zero to building real projects. The <br>community is amazing!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
+<article class="tcard" style="left:558px;width:222px"><img loading="lazy" decoding="async" src="assets/img/t-grace.webp" alt=""><b>Grace N.</b><small>Data Analyst</small><p>"The workshops and mentorship <br>programs gave me the confidence <br>to switch careers into data analysis."</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
+<article class="tcard" style="left:790px;width:207px"><img loading="lazy" decoding="async" src="assets/img/t-david.webp" alt=""><b>David M.</b><small>Cybersecurity Analyst</small><p style="width:135px">"Great resources, supportive peers, <br>and practical learning. This community <br>is a game-changer!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
 
 <!-- ============ CTA ============ -->
 <section class="cta">
-  <img src="assets/img/cta-brand-banner.png" alt="101 Codecrafts — Start at 101. Craft your way up." style="left:0;top:0;width:362px;height:67px">
+  <img loading="lazy" decoding="async" src="assets/img/cta-brand-banner.webp" alt="101 Codecrafts — Start at 101. Craft your way up." style="left:0;top:0;width:362px;height:67px">
   <i style="left:350px;top:22px;width:2px;height:30px;background:#14a9d8"></i>
   <b style="left:372px;top:15px;font-size:14px;font-weight:700;color:var(--nv);letter-spacing:.2px">READY TO BUILD YOUR FUTURE?</b>
   <span style="left:372px;top:37px;font-size:12px;color:var(--nv)">Join thousands of learners and start your journey today.</span>
   <i style="left:834px;top:19px;width:153px;height:35px;background:var(--lor)"></i>
   <a class="btn-nv hov on-dark" href="dashboard.html" style="left:831px;top:16px;width:152px;height:33px">JOIN COMMUNITY <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
-  <img src="assets/img/cta-corner.png" alt="" style="left:960px;top:0;width:64px;height:67px">
+  <img loading="lazy" decoding="async" src="assets/img/cta-corner.webp" alt="" style="left:960px;top:0;width:64px;height:67px">
 </section>
 
 <!-- ============ FOOTER ============ -->

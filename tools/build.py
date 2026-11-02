@@ -65,7 +65,7 @@ def sidebar(a):
     role = a.get('role', 'learner'); act = a.get('active', '')
     items = ''.join(f'<a href="{h}"{" aria-current=page" if n == act else ""}><svg aria-hidden="true"><use href="#i-{i}"/></svg><span>{n}</span>{f"<i class=badge>{b[0]}</i>" if b else ""}</a>' for n, i, h, *b in NAV[role])
     return f'''<aside class="sbar" aria-label="Main navigation">
-  <a class="logo" href="index.html"><img src="assets/img/logo-101-sidebar.png" alt="101 Codecrafts home" width="82" height="46"><div><b>101<br>Codecrafts</b><small>Build. Learn. Grow.</small></div></a>
+  <a class="logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" alt="101 Codecrafts home" width="82" height="46"><div><b>101<br>Codecrafts</b><small>Build. Learn. Grow.</small></div></a>
   <nav>{items}</nav>
   <hr><a class="btn or side-extra" href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" style="width:100%"><svg aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp community</a>
 </aside>'''

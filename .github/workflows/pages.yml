@@ -1,0 +1,20 @@
+# Deploys ONLY the public site (no tools/, src/, compare/, tokens/ build helpers) to GitHub Pages.
+name: Deploy site
+on: { push: { branches: [main] }, workflow_dispatch: {} }
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: "${{ steps.d.outputs.page_url }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect public files
+        run: |
+          mkdir _site
+          cp *.html manifest.webmanifest sw.js robots.txt sitemap.xml _site/
+          cp -r css js assets i18n _site/
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+      - id: d
+        uses: actions/deploy-pages@v4

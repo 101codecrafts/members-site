@@ -1,0 +1,11 @@
+{
+  "_note": "Scaffold. Non-English strings are placeholders to be reviewed by native speakers before launch.",
+  "nav.home": "Accueil",
+  "nav.learn": "Apprendre",
+  "nav.community": "Communauté",
+  "nav.resources": "Ressources",
+  "nav.about": "À propos",
+  "cta.join": "Rejoindre la communauté",
+  "cta.login": "Connexion",
+  "hero.kicker": "Bienvenue chez 101 Codecrafts"
+}

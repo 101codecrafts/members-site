@@ -1,0 +1,7 @@
+# dev-only: never deployed
+tools/
+src/
+compare/
+tokens/
+*.md
+!README.md

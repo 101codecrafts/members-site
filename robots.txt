@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /tutor.html
+Disallow: /dashboard.html
+Disallow: /onboarding.html
+Disallow: /go/
+Disallow: /api/
+Sitemap: https://101codecrafts.github.io/members-site/sitemap.xml

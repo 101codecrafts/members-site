@@ -128,9 +128,9 @@ window.CC_DATA = {
 
   /* ---------------- Beta testing ---------------- */
   campaigns: [
-    { id: "t1", product: "BodaSafe", what: "Test live trip sharing on 10 real rides", level: "University", slots: 25, taken: 18, reward: "UGX 10,000 airtime", ends: "2025-11-12T18:00:00+03:00" },
-    { id: "t2", product: "Scratch Quest", what: "Play levels 1–5 with a P6 pupil and report confusing steps", level: "Primary", slots: 15, taken: 6, reward: "Certificate + badge", ends: "2025-11-15T18:00:00+03:00" },
-    { id: "t3", product: "UNEB Buddy", what: "Check 20 AI explanations for A-Level Maths accuracy", level: "A-Level", slots: 40, taken: 37, reward: "1 month Pro", ends: "2025-11-09T23:59:00+03:00" }
+    { id: "t1", product: "BodaSafe", what: "Test live trip sharing on 10 real rides", level: "University", slots: 25, taken: 18, reward: "UGX 10,000 airtime", ends: "2026-11-12T18:00:00+03:00" },
+    { id: "t2", product: "Scratch Quest", what: "Play levels 1–5 with a P6 pupil and report confusing steps", level: "Primary", slots: 15, taken: 6, reward: "Certificate + badge", ends: "2026-11-15T18:00:00+03:00" },
+    { id: "t3", product: "UNEB Buddy", what: "Check 20 AI explanations for A-Level Maths accuracy", level: "A-Level", slots: 40, taken: 37, reward: "1 month Pro", ends: "2026-11-09T23:59:00+03:00" }
   ],
   triage: {
     New: [{ id: "b31", t: "Map freezes on Android 8", sev: "High", who: "tester_amos" }, { id: "b32", t: "Typo on sign-up screen", sev: "Low", who: "grace_m" }],
@@ -141,11 +141,11 @@ window.CC_DATA = {
 
   /* ---------------- Competitions ---------------- */
   competitions: [
-    { id: "hack25", name: "Hackathon 2025", track: "Open innovation", level: "University", team: "1–4", prize: "UGX 5,000,000", starts: "2025-11-22T09:00:00+03:00", registered: 402 },
-    { id: "ctf-ol", name: "Junior CTF: Capture the Flag", track: "Cybersecurity", level: "O-Level", team: "1–3", prize: "Laptops + mentorship", starts: "2025-12-06T10:00:00+03:00", registered: 156 },
-    { id: "ai-alevel", name: "AI for Exams Challenge", track: "AI & ML", level: "A-Level", team: "1–2", prize: "UGX 2,000,000", starts: "2025-12-13T09:00:00+03:00", registered: 98 },
-    { id: "scratch-p7", name: "Scratch Story Jam", track: "Creative coding", level: "Primary", team: "1–2", prize: "Tablets for the school", starts: "2025-11-29T09:00:00+03:00", registered: 74 },
-    { id: "cloud-pro", name: "Serverless Speedrun", track: "Cloud & DevOps", level: "Professional", team: "1", prize: "AWS credits", starts: "2025-12-20T18:00:00+03:00", registered: 61 }
+    { id: "hack25", name: "Hackathon 2025", track: "Open innovation", level: "University", team: "1–4", prize: "UGX 5,000,000", starts: "2026-11-22T09:00:00+03:00", registered: 402 },
+    { id: "ctf-ol", name: "Junior CTF: Capture the Flag", track: "Cybersecurity", level: "O-Level", team: "1–3", prize: "Laptops + mentorship", starts: "2026-12-06T10:00:00+03:00", registered: 156 },
+    { id: "ai-alevel", name: "AI for Exams Challenge", track: "AI & ML", level: "A-Level", team: "1–2", prize: "UGX 2,000,000", starts: "2026-12-13T09:00:00+03:00", registered: 98 },
+    { id: "scratch-p7", name: "Scratch Story Jam", track: "Creative coding", level: "Primary", team: "1–2", prize: "Tablets for the school", starts: "2026-11-29T09:00:00+03:00", registered: 74 },
+    { id: "cloud-pro", name: "Serverless Speedrun", track: "Cloud & DevOps", level: "Professional", team: "1", prize: "AWS credits", starts: "2026-12-20T18:00:00+03:00", registered: 61 }
   ],
   leaderboard: [
     { team: "Kampala Kernel", pts: 980, members: 4 }, { team: "Nile Byte", pts: 940, members: 3 },
