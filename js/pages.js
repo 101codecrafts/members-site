@@ -3,8 +3,8 @@
 (function () {
   const { $, $$, esc, ugx, ico } = window.CC_UI, API = window.CC_API, D = window.CC_DATA;
   const page = document.body.dataset.page, q = new URLSearchParams(location.search);
-  const LV_CLR = { Primary: "#13a35c", "O-Level": "#1b8acb", "A-Level": "#7a3fb0", University: "#a85400", Professional: "#10181f" };
-  const levelBadge = l => l ? `<span class="lvl" style="--lv:${LV_CLR[l] || "#10181f"}">${esc(l)}</span>` : "";
+  const LV_CLR = { Primary: "#13a35c", "O-Level": "#1b8acb", "A-Level": "#7a3fb0", University: "#a85400", Professional: "#0B1236" };
+  const levelBadge = l => l ? `<span class="lvl" style="--lv:${LV_CLR[l] || "#0B1236"}">${esc(l)}</span>` : "";
   const avatars = arr => `<span class="avs">${arr.map(a => `<i aria-hidden="true">${esc(a)}</i>`).join("")}</span>`;
   const toast = m => { let t = $("#cc-toast"); if (!t) { t = document.createElement("div"); t.id = "cc-toast"; t.setAttribute("role", "status"); document.body.appendChild(t); } t.textContent = m; t.className = "show"; clearTimeout(t._h); t._h = setTimeout(() => t.className = "", 2600); };
   /* education-level filter chips: <div data-levels></div> */

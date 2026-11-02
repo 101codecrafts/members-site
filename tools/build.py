@@ -39,7 +39,7 @@ def head(a, page):
 <meta property="og:title" content="{html.escape(t)}"><meta property="og:description" content="{html.escape(d)}">
 <meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/{og}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{SITE}/{og}">
-<meta name="theme-color" content="#10181f">
+<meta name="theme-color" content="#0B1236">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>

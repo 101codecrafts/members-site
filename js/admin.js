@@ -11,8 +11,8 @@
   async function charts() {
     const a = cache.analytics = await API.fetchAnalytics();
     if (!window.Chart) { $$(".chart-box").forEach(b => b.innerHTML = `<p class="muted">Charts load from jsDelivr (Chart.js). Offline right now.</p>`); return; }
-    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily; Chart.defaults.color = "#10181f"; Chart.defaults.borderColor = "#e0e6ea";
-    const OR = "#fc8c0c", CY = "#05e6f2", INK = "#10181f", anim = API.STATIC || document.documentElement.classList.contains("lite") ? false : undefined;
+    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily; Chart.defaults.color = "#0B1236"; Chart.defaults.borderColor = "#e0e6ea";
+    const OR = "#fc8c0c", CY = "#05e6f2", INK = "#0B1236", anim = API.STATIC || document.documentElement.classList.contains("lite") ? false : undefined;
     const base = { responsive: true, maintainAspectRatio: false, animation: anim, plugins: { legend: { labels: { boxWidth: 12, boxHeight: 12 } } } };
     new Chart($("#ch-signups"), { type: "line", data: { labels: a.signups.labels, datasets: [{ label: "Learners", data: a.signups.learners, borderColor: OR, backgroundColor: OR, borderWidth: 3, tension: .25 }, { label: "Tutors", data: a.signups.tutors, borderColor: INK, backgroundColor: INK, borderWidth: 3, tension: .25 }] }, options: base });
     new Chart($("#ch-revenue"), { type: "bar", data: { labels: a.revenue.labels, datasets: [{ label: "UGX (M)", data: a.revenue.ugx, backgroundColor: INK, borderColor: INK }] }, options: { ...base, plugins: { legend: { display: false } } } });

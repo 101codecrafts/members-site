@@ -1,5 +1,5 @@
 /* Public landing — laid out on the 1024x1536 mockup grid */
-body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9;background:#f3f6f7}
+body[data-page="landing"]{--nv:#0B1236;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9;background:#f3f6f7}
 .page{position:relative;width:1024px;height:1536px;margin:0 auto;overflow:hidden;background:#f3f6f7;color:var(--nv)}
 .page>*{position:absolute}
 .page .disp{font-family:var(--disp);font-weight:400;white-space:nowrap;transform-origin:0 0;line-height:1}
@@ -23,7 +23,7 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .btn-nv{background:var(--nv);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px}
 
 /* features */
-.feat{background:#03203f;color:#fff}
+.feat{background:#111A45;color:#fff}
 .feat>*{position:absolute}
 .feat .ib{left:14px;width:61px;height:56px;display:flex;align-items:center;justify-content:center;color:var(--nv)}
 .feat .ib svg{width:40px;height:40px}
