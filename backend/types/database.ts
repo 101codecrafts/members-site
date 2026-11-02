@@ -104,6 +104,96 @@ export type Database = {
         };
         Relationships: [];
       };
+      article_versions: {
+        Row: {
+          article_id: string;
+          version: number;
+          title: string;
+          body_md: string;
+          editor_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          article_id: string;
+          version: number;
+          title: string;
+          body_md: string;
+          editor_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          article_id?: string;
+          version?: number;
+          title?: string;
+          body_md?: string;
+          editor_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      articles: {
+        Row: {
+          id: string;
+          author_id: string;
+          slug: string;
+          title: string;
+          summary: string | null;
+          body_md: string;
+          topic_id: string | null;
+          tags: string[];
+          level: Database["public"]["Enums"]["education_level"] | null;
+          status: Database["public"]["Enums"]["content_status"];
+          version: number;
+          reviewer_id: string | null;
+          review_note: string | null;
+          published_at: string | null;
+          views_count: number;
+          search: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          author_id: string;
+          slug: string;
+          title: string;
+          summary?: string | null;
+          body_md?: string;
+          topic_id?: string | null;
+          tags?: string[];
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          version?: number;
+          reviewer_id?: string | null;
+          review_note?: string | null;
+          published_at?: string | null;
+          views_count?: number;
+          search?: never;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          author_id?: string;
+          slug?: string;
+          title?: string;
+          summary?: string | null;
+          body_md?: string;
+          topic_id?: string | null;
+          tags?: string[];
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          version?: number;
+          reviewer_id?: string | null;
+          review_note?: string | null;
+          published_at?: string | null;
+          views_count?: number;
+          search?: never;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           id: number;
@@ -175,6 +265,27 @@ export type Database = {
           xp_reward?: number;
           rule?: Json;
           is_active?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      bookmarks: {
+        Row: {
+          user_id: string;
+          kind: Database["public"]["Enums"]["bookmark_kind"];
+          ref_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          kind: Database["public"]["Enums"]["bookmark_kind"];
+          ref_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          kind?: Database["public"]["Enums"]["bookmark_kind"];
+          ref_id?: string;
           created_at?: string;
         };
         Relationships: [];
@@ -460,6 +571,96 @@ export type Database = {
           policy_version?: string;
           ip_hash?: string | null;
           user_agent?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      contest_problems: {
+        Row: {
+          contest_id: string;
+          problem_id: string;
+          label: string;
+          points: number;
+        };
+        Insert: {
+          contest_id: string;
+          problem_id: string;
+          label: string;
+          points?: number;
+        };
+        Update: {
+          contest_id?: string;
+          problem_id?: string;
+          label?: string;
+          points?: number;
+        };
+        Relationships: [];
+      };
+      contest_registrations: {
+        Row: {
+          contest_id: string;
+          user_id: string;
+          registered_at: string;
+          disqualified: boolean;
+        };
+        Insert: {
+          contest_id: string;
+          user_id: string;
+          registered_at?: string;
+          disqualified?: boolean;
+        };
+        Update: {
+          contest_id?: string;
+          user_id?: string;
+          registered_at?: string;
+          disqualified?: boolean;
+        };
+        Relationships: [];
+      };
+      contests: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          description_md: string | null;
+          starts_at: string;
+          ends_at: string;
+          scoring: Database["public"]["Enums"]["contest_scoring"];
+          penalty_minutes: number;
+          freeze_minutes: number;
+          level: Database["public"]["Enums"]["education_level"] | null;
+          status: Database["public"]["Enums"]["content_status"];
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          description_md?: string | null;
+          starts_at: string;
+          ends_at: string;
+          scoring?: Database["public"]["Enums"]["contest_scoring"];
+          penalty_minutes?: number;
+          freeze_minutes?: number;
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          title?: string;
+          description_md?: string | null;
+          starts_at?: string;
+          ends_at?: string;
+          scoring?: Database["public"]["Enums"]["contest_scoring"];
+          penalty_minutes?: number;
+          freeze_minutes?: number;
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          created_by?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -1405,6 +1606,57 @@ export type Database = {
           verified_at?: string | null;
           verification_method?: string | null;
           revoked_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      interview_set_items: {
+        Row: {
+          set_id: string;
+          problem_id: string | null;
+          article_id: string | null;
+          ord: number;
+        };
+        Insert: {
+          set_id: string;
+          problem_id?: string | null;
+          article_id?: string | null;
+          ord?: number;
+        };
+        Update: {
+          set_id?: string;
+          problem_id?: string | null;
+          article_id?: string | null;
+          ord?: number;
+        };
+        Relationships: [];
+      };
+      interview_sets: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          company: string | null;
+          description_md: string | null;
+          status: Database["public"]["Enums"]["content_status"];
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          company?: string | null;
+          description_md?: string | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          title?: string;
+          company?: string | null;
+          description_md?: string | null;
+          status?: Database["public"]["Enums"]["content_status"];
           created_at?: string;
         };
         Relationships: [];
@@ -2681,6 +2933,42 @@ export type Database = {
         };
         Relationships: [];
       };
+      plagiarism_flags: {
+        Row: {
+          id: string;
+          contest_id: string | null;
+          problem_id: string;
+          sub_a: string;
+          sub_b: string;
+          similarity: number;
+          status: string;
+          reviewed_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          contest_id?: string | null;
+          problem_id: string;
+          sub_a: string;
+          sub_b: string;
+          similarity: number;
+          status?: string;
+          reviewed_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          contest_id?: string | null;
+          problem_id?: string;
+          sub_a?: string;
+          sub_b?: string;
+          similarity?: number;
+          status?: string;
+          reviewed_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       post_comments: {
         Row: {
           id: string;
@@ -2768,6 +3056,96 @@ export type Database = {
         };
         Relationships: [];
       };
+      practice_solved: {
+        Row: {
+          user_id: string;
+          problem_id: string;
+          first_ac: string | null;
+          solved_at: string;
+        };
+        Insert: {
+          user_id: string;
+          problem_id: string;
+          first_ac?: string | null;
+          solved_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          problem_id?: string;
+          first_ac?: string | null;
+          solved_at?: string;
+        };
+        Relationships: [];
+      };
+      practice_stats: {
+        Row: {
+          user_id: string;
+          coding_score: number;
+          solved_total: number;
+          solved_basic: number;
+          solved_easy: number;
+          solved_medium: number;
+          solved_hard: number;
+          potd_streak: number;
+          potd_best: number;
+          potd_last_day: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          coding_score?: number;
+          solved_total?: number;
+          solved_basic?: number;
+          solved_easy?: number;
+          solved_medium?: number;
+          solved_hard?: number;
+          potd_streak?: number;
+          potd_best?: number;
+          potd_last_day?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          coding_score?: number;
+          solved_total?: number;
+          solved_basic?: number;
+          solved_easy?: number;
+          solved_medium?: number;
+          solved_hard?: number;
+          potd_streak?: number;
+          potd_best?: number;
+          potd_last_day?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      practice_topics: {
+        Row: {
+          id: string;
+          parent_id: string | null;
+          slug: string;
+          name: string;
+          sort: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          parent_id?: string | null;
+          slug: string;
+          name: string;
+          sort?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          parent_id?: string | null;
+          slug?: string;
+          name?: string;
+          sort?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       preview_embeds: {
         Row: {
           id: string;
@@ -2795,6 +3173,141 @@ export type Database = {
           height_px?: number;
           is_active?: boolean;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      problem_editorials: {
+        Row: {
+          problem_id: string;
+          editorial_md: string;
+          solution_code: Json;
+          updated_at: string;
+        };
+        Insert: {
+          problem_id: string;
+          editorial_md: string;
+          solution_code?: Json;
+          updated_at?: string;
+        };
+        Update: {
+          problem_id?: string;
+          editorial_md?: string;
+          solution_code?: Json;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      problem_hints: {
+        Row: {
+          id: string;
+          problem_id: string;
+          ord: number;
+          body_md: string;
+        };
+        Insert: {
+          id?: string;
+          problem_id: string;
+          ord?: number;
+          body_md: string;
+        };
+        Update: {
+          id?: string;
+          problem_id?: string;
+          ord?: number;
+          body_md?: string;
+        };
+        Relationships: [];
+      };
+      problem_of_the_day: {
+        Row: {
+          day: string;
+          problem_id: string;
+        };
+        Insert: {
+          day: string;
+          problem_id: string;
+        };
+        Update: {
+          day?: string;
+          problem_id?: string;
+        };
+        Relationships: [];
+      };
+      problems: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          statement_md: string;
+          input_format_md: string | null;
+          output_format_md: string | null;
+          constraints_md: string | null;
+          difficulty: Database["public"]["Enums"]["problem_difficulty"];
+          topic_ids: string[];
+          tags: string[];
+          company_tags: string[];
+          starter_code: Json;
+          languages: string[];
+          time_limit_ms: number;
+          memory_limit_kb: number;
+          level: Database["public"]["Enums"]["education_level"] | null;
+          status: Database["public"]["Enums"]["content_status"];
+          author_id: string | null;
+          solved_count: number;
+          attempts_count: number;
+          search: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          statement_md: string;
+          input_format_md?: string | null;
+          output_format_md?: string | null;
+          constraints_md?: string | null;
+          difficulty?: Database["public"]["Enums"]["problem_difficulty"];
+          topic_ids?: string[];
+          tags?: string[];
+          company_tags?: string[];
+          starter_code?: Json;
+          languages?: string[];
+          time_limit_ms?: number;
+          memory_limit_kb?: number;
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          author_id?: string | null;
+          solved_count?: number;
+          attempts_count?: number;
+          search?: never;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          title?: string;
+          statement_md?: string;
+          input_format_md?: string | null;
+          output_format_md?: string | null;
+          constraints_md?: string | null;
+          difficulty?: Database["public"]["Enums"]["problem_difficulty"];
+          topic_ids?: string[];
+          tags?: string[];
+          company_tags?: string[];
+          starter_code?: Json;
+          languages?: string[];
+          time_limit_ms?: number;
+          memory_limit_kb?: number;
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          author_id?: string | null;
+          solved_count?: number;
+          attempts_count?: number;
+          search?: never;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -3146,6 +3659,120 @@ export type Database = {
           group_id?: string | null;
           status?: string;
           level?: Database["public"]["Enums"]["education_level"] | null;
+        };
+        Relationships: [];
+      };
+      quiz_answer_keys: {
+        Row: {
+          question_id: string;
+          correct: number[];
+          explanation_md: string | null;
+        };
+        Insert: {
+          question_id: string;
+          correct: number[];
+          explanation_md?: string | null;
+        };
+        Update: {
+          question_id?: string;
+          correct?: number[];
+          explanation_md?: string | null;
+        };
+        Relationships: [];
+      };
+      quiz_attempts: {
+        Row: {
+          id: string;
+          quiz_id: string;
+          user_id: string;
+          answers: Json;
+          score_pct: number;
+          passed: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          quiz_id: string;
+          user_id: string;
+          answers: Json;
+          score_pct: number;
+          passed: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          quiz_id?: string;
+          user_id?: string;
+          answers?: Json;
+          score_pct?: number;
+          passed?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      quiz_questions: {
+        Row: {
+          id: string;
+          quiz_id: string;
+          ord: number;
+          prompt_md: string;
+          options: Json;
+          multi: boolean;
+        };
+        Insert: {
+          id?: string;
+          quiz_id: string;
+          ord?: number;
+          prompt_md: string;
+          options: Json;
+          multi?: boolean;
+        };
+        Update: {
+          id?: string;
+          quiz_id?: string;
+          ord?: number;
+          prompt_md?: string;
+          options?: Json;
+          multi?: boolean;
+        };
+        Relationships: [];
+      };
+      quizzes: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          topic_id: string | null;
+          level: Database["public"]["Enums"]["education_level"] | null;
+          time_limit_s: number | null;
+          pass_pct: number;
+          status: Database["public"]["Enums"]["content_status"];
+          author_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          topic_id?: string | null;
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          time_limit_s?: number | null;
+          pass_pct?: number;
+          status?: Database["public"]["Enums"]["content_status"];
+          author_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          title?: string;
+          topic_id?: string | null;
+          level?: Database["public"]["Enums"]["education_level"] | null;
+          time_limit_s?: number | null;
+          pass_pct?: number;
+          status?: Database["public"]["Enums"]["content_status"];
+          author_id?: string | null;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -3557,6 +4184,66 @@ export type Database = {
         };
         Relationships: [];
       };
+      submissions: {
+        Row: {
+          id: string;
+          user_id: string;
+          problem_id: string;
+          contest_id: string | null;
+          language: string;
+          code: string;
+          verdict: Database["public"]["Enums"]["submission_verdict"];
+          passed: number;
+          total: number;
+          score: number;
+          runtime_ms: number | null;
+          memory_kb: number | null;
+          compile_output: string | null;
+          judge_ref: string | null;
+          plagiarism_score: number | null;
+          created_at: string;
+          judged_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          problem_id: string;
+          contest_id?: string | null;
+          language: string;
+          code: string;
+          verdict?: Database["public"]["Enums"]["submission_verdict"];
+          passed?: number;
+          total?: number;
+          score?: number;
+          runtime_ms?: number | null;
+          memory_kb?: number | null;
+          compile_output?: string | null;
+          judge_ref?: string | null;
+          plagiarism_score?: number | null;
+          created_at?: string;
+          judged_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          problem_id?: string;
+          contest_id?: string | null;
+          language?: string;
+          code?: string;
+          verdict?: Database["public"]["Enums"]["submission_verdict"];
+          passed?: number;
+          total?: number;
+          score?: number;
+          runtime_ms?: number | null;
+          memory_kb?: number | null;
+          compile_output?: string | null;
+          judge_ref?: string | null;
+          plagiarism_score?: number | null;
+          created_at?: string;
+          judged_at?: string | null;
+        };
+        Relationships: [];
+      };
       subscription_plans: {
         Row: {
           id: string;
@@ -3701,6 +4388,39 @@ export type Database = {
           testers_count?: number;
           created_at?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      test_cases: {
+        Row: {
+          id: string;
+          problem_id: string;
+          ord: number;
+          input: string;
+          expected_output: string;
+          is_sample: boolean;
+          weight: number;
+          explanation_md: string | null;
+        };
+        Insert: {
+          id?: string;
+          problem_id: string;
+          ord?: number;
+          input: string;
+          expected_output: string;
+          is_sample?: boolean;
+          weight?: number;
+          explanation_md?: string | null;
+        };
+        Update: {
+          id?: string;
+          problem_id?: string;
+          ord?: number;
+          input?: string;
+          expected_output?: string;
+          is_sample?: boolean;
+          weight?: number;
+          explanation_md?: string | null;
         };
         Relationships: [];
       };
@@ -4298,6 +5018,7 @@ export type Database = {
       admin_moderate: { Args: { p_flag_id: string; p_action: string; p_note?: string }; Returns: Database["public"]["Tables"]["moderation_flags"]["Row"] };
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
       admin_reorder_social_links: { Args: { p_ids: string[] }; Returns: undefined };
+      admin_review_article: { Args: { p_article: string; p_decision: string; p_note?: string }; Returns: Database["public"]["Tables"]["articles"]["Row"] };
       admin_review_membership: { Args: { p_application_id: string; p_decision: Database["public"]["Enums"]["application_status"]; p_note?: string }; Returns: Database["public"]["Tables"]["membership_applications"]["Row"] };
       admin_review_payout: { Args: { p_payout_id: string; p_decision: string; p_note?: string }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       admin_review_placement: { Args: { p_id: string; p_approve: boolean }; Returns: undefined };
@@ -4315,6 +5036,7 @@ export type Database = {
       claim_referral: { Args: { p_code: string }; Returns: boolean };
       complete_payout: { Args: { p_reference: string; p_success: boolean; p_failure?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       complete_refund: { Args: { p_refund_id: string; p_success: boolean; p_flw_refund_id?: number; p_failure?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["refunds"]["Row"] };
+      contest_leaderboard: { Args: { p_contest: string; p_limit?: number }; Returns: { rank: number; user_id: string; username: string; solved: number; penalty_minutes: number; score: number; per_problem: Json }[] };
       create_checkout: { Args: { p_purpose: Database["public"]["Enums"]["payment_purpose"]; p_reference_id?: string; p_coupon_code?: string; p_quantity?: number; p_note?: string; p_amount_ugx?: number }; Returns: Json };
       decide_join_request: { Args: { p_request: string; p_approve: boolean }; Returns: undefined };
       erase_user: { Args: { p_user: string; p_actor?: string }; Returns: undefined };
@@ -4322,14 +5044,19 @@ export type Database = {
       export_my_data: { Args: Record<PropertyKey, never>; Returns: Json };
       fanout_announcement: { Args: { p_announcement_id: string }; Returns: number };
       finalize_competition: { Args: { p_comp: string }; Returns: number };
+      flag_plagiarism: { Args: { p_contest: string; p_threshold?: number }; Returns: number };
       join_group: { Args: { p_group: string; p_invite_code?: string; p_message?: string }; Returns: string };
+      judge_payload: { Args: { p_submission: string }; Returns: Json };
+      judge_record_result: { Args: { p_submission: string; p_verdict: Database["public"]["Enums"]["submission_verdict"]; p_passed: number; p_total: number; p_score?: number; p_runtime_ms?: number; p_memory_kb?: number; p_compile_output?: string; p_judge_ref?: string }; Returns: Database["public"]["Tables"]["submissions"]["Row"] };
       mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number };
       mark_payout_processing: { Args: { p_payout_id: string; p_flw_transfer_id: number }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       my_access: { Args: Record<PropertyKey, never>; Returns: Json };
       my_plan: { Args: Record<PropertyKey, never>; Returns: Json };
+      my_practice_progress: { Args: Record<PropertyKey, never>; Returns: Json };
       my_referral_code: { Args: Record<PropertyKey, never>; Returns: string };
       my_wallet: { Args: Record<PropertyKey, never>; Returns: Json };
       news_title_exists: { Args: { p_title: string }; Returns: boolean };
+      practice_ai_policy: { Args: { p_problem: string }; Returns: Json };
       promote_project_to_launchpad: { Args: { p_project: string; p_tagline: string }; Returns: string };
       rate_limit_hit: { Args: { p_key: string; p_max: number; p_window_seconds: number }; Returns: { allowed: boolean; remaining: number; reset_at: string }[] };
       recommend_courses: { Args: { max_results?: number }; Returns: Database["public"]["Tables"]["courses"]["Row"][] };
@@ -4337,6 +5064,7 @@ export type Database = {
       record_subscription_renewal: { Args: { p_flw_plan_id: number; p_customer_email: string; p_flw_id: number; p_tx_ref: string; p_amount: number; p_currency: string; p_raw: Json }; Returns: Database["public"]["Tables"]["payments"]["Row"] };
       refresh_analytics: { Args: Record<PropertyKey, never>; Returns: undefined };
       register_click: { Args: { p_kind: string; p_id: string }; Returns: string };
+      register_contest: { Args: { p_contest: string }; Returns: undefined };
       request_payout: { Args: { p_amount_ugx: number; p_method_id?: string }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       request_refund: { Args: { p_payment_id: string; p_reason: string }; Returns: Database["public"]["Tables"]["refunds"]["Row"] };
       run_daily_maintenance: { Args: Record<PropertyKey, never>; Returns: Json };
@@ -4345,6 +5073,8 @@ export type Database = {
       session_join_info: { Args: { p_session: string }; Returns: Json };
       set_payment_checkout_link: { Args: { p_tx_ref: string; p_link: string }; Returns: undefined };
       start_direct_conversation: { Args: { p_other: string }; Returns: string };
+      submit_quiz: { Args: { p_quiz: string; p_answers: Json }; Returns: Json };
+      submit_solution: { Args: { p_problem: string; p_language: string; p_code: string; p_contest?: string }; Returns: Database["public"]["Tables"]["submissions"]["Row"] };
       touch_last_seen: { Args: Record<PropertyKey, never>; Returns: undefined };
       tutor_dashboard: { Args: Record<PropertyKey, never>; Returns: Json };
       verify_certificate: { Args: { p_code: string }; Returns: Json };
@@ -4358,7 +5088,9 @@ export type Database = {
       application_status: "pending" | "approved" | "rejected" | "withdrawn";
       billing_interval: "monthly" | "quarterly" | "yearly";
       booking_status: "pending_payment" | "confirmed" | "cancelled" | "attended" | "no_show" | "refunded";
+      bookmark_kind: "article" | "problem" | "quiz" | "interview_set" | "contest";
       content_status: "draft" | "pending_review" | "published" | "rejected" | "archived";
+      contest_scoring: "icpc" | "ioi";
       conversation_kind: "direct" | "group";
       coupon_kind: "percent" | "fixed";
       education_level: "primary" | "o_level" | "a_level" | "university" | "professional";
@@ -4378,6 +5110,7 @@ export type Database = {
       payment_status: "pending" | "successful" | "failed" | "cancelled" | "abandoned" | "refunded" | "partially_refunded";
       payout_method_kind: "mobile_money" | "bank";
       payout_status: "requested" | "approved" | "held" | "processing" | "paid" | "failed" | "rejected";
+      problem_difficulty: "basic" | "easy" | "medium" | "hard";
       refund_status: "requested" | "processing" | "completed" | "failed" | "rejected";
       registration_status: "registered" | "waitlisted" | "cancelled" | "attended" | "refunded";
       resource_kind: "article" | "video" | "doc" | "repo" | "dataset" | "template" | "course" | "other";
@@ -4386,6 +5119,7 @@ export type Database = {
       session_status: "scheduled" | "cancelled" | "completed";
       skill_level: "beginner" | "intermediate" | "advanced";
       social_platform: "youtube" | "instagram" | "tiktok" | "x" | "linkedin" | "discord" | "facebook" | "whatsapp_channel" | "whatsapp_group" | "telegram" | "github" | "threads" | "other";
+      submission_verdict: "pending" | "running" | "AC" | "WA" | "TLE" | "MLE" | "RE" | "CE" | "IE";
       subscription_status: "pending" | "active" | "past_due" | "cancelled" | "expired";
       tool_pricing: "free" | "freemium" | "paid" | "open_source";
       tutor_verification: "unverified" | "pending" | "verified" | "rejected" | "suspended";

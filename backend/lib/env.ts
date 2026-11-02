@@ -37,6 +37,9 @@ const schema = z.object({
   GOOGLE_BOOKS_API_KEY: z.string().optional(),
   AI_GATEWAY_API_KEY: z.string().optional(), // Vercel AI Gateway (news summaries)
   AI_MODEL: z.string().default('openai/gpt-4o-mini'),
+  // Judge (self-hosted Judge0 CE). Unset → submissions stay 'pending' and are retried by cron.
+  JUDGE0_URL: z.string().url().optional(),
+  JUDGE0_AUTH_TOKEN: z.string().optional(),
   EXPO_ACCESS_TOKEN: z.string().optional(),
   SENTRY_DSN: z.string().url().optional(),   // Sentry free tier or self-hosted GlitchTip
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
