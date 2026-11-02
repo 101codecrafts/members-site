@@ -101,6 +101,9 @@ export async function POST(req: Request) {
   return run.result.toUIMessageStreamResponse({
     headers: { ...cors, ...rlHeaders },
     originalMessages: messages,
+    // Never stream model reasoning to clients: it can echo the system prompt or retrieved context verbatim.
+    sendReasoning: false,
+    sendSources: false,
     messageMetadata: ({ part }) =>
       part.type === "start"
         ? { citations: run.citations, conversationId, retrieval: run.retrievalMode }
