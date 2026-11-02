@@ -1,0 +1,18 @@
+# Weekly PR refreshing the pinned disposable-email blocklist used by services/email-guard.ts.
+name: refresh-disposable-domains
+on:
+  schedule: [{ cron: '0 4 * * 1' }]
+  workflow_dispatch: {}
+permissions: { contents: write, pull-requests: write }
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -sfL https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/main/disposable_email_blocklist.conf -o backend/data/disposable_email_blocklist.conf
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/disposable-domains
+          title: 'chore: refresh disposable email blocklist'
+          commit-message: 'chore: refresh disposable email blocklist'
+          body: 'Automated weekly refresh from disposable-email-domains/disposable-email-domains.'

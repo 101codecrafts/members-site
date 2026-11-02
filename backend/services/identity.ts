@@ -8,6 +8,7 @@ import { recordWebhook, markWebhook } from '@/services/payments';
 import { rpc } from '@/repositories/rpc';
 import { sendEmails, templates } from '@/lib/email';
 import type { Logger } from '@/lib/logger';
+import { checkEmail } from '@/services/email-guard';
 
 interface ClerkEmail { id: string; email_address: string; verification?: { status?: string } | null }
 interface ClerkUser {
@@ -42,6 +43,17 @@ export async function handleClerkWebhook(raw: string, headers: Headers, log: Log
     const u = evt.data;
     if (evt.type === 'user.created' || evt.type === 'user.updated') {
       const primary = u.email_addresses?.find((x) => x.id === u.primary_email_address_id) ?? u.email_addresses?.[0];
+      // Disposable / denied / no-MX / duplicate-alias emails: delete the Clerk user and stop (logged to security_events).
+      if (primary?.email_address) {
+        const verdict = await checkEmail(primary.email_address, { userId: u.id });
+        if (!verdict.ok) {
+          if (evt.type === 'user.created') await (await clerkClient()).users.deleteUser(u.id).catch(() => undefined);
+          else await (await clerkClient()).users.banUser(u.id).catch(() => undefined);
+          await markWebhook('clerk', svixId);
+          log.warn('clerk_webhook.blocked_email', { type: evt.type, reason: verdict.reason });
+          return { ok: true };
+        }
+      }
       const name = [u.first_name, u.last_name].filter(Boolean).join(' ').trim() || u.username || '';
       const username = u.username && /^[a-z0-9_]{3,30}$/.test(u.username) ? u.username : null;
       const { error } = await db.from('profiles').upsert({ id: u.id, display_name: name.slice(0, 80), username, avatar_url: u.image_url?.startsWith('https://') ? u.image_url : null },

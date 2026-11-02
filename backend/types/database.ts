@@ -188,6 +188,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      announcement_reads: {
+        Row: {
+          announcement_id: string;
+          user_id: string;
+          read_at: string;
+        };
+        Insert: {
+          announcement_id: string;
+          user_id: string;
+          read_at?: string;
+        };
+        Update: {
+          announcement_id?: string;
+          user_id?: string;
+          read_at?: string;
+        };
+        Relationships: [];
+      };
       announcements: {
         Row: {
           id: string;
@@ -203,6 +221,12 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          target_roles: Database["public"]["Enums"]["app_role"][];
+          target_levels: Database["public"]["Enums"]["education_level"][];
+          target_group_ids: string[];
+          target_course_ids: string[];
+          send_push: boolean;
+          email_digest: boolean;
         };
         Insert: {
           id?: string;
@@ -218,6 +242,12 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          target_roles?: Database["public"]["Enums"]["app_role"][];
+          target_levels?: Database["public"]["Enums"]["education_level"][];
+          target_group_ids?: string[];
+          target_course_ids?: string[];
+          send_push?: boolean;
+          email_digest?: boolean;
         };
         Update: {
           id?: string;
@@ -233,6 +263,12 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          target_roles?: Database["public"]["Enums"]["app_role"][];
+          target_levels?: Database["public"]["Enums"]["education_level"][];
+          target_group_ids?: string[];
+          target_course_ids?: string[];
+          send_push?: boolean;
+          email_digest?: boolean;
         };
         Relationships: [];
       };
@@ -1169,6 +1205,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      email_domain_rules: {
+        Row: {
+          domain: string;
+          rule: string;
+          note: string | null;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          domain: string;
+          rule: string;
+          note?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          domain?: string;
+          rule?: string;
+          note?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      email_fingerprints: {
+        Row: {
+          fingerprint: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          fingerprint: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          fingerprint?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       enrollments: {
         Row: {
           id: string;
@@ -1334,6 +1412,14 @@ export type Database = {
           levels: Database["public"]["Enums"]["education_level"][];
           age_rating: Database["public"]["Enums"]["age_rating"];
           group_id: string | null;
+          organiser: Database["public"]["Enums"]["event_organiser"];
+          mode: Database["public"]["Enums"]["event_mode"];
+          city: string | null;
+          lat: number | null;
+          lng: number | null;
+          waitlist_enabled: boolean;
+          minors_need_guardian: boolean;
+          reminder_2h_sent_at: string | null;
         };
         Insert: {
           id?: string;
@@ -1361,6 +1447,14 @@ export type Database = {
           levels?: Database["public"]["Enums"]["education_level"][];
           age_rating?: Database["public"]["Enums"]["age_rating"];
           group_id?: string | null;
+          organiser?: Database["public"]["Enums"]["event_organiser"];
+          mode?: Database["public"]["Enums"]["event_mode"];
+          city?: string | null;
+          lat?: number | null;
+          lng?: number | null;
+          waitlist_enabled?: boolean;
+          minors_need_guardian?: boolean;
+          reminder_2h_sent_at?: string | null;
         };
         Update: {
           id?: string;
@@ -1388,6 +1482,14 @@ export type Database = {
           levels?: Database["public"]["Enums"]["education_level"][];
           age_rating?: Database["public"]["Enums"]["age_rating"];
           group_id?: string | null;
+          organiser?: Database["public"]["Enums"]["event_organiser"];
+          mode?: Database["public"]["Enums"]["event_mode"];
+          city?: string | null;
+          lat?: number | null;
+          lng?: number | null;
+          waitlist_enabled?: boolean;
+          minors_need_guardian?: boolean;
+          reminder_2h_sent_at?: string | null;
         };
         Relationships: [];
       };
@@ -1478,6 +1580,81 @@ export type Database = {
           last_checked_at?: string | null;
           created_at?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      external_events: {
+        Row: {
+          id: string;
+          title: string;
+          organiser: Database["public"]["Enums"]["event_organiser"];
+          organiser_name: string | null;
+          mode: Database["public"]["Enums"]["event_mode"];
+          venue: string | null;
+          city: string | null;
+          country: string | null;
+          lat: number | null;
+          lng: number | null;
+          starts_at: string;
+          ends_at: string | null;
+          timezone: string;
+          price_text: string | null;
+          source: string;
+          source_url: string;
+          dedupe_key: string;
+          min_age: number | null;
+          status: Database["public"]["Enums"]["content_status"];
+          verified: boolean;
+          submitted_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          organiser?: Database["public"]["Enums"]["event_organiser"];
+          organiser_name?: string | null;
+          mode?: Database["public"]["Enums"]["event_mode"];
+          venue?: string | null;
+          city?: string | null;
+          country?: string | null;
+          lat?: number | null;
+          lng?: number | null;
+          starts_at: string;
+          ends_at?: string | null;
+          timezone?: string;
+          price_text?: string | null;
+          source?: string;
+          source_url: string;
+          dedupe_key: string;
+          min_age?: number | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          verified?: boolean;
+          submitted_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          organiser?: Database["public"]["Enums"]["event_organiser"];
+          organiser_name?: string | null;
+          mode?: Database["public"]["Enums"]["event_mode"];
+          venue?: string | null;
+          city?: string | null;
+          country?: string | null;
+          lat?: number | null;
+          lng?: number | null;
+          starts_at?: string;
+          ends_at?: string | null;
+          timezone?: string;
+          price_text?: string | null;
+          source?: string;
+          source_url?: string;
+          dedupe_key?: string;
+          min_age?: number | null;
+          status?: Database["public"]["Enums"]["content_status"];
+          verified?: boolean;
+          submitted_by?: string | null;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -2570,6 +2747,135 @@ export type Database = {
         };
         Relationships: [];
       };
+      meeting_attendance: {
+        Row: {
+          meeting_id: string;
+          user_id: string;
+          joined_at: string;
+          left_at: string | null;
+          source: string;
+        };
+        Insert: {
+          meeting_id: string;
+          user_id: string;
+          joined_at?: string;
+          left_at?: string | null;
+          source?: string;
+        };
+        Update: {
+          meeting_id?: string;
+          user_id?: string;
+          joined_at?: string;
+          left_at?: string | null;
+          source?: string;
+        };
+        Relationships: [];
+      };
+      meeting_oauth_tokens: {
+        Row: {
+          user_id: string;
+          provider: Database["public"]["Enums"]["meeting_provider"];
+          account_email: string | null;
+          scope: string | null;
+          access_enc: string;
+          refresh_enc: string | null;
+          expires_at: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          provider: Database["public"]["Enums"]["meeting_provider"];
+          account_email?: string | null;
+          scope?: string | null;
+          access_enc: string;
+          refresh_enc?: string | null;
+          expires_at?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          provider?: Database["public"]["Enums"]["meeting_provider"];
+          account_email?: string | null;
+          scope?: string | null;
+          access_enc?: string;
+          refresh_enc?: string | null;
+          expires_at?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      meeting_private: {
+        Row: {
+          meeting_id: string;
+          join_url: string;
+          host_url: string | null;
+          passcode: string | null;
+        };
+        Insert: {
+          meeting_id: string;
+          join_url: string;
+          host_url?: string | null;
+          passcode?: string | null;
+        };
+        Update: {
+          meeting_id?: string;
+          join_url?: string;
+          host_url?: string | null;
+          passcode?: string | null;
+        };
+        Relationships: [];
+      };
+      meetings: {
+        Row: {
+          id: string;
+          host_id: string;
+          context_type: Database["public"]["Enums"]["meeting_context"];
+          context_id: string;
+          provider: Database["public"]["Enums"]["meeting_provider"];
+          title: string;
+          starts_at: string;
+          duration_minutes: number;
+          status: string;
+          external_id: string | null;
+          recording_url: string | null;
+          reminded_24h_at: string | null;
+          reminded_15m_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          host_id: string;
+          context_type: Database["public"]["Enums"]["meeting_context"];
+          context_id: string;
+          provider?: Database["public"]["Enums"]["meeting_provider"];
+          title: string;
+          starts_at: string;
+          duration_minutes?: number;
+          status?: string;
+          external_id?: string | null;
+          recording_url?: string | null;
+          reminded_24h_at?: string | null;
+          reminded_15m_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          host_id?: string;
+          context_type?: Database["public"]["Enums"]["meeting_context"];
+          context_id?: string;
+          provider?: Database["public"]["Enums"]["meeting_provider"];
+          title?: string;
+          starts_at?: string;
+          duration_minutes?: number;
+          status?: string;
+          external_id?: string | null;
+          recording_url?: string | null;
+          reminded_24h_at?: string | null;
+          reminded_15m_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       membership_applications: {
         Row: {
           id: string;
@@ -3659,6 +3965,99 @@ export type Database = {
           steps_completed?: string[];
           completed_at?: string | null;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      opportunities: {
+        Row: {
+          id: string;
+          type: Database["public"]["Enums"]["opportunity_type"];
+          title: string;
+          org: string;
+          summary: string | null;
+          location: string | null;
+          country: string | null;
+          remote: boolean;
+          levels: Database["public"]["Enums"]["education_level"][];
+          min_age: number | null;
+          deadline_at: string | null;
+          deadline_tz: string;
+          url: string;
+          source: string;
+          canonical_url: string;
+          tags: string[];
+          status: Database["public"]["Enums"]["content_status"];
+          verified_by_admin: boolean;
+          submitted_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          type: Database["public"]["Enums"]["opportunity_type"];
+          title: string;
+          org: string;
+          summary?: string | null;
+          location?: string | null;
+          country?: string | null;
+          remote?: boolean;
+          levels?: Database["public"]["Enums"]["education_level"][];
+          min_age?: number | null;
+          deadline_at?: string | null;
+          deadline_tz?: string;
+          url: string;
+          source?: string;
+          canonical_url: string;
+          tags?: string[];
+          status?: Database["public"]["Enums"]["content_status"];
+          verified_by_admin?: boolean;
+          submitted_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          type?: Database["public"]["Enums"]["opportunity_type"];
+          title?: string;
+          org?: string;
+          summary?: string | null;
+          location?: string | null;
+          country?: string | null;
+          remote?: boolean;
+          levels?: Database["public"]["Enums"]["education_level"][];
+          min_age?: number | null;
+          deadline_at?: string | null;
+          deadline_tz?: string;
+          url?: string;
+          source?: string;
+          canonical_url?: string;
+          tags?: string[];
+          status?: Database["public"]["Enums"]["content_status"];
+          verified_by_admin?: boolean;
+          submitted_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      opportunity_saves: {
+        Row: {
+          user_id: string;
+          opportunity_id: string;
+          reminded_7d_at: string | null;
+          reminded_1d_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          opportunity_id: string;
+          reminded_7d_at?: string | null;
+          reminded_1d_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          opportunity_id?: string;
+          reminded_7d_at?: string | null;
+          reminded_1d_at?: string | null;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -4919,6 +5318,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      security_events: {
+        Row: {
+          id: number;
+          kind: string;
+          user_id: string | null;
+          email_domain: string | null;
+          ip_hash: string | null;
+          detail: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          kind: string;
+          user_id?: string | null;
+          email_domain?: string | null;
+          ip_hash?: string | null;
+          detail?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          kind?: string;
+          user_id?: string | null;
+          email_domain?: string | null;
+          ip_hash?: string | null;
+          detail?: Json;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       session_bookings: {
         Row: {
           id: string;
@@ -5989,8 +6418,13 @@ export type Database = {
       contest_leaderboard: { Args: { p_contest: string; p_limit?: number }; Returns: { rank: number; user_id: string; username: string; solved: number; penalty_minutes: number; score: number; per_problem: Json }[] };
       create_checkout: { Args: { p_purpose: Database["public"]["Enums"]["payment_purpose"]; p_reference_id?: string; p_coupon_code?: string; p_quantity?: number; p_note?: string; p_amount_ugx?: number }; Returns: Json };
       decide_join_request: { Args: { p_request: string; p_approve: boolean }; Returns: undefined };
+      email_domain_rule: { Args: { p_domain: string }; Returns: string };
       erase_user: { Args: { p_user: string; p_actor?: string }; Returns: undefined };
+      event_cancel_rsvp: { Args: { p_event: string }; Returns: undefined };
+      event_check_in: { Args: { p_event: string; p_user: string }; Returns: Database["public"]["Tables"]["event_registrations"]["Row"] };
+      event_rsvp: { Args: { p_event: string }; Returns: Database["public"]["Tables"]["event_registrations"]["Row"] };
       expire_external_courses: { Args: Record<PropertyKey, never>; Returns: number };
+      expire_opportunities: { Args: Record<PropertyKey, never>; Returns: number };
       export_my_data: { Args: Record<PropertyKey, never>; Returns: Json };
       external_product_go: { Args: { p_id: string; p_user?: string; p_ip_hash?: string; p_referrer?: string }; Returns: string };
       fanout_announcement: { Args: { p_announcement_id: string }; Returns: number };
@@ -5999,8 +6433,14 @@ export type Database = {
       join_group: { Args: { p_group: string; p_invite_code?: string; p_message?: string }; Returns: string };
       judge_payload: { Args: { p_submission: string }; Returns: Json };
       judge_record_result: { Args: { p_submission: string; p_verdict: Database["public"]["Enums"]["submission_verdict"]; p_passed: number; p_total: number; p_score?: number; p_runtime_ms?: number; p_memory_kb?: number; p_compile_output?: string; p_judge_ref?: string }; Returns: Database["public"]["Tables"]["submissions"]["Row"] };
+      log_security_event: { Args: { p_kind: string; p_user?: string; p_domain?: string; p_ip_hash?: string; p_detail?: Json }; Returns: undefined };
       mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number };
       mark_payout_processing: { Args: { p_payout_id: string; p_flw_transfer_id: number }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
+      meeting_create: { Args: { p_context: Database["public"]["Enums"]["meeting_context"]; p_context_id: string; p_provider: Database["public"]["Enums"]["meeting_provider"]; p_title: string; p_starts_at: string; p_duration?: number }; Returns: Database["public"]["Tables"]["meetings"]["Row"] };
+      meeting_join: { Args: { p_meeting: string }; Returns: Json };
+      meeting_record_attendance: { Args: { p_provider: Database["public"]["Enums"]["meeting_provider"]; p_external_id: string; p_user: string; p_event: string; p_at?: string }; Returns: undefined };
+      meeting_set_link: { Args: { p_meeting: string; p_join_url: string; p_host_url?: string; p_passcode?: string; p_external_id?: string }; Returns: undefined };
+      meetings_claim_reminders: { Args: { p_kind: string }; Returns: { meeting_id: string; title: string; starts_at: string; provider: Database["public"]["Enums"]["meeting_provider"] }[] };
       mkt_checkout: { Args: { p_shipping?: Json; p_coupon?: string }; Returns: Json };
       mkt_confirm_delivery: { Args: { p_order: string }; Returns: Database["public"]["Tables"]["mkt_orders"]["Row"] };
       mkt_download: { Args: { p_item: string }; Returns: Json };
@@ -6014,6 +6454,7 @@ export type Database = {
       my_referral_code: { Args: Record<PropertyKey, never>; Returns: string };
       my_wallet: { Args: Record<PropertyKey, never>; Returns: Json };
       news_title_exists: { Args: { p_title: string }; Returns: boolean };
+      opportunity_claim_reminders: { Args: { p_kind: string }; Returns: { user_id: string; opportunity_id: string; title: string; deadline_at: string; url: string }[] };
       practice_ai_policy: { Args: { p_problem: string }; Returns: Json };
       promote_project_to_launchpad: { Args: { p_project: string; p_tagline: string }; Returns: string };
       rate_limit_hit: { Args: { p_key: string; p_max: number; p_window_seconds: number }; Returns: { allowed: boolean; remaining: number; reset_at: string }[] };
@@ -6053,6 +6494,8 @@ export type Database = {
       coupon_kind: "percent" | "fixed";
       education_level: "primary" | "o_level" | "a_level" | "university" | "professional";
       enrollment_status: "active" | "completed" | "dropped" | "refunded";
+      event_mode: "physical" | "online" | "hybrid";
+      event_organiser: "google_gdg" | "microsoft" | "openai" | "anthropic" | "hugging_face" | "alibaba_cloud" | "aws" | "mlh" | "101" | "other";
       event_status: "draft" | "published" | "cancelled" | "completed";
       external_access_type: "free" | "free_audit" | "free_trial" | "free_until" | "paid_with_aid";
       external_source: "amazon" | "alibaba" | "aliexpress" | "jumia" | "other";
@@ -6063,12 +6506,15 @@ export type Database = {
       ledger_direction: "debit" | "credit";
       listing_kind: "digital" | "service" | "physical";
       listing_status: "draft" | "active" | "sold_out" | "archived";
+      meeting_context: "tutor_session" | "group" | "competition" | "event";
+      meeting_provider: "jitsi" | "google_meet" | "zoom" | "teams" | "external";
       member_plan: "free" | "pro";
       mkt_dispute_status: "open" | "vendor_accepted" | "escalated" | "resolved_refund" | "resolved_release";
       mkt_kyc_status: "pending" | "verified" | "rejected" | "suspended";
       mkt_order_status: "pending_payment" | "paid" | "processing" | "shipped" | "out_for_delivery" | "delivered" | "completed" | "cancelled" | "refunded" | "disputed";
       mkt_product_type: "digital" | "physical" | "service" | "software_license" | "course_bundle";
       mkt_ship_method: "boda" | "pickup" | "courier" | "digital";
+      opportunity_type: "scholarship" | "internship" | "job" | "hackathon" | "grant" | "fellowship" | "competition" | "bootcamp" | "volunteer";
       order_status: "pending_payment" | "paid" | "fulfilled" | "cancelled" | "refunded";
       payment_purpose: "course" | "subscription" | "event_ticket" | "marketplace_order" | "tutor_session" | "donation";
       payment_status: "pending" | "successful" | "failed" | "cancelled" | "abandoned" | "refunded" | "partially_refunded";

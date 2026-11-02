@@ -44,6 +44,13 @@ const schema = z.object({
   GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
+  // Video meetings (Jitsi needs nothing). TODO: create OAuth apps, then set these.
+  JITSI_DOMAIN: z.string().default('meet.jit.si'),
+  GOOGLE_CLIENT_ID: z.string().optional(), GOOGLE_CLIENT_SECRET: z.string().optional(),
+  ZOOM_CLIENT_ID: z.string().optional(), ZOOM_CLIENT_SECRET: z.string().optional(), ZOOM_WEBHOOK_SECRET: z.string().optional(),
+  MS_CLIENT_ID: z.string().optional(), MS_CLIENT_SECRET: z.string().optional(),
+  MEETING_TOKEN_KEY: z.string().regex(/^[A-Za-z0-9+/=]{43,44}$/, '32-byte base64 key').optional(),
+  TICKET_HMAC_SECRET: z.string().min(32).optional(),
   // Judge (self-hosted Judge0 CE). Unset → submissions stay 'pending' and are retried by cron.
   JUDGE0_URL: z.string().url().optional(),
   JUDGE0_AUTH_TOKEN: z.string().optional(),
