@@ -22,7 +22,11 @@ async def main(page, out, w, h, full=False):
         path, _, q = page.partition('?')
         await pg.goto('file://' + os.path.abspath(path) + ('?' + q if q else ''))
         await pg.evaluate('document.fonts.ready')
-        await pg.wait_for_timeout(900 if 'static' not in q else 300)
+        if full and 'static' not in q:   # scroll through so scroll-triggered entrances finish
+            hgt = await pg.evaluate('document.documentElement.scrollHeight')
+            for y in range(0, hgt, 500): await pg.evaluate(f'window.scrollTo(0,{y})'); await pg.wait_for_timeout(120)
+            await pg.evaluate('window.scrollTo(0,0)')
+        await pg.wait_for_timeout(1200 if 'static' not in q else 300)
         await pg.screenshot(path=out, full_page=full)
         await b.close()
 

@@ -104,6 +104,12 @@
   /* rewrite /go/ links when opened from disk */
   function fixGoLinks() { if (location.protocol !== "file:") return; $$('a[href^="/go/"]').forEach(a => a.href = "go.html?id=" + a.getAttribute("href").slice(4)); }
 
+  /* scale the fixed mockup canvas on mid-size screens (1100–1535px); CSS reflows below 1100px */
+  function fitCanvas() {
+    const app = $(".app"); if (!app || STATIC) return;
+    const w = document.documentElement.clientWidth; html.style.setProperty("--fit", w >= 1100 && w < 1536 ? (w / 1536).toFixed(4) : 1);
+  }
+  fitCanvas(); addEventListener("resize", fitCanvas);
   function ready(fn) { document.readyState !== "loading" ? fn() : document.addEventListener("DOMContentLoaded", fn); }
   ready(() => {
     fixGoLinks();

@@ -35,7 +35,7 @@ body.flow{background:var(--color-page);color:var(--ink);font:500 14px/1.45 var(-
 .page-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .page-h h1{font:400 30px/1 var(--disp);letter-spacing:.2px}
 .page-h p{color:var(--mut);margin-top:6px}
-.kicker{font:700 12px var(--cond);letter-spacing:1px;color:var(--or);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.kicker{font:700 12px var(--cond);letter-spacing:1px;color:var(--color-orange-text);text-transform:uppercase;display:flex;align-items:center;gap:8px}
 .kicker::before{content:"";width:14px;height:6px;background:currentColor}
 .sec-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .sec-title h2{font:400 18px var(--disp);display:flex;align-items:center;gap:10px}
@@ -65,7 +65,7 @@ table.t{width:100%;border-collapse:collapse;font-size:13px}
 .tbl-wrap{overflow-x:auto}
 .pill{display:inline-block;padding:2px 8px;font:700 11px var(--body);border:1.5px solid currentColor;text-transform:capitalize}
 .pill.active,.pill.verified,.pill.paid,.pill.Published{color:var(--color-success)}
-.pill.pending,.pill.Pending,.pill.Draft{color:#b8650a}
+.pill.pending,.pill.Pending,.pill.Draft{color:var(--color-orange-text)}
 .pill.suspended,.pill.refunded{color:var(--color-danger)}
 .pill.learner{color:#1b6fa0}.pill.tutor{color:#7a3fb0}.pill.admin{color:var(--ink)}
 .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -194,7 +194,7 @@ ol.list{list-style:none}
 .tcol h3{font:700 13px var(--body);margin-bottom:8px}
 .bug{background:#fff;border:1px solid var(--line);border-left:5px solid #6b7a86;padding:8px;margin-bottom:8px;cursor:grab;display:grid;gap:2px;font-size:13px}
 .bug small{color:var(--mut)}.sev-High{border-left-color:var(--color-danger)}.sev-Medium{border-left-color:var(--or)}.sev-Low{border-left-color:var(--color-success)}
-.cd{font:400 26px var(--disp);color:var(--or);margin:4px 0}
+.cd{font:400 26px var(--disp);color:var(--color-orange-text);margin:4px 0}
 .ms{list-style:none;display:grid;gap:4px;margin:10px 0}
 .ms input{width:20px;height:20px;accent-color:var(--or)}
 .shot{border:2px solid var(--ink);background:var(--ink);color:#fff}.shot .thumb-ph{aspect-ratio:16/10;height:auto}.shot figcaption{padding:6px 10px;font-size:12px}
@@ -230,3 +230,7 @@ ol.list{list-style:none}
 .book .rthumb.cover{aspect-ratio:3/4;max-height:260px;background:#1b2630}
 .book .rthumb img{object-fit:contain}
 @media (max-width:900px){.player-wrap{grid-template-columns:1fr}.lessons{position:static;order:2}}
+
+/* links on light backgrounds use the AA link colour */
+.flow .viewall,.below .viewall{color:var(--color-link)}
+.flow a.li:hover b{text-decoration:underline}

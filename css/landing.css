@@ -76,3 +76,56 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .tit-head h2{font:400 30px/1 var(--disp);color:var(--nv);margin-top:6px}
 .tit-head p{color:var(--nv);font-weight:600;margin-top:4px}
 .tit-cards{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* WCAG AA in the live site; ?static=1 keeps the mockup colours for the 1v1 comparison */
+html:not(.static) .page .t-or-lg{color:var(--color-orange-text-large)!important}
+html:not(.static) .page .t-or{color:var(--color-orange-text)!important}
+html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
+
+/* ===== Responsive reflow (live site only; ?static=1 keeps the fixed 1024x1536 mockup canvas) ===== */
+@media (max-width:1023px){
+  html:not(.static) .page{width:auto;height:auto;overflow:visible;display:flex;flex-direction:column;gap:12px;padding:0 0 16px}
+  html:not(.static) .page>*{position:relative!important;left:auto!important;top:auto!important;translate:none!important;scale:none!important;max-width:100%;margin-inline:16px}
+  html:not(.static) .page>.hdr,html:not(.static) .page>.lfoot,html:not(.static) .page>.band,html:not(.static) .page>.cta,html:not(.static) .page>.comm,html:not(.static) .page>.lhero{margin-inline:0}
+  html:not(.static) .page>.lhero{display:none}
+  html:not(.static) .page>img[src*="avatar-row"]{display:none}
+  html:not(.static) .page>.tile[style*="width:28px"]{display:none}
+  html:not(.static) .page .disp{white-space:normal;transform:none!important;font-size:clamp(28px,9vw,46px)!important;line-height:1.05}
+  html:not(.static) .page p{white-space:normal}
+  html:not(.static) .page p br{display:none}
+  html:not(.static) .hdr{width:auto;height:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px}
+  html:not(.static) .hdr>*,html:not(.static) .hdr nav a{position:static!important}
+  html:not(.static) .hdr nav{display:flex;gap:14px;overflow-x:auto;width:100%;order:5}
+  html:not(.static) .hdr nav a{min-height:44px;display:flex;align-items:center}
+  html:not(.static) .hdr .login,html:not(.static) .hdr .join{min-height:44px}
+  html:not(.static) .hdr .tg{display:none}
+  html:not(.static) .page>img[alt^="Member coding"]{width:100%!important;height:auto!important}
+  html:not(.static) .page>[class*="btn-"]{width:auto!important;min-height:44px}
+  html:not(.static) .page>.hov[style*="width:144px"]{width:auto!important;height:auto!important;padding:16px}
+  html:not(.static) .page>.hov[style*="width:144px"]>*{position:static!important}
+  html:not(.static) .page>img[src*="logo-101-tile"]{display:none}
+  html:not(.static) .feat,html:not(.static) .tile,html:not(.static) .path,html:not(.static) .tcard{width:auto!important;height:auto!important;min-height:110px;padding:14px 14px 14px 92px}
+  html:not(.static) .feat>*,html:not(.static) .path>*,html:not(.static) .tcard>*,html:not(.static) .tile>*{position:static!important;translate:none!important}
+  html:not(.static) .feat .ib,html:not(.static) .path .ib{position:absolute!important;left:14px;top:14px}
+  html:not(.static) .tcard img{position:absolute!important;left:14px;top:14px}
+  html:not(.static) .tile{padding:16px}
+  html:not(.static) .tile b{display:block;transform:none}
+  html:not(.static) .feat p,html:not(.static) .tcard p{white-space:normal}
+  html:not(.static) .comm{width:auto;height:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+  html:not(.static) .comm>*{position:static!important;translate:none!important}
+  html:not(.static) .band{display:none}
+  html:not(.static) .tcard{background:#021f3e}
+  html:not(.static) .page>.eyebrow,html:not(.static) .page>h2,html:not(.static) .page>p{color:var(--nv)!important}
+  html:not(.static) .page p br{display:inline}
+  html:not(.static) .cta{width:auto;height:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+  html:not(.static) .cta>*{position:static!important}
+  html:not(.static) .cta>i,html:not(.static) .cta img[src*="corner"]{display:none}
+  html:not(.static) .cta img{width:100%!important;height:auto!important;max-width:362px}
+  html:not(.static) .lfoot{width:auto;height:auto;display:flex;flex-wrap:wrap;gap:12px;padding:16px 16px 90px}
+  html:not(.static) .lfoot>*,html:not(.static) .lfoot a{position:static!important}
+  html:not(.static) .lfoot .socials{display:flex;gap:14px;width:100%}
+  html:not(.static) .lfoot .socials a{position:static!important;width:24px;height:24px}
+  html:not(.static) .tit{width:auto;padding:16px}
+  html:not(.static) .tit-cards{grid-template-columns:1fr}
+  html:not(.static) .tit-head{flex-direction:column;align-items:flex-start}
+}

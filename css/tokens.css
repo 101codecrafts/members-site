@@ -16,12 +16,15 @@
   --color-line: #e0e6ea;
   --color-line-dark: #22313f;
   --color-muted: #3e5d74;
-  --color-link: #1b8acb;
+  --color-link: #146c9f;
   --color-white: #ffffff;
-  --color-success: #13a35c;
+  --color-success: #0f7a45;
   --color-danger: #d93636;
   --color-warning: #fc8c0c;
   --color-focus: #00b9e6;
+  --color-orange-text: #a85400;
+  --color-orange-text-large: #c96f00;
+  --color-cyan-text: #007a99;
   --font-display: "Archivo Black", "Russo One", Impact, sans-serif;
   --font-display-2: "Russo One", Impact, sans-serif;
   --font-body: "Body", "Barlow", system-ui, sans-serif;

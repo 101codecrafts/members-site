@@ -139,3 +139,48 @@
 .below{width:1536px;margin:0 auto;padding:28px 24px 40px 260px;display:grid;grid-template-columns:1fr 1fr;gap:28px;background:#f7f8f8}
 .below .sec-title h2{font:400 18px var(--disp)}
 .below .rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* WCAG AA in the live site; ?static=1 keeps the mockup colours */
+html:not(.static) .app .viewall,html:not(.static) .app a[href].abs[style*="1b8acb"]{color:var(--color-link)!important}
+html:not(.static) .ev .on{color:var(--color-link)}
+html:not(.static) .ev .tm,html:not(.static) .feed small{color:#2f5873}
+html:not(.static) .feed i{color:#5f6b75}
+
+/* ===== Responsive reflow (live site only; ?static=1 keeps the fixed 1536x1024 mockup canvas) =====
+   1100–1535px: the canvas is scaled to fit (js/ui.js sets --fit). Below 1100px (phones, tablets, 200%+ zoom)
+   every block drops out of absolute positioning and stacks in reading order. */
+html:not(.static) .app{zoom:var(--fit,1)}
+@media (max-width:1099px){
+  html:not(.static) .app{zoom:1;width:auto;height:auto;overflow:visible;display:flex;flex-direction:column;gap:14px;padding:12px 12px 90px}
+  html:not(.static) .app>*{position:relative!important;left:auto!important;top:auto!important;right:auto!important;translate:none!important;max-width:100%}
+  html:not(.static) .app>.panel,html:not(.static) .app>.rule,html:not(.static) .app>.sec-ic,html:not(.static) .app>i.abs,html:not(.static) .app>.vrule,html:not(.static) .app>.toprule,html:not(.static) .app>.dot,html:not(.static) .app>.tb-ic,html:not(.static) .app>.me-av,html:not(.static) .app>.me-name,html:not(.static) .app>.me-role,html:not(.static) .app>.role-switch,html:not(.static) .app>.copy,html:not(.static) .app>.hero-photo{display:none!important}
+  html:not(.static) .side{width:auto;height:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+  html:not(.static) .side>*{position:relative!important;left:auto!important;top:auto!important}
+  html:not(.static) .side .nav{width:auto;display:flex;overflow-x:auto;gap:4px}
+  html:not(.static) .side .nav a{position:relative!important;top:auto!important;width:auto;flex:none;padding:0 12px 0 40px;min-height:44px}
+  html:not(.static) .side .nav a svg{left:10px}
+  html:not(.static) .side .nav a span{position:static}
+  html:not(.static) .side .nav .badge{position:static;margin-left:6px}
+  html:not(.static) .side-rule,html:not(.static) .side-arrow,html:not(.static) .side-h,html:not(.static) .invite,html:not(.static) .brand-tag{display:none!important}
+  html:not(.static) .search{width:100%!important;min-height:44px}
+  html:not(.static) .hero{width:100%!important;height:auto;min-height:300px;padding:16px;display:flex;flex-direction:column;gap:12px}
+  html:not(.static) .hero>*{position:relative!important;left:auto!important;top:auto!important;translate:none!important;scale:none!important}
+  html:not(.static) .hero h1{font-size:clamp(30px,9vw,52px);line-height:1.05;white-space:normal;transform:none}
+  html:not(.static) .hero p{white-space:normal;width:auto}
+  html:not(.static) .hero .cta{min-height:44px;width:max-content}
+  html:not(.static) .cyanp{width:100%!important;height:auto;padding:16px}
+  html:not(.static) .cyanp .t{position:static}
+  html:not(.static) .cyanp i{display:none}
+  html:not(.static) .stat{width:100%!important;clip-path:none;min-height:64px}
+  html:not(.static) .sec-h,html:not(.static) .sec-sub{white-space:normal;transform:none}
+  html:not(.static) .tool,html:not(.static) .lp,html:not(.static) .act,html:not(.static) .study,html:not(.static) .qa,html:not(.static) .feed,html:not(.static) .ev,html:not(.static) .brandcard,html:not(.static) .qa-h{width:100%!important}
+  html:not(.static) .tool p,html:not(.static) .act q{white-space:normal;width:auto;right:12px}
+  html:not(.static) .foot{width:auto;height:auto;display:flex;flex-wrap:wrap;gap:12px;padding:16px}
+  html:not(.static) .foot>*,html:not(.static) .foot a{position:static!important}
+  html:not(.static) .foot .socials{position:static;display:flex;gap:14px;width:100%}
+  html:not(.static) .foot .socials a{position:static!important;width:24px;height:24px}
+  html:not(.static) .below{width:auto;padding:16px 12px 90px;grid-template-columns:1fr}
+  html:not(.static) .below .rgrid{grid-template-columns:1fr}
+}
+@media (max-width:1099px){html:not(.static) .hero>.fx-canvas{position:absolute!important;inset:0!important}
+  html:not(.static) .study{height:auto;min-height:104px;padding:12px 12px 12px 94px}html:not(.static) .study>*{position:static!important}html:not(.study) .study>img{display:none}html:not(.static) .study>svg{position:absolute!important;left:20px;top:18px}html:not(.static) .study a{margin-top:8px}}
