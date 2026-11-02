@@ -94,6 +94,39 @@
       f.addEventListener("input", sync); f.addEventListener("change", sync);
       f.onsubmit = async e => { e.preventDefault(); const r = await API.addExternalCourse(draft); $("#xc-msg").textContent = r ? "Sent to admin review." : "Saved as a draft on this device — POST /api/courses/external is not connected yet."; };
     },
+    /* ---------------- Free AI tools & APIs + BYOK playground ---------------- */
+    async aitools() {
+      const all = D.aiTools, st = { q: "", cat: "", student: false };
+      const card = t => `<article class="ccard ai" data-id="${esc(t.id)}">
+        <div class="cthumb ai-thumb" style="--pbg:${t.bg}"><span class="cph" aria-hidden="true">${esc(t.name)}</span><img class="heavy" src="assets/img/ai/${esc(t.id)}.svg" alt="" width="640" height="300" loading="lazy" decoding="async" onerror="this.remove()">${t.student ? `<span class="acc a-student">Student perk</span>` : ""}</div>
+        <div class="ai-btns"><a class="btn or" href="${API.goHref("ai-" + t.id)}" target="_blank" rel="noopener noreferrer" aria-label="Get a free API key from ${esc(t.name)} (opens in a new tab)">${t.id === "copilot" ? "Get Copilot free ↗" : t.id === "colab" ? "Open Colab ↗" : "Get free API key ↗"}</a><a class="btn" href="${API.goHref("ai-" + t.id + "-docs")}" target="_blank" rel="noopener noreferrer" aria-label="${esc(t.name)} docs (opens in a new tab)">Docs ↗</a></div>
+        <div class="cbody"><h3><span class="pmark" style="background:${t.bg};color:${t.fg}" aria-hidden="true">${esc(t.mono)}</span> ${esc(t.name)}</h3>
+          <p>${esc(t.what)}</p>
+          <div class="free-tier"><b>Free tier</b><span>${esc(t.free)}</span>${t.limits === "TODO-CONFIRM" ? `<small>Limits to be confirmed — check the provider's page.</small>` : ""}</div>
+          <div class="tags">${t.cats.map(c => `<span>${esc(c)}</span>`).join("")}</div>
+          <details class="howto"><summary>How to get your key</summary><ol>${t.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol><p class="keynote">Never paste the key into public chats or code you push. 101 never asks for it.</p></details>
+        </div></article>`;
+      $("#af-cat").innerHTML = [""].concat(D.aiCategories).map(c => `<button type="button" class="chip" aria-pressed="${!c}" data-c="${esc(c)}">${c || "All categories"}</button>`).join("");
+      const draw = () => { const r = all.filter(t => (!st.cat || t.cats.includes(st.cat)) && (!st.student || t.student) && (!st.q || (t.name + t.what + t.free + t.cats.join(" ")).toLowerCase().includes(st.q)));
+        $("#ai-grid").innerHTML = r.map(card).join("") || `<p class="muted empty">No tools match — try another filter.</p>`; $("#ai-count").textContent = r.length + " free tools"; };
+      $("#af-cat").onclick = e => { const b = e.target.closest("[data-c]"); if (!b) return; $$("[data-c]").forEach(x => x.setAttribute("aria-pressed", x === b)); st.cat = b.dataset.c; draw(); };
+      $("#af-q").oninput = e => { st.q = e.target.value.trim().toLowerCase(); draw(); };
+      $("#af-student").onchange = e => { st.student = e.target.checked; draw(); };
+      draw();
+      /* BYOK playground — the key never leaves this browser except to the chosen provider */
+      const prov = $("#pg-prov"), key = $("#pg-key"), model = $("#pg-model");
+      prov.innerHTML = Object.entries(API.BYOK).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join("");
+      const sync = () => { const p = API.BYOK[prov.value]; model.value = p.model; key.value = API.byokKey.get(prov.value); $("#pg-getkey").href = API.goHref("ai-" + prov.value); };
+      prov.onchange = sync; sync();
+      key.oninput = () => API.byokKey.set(prov.value, key.value.trim());
+      $("#pg-forget").onclick = () => { API.byokKey.clear(prov.value); key.value = ""; $("#pg-status").textContent = "Key removed from this tab."; };
+      $("#pg-form").onsubmit = async e => { e.preventDefault(); const k = key.value.trim(); const out = $("#pg-out");
+        if (!k) { $("#pg-status").textContent = "Paste your own key first."; key.focus(); return; }
+        $("#pg-send").disabled = true; $("#pg-status").textContent = "Sending to " + API.BYOK[prov.value].label + "…";
+        try { const r = await API.byokChat(prov.value, k, model.value.trim(), $("#pg-prompt").value.trim()); out.hidden = false; out.textContent = r.text; $("#pg-status").textContent = "Reply from " + r.model + (r.usage && r.usage.total_tokens ? " · " + r.usage.total_tokens + " tokens" : ""); }
+        catch (err) { out.hidden = false; out.textContent = "Error: " + (err.name === "AbortError" ? "timed out" : err.message) + "\n\nCheck the key, the model id (free models change), and your free-tier limits. Some providers may block browser requests (CORS)."; $("#pg-status").textContent = ""; }
+        finally { $("#pg-send").disabled = false; } };
+    },
     /* ---------------- News ---------------- */
     async news() {
       $("#news-date").textContent = "Today · " + new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });

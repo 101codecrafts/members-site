@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Free AI Tools & APIs · 101 Codecrafts" desc="Free AI APIs, coding assistants, GPUs and datasets for students: Hugging Face, OpenRouter, Groq, Gemini, Mistral, NVIDIA NIM, Cerebras, Cloudflare, GitHub Copilot, Kaggle, Colab, Sunbird AI and more." path="ai-tools.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-role="learner" data-page="aitools">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="AI Tools"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="page-h"><div><div class="kicker">AI Tools</div><h1>FREE AI TOOLS &amp; APIS</h1><p>Free tiers, student perks and step-by-step guides to get your own API keys. Free limits change often — always check the provider's page.</p></div><a class="btn or" href="#playground">Try it with your key</a></div>
+
+<div class="sec-note" role="note"><svg class="i" aria-hidden="true"><use href="#i-shieldc"/></svg><div><b>Keep your keys secret.</b> Never share or paste an API key publicly — not in WhatsApp groups, screenshots, GitHub repos or forum posts. <b>101 Codecrafts will never ask for your key.</b> If a key leaks, delete it in the provider's dashboard and create a new one.</div></div>
+
+<section class="card" aria-label="Filters"><div class="cfilters ai-filters">
+ <label class="search csearch"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Search AI tools</span><input id="af-q" type="search" placeholder="Search tools, e.g. speech, GPU, Llama…"></label>
+ <label class="row" style="font:700 13px var(--body);align-self:center"><input id="af-student" type="checkbox" style="width:22px;height:22px"> Student perks only</label>
+ <div class="filters" id="af-cat" role="group" aria-label="Category" style="grid-column:1/-1"></div>
+</div></section>
+<div class="sec-title"><h2 id="ai-count">TOOLS</h2></div>
+<div class="cgrid ai-grid" id="ai-grid" style="padding:0"></div>
+
+<section class="card playground" id="playground" aria-labelledby="pg-h">
+ <div class="sec-title"><h2 id="pg-h">TRY IT: BRING YOUR OWN KEY</h2><span class="tagx">Runs in your browser only</span></div>
+ <p class="muted">Paste <b>your own</b> key. It stays in this browser tab (sessionStorage, cleared when you close the tab) and goes straight to the provider's official API — never to 101's servers. Use a free-tier key with a spending limit.</p>
+ <form id="pg-form" class="grid" style="gap:12px;margin-top:12px" autocomplete="off">
+  <div class="grid g3" style="gap:12px">
+   <label class="field">Provider<select id="pg-prov" name="provider"></select></label>
+   <label class="field">Model<input id="pg-model" name="model" spellcheck="false"></label>
+   <label class="field">Your API key<input id="pg-key" name="key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your own key"></label>
+  </div>
+  <label class="field">Prompt<textarea id="pg-prompt" name="prompt" rows="3" required>Explain what an API key is to a secondary school student in Uganda, in 3 short sentences.</textarea></label>
+  <div class="row"><button class="btn or" type="submit" id="pg-send">Send one prompt</button><button class="btn" type="button" id="pg-forget">Forget my key</button><a class="btn sm" id="pg-getkey" target="_blank" rel="noopener noreferrer" href="#">Get a free key ↗</a><span id="pg-status" role="status" class="muted"></span></div>
+ </form>
+ <pre class="pg-out" id="pg-out" aria-live="polite" hidden></pre>
+</section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/pages.js" defer></script>
+</body></html>

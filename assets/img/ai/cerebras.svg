@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" width="640" height="300" role="img" aria-label="Cerebras">
+<defs><pattern id="p" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="11" height="22" fill="#ffffff" opacity=".05"/></pattern></defs>
+<rect width="640" height="300" fill="#0B1236"/><rect width="640" height="300" fill="url(#p)"/>
+<rect x="40" y="70" width="160" height="160" fill="#F05A28" stroke="#ffffff" stroke-width="6"/>
+<rect x="52" y="82" width="160" height="160" fill="none" stroke="#fc8c0c" stroke-width="4" opacity=".9"/>
+<text x="120" y="172" text-anchor="middle" font-family="Archivo Black, Impact, Arial Black, sans-serif" font-size="64" fill="#0B1236">CB</text>
+<text x="236" y="160" font-family="Archivo Black, Impact, Arial Black, sans-serif" font-size="40" fill="#ffffff">Cerebras</text>
+<rect x="236" y="182" width="90" height="10" fill="#05e6f2"/>
+<text x="236" y="226" font-family="Barlow, Arial, sans-serif" font-weight="700" font-size="18" letter-spacing="3" fill="#dfe5ea">FREE AI · 101 PICK</text>
+</svg>

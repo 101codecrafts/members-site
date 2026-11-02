@@ -28,7 +28,7 @@
     return location.protocol === "file:" ? "go.html?id=" + encodeURIComponent(id) : "/go/" + encodeURIComponent(id);
   }
   function lookupGo(id) {
-    const all = [...(D().resources || []), ...(D().externalCourses || []), ...(JSON.parse(localStorage.getItem("cc_ext_drafts") || "[]")), ...(D().news || []), ...((D().course && D().course.books) || []), ...(window.__ccNewsCache || [])];
+    const all = [...(D().resources || []), ...(D().externalCourses || []), ...(D().aiTools || []).flatMap(t => [{ id: "ai-" + t.id, url: t.keyUrl }, { id: "ai-" + t.id + "-docs", url: t.docsUrl }]), ...(JSON.parse(localStorage.getItem("cc_ext_drafts") || "[]")), ...(D().news || []), ...((D().course && D().course.books) || []), ...(window.__ccNewsCache || [])];
     return all.find(x => x.id === id) || null;
   }
 
@@ -104,6 +104,30 @@
     const r = await tryChain(() => backend("/courses/external", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(course) }));
     if (!r) { const k = "cc_ext_drafts"; const a = JSON.parse(localStorage.getItem(k) || "[]"); a.push(course); localStorage.setItem(k, JSON.stringify(a)); }
     return r;
+  }
+
+
+  /* ---------- AI tools: bring-your-own-key playground ----------
+     The learner's OWN key is used only in this browser: kept in sessionStorage (cleared when the tab closes) and sent
+     straight to the provider's official endpoint below. It is never sent to API_BASE / our servers, never logged. */
+  const BYOK = {
+    openrouter: { label: "OpenRouter", url: "https://openrouter.ai/api/v1/chat/completions", model: "meta-llama/llama-3.3-70b-instruct:free" },
+    groq: { label: "Groq", url: "https://api.groq.com/openai/v1/chat/completions", model: "llama-3.1-8b-instant" },
+    huggingface: { label: "Hugging Face", url: "https://router.huggingface.co/v1/chat/completions", model: "meta-llama/Llama-3.1-8B-Instruct" }
+  };
+  const byokKey = { get: p => sessionStorage.getItem("cc_byok_" + p) || "", set: (p, k) => sessionStorage.setItem("cc_byok_" + p, k), clear: p => sessionStorage.removeItem("cc_byok_" + p) };
+  async function byokChat(provider, key, model, prompt) {
+    const P = BYOK[provider]; if (!P) throw new Error("Unknown provider");
+    if (STATIC) throw new Error("static mode");
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 45000);
+    try {
+      const r = await fetch(P.url, { method: "POST", signal: ctl.signal, credentials: "omit", referrerPolicy: "no-referrer",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + key, ...(provider === "openrouter" ? { "X-Title": "101 Codecrafts playground" } : {}) },
+        body: JSON.stringify({ model: model || P.model, messages: [{ role: "user", content: prompt }], max_tokens: 400 }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error((j.error && (j.error.message || j.error)) || ("HTTP " + r.status));
+      return { text: (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || "(empty reply)", model: j.model || model || P.model, usage: j.usage || null };
+    } finally { clearTimeout(t); }
   }
 
   /* ---------- Admin ---------- */
@@ -216,7 +240,7 @@
   }
   function downloadCSV(name, rows) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([toCSV(rows)], { type: "text/csv" })); a.download = name; a.click(); }
 
-  window.CC_API = { STATIC, goHref, lookupGo, fetchRepoStats, fetchNews, fetchResources, fetchUnfurl, publishResource, fetchCourses101, fetchExternalCourses, unfurlExternalCourse, addExternalCourse,
+  window.CC_API = { STATIC, goHref, lookupGo, fetchRepoStats, fetchNews, fetchResources, fetchUnfurl, publishResource, fetchCourses101, fetchExternalCourses, unfurlExternalCourse, addExternalCourse, BYOK, byokKey, byokChat,
     fetchAdminKpis, fetchAnalytics, fetchUsers, fetchPendingMembers, fetchRecentSignups, fetchCourseApprovals, fetchPayouts, fetchTransactions,
     fetchModerationQueue, fetchEventsAdmin, fetchAuditLog, fetchFlags, adminAction, fetchTutorOverview, requestPayout, flutterwaveCheckout, downloadCSV, fetchSocialLinks, saveSocialLinks,
     fetchProducts, fetchProduct, upvoteProduct, commentProduct, fetchCampaigns, joinCampaign, becomeTester, submitBugReport, fetchTriage, moveBug,
