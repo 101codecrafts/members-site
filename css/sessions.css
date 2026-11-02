@@ -2,15 +2,15 @@
 .ses-app{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid var(--color-ink,#10181f);background:#fff;box-shadow:4px 4px 0 var(--color-ink,#10181f);flex-wrap:wrap}
 .ses-app+.ses-app{margin-top:12px}
 .ses-app .grow{flex:1;min-width:200px}.ses-app small{display:block;color:var(--color-muted,#3e5d74)}
-.ses-logo{width:40px;height:40px;border:2px solid var(--color-ink,#10181f);display:grid;place-items:center;font:800 13px/1 var(--font-display,Impact,sans-serif);color:#fff}
+.ses-logo{width:40px;height:40px;border:2px solid var(--color-ink,#10181f);display:grid;place-items:center;font:800 var(--step--1)/1 var(--font-display,Impact,sans-serif);color:#fff}
 .ses-jitsi{background:#1d76ba}.ses-jitsi::after{content:"J"}
 .ses-google_meet{background:#00897b}.ses-google_meet::after{content:"M"}
 .ses-zoom{background:#2d8cff}.ses-zoom::after{content:"Z"}
 .ses-teams{background:#5059c9}.ses-teams::after{content:"T"}
-.ses-pill{display:inline-block;border:2px solid var(--color-ink,#10181f);padding:3px 8px;font:700 11px/1.3 var(--font-cond,system-ui);letter-spacing:.06em;text-transform:uppercase;background:#fff}
+.ses-pill{display:inline-block;border:2px solid var(--color-ink,#10181f);padding:3px 8px;font:700 var(--step--2)/1.3 var(--font-cond,system-ui);letter-spacing:.06em;text-transform:uppercase;background:#fff}
 .ses-pill.ok{background:var(--color-cyan,#05e6f2)}
-.ses-def{font-size:13px;display:flex;gap:6px;align-items:center}
-.ses-msg{margin:10px 0 0;font-size:14px}.ses-msg.bad{color:var(--color-danger,#d93636)}
+.ses-def{font-size:var(--step--1);display:flex;gap:6px;align-items:center}
+.ses-msg{margin:10px 0 0;font-size:var(--step--1)}.ses-msg.bad{color:var(--color-danger,#d93636)}
 .ses-empty{color:var(--color-muted,#3e5d74)}
 .ses-li{text-decoration:none;color:inherit}
 .ses-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
@@ -25,4 +25,4 @@
 .ses-form{display:grid;gap:10px}
 .ses-form .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:640px){.ses-form .two{grid-template-columns:1fr}}
-.ses-check{display:flex;gap:8px;align-items:center;font-size:14px}
+.ses-check{display:flex;gap:8px;align-items:center;font-size:var(--step--1)}

@@ -1,0 +1,14 @@
+/* Fluid typography base — scale tokens live in tokens.css (--step-*, --space-fluid-*, --measure-*).
+   Live site only: the ?static=1 mockup (html.static) keeps its exact pixel sizes. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html:not(.static) :where(h1,h2,h3,h4){text-wrap:balance;overflow-wrap:break-word}
+html:not(.static) :where(p,li,dd,blockquote){text-wrap:pretty;overflow-wrap:break-word}
+/* readable measure for running text */
+html:not(.static) :where(main,.content,article,.prose,.below) :where(p){max-width:var(--measure-body)}
+/* form controls: >=16px everywhere so iOS Safari never zooms on focus */
+html:not(.static) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){font-size:max(1rem,var(--step-0))}
+html:not(.static) :is(input,textarea)::placeholder{font-size:inherit}
+/* fluid rhythm for headings that follow content */
+html:not(.static) :where(.content,main) :where(h1,h2){margin-block-end:var(--space-fluid-2xs)}
+/* <small> defaults to font-size:smaller; never let it drop under the 12px meta floor */
+:where(html:not(.static)) small{font-size:max(var(--step--2),.875em)}

@@ -95,9 +95,9 @@ def bundle(name, parts):
     out = '/* GENERATED bundle: ' + ' + '.join(parts) + ' — edit the sources, then run tools/build.py */\n'
     out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
     (root / 'css' / name).write_text(out)
-bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css'])
-bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'dashboard.css'])
-bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'landing.css'])
+bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
     'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',
