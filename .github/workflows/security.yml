@@ -66,6 +66,36 @@ jobs:
       - name: Scan git history
         run: ./gitleaks git --redact --verbose --exit-code 1 --log-opts="--all" .
 
+  trufflehog:
+    name: Secret scan (TruffleHog, full history, all branches)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch every branch
+        run: git fetch --no-tags --prune origin '+refs/heads/*:refs/remotes/origin/*'
+      - name: Install TruffleHog (pinned, checksum-verified)
+        env:
+          TH_VERSION: "3.99.7"
+          TH_SHA256: "bdbea0508e439b144f49de14e775908de5f902f3d14ea7ae8354bae72b0b72ef"
+        run: |
+          set -euo pipefail
+          tgz="trufflehog_${TH_VERSION}_linux_amd64.tar.gz"
+          curl -sSfL -o "$tgz" "https://github.com/trufflesecurity/trufflehog/releases/download/v${TH_VERSION}/${tgz}"
+          echo "${TH_SHA256}  ${tgz}" | sha256sum -c -
+          tar xzf "$tgz" trufflehog
+      - name: Verified secrets (fail the build)
+        run: ./trufflehog git file://. --only-verified --fail --no-update
+      - name: Unverified + unknown secrets (report only)
+        run: ./trufflehog git file://. --results=unverified,unknown --no-update --json > trufflehog-unverified.json || true
+      - name: Summarise unverified findings
+        run: |
+          n=$(wc -l < trufflehog-unverified.json)
+          echo "TruffleHog unverified/unknown findings: $n" >> "$GITHUB_STEP_SUMMARY"
+          [ "$n" = 0 ] || echo "::warning::TruffleHog found $n unverified/unknown candidate secrets; review and rotate if real."
+
   deps:
     name: Dependency audit (npm audit)
     runs-on: ubuntu-latest
