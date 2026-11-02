@@ -342,3 +342,6 @@
   .mk-sec-h .mk-more{margin-left:0}
 }
 @media (max-width:400px){.mk-grid{grid-template-columns:1fr 1fr}.mk-allcats{padding:0 10px;font-size:12px}.mk-cart span{display:none}}
+/* horizontal rows contain their absolutely-positioned bits (sr-only labels, source chips) so they can't widen the page on mobile */
+.mk-row{position:relative}
+main.content{overflow-x:clip}

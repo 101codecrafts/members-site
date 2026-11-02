@@ -1,0 +1,75 @@
+/* 101 Codecrafts — session state (Clerk) for every page.
+   - ?static=1 (mockup screenshots): does nothing, the mockup stays pixel-identical.
+   - Signed out: clean guest state (no fake user, no fake notification dots/badges) + Sign in / Join.
+   - Signed in: real name/initials from Clerk, unread count from GET /api/v1/me/notifications.
+   Clerk dev instance; the publishable key is public by design. */
+(function () {
+  const CFG = window.CC_CONFIG = Object.assign({
+    apiBase: "/api",
+    clerkPublishableKey: "pk_test_dXByaWdodC1tYW5hdGVlLTM2NjEuY2xlcmsuYWNjb3VudHMuZGV2JA==",
+    clerkFrontendApi: "https://upright-manatee-3661.clerk.accounts.dev"
+  }, window.CC_CONFIG || {});
+  const STATIC = /[?&]static/.test(location.search) || location.protocol === "file:";
+  const listeners = [];
+  const AUTH = window.CC_AUTH = { user: null, ready: false, clerk: null, onChange: f => { listeners.push(f); if (AUTH.ready) f(AUTH.user); },
+    signOut: async () => { if (AUTH.clerk) await AUTH.clerk.signOut(); location.href = "index.html"; } };
+  if (STATIC) return;
+
+  const $$ = s => [...document.querySelectorAll(s)];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const initials = n => n.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "G";
+
+  function paint(user) {
+    const name = user ? (user.fullName || user.firstName || (user.primaryEmailAddress && user.primaryEmailAddress.emailAddress.split("@")[0]) || "Member") : "Guest";
+    document.documentElement.classList.toggle("signed-in", !!user);
+    document.documentElement.classList.toggle("signed-out", !user);
+    // dashboard top bar
+    $$(".me-name").forEach(e => e.textContent = name);
+    $$(".me-role").forEach(e => e.innerHTML = user ? "Member" : '<a href="signin.html">Sign in</a> · <a href="signup.html">Join</a>');
+    $$(".me-av").forEach(e => { if (!user) { e.removeAttribute("srcset"); e.src = "assets/img/avatar-guest.svg"; e.alt = "Guest"; } else if (user.imageUrl && user.hasImage) { e.src = user.imageUrl; e.alt = name; } });
+    // shared top bar chip
+    $$(".chip-me").forEach(c => {
+      const b = c.querySelector("b"), sm = c.querySelector("small"), av = c.querySelector(".av");
+      if (b) b.textContent = name; if (av) av.textContent = initials(name);
+      if (sm) sm.innerHTML = user ? "Member" : '<a href="signin.html">Sign in</a> · <a href="signup.html">Join</a>';
+    });
+    // no fake notification dots / badges; real unread count fills them in below
+    $$(".dot, .sbar nav .badge").forEach(e => { e.hidden = true; e.style.display = "none"; });
+    // fake community stat on the dashboard (was a hard-coded 10K+)
+    $$(".stat.s1 b[data-count]").forEach(b => { b.removeAttribute("data-count"); b.textContent = "—"; });
+    if (user) unread();
+    AUTH.user = user; AUTH.ready = true; listeners.forEach(f => { try { f(user); } catch (e) {} });
+  }
+  async function unread() {
+    try {
+      const r = await fetch("/api/v1/me/notifications?unread=1", { credentials: "include", headers: { Accept: "application/json" } });
+      if (!r.ok) return; const j = await r.json(); const items = (j && (j.data && (j.data.items || j.data))) || [];
+      const n = Array.isArray(items) ? items.filter(x => !x.read_at).length : 0;
+      if (n) $$(".dot").forEach(e => { e.hidden = false; e.style.display = ""; });
+    } catch (e) { /* offline: stay quiet */ }
+  }
+  function mountAuthUi(clerk) {
+    const page = document.body && document.body.dataset.page;
+    const form = page === "signin" ? document.getElementById("si") : page === "signup" ? document.getElementById("su") : null;
+    if (!form) return;
+    if (clerk.user) { location.replace(page === "signup" ? "onboarding.html" : "dashboard.html"); return; }
+    const host = document.createElement("div"); host.id = "clerk-" + page; form.replaceWith(host);
+    const opts = { signInUrl: "signin.html", signUpUrl: "signup.html", forceRedirectUrl: page === "signup" ? "onboarding.html" : "dashboard.html", appearance: { variables: { colorPrimary: "#f26a1b", borderRadius: "0px" } } };
+    page === "signin" ? clerk.mountSignIn(host, opts) : clerk.mountSignUp(host, opts);
+  }
+  function loadClerk() {
+    return new Promise((res, rej) => {
+      const s = document.createElement("script");
+      s.src = CFG.clerkFrontendApi + "/npm/@clerk/clerk-js@5/dist/clerk.browser.js";
+      s.async = true; s.crossOrigin = "anonymous";
+      s.setAttribute("data-clerk-publishable-key", CFG.clerkPublishableKey);
+      s.onload = () => res(window.Clerk); s.onerror = rej; document.head.appendChild(s);
+    });
+  }
+  // guest state first (no flash of a fake signed-in user), then the real session
+  const start = () => { paint(null); loadClerk().then(async Clerk => {
+      await Clerk.load(); AUTH.clerk = Clerk; paint(Clerk.user || null); mountAuthUi(Clerk);
+      Clerk.addListener(({ user }) => { if ((user && user.id) !== (AUTH.user && AUTH.user.id)) paint(user || null); });
+    }).catch(() => { AUTH.ready = true; listeners.forEach(f => f(null)); }); };
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();
+})();

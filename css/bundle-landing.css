@@ -510,6 +510,14 @@ button:disabled{opacity:.6;cursor:progress}
 @media (min-width:1024px) and (max-width:1180px){.topbar .chip-me div{display:none}}
 @media (max-width:1100px){.topbar{flex-wrap:wrap;row-gap:8px}}
 
+/* mobile: the horizontal nav strip scrolls inside the bar instead of widening the page */
+@media (max-width:760px){.shell{grid-template-columns:minmax(0,1fr)!important}.shell>*{min-width:0}.sbar{max-width:100vw}.sbar nav{min-width:0}}
+/* decorative layers never take clicks */
+.fx-canvas,.fx-layer,[data-fx]{pointer-events:none!important}
+/* guest state links in the top bar */
+.chip-me small a,.me-role a{color:inherit;text-decoration:underline}
+html.signed-out .bell-n{display:none}
+
 /* Public landing — laid out on the 1024x1536 mockup grid */
 body[data-page="landing"]{--nv:#0B1236;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9;background:#f3f6f7}
 .page{position:relative;width:1024px;height:1536px;margin:0 auto;overflow:hidden;background:#f3f6f7;color:var(--nv)}
@@ -681,6 +689,12 @@ html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
   html:not(.static) .hdr nav a{transition:color .15s}
   html:not(.static) .hdr nav a:not(.on){color:rgba(255,255,255,.82)}
   html:not(.static) .hdr nav a:hover{color:#fff}
-  html:not(.static) .page>.hov[style*="width:144px"] .disp{font-size:17px!important;letter-spacing:0!important}
+  html:not(.static) .page>.hov[style*="width:144px"] .disp{font-size:min(16px,10.6cqi)!important;letter-spacing:0!important}
 }
 @media (max-width:1023px){html:not(.static) body[data-page="landing"]{overflow-x:clip}html:not(.static) .page p{overflow-wrap:anywhere}}
+
+/* hero word tile: text always fits the tile (live site only; ?static=1 mockup untouched) */
+@media (min-width:761px){html:not(.static) .page .words-tile{container-type:inline-size;overflow:hidden}
+html:not(.static) .page .words-tile .disp{font-size:min(16px,10.6cqi)!important;letter-spacing:0!important;translate:none!important;scale:none!important}}
+/* 360px: the about paragraph wraps to the viewport */
+@media (max-width:760px){html:not(.static) .page .about-p{width:auto!important;max-width:calc(100vw - 48px)!important}html:not(.static) .page .about-p br{display:none}}

@@ -23,8 +23,9 @@
     if (STATIC || location.protocol === "file:") throw new Error("no backend");
     const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 6000);
     try {
-      const r = await fetch(API_BASE + path, { ...opts, signal: ctl.signal, headers: { Accept: "application/json", "Content-Type": "application/json", ...(opts.headers || {}) } });
-      if (!r.ok) throw new Error(r.status); return await r.json();
+      const V = window.CC_V1, v1 = V && V.toV1(path); if (!v1) throw new Error("no v1 endpoint");
+      const r = await fetch(API_BASE + v1, { credentials: "include", ...opts, signal: ctl.signal, headers: { Accept: "application/json", "Content-Type": "application/json", ...(opts.headers || {}) } });
+      if (!r.ok) throw new Error(r.status); return V.unwrap(await r.json());
     } finally { clearTimeout(t); }
   }
   async function or(path, fallback, opts) { try { return await backend(path, opts); } catch (e) { return typeof fallback === "function" ? fallback() : fallback; } }

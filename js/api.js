@@ -9,6 +9,29 @@
   const API_BASE = (window.CC_CONFIG && window.CC_CONFIG.apiBase) || "/api";
   const GH_ORG = "101codecrafts";
 
+  /* Legacy front-end paths → backend /api/v1 (see backend OpenAPI). Paths with no v1 equivalent are not requested:
+     they resolve to the bundled demo data, exactly as when the API is unreachable. */
+  const V1_MAP = [
+    [/^\/courses\/external\/unfurl$/, null], [/^\/courses\/external(\?.*)?$/, "/v1/external-courses$1"],
+    [/^\/courses\/([^/?]+)\/lessons\/([^/?]+)\/complete$/, "/v1/lessons/$2/complete"],
+    [/^\/courses(\/[^/?]+)?(\?.*)?$/, "/v1/courses$1$2"],
+    [/^\/news\/today.*$/, "/v1/news"], [/^\/resources\/unfurl$/, "/v1/resources/unfurl"], [/^\/resources(.*)$/, "/v1/resources$1"],
+    [/^\/social$/, "/v1/social"], [/^\/me\/(.*)$/, "/v1/me/$1"], [/^\/u\/(.*)$/, "/v1/portfolio/$1"],
+    [/^\/certificates\/(.*)$/, "/v1/certificates/verify/$1"], [/^\/groups\/([^/]+)\/join$/, "/v1/groups/$1/join"],
+    [/^\/launchpad\/today.*$/, "/v1/launchpad"],
+    [/^\/admin\/(analytics|audit|moderation|payouts|users|settings)(.*)$/, "/v1/admin/$1$2"], [/^\/admin\/kpis$/, "/v1/admin/overview"],
+    [/^\/tutor\/overview$/, "/v1/tutor/dashboard"], [/^\/tutor\/payouts$/, "/v1/tutor/payouts"],
+    [/^\/market\/products(.*)$/, "/v1/marketplace/products$1"], [/^\/market\/categories$/, "/v1/marketplace/categories"],
+    [/^\/market\/cart$/, "/v1/marketplace/cart"], [/^\/market\/checkout$/, "/v1/marketplace/checkout"],
+    [/^\/market\/orders\/([^/]+)\/(confirm|dispute)$/, "/v1/marketplace/orders/$1/$2"], [/^\/market\/orders$/, "/v1/marketplace/orders"],
+    [/^\/market\/rfq\/([^/]+)\/quotes$/, "/v1/marketplace/rfqs/$1/quotes"], [/^\/market\/rfq$/, "/v1/marketplace/rfqs"],
+    [/^\/market\/affiliates$/, "/v1/marketplace/external"]
+  ];
+  function toV1(path) { if (path.startsWith("/v1/")) return path; for (const [re, to] of V1_MAP) if (re.test(path)) return to && path.replace(re, to); return null; }
+  /* backend envelope is {data}; list endpoints put rows in data.items */
+  const unwrap = j => { const d = j && Object.prototype.hasOwnProperty.call(j, "data") ? j.data : j; return d && Array.isArray(d.items) ? d.items : d; };
+  window.CC_V1 = { toV1, unwrap };
+
   async function getJSON(url, opts = {}, ms = 6000) {
     if (STATIC) throw new Error("static mode");
     if (location.protocol === "file:" && url.startsWith("/")) throw new Error("no backend on file://");
@@ -21,7 +44,11 @@
   }
   /* when the backend is not reachable (static preview) every call falls back to bundled demo data; tell the UI once */
   function markDemo() { if (STATIC || window.CC_DEMO) return; window.CC_DEMO = true; try { dispatchEvent(new CustomEvent("cc:demo")); } catch (e) {} }
-  async function backend(path, opts) { try { return await getJSON(API_BASE + path, opts); } catch (e) { markDemo(); throw e; } }
+  async function backend(path, opts) {
+    const v1 = toV1(path); if (!v1) throw new Error("no v1 endpoint for " + path);   // no request, demo data (not an outage)
+    try { return unwrap(await getJSON(API_BASE + v1, { credentials: "include", ...(opts || {}) })); }
+    catch (e) { if (!/^(401|403|404|409|422) /.test(e.message)) markDemo(); throw e; }   // demo banner only when the API is unreachable / erroring
+  }
   async function tryChain(...fns) { for (const f of fns) { try { const v = await f(); if (v != null) return v; } catch (e) { /* next */ } } return null; }
 
   /* ---------- link-out helper: every external resource opens through /go/<id> ---------- */

@@ -49,7 +49,7 @@ def head(a, page):
 <script type="application/ld+json">{json.dumps(ld if len(ld) > 1 else ld[0])}</script>'''
 
 def scripts(charts=False):
-    tags = ['<script src="js/data.js" defer></script>', '<script src="js/api.js" defer></script>']
+    tags = ['<script src="js/data.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
     tags += ['<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/ads.js" defer></script>']
