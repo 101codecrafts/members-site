@@ -11,6 +11,7 @@
 
   async function getJSON(url, opts = {}, ms = 6000) {
     if (STATIC) throw new Error("static mode");
+    if (location.protocol === "file:" && url.startsWith("/")) throw new Error("no backend on file://");
     const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
     try {
       const r = await fetch(url, { ...opts, signal: ctl.signal, headers: { Accept: "application/json", ...(opts.headers || {}) } });

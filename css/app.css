@@ -154,3 +154,15 @@ table.t{width:100%;border-collapse:collapse;font-size:13px}
   .cc-toolbar{left:8px;right:8px;bottom:8px;justify-content:space-between;flex-wrap:wrap}
   .cc-cookie{bottom:80px;left:8px;right:8px}
 }
+.mini-h{font:700 13px var(--body);margin-bottom:8px}
+.muted{color:var(--mut);font-size:13px}
+#cc-toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-140%);background:var(--ink);color:#fff;border:2px solid var(--or);padding:10px 16px;font:600 13px var(--body);z-index:1000;transition:transform .25s}
+#cc-toast.show{transform:translate(-50%,0)}
+.social-preview{display:flex;gap:12px;background:var(--ink);padding:10px 14px;min-height:var(--touch-min-target);align-items:center}
+.social-preview a{color:#fff;width:22px;height:22px;display:block}
+.social-preview svg{width:22px;height:22px}
+.soc-row{cursor:grab}
+.soc-row .date svg{width:20px;height:20px}
+.li .date svg{width:20px;height:20px}
+ol.list{list-style:none}
+.kpi.or,.kpi.cy{color:var(--ink)}

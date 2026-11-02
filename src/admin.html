@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Admin · 101 Codecrafts" desc="101 Codecrafts admin console: members, tutors, approvals, payments, moderation and settings." path="admin.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-role="admin" data-page="admin" data-charts>
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="admin" active="Overview"}}
+<div class="main">
+{{TOPBAR role="admin" name="Aisha Nalwoga" label="Admin"}}
+<main id="main" class="content">
+
+  <div class="page-h">
+    <div><div class="kicker">Admin console</div><h1>OVERVIEW</h1><p>Everything happening across learners, tutors, payments and content.</p></div>
+    <div class="row">
+      <button class="btn or" data-qa="course"><svg><use href="#i-plusc"/></svg>Add Course</button>
+      <button class="btn cy" data-qa="event"><svg><use href="#i-calendar"/></svg>Create Event</button>
+      <button class="btn" data-qa="announce"><svg><use href="#i-megaphone"/></svg>Post Announcement</button>
+      <button class="btn ink" data-qa="invite"><svg><use href="#i-userplus"/></svg>Invite Admin</button>
+    </div>
+  </div>
+
+  <section aria-label="Key numbers" id="kpis" class="grid g4"></section>
+
+  <section id="analytics" aria-labelledby="an-h">
+    <div class="sec-title"><h2 id="an-h">ANALYTICS</h2><button class="btn sm" data-csv="analytics"><svg><use href="#i-download"/></svg>Export CSV</button></div>
+    <div class="grid g3">
+      <div class="card"><h3 class="mini-h">Sign-ups over time</h3><div class="chart-box"><canvas id="ch-signups" aria-label="Sign-ups over time chart" role="img"></canvas></div></div>
+      <div class="card"><h3 class="mini-h">Revenue by month (UGX, millions)</h3><div class="chart-box"><canvas id="ch-revenue" aria-label="Revenue by month chart" role="img"></canvas></div></div>
+      <div class="card"><h3 class="mini-h">Funnel: visit → sign-up → enrol → pay</h3><div class="chart-box"><canvas id="ch-funnel" aria-label="Conversion funnel chart" role="img"></canvas></div></div>
+      <div class="card" style="grid-column:span 2"><h3 class="mini-h">Enrolments by learning path</h3><div class="chart-box"><canvas id="ch-enrol" aria-label="Enrolments by learning path chart" role="img"></canvas></div></div>
+      <div class="card"><h3 class="mini-h">Completion rate by path (%)</h3><div class="chart-box"><canvas id="ch-complete" aria-label="Completion rate chart" role="img"></canvas></div></div>
+    </div>
+  </section>
+
+  <section id="approvals" class="grid g2" aria-label="Approvals">
+    <div class="card">
+      <div class="sec-title"><h2>PENDING MEMBER APPROVALS</h2></div>
+      <div class="tbl-wrap"><table class="t" id="tb-pending"><thead><tr><th>Name</th><th>Applying as</th><th>Applied</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="sec-title"><h2>RECENT SIGN-UPS</h2></div>
+      <div class="list" id="ls-signups"></div>
+    </div>
+  </section>
+
+  <section id="users" class="card" aria-labelledby="us-h">
+    <div class="sec-title"><h2 id="us-h">USERS</h2>
+      <div class="filters" role="group" aria-label="Filter by role">
+        <button class="chip" aria-pressed="true" data-role-f="">All</button><button class="chip" aria-pressed="false" data-role-f="learner">Learners</button>
+        <button class="chip" aria-pressed="false" data-role-f="tutor">Tutors</button><button class="chip" aria-pressed="false" data-role-f="admin">Admins</button>
+        <button class="btn sm" data-csv="users"><svg><use href="#i-download"/></svg>CSV</button>
+      </div></div>
+    <div class="tbl-wrap"><table class="t" id="tb-users"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="courses" class="card" aria-labelledby="co-h">
+    <div class="sec-title"><h2 id="co-h">COURSE APPROVALS</h2></div>
+    <div class="tbl-wrap"><table class="t" id="tb-courses"><thead><tr><th>Course</th><th>Tutor</th><th>Path</th><th>Price</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="payments" class="grid g2" aria-label="Payments and payouts">
+    <div class="card">
+      <div class="sec-title"><h2>PAYOUTS QUEUE</h2></div>
+      <div class="tbl-wrap"><table class="t" id="tb-payouts"><thead><tr><th>Tutor</th><th>Amount</th><th>Method</th><th>Requested</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="sec-title"><h2>TRANSACTIONS</h2><div class="row"><button class="btn sm or" id="flw-test"><svg><use href="#i-cash"/></svg>Test Flutterwave checkout</button><button class="btn sm" data-csv="transactions"><svg><use href="#i-download"/></svg>CSV</button></div></div>
+      <div class="tbl-wrap"><table class="t" id="tb-tx"><thead><tr><th>ID</th><th>Type</th><th>Item</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="grid g2" aria-label="Moderation and events">
+    <div class="card" id="moderation">
+      <div class="sec-title"><h2>MODERATION QUEUE</h2></div>
+      <div class="list" id="ls-mod"></div>
+    </div>
+    <div class="card" id="events">
+      <div class="sec-title"><h2>EVENTS MANAGER</h2><button class="btn sm cy" data-qa="event">+ New event</button></div>
+      <div class="list" id="ls-events"></div>
+    </div>
+  </section>
+
+  <section id="add-resource" class="card" aria-labelledby="ar-h">
+    <div class="sec-title"><h2 id="ar-h">ADD RESOURCE BY LINK</h2><a class="viewall" href="resources.html">Open Library →</a></div>
+    <form class="row" id="unfurl-form">
+      <label class="field" style="flex:1;min-width:240px"><span>Paste a URL (course, book, video, article or repo)</span><input type="url" id="unfurl-url" required placeholder="https://www.youtube.com/watch?v=…"></label>
+      <button class="btn or" type="submit" style="align-self:flex-end"><svg><use href="#i-link"/></svg>Fetch preview</button>
+    </form>
+    <div id="unfurl-out" class="grid g2" style="margin-top:16px" hidden>
+      <form id="unfurl-edit" class="grid" style="gap:10px">
+        <label class="field">Title<input name="title"></label>
+        <label class="field">Type<select name="type"><option>Course</option><option>Book</option><option>Video</option><option>Article</option><option>Repo</option></select></label>
+        <label class="field">Source site<input name="site"></label>
+        <label class="field">Description<textarea name="desc" rows="3"></textarea></label>
+        <label class="field">Learning path<select name="path"></select></label>
+        <label class="field">Tags (comma separated)<input name="tags"></label>
+        <label class="field">Thumbnail URL<input name="thumb"></label>
+        <button class="btn ink" type="submit">Publish to Library</button>
+        <p id="unfurl-msg" role="status"></p>
+      </form>
+      <div><h3 class="mini-h">Live preview</h3><div id="unfurl-card" style="max-width:320px"></div></div>
+    </div>
+  </section>
+
+  <section id="settings" class="grid g2" aria-label="Settings and controls">
+    <div class="card">
+      <div class="sec-title"><h2>FEATURE FLAGS</h2></div>
+      <div class="list" id="ls-flags"></div>
+      <div class="sec-title" style="margin-top:18px"><h2>COMMISSION</h2></div>
+      <form class="row" id="commission-form"><label class="field" style="flex:1">Platform commission on paid courses and sessions (%)<input type="number" min="0" max="50" step="0.5" id="commission"></label><button class="btn or" style="align-self:flex-end">Save</button></form>
+    </div>
+    <div class="card">
+      <div class="sec-title"><h2>BROADCAST ANNOUNCEMENT</h2></div>
+      <form class="grid" id="announce-form" style="gap:10px">
+        <label class="field">Title<input name="title" required placeholder="Hackathon 2025 registration is open"></label>
+        <label class="field">Message<textarea name="body" rows="3" required></textarea></label>
+        <label class="field">Audience<select name="aud"><option>Everyone</option><option>Learners</option><option>Tutors</option><option>Admins</option></select></label>
+        <div class="row"><label class="row"><span class="toggle"><input type="checkbox" name="push" checked><span></span></span> Push + in-app</label><label class="row"><span class="toggle"><input type="checkbox" name="wa"><span></span></span> WhatsApp channel</label></div>
+        <button class="btn ink">Send announcement</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="social" class="card" aria-labelledby="so-h">
+    <div class="sec-title"><h2 id="so-h">SOCIAL LINKS</h2><button class="btn or" id="social-save">Save</button></div>
+    <p class="muted">Paste each profile URL, switch it on, and drag rows to set the order. Empty or inactive links are hidden on every page.</p>
+    <ol class="list" id="ls-social" aria-label="Social links, drag to reorder"></ol>
+    <div class="row" style="margin-top:14px"><b>Footer preview</b><div class="social-preview" id="social-preview"></div></div>
+    <p id="social-msg" role="status"></p>
+  </section>
+
+  <section id="audit" class="card" aria-labelledby="au-h">
+    <div class="sec-title"><h2 id="au-h">AUDIT LOG</h2><button class="btn sm" data-csv="audit"><svg><use href="#i-download"/></svg>CSV</button></div>
+    <div class="tbl-wrap"><table class="t" id="tb-audit"><thead><tr><th>When</th><th>Who</th><th>What</th></tr></thead><tbody></tbody></table></div>
+  </section>
+</main>
+{{FOOTER}}
+</div>
+</div>
+<!-- Chatwoot live chat (placeholder — fill websiteToken at deploy time, never commit secrets)
+<script>
+  window.chatwootSettings = { position: "right", type: "expanded_bubble", launcherTitle: "Chat with 101" };
+  (function(d,t){var BASE_URL="https://app.chatwoot.com";var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=BASE_URL+"/packs/js/sdk.js";g.defer=true;g.async=true;s.parentNode.insertBefore(g,s);
+  g.onload=function(){window.chatwootSDK.run({websiteToken:"<WEBSITE_TOKEN>",baseUrl:BASE_URL})}})(document,"script");
+</script> -->
+{{SCRIPTS}}
+<script src="js/admin.js" defer></script>
+</body>
+</html>
