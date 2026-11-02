@@ -1,7 +1,7 @@
 import { route, preflight, body, unwrap } from '@/lib/http';
 import { requireTutor } from '@/lib/auth';
 import { uuid } from '@/lib/validation';
-import { CourseInput } from '../route';
+import { CourseInput } from '@/lib/course-input';
 const Patch = CourseInput.partial().extend({}).strict();
 export const PATCH = route<{ id: string }>(async ({ req, params }) => {
   const s = await requireTutor();
