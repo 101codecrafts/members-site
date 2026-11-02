@@ -13,7 +13,7 @@ export const PATCH = route<{ id: string }>(async ({ req, params }) => {
   const b = await body(req, Patch);
   if (b.url) {
     const cur = unwrap(await s.db.from('social_links').select('platform').eq('id', id).single());
-    if (!SOCIAL_DOMAINS[cur.platform]!.test(b.url)) throw badRequest('URL does not match the platform domain');
+    if (!cur || !SOCIAL_DOMAINS[cur.platform]!.test(b.url)) throw badRequest('URL does not match the platform domain');
   }
   const row = unwrap(await s.db.from('social_links').update({ ...b, updated_by: s.userId }).eq('id', id).select('*').single());
   revalidatePath('/api/v1/social');

@@ -2858,6 +2858,7 @@ export type Database = {
           institution: string | null;
           class_year: string | null;
           is_minor: boolean;
+          plan: Database["public"]["Enums"]["member_plan"];
         };
         Insert: {
           id: string;
@@ -2888,6 +2889,7 @@ export type Database = {
           institution?: string | null;
           class_year?: string | null;
           is_minor?: boolean;
+          plan?: Database["public"]["Enums"]["member_plan"];
         };
         Update: {
           id?: string;
@@ -2918,6 +2920,7 @@ export type Database = {
           institution?: string | null;
           class_year?: string | null;
           is_minor?: boolean;
+          plan?: Database["public"]["Enums"]["member_plan"];
         };
         Relationships: [];
       };
@@ -3567,6 +3570,7 @@ export type Database = {
           is_active: boolean;
           created_at: string;
           updated_at: string;
+          grants_plan: Database["public"]["Enums"]["member_plan"];
         };
         Insert: {
           id?: string;
@@ -3580,6 +3584,7 @@ export type Database = {
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
+          grants_plan?: Database["public"]["Enums"]["member_plan"];
         };
         Update: {
           id?: string;
@@ -3593,6 +3598,7 @@ export type Database = {
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
+          grants_plan?: Database["public"]["Enums"]["member_plan"];
         };
         Relationships: [];
       };
@@ -4299,11 +4305,13 @@ export type Database = {
       admin_set_account_status: { Args: { p_user: string; p_status: Database["public"]["Enums"]["account_status"]; p_reason?: string; p_until?: string }; Returns: Database["public"]["Tables"]["profiles"]["Row"] };
       admin_set_content_status: { Args: { p_entity: string; p_id: string; p_status: string; p_note?: string }; Returns: undefined };
       admin_set_flag: { Args: { p_key: string; p_enabled: boolean; p_rollout_pct?: number; p_roles?: Database["public"]["Enums"]["app_role"][] }; Returns: undefined };
+      admin_set_launch_promo: { Args: { p_enabled: boolean; p_starts_at?: string; p_ends_at?: string; p_banner_text?: string }; Returns: Json };
       admin_set_role: { Args: { p_user: string; p_role: Database["public"]["Enums"]["app_role"]; p_grant: boolean }; Returns: undefined };
       admin_set_setting: { Args: { p_key: string; p_value: Json; p_is_public?: boolean }; Returns: undefined };
       admin_verify_guardian: { Args: { p_consent_id: string }; Returns: undefined };
       apply_flutterwave_payment: { Args: { p_tx_ref: string; p_flw_id: number; p_status: string; p_amount: number; p_currency: string; p_payment_type?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["payments"]["Row"] };
       attach_referral: { Args: { p_referred: string; p_code: string }; Returns: undefined };
+      claim_promo_reminder: { Args: Record<PropertyKey, never>; Returns: string };
       claim_referral: { Args: { p_code: string }; Returns: boolean };
       complete_payout: { Args: { p_reference: string; p_success: boolean; p_failure?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       complete_refund: { Args: { p_refund_id: string; p_success: boolean; p_flw_refund_id?: number; p_failure?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["refunds"]["Row"] };
@@ -4318,6 +4326,7 @@ export type Database = {
       mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number };
       mark_payout_processing: { Args: { p_payout_id: string; p_flw_transfer_id: number }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       my_access: { Args: Record<PropertyKey, never>; Returns: Json };
+      my_plan: { Args: Record<PropertyKey, never>; Returns: Json };
       my_referral_code: { Args: Record<PropertyKey, never>; Returns: string };
       my_wallet: { Args: Record<PropertyKey, never>; Returns: Json };
       news_title_exists: { Args: { p_title: string }; Returns: boolean };
@@ -4331,6 +4340,7 @@ export type Database = {
       request_payout: { Args: { p_amount_ugx: number; p_method_id?: string }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       request_refund: { Args: { p_payment_id: string; p_reason: string }; Returns: Database["public"]["Tables"]["refunds"]["Row"] };
       run_daily_maintenance: { Args: Record<PropertyKey, never>; Returns: Json };
+      run_daily_plan_sync: { Args: Record<PropertyKey, never>; Returns: number };
       search_all: { Args: { q: string; kinds?: string[]; max_results?: number; p_level?: Database["public"]["Enums"]["education_level"] }; Returns: { kind: string; id: string; title: string; subtitle: string; slug: string; rank: number }[] };
       session_join_info: { Args: { p_session: string }; Returns: Json };
       set_payment_checkout_link: { Args: { p_tx_ref: string; p_link: string }; Returns: undefined };
@@ -4362,6 +4372,7 @@ export type Database = {
       ledger_direction: "debit" | "credit";
       listing_kind: "digital" | "service" | "physical";
       listing_status: "draft" | "active" | "sold_out" | "archived";
+      member_plan: "free" | "pro";
       order_status: "pending_payment" | "paid" | "fulfilled" | "cancelled" | "refunded";
       payment_purpose: "course" | "subscription" | "event_ticket" | "marketplace_order" | "tutor_session" | "donation";
       payment_status: "pending" | "successful" | "failed" | "cancelled" | "abandoned" | "refunded" | "partially_refunded";

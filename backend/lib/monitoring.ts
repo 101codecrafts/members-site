@@ -16,7 +16,7 @@ export async function captureException(e: unknown, context: Record<string, unkno
     await serviceClient().from('error_events').insert({
       source: 'api', level: 'error', message: err.message.slice(0, 1000), fingerprint,
       stack: err.stack?.slice(0, 8000) ?? null, path: typeof context.path === 'string' ? context.path : null,
-      release: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ?? null, context: { request_id: context.request_id ?? null },
+      release: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ?? null, context: { request_id: typeof context.request_id === 'string' ? context.request_id : null },
     });
   } catch { /* monitoring must never throw */ }
 

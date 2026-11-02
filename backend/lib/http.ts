@@ -82,8 +82,14 @@ export function query<T>(req: NextRequest, schema: ZodType<T, ZodTypeDef, unknow
   return schema.parse(Object.fromEntries(req.nextUrl.searchParams.entries()));
 }
 
-/** Unwraps a supabase-js result, mapping Postgres errors to AppError. */
-export function unwrap<T>(r: { data: T | null; error: { code?: string; message: string } | null }): T {
+type PgResult = { data: unknown; error: { code?: string; message: string } | null };
+/** Unwraps a supabase-js list/single result (throws the Postgres error, mapped later to AppError). */
+export function unwrap<R extends PgResult>(r: R): NonNullable<R['data']> {
   if (r.error) throw r.error;
-  return r.data as T;
+  return r.data as NonNullable<R['data']>;
+}
+/** Same for .maybeSingle(): null when no row is visible under RLS. */
+export function unwrapMaybe<R extends PgResult>(r: R): R['data'] {
+  if (r.error) throw r.error;
+  return r.data;
 }

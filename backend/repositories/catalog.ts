@@ -1,6 +1,6 @@
 import 'server-only';
 import type { Db } from '@/lib/supabase/user';
-import { unwrap } from '@/lib/http';
+import { unwrap, unwrapMaybe } from '@/lib/http';
 
 /** Read models for public/member catalogue pages. RLS decides visibility. */
 export interface Page { limit: number; offset: number }
@@ -15,7 +15,7 @@ export const catalogRepo = {
     return unwrap(await q);
   },
   course: async (db: Db, slug: string) => {
-    const course = unwrap(await db.from('courses').select('*').eq('slug', slug).maybeSingle());
+    const course = unwrapMaybe(await db.from('courses').select('*').eq('slug', slug).maybeSingle());
     if (!course) return null;
     const lessons = unwrap(await db.from('lessons').select('id, position, title, duration_minutes, is_preview').eq('course_id', course.id).order('position'));
     const media = unwrap(await db.from('course_media').select('id, lesson_id, kind, provider_id, title, channel, author, duration_seconds, thumbnail_url, source_url, embeddable, position').eq('course_id', course.id).order('position'));

@@ -443,6 +443,48 @@ export const tests = [
     assert.equal((await q(db, `select id from public.external_courses`)).length, before);
   }),
 
+  // ----------------------------------------------------------- plans / ads ----
+  t('plans: Pro subscription → ad-free; minors on free → child_directed; plan not self-editable', async (db) => {
+    await as(db, U.alice);
+    assert.equal((await one(db, `select public.my_plan() p`)).p.ad_tier, 'standard');
+    await fails(db, `update public.profiles set plan='pro' where id=$1`, [U.alice], '42501');
+    const co = (await one(db, `select public.create_checkout('subscription', (select id from public.subscription_plans where code='pro-monthly')) c`)).c;
+    await as(db, 'service');
+    await q(db, `select public.apply_flutterwave_payment($1, 9091, 'successful', 15000, 'UGX')`, [co.tx_ref]);
+    await as(db, U.alice);
+    const p = (await one(db, `select public.my_plan() p`)).p;
+    assert.equal(p.plan, 'pro'); assert.equal(p.ad_tier, 'none');
+    await as(db, U.kid);
+    assert.equal((await one(db, `select public.my_plan() p`)).p.ad_tier, 'child_directed');
+    await as(db, 'anon');
+    await fails(db, `select public.my_plan()`, [], '42501');
+  }),
+
+  t('launch promo: everyone Pro (no ads, no paywall); admin-only; reminders claimed once', async (db) => {
+    const paid = await courseId(db, 'fullstack-nextjs-supabase');
+    await as(db, U.alice);
+    await fails(db, `select public.admin_set_launch_promo(true)`, [], '42501');
+    await fails(db, `insert into public.enrollments (user_id, course_id) values ($1,$2)`, [U.alice, paid], '42501');
+    await as(db, U.admin);
+    const v = (await one(db, `select public.admin_set_launch_promo(true, now() - interval '1 day') v`)).v;
+    assert.ok(new Date(v.ends_at) > new Date(v.starts_at));
+    await as(db, U.kid);
+    const kp = (await one(db, `select public.my_plan() p`)).p;
+    assert.equal(kp.effective_plan, 'pro'); assert.equal(kp.ad_tier, 'none'); assert.equal(kp.promo_active, true);
+    await as(db, U.alice);
+    await q(db, `insert into public.enrollments (user_id, course_id) values ($1,$2)`, [U.alice, paid]);
+    assert.equal((await q(db, `select id from public.lessons where course_id=$1`, [paid])).length, 2);
+    await as(db, U.admin);
+    await q(db, `select public.admin_set_launch_promo(true, now() - interval '25 days', now() + interval '5 days')`);
+    await as(db, 'service');
+    assert.equal((await one(db, `select public.claim_promo_reminder() r`)).r, '7d');
+    assert.equal((await one(db, `select public.claim_promo_reminder() r`)).r, null);
+    await as(db, U.admin);
+    await q(db, `select public.admin_set_launch_promo(false)`);
+    await as(db, U.bob);
+    assert.equal((await one(db, `select public.my_plan() p`)).p.ad_tier, 'standard');
+  }),
+
   // ----------------------------------------------------------------- misc ----
   t('social links: per-platform domain validation in the database', async (db) => {
     await as(db, U.admin);

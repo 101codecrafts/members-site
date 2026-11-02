@@ -13,11 +13,13 @@ import { clerkClient } from '@clerk/nextjs/server';
 export async function dailyJobs(log: Logger) {
   const db = serviceClient();
   const maintenance = await rpc(db, 'run_daily_maintenance');
+  const plansDowngraded = await rpc(db, 'run_daily_plan_sync');
   await rpc(db, 'refresh_analytics');
   const emails = await deliverNotificationEmails(log);
   const deletions = await processDeletionRequests(log);
   const certs = await renderPendingCertificates(log);
-  return { maintenance, emails, deletions, certificates: certs };
+  const promo = await promoEndingReminders(log);
+  return { promo_reminder: promo, maintenance, plans_downgraded: plansDowngraded, emails, deletions, certificates: certs };
 }
 
 /** Reminders for events starting in the next 36 h (once per registration). */
@@ -103,4 +105,25 @@ export async function renderPendingCertificates(log: Logger) {
   }
   log.info('certificates_rendered', { count: certs.length });
   return certs.length;
+}
+
+/** Launch promo: email everyone 7 days and 1 day before it ends (each once; claim is atomic in SQL). */
+export async function promoEndingReminders(log: Logger) {
+  const e = env();
+  const db = serviceClient();
+  const due = await rpc(db, 'claim_promo_reminder');
+  if (!due) return null;
+  const promo = (await db.from('site_settings').select('value').eq('key', 'launch_promo').single()).data?.value as { ends_at?: string } | undefined;
+  const ends = promo?.ends_at ? new Date(promo.ends_at).toLocaleDateString('en-GB', { timeZone: 'Africa/Kampala', dateStyle: 'long' }) : 'soon';
+  const title = due === '1d' ? 'Free launch month ends tomorrow' : 'One week left of free 101 Pro';
+  const text = `Everything on 101 Codecrafts is free until ${ends}. After that the free plan includes ads and 101 Pro (ad-free, all paid courses) is a paid subscription. Keep learning!`;
+  const people = (await db.from('profiles').select('id').eq('account_status', 'active').is('deleted_at', null).limit(20000)).data ?? [];
+  const emails: Email[] = [];
+  for (let i = 0; i < people.length; i += 1000) {
+    const contacts = (await db.from('profile_private').select('email').in('user_id', people.slice(i, i + 1000).map((p) => p.id))).data ?? [];
+    for (const c of contacts) if (c.email) emails.push({ to: c.email, ...templates.announcement({ title, body: text, url: `${e.APP_URL}/dashboard.html#pro` }) });
+  }
+  const sent = await sendEmails(e.RESEND_API_KEY, e.RESEND_FROM, emails);
+  log.info('promo_reminder', { due, sent });
+  return { due, sent };
 }

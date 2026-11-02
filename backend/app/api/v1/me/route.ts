@@ -16,14 +16,16 @@ export const GET = route(async () => {
   const s = await requireUser();
   await ensureProfile(s.userId);
   await rpc(s.db, 'touch_last_seen');
-  const [profile, onboarding, unread] = await Promise.all([
+  const [profile, onboarding, unread, plan] = await Promise.all([
     s.db.from('profiles').select('*').eq('id', s.userId).single(),
     s.db.from('onboarding_state').select('*').eq('user_id', s.userId).maybeSingle(),
     s.db.from('notifications').select('id', { count: 'exact', head: true }).is('read_at', null),
+    rpc(s.db, 'my_plan'),
   ]);
+  const pl = plan as { plan: 'free' | 'pro'; ad_tier: 'none' | 'child_directed' | 'standard'; pro_until: string | null };
   const p = unwrap(profile);
   return { profile: { ...p, search_tsv: undefined }, roles: s.roles, role: s.role, account_status: s.accountStatus, tutor_verified: s.tutorVerified,
-    mfa_enabled: s.mfaEnabled, onboarding: onboarding.data, unread_notifications: unread.count ?? 0 };
+    mfa_enabled: s.mfaEnabled, plan: pl.plan, pro_until: pl.pro_until, ad_tier: pl.ad_tier, onboarding: onboarding.data, unread_notifications: unread.count ?? 0 };
 });
 export const PATCH = route(async ({ req }) => {
   const s = await requireUser();
