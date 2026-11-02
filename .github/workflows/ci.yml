@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches: [main, backend, ai-features, security, debug-ci]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.d.outputs.backend }}
+      db: ${{ steps.d.outputs.db }}
+      static: ${{ steps.d.outputs.static }}
+      ai: ${{ steps.d.outputs.ai }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: d
+        run: |
+          echo "backend=$([ -f backend/package.json ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "db=$([ -d supabase/migrations ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "static=$(ls *.html >/dev/null 2>&1 && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "ai=$([ -f lib/ai/vitest.config.ts ] && [ -f package.json ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  backend:
+    needs: detect
+    if: needs.detect.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+      # build-time placeholders only; real values live in Vercel
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: |
+          if ls tests/*.test.ts >/dev/null 2>&1; then npm test; else echo "no backend unit tests yet"; fi
+      - name: Build
+        run: |
+          if [ -d app ] || [ -d pages ] || [ -d src/app ]; then npm run build; else echo "::warning::backend has no app/ or pages/ directory yet - next build skipped"; fi
+
+  ai-features:
+    needs: detect
+    if: needs.detect.outputs.ai == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx vitest run -c lib/ai/vitest.config.ts --exclude '**/live-gateway.test.ts'
+
+  database:
+    needs: detect
+    if: needs.detect.outputs.db == 'true'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+      TEST_DB: ccx_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i --no-save --no-package-lock pg@8
+      - name: Apply migrations from scratch + seed
+        run: node supabase/tests/run.mjs --migrate-only
+      - name: RLS / business-rule tests
+        run: |
+          if [ -f supabase/tests/rls.test.mjs ]; then node supabase/tests/run.mjs; else echo "no db tests"; fi
+      - name: RLS-missing check
+        env:
+          # security-definer functions that are intentionally callable by anon (public certificate verify page)
+          RLS_ALLOW_ANON_FN: verify_certificate
+        run: DATABASE_URL="${DATABASE_URL%/postgres}/$TEST_DB" node scripts/check-rls.mjs --schemas public --json rls-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: rls-report, path: rls-report.json, if-no-files-found: ignore }
+
+  smoke:
+    needs: detect
+    if: needs.detect.outputs.static == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i --no-save --no-package-lock playwright@1.56
+      - run: npx playwright install --with-deps chromium
+      - name: Playwright smoke (console errors, failed requests, broken links, overflow at 360/768/1440)
+        run: node tests/smoke/smoke.mjs --root . --allow-api-404 --strict --out smoke-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: smoke-report, path: smoke-report.json, if-no-files-found: ignore }

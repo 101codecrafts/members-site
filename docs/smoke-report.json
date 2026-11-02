@@ -1,0 +1,1411 @@
+{
+ "pages": {
+  "404.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [],
+   "brokenLinks": [],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "groups.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/groups",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "privacy.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "signup.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [],
+   "brokenLinks": [],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "admin.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/admin/kpis",
+     "status": 404
+    },
+    {
+     "url": "api/admin/analytics",
+     "status": 404
+    },
+    {
+     "url": "api/admin/approvals/members",
+     "status": 404
+    },
+    {
+     "url": "api/admin/users?role=",
+     "status": 404
+    },
+    {
+     "url": "api/admin/approvals/courses",
+     "status": 404
+    },
+    {
+     "url": "api/admin/payouts?status=pending",
+     "status": 404
+    },
+    {
+     "url": "api/admin/moderation",
+     "status": 404
+    },
+    {
+     "url": "api/admin/audit",
+     "status": 404
+    },
+    {
+     "url": "api/admin/flags",
+     "status": 404
+    },
+    {
+     "url": "api/admin/signups/recent",
+     "status": 404
+    },
+    {
+     "url": "api/admin/transactions",
+     "status": 404
+    },
+    {
+     "url": "api/admin/events",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 477,
+     "overflowPx": 117,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 906,
+     "overflowPx": 138,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "div.row",
+       "right": 837,
+       "width": 112
+      },
+      {
+       "sel": "button#flw-test.btn.sm",
+       "right": 837,
+       "width": 112
+      },
+      {
+       "sel": "button.btn.sm",
+       "right": 794,
+       "width": 70
+      },
+      {
+       "sel": "div.li",
+       "right": 779,
+       "width": 247
+      },
+      {
+       "sel": "div.li",
+       "right": 779,
+       "width": 247
+      },
+      {
+       "sel": "div.li",
+       "right": 779,
+       "width": 247
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "index.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/news/today",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 406,
+     "overflowPx": 46,
+     "offenders": [
+      {
+       "sel": "p",
+       "right": 376,
+       "width": 360
+      },
+      {
+       "sel": "img",
+       "right": 376,
+       "width": 360
+      },
+      {
+       "sel": "p",
+       "right": 406,
+       "width": 390
+      },
+      {
+       "sel": "div",
+       "right": 376,
+       "width": 360
+      }
+     ]
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 784,
+     "overflowPx": 16,
+     "offenders": [
+      {
+       "sel": "img",
+       "right": 784,
+       "width": 768
+      },
+      {
+       "sel": "div",
+       "right": 784,
+       "width": 768
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "product.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/launchpad/boda-safe",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "terms.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "competitions.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/competitions/hack25/leaderboard",
+     "status": 404
+    },
+    {
+     "url": "api/competitions",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "launchpad.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/launchpad/today?level=",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "profile.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/u/sarah-n",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "testing.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/testing/triage",
+     "status": 404
+    },
+    {
+     "url": "api/testing/campaigns",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "course.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/courses/web-basics",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 402,
+     "overflowPx": 42,
+     "offenders": [
+      {
+       "sel": "section.course-top",
+       "right": 402,
+       "width": 390
+      },
+      {
+       "sel": "div",
+       "right": 402,
+       "width": 390
+      },
+      {
+       "sel": "div#c-path.kicker",
+       "right": 402,
+       "width": 390
+      },
+      {
+       "sel": "h1#c-title",
+       "right": 402,
+       "width": 390
+      },
+      {
+       "sel": "div#c-meta.row",
+       "right": 402,
+       "width": 390
+      },
+      {
+       "sel": "div.player-wrap",
+       "right": 402,
+       "width": 390
+      },
+      {
+       "sel": "nav.lessons.card",
+       "right": 402,
+       "width": 390
+      },
+      {
+       "sel": "ol#c-lessons",
+       "right": 384,
+       "width": 354
+      }
+     ]
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "news.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/news/today",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "projects.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/projects?mine=1",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "tutor.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/tutor/overview",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 892,
+     "overflowPx": 124,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "dashboard.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/news/today",
+     "status": 404
+    },
+    {
+     "url": "api/resources?",
+     "status": 404
+    },
+    {
+     "url": "https://api.github.com/repos/101codecrafts/codecraft-ide",
+     "status": 404
+    },
+    {
+     "url": "https://api.github.com/repos/101codecrafts/securescan",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1536,
+     "overflowPx": 96,
+     "offenders": [
+      {
+       "sel": "section#below-fold.below",
+       "right": 1536,
+       "width": 1536
+      },
+      {
+       "sel": "div.below-col",
+       "right": 1512,
+       "width": 612
+      },
+      {
+       "sel": "div.sec-title",
+       "right": 1512,
+       "width": 612
+      },
+      {
+       "sel": "a.viewall",
+       "right": 1512,
+       "width": 104
+      }
+     ]
+    }
+   }
+  },
+  "offline.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [],
+   "brokenLinks": [],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "resources.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/social:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/social",
+     "status": 404
+    },
+    {
+     "url": "api/resources?",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 916,
+     "overflowPx": 148,
+     "offenders": [
+      {
+       "sel": "a.ib",
+       "right": 769,
+       "width": 20
+      },
+      {
+       "sel": "svg",
+       "right": 769,
+       "width": 20
+      }
+     ]
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "verify.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [],
+   "brokenLinks": [],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "go.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    },
+    {
+     "w": 360,
+     "type": "error",
+     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "at": "api/news/today:1"
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [
+    {
+     "url": "api/news/today",
+     "status": 404
+    }
+   ],
+   "brokenLinks": [],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "onboarding.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [],
+   "brokenLinks": [],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  },
+  "signin.html": {
+   "console": [
+    {
+     "w": 360,
+     "type": "warning",
+     "text": "Service Worker registration blocked by Playwright",
+     "at": ""
+    }
+   ],
+   "pageErrors": [],
+   "failedRequests": [],
+   "brokenLinks": [
+    {
+     "href": "#",
+     "why": "placeholder href=\"#\""
+    }
+   ],
+   "overflow": {
+    "360": {
+     "viewport": 360,
+     "scrollWidth": 360,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "768": {
+     "viewport": 768,
+     "scrollWidth": 768,
+     "overflowPx": 0,
+     "offenders": []
+    },
+    "1440": {
+     "viewport": 1440,
+     "scrollWidth": 1440,
+     "overflowPx": 0,
+     "offenders": []
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,68 @@
+name: AI triage
+
+# Debugging agent: when CI fails, or an issue labelled `bug` is opened/labelled,
+# collect the logs and ask an LLM (Vercel AI Gateway) for a root cause + suggested patch.
+# It comments on the PR / issue / commit, and may open a DRAFT PR with the patch.
+# It never merges, never pushes to protected branches, and never runs on forks' secrets.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: CI run id to triage
+        required: false
+      issue:
+        description: Issue number to triage
+        required: false
+
+permissions:
+  contents: write        # only used to push ai-triage/* branches for draft PRs
+  pull-requests: write
+  issues: write
+  actions: read
+
+concurrency:
+  group: ai-triage-${{ github.event.workflow_run.id || github.event.issue.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure'
+        && github.event.workflow_run.head_repository.full_name == github.repository
+        && !startsWith(github.event.workflow_run.head_branch, 'ai-triage/'))
+      || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'bug'))
+      || github.event_name == 'workflow_dispatch'
+    env:
+      AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
+      AI_TRIAGE_MODELS: inclusionai/ling-3.1-flash-1019,nvidia/nemotron-3.5-lightning-free,reflection/beam-free
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # analyse the code that actually failed
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Check secret
+        run: |
+          if [ -z "$AI_GATEWAY_API_KEY" ]; then echo "::warning::AI_GATEWAY_API_KEY secret is not set - triage will post a 'could not reach a model' note"; fi
+      - name: Triage CI failure
+        if: github.event_name == 'workflow_run' || inputs.run_id != ''
+        run: |
+          node scripts/debug-agent.mjs --ci-run "${{ github.event.workflow_run.id || inputs.run_id }}" \
+            --post --draft-pr --out triage.md
+      - name: Triage bug issue
+        if: github.event_name == 'issues' || inputs.issue != ''
+        run: node scripts/debug-agent.mjs --issue "${{ github.event.issue.number || inputs.issue }}" --post --out triage.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: ai-triage, path: triage.md, if-no-files-found: ignore }
