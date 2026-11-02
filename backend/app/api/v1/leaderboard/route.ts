@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, query, unwrap } from '@/lib/http';
 import { z } from 'zod';
 import { requireMember } from '@/lib/auth';
 export const GET = route(async ({ req }) => {

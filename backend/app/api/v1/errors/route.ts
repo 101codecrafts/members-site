@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body } from '@/lib/http';
 import { recordClientError } from '@/services/tracking';
 import { errorIngestBody } from '@/lib/validation';
 import { optionalSession } from '@/lib/auth';

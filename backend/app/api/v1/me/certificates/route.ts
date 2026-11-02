@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, unwrap } from '@/lib/http';
 import { requireUser } from '@/lib/auth';
 export const GET = route(async () => {
   const s = await requireUser();

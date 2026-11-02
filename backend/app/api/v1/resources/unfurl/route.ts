@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body } from '@/lib/http';
 import { requireMember, authorize } from '@/lib/auth';
 import { unfurlBody } from '@/lib/validation';
 import { createResourceFromUrl, unfurlUrl } from '@/services/resources';

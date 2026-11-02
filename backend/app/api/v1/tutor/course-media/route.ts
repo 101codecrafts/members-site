@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body, unwrap } from '@/lib/http';
 import { requireTutor } from '@/lib/auth';
 import { courseMediaBody } from '@/lib/validation';
 import { buildCourseMedia } from '@/services/resources';

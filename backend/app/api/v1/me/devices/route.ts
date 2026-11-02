@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body, unwrap } from '@/lib/http';
 import { z } from 'zod';
 import { requireUser } from '@/lib/auth';
 import { deviceTokenBody } from '@/lib/validation';

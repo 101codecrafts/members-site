@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight } from '@/lib/http';
 import { optionalSession } from '@/lib/auth';
 import { catalogRepo } from '@/repositories/catalog';
 import { notFound } from '@/lib/errors';

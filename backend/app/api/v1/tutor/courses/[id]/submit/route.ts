@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, unwrap } from '@/lib/http';
 import { requireTutor } from '@/lib/auth';
 import { uuid } from '@/lib/validation';
 export const POST = route<{ id: string }>(async ({ params }) => {

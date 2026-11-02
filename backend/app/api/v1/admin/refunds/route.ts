@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body, unwrap } from '@/lib/http';
 import { requireAdmin } from '@/lib/auth';
 import { rpc } from '@/repositories/rpc';
 import { adminRefundBody } from '@/lib/validation';

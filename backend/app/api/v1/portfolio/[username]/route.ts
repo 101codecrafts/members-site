@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight } from '@/lib/http';
 import { publicPortfolio } from '@/services/portfolio';
 import { notFound } from '@/lib/errors';
 export const GET = route<{ username: string }>(async ({ params }) => {

@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body, unwrap } from '@/lib/http';
 import { z } from 'zod';
 import { requireUser } from '@/lib/auth';
 const B = z.object({ motivation: z.string().min(20).max(4000), skills: z.array(z.string().max(40)).max(30).default([]),

@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, query, unwrap } from '@/lib/http';
 import { requireUser } from '@/lib/auth';
 import { pagination } from '@/lib/validation';
 export const GET = route(async ({ req }) => {

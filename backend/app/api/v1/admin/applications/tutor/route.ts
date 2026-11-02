@@ -1,6 +1,6 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, query, unwrap } from '@/lib/http';
 import { requireAdmin } from '@/lib/auth';
-import { rpc } from '@/repositories/rpc';
+
 import { pagination } from '@/lib/validation';
 export const GET = route(async ({ req }) => {
   const s = await requireAdmin();

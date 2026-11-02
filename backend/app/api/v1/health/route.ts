@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight } from '@/lib/http';
 import { anonClient } from '@/lib/supabase/user';
 export const dynamic = 'force-dynamic';
 export const GET = route(async () => {

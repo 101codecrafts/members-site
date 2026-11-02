@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body, unwrap } from '@/lib/http';
 import { z } from 'zod';
 import { requireMember } from '@/lib/auth';
 const B = z.object({ bio: z.string().min(50).max(5000), expertise: z.array(z.string().max(40)).min(1).max(20), years_experience: z.number().int().min(0).max(60).optional(),

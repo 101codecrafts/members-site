@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body, unwrap } from '@/lib/http';
 import { z } from 'zod';
 import { requireUser } from '@/lib/auth';
 /** DPPA 2019 right to erasure: queued, processed by the daily job after a 24 h cool-off. */

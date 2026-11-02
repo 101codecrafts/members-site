@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body } from '@/lib/http';
 import { requireUser } from '@/lib/auth';
 import { guardianBody } from '@/lib/validation';
 import { startGuardianConsent } from '@/services/members';

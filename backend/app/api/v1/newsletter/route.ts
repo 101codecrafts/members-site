@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body } from '@/lib/http';
 import { subscribeNewsletter } from '@/services/tracking';
 import { newsletterBody } from '@/lib/validation';
 import { LIMITS } from '@/lib/ratelimit';

@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap } from '@/lib/http';
+import { route, preflight, body, unwrap } from '@/lib/http';
 import { requireUser } from '@/lib/auth';
 import { consentBody } from '@/lib/validation';
 import { sha256 } from '@/lib/crypto';

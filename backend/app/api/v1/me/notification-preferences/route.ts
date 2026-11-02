@@ -1,4 +1,4 @@
-import { route, preflight, body, query, unwrap, unwrapMaybe } from '@/lib/http';
+import { route, preflight, body, unwrap, unwrapMaybe } from '@/lib/http';
 import { z } from 'zod';
 import { requireUser } from '@/lib/auth';
 const Channel = z.record(z.enum(['messages', 'comments', 'courses', 'events', 'payments', 'announcements', 'gamification']), z.boolean());
