@@ -1,0 +1,27 @@
+/* 101 Codecrafts — brutalist UI kit. Colours sampled from the mockups. */
+@font-face{font-family:"Russo One";src:url(../assets/fonts/russo-one-400.woff2) format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-400.woff2) format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-500.woff2) format("woff2");font-weight:500;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-600.woff2) format("woff2");font-weight:600;font-display:block}
+@font-face{font-family:"Body";src:url(../assets/fonts/saira-semi-condensed-700.woff2) format("woff2");font-weight:700;font-display:block}
+
+:root{
+  --or:#fc8c0c; --or2:#fd880f; --cy:#05e6f2; --ink:#10181f; --ink2:#0f171e; --navy:#0c1f34;
+  --bg:#f3f5f6; --line:#e0e6ea; --mut:#4f6b80; --blue:#1786c9; --white:#fff;
+  --disp:"Russo One",Impact,sans-serif; --body:"Body","Saira Semi Condensed",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+svg.i{width:20px;height:20px;display:block;flex:none}
+img{display:block}
+.abs{position:absolute}
+.disp{font-family:var(--disp);font-weight:400;letter-spacing:0}
+.or{color:var(--or)} .cy{color:var(--cy)}
+.bg-or{background:var(--or)} .bg-cy{background:var(--cy)} .bg-ink{background:var(--ink)}
+
+/* ---------- interactive layer (disabled with ?static=1) ---------- */
+.fx .hov{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.fx .hov:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink)}
+.fx .hov.on-dark:hover{box-shadow:6px 6px 0 var(--or)}
+.fx-canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
