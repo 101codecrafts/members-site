@@ -79,7 +79,7 @@ def topbar(a):
   <nav class="top-links" aria-label="Quick links"><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a></nav>
   <span class="sp"></span>
   <nav class="role-tabs" aria-label="Switch role view">{tabs}</nav>
-  <a class="ib" href="#" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
+  <a class="ib" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
   <a class="ib" href="#" aria-label="Messages"><svg aria-hidden="true"><use href="#i-msg"/></svg></a>
   <div class="chip-me"><span class="av" aria-hidden="true">{initials}</span><div><b>{name}</b><small>{label}</small></div></div>
 </header>'''

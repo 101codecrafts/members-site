@@ -316,7 +316,7 @@ ol.list{list-style:none}
 .below.has-ad-side{grid-template-columns:1fr 1fr 300px}
 .lite .ad-slot,.static .ad-slot{display:none!important}
 [data-theme=dark] .ad-infeed,[data-theme=dark] .ad-box{background:#121b23;border-color:#2b3a47}
-.promo-bar{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:#fff;border-bottom:3px solid var(--or);padding:6px 12px;min-height:40px;font:600 13px var(--body);position:relative;z-index:70}
+.promo-bar{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding:6px 12px;min-height:40px;font:600 13px var(--body);position:relative;z-index:70}
 .promo-bar p{margin:0;text-align:center}.promo-bar b{color:var(--or)}
 .promo-cd{color:var(--cy);font-weight:700;margin-left:6px;white-space:nowrap}
 .promo-bar button{background:transparent;border:2px solid #fff;color:#fff;width:32px;height:32px;cursor:pointer;flex:none;font:700 14px var(--body)}
@@ -343,3 +343,35 @@ ol.list{list-style:none}
 .playground .pg-out{white-space:pre-wrap;background:var(--ink);color:#e8edf1;border:2px solid var(--ink);padding:12px 14px;margin-top:12px;font:500 13px/1.5 ui-monospace,Consolas,monospace;max-height:320px;overflow:auto}
 [data-theme=dark] .sec-note{background:#2a1f10;color:#e8edf1}
 @media (max-width:760px){.ai-filters{grid-template-columns:1fr}}
+
+/* ---------- site search overlay, demo-data note, form states (js/ui.js, js/pages.js) ---------- */
+#cc-search{position:fixed;inset:0;z-index:1200;background:rgba(6,10,32,.72);display:flex;justify-content:center;align-items:flex-start;padding:min(12vh,96px) 12px 12px}
+#cc-search[hidden]{display:none}
+.ccs-box{width:100%;max-width:620px;background:#fff;color:var(--ink);border:2px solid var(--ink);box-shadow:6px 6px 0 var(--or);max-height:80vh;display:flex;flex-direction:column}
+.ccs-bar{display:flex;align-items:center;gap:10px;padding:0 6px 0 14px;border-bottom:2px solid var(--ink)}
+.ccs-bar svg{width:20px;height:20px;flex:none}
+.ccs-bar input{flex:1;min-width:0;border:0;outline:0;font:500 17px var(--body);padding:14px 0;background:transparent;color:inherit}
+.ccs-x{width:44px;height:44px;border:0;background:none;font:700 16px var(--body);cursor:pointer;color:inherit}
+.ccs-list{list-style:none;margin:0;padding:6px 0;overflow:auto}
+.ccs-list a{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:8px 16px;color:var(--ink);text-decoration:none;font:600 15px var(--body)}
+.ccs-list a:hover,.ccs-list a:focus-visible{background:#fff3e0;outline:0}
+.ccs-list small{flex:none;font:700 11px var(--body);letter-spacing:.5px;text-transform:uppercase;color:#5a6178}
+.ccs-empty{padding:16px;color:#5a6178;font:500 14px var(--body)}
+.cc-demo{position:fixed;left:12px;top:12px;z-index:900;display:flex;align-items:center;gap:6px;background:#fff;color:var(--ink);border:2px solid var(--ink);padding:4px 4px 4px 10px;font:700 12px var(--body);letter-spacing:.3px;box-shadow:3px 3px 0 var(--cy);transition:opacity .4s}
+.cc-demo button{width:28px;height:28px;border:0;background:none;cursor:pointer;font:700 12px var(--body);color:inherit}
+.cc-demo.min{opacity:0;pointer-events:none}
+.form-msg{margin:4px 0 0;padding:10px 12px;font:600 14px/1.4 var(--body);border-left:4px solid var(--ink);background:#f1f3f8}
+.form-msg:empty{display:none}
+.form-msg.err{border-color:#b42318;background:#fdecea;color:#7a1a12}
+.form-msg.ok{border-color:#1a7f37;background:#e9f7ee;color:#0f5132}
+.form-msg.info{border-color:var(--or);background:#fff4e5;color:var(--ink)}
+.field input[aria-invalid="true"]{border-color:#b42318!important;box-shadow:0 0 0 2px rgba(180,35,24,.18)}
+button:disabled{opacity:.6;cursor:progress}
+.topbar .top-links{display:flex;gap:18px}
+
+/* topbar between tablet and wide desktop: never push the profile chip off-screen */
+.topbar>*{min-width:0}
+.topbar .search input{min-width:0}
+@media (max-width:1280px){.topbar .top-links{display:none}.topbar{gap:10px}}
+@media (min-width:1024px) and (max-width:1180px){.topbar .chip-me div{display:none}}
+@media (max-width:1100px){.topbar{flex-wrap:wrap;row-gap:8px}}

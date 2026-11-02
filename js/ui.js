@@ -97,7 +97,11 @@
   async function socials() {
     const rows = $$("[data-socials]"); if (!rows.length) return;
     const list = await API.fetchSocialLinks();
-    if (!list) { rows.forEach(r => $$("a", r).forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; })); return; }
+    if (!list) {   // no backend: show only the networks that have a real URL in the bundled data (never dead '#' icons)
+      const known = ((D && D.social) || []).filter(l => l.url).map(l => ({ ...l, active: true }));
+      if (known.length) { rows.forEach(r => { r.classList.add("live"); r.innerHTML = socialRow(known); }); }
+      return;
+    }
     rows.forEach(r => { r.classList.add("live"); r.innerHTML = socialRow(list); });
   }
   window.CC_UI.socialRow = socialRow;
@@ -110,11 +114,73 @@
     const w = document.documentElement.clientWidth; html.style.setProperty("--fit", w >= 1100 && w < 1536 ? (w / 1536).toFixed(4) : 1);
   }
   fitCanvas(); addEventListener("resize", fitCanvas);
+
+  /* ---------------- toast, demo-data note, dead-link guard, site search ---------------- */
+  function toast(msg) { let t = $("#cc-toast"); if (!t) { t = document.createElement("div"); t.id = "cc-toast"; t.setAttribute("role", "status"); t.setAttribute("aria-live", "polite"); document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3200); }
+  window.CC_UI.toast = toast;
+  function demoNote() {
+    if ($(".cc-demo") || sessionStorage.getItem("cc_demo_seen")) return;
+    const n = document.createElement("div"); n.className = "cc-demo"; n.setAttribute("role", "status");
+    n.innerHTML = `<span>Preview · showing demo data</span><button type="button" aria-label="Dismiss">✕</button>`;
+    document.body.appendChild(n); n.querySelector("button").onclick = () => { n.remove(); sessionStorage.setItem("cc_demo_seen", "1"); };
+    setTimeout(() => n.classList.add("min"), 7000);
+  }
+  function deadLinks() {
+    document.addEventListener("click", e => {
+      const a = e.target.closest && e.target.closest('a[href="#"]'); if (!a || e.defaultPrevented) return;
+      if (a.hasAttribute("data-wa-share") || a.hasAttribute("data-cal-link")) return;
+      e.preventDefault(); const what = (a.getAttribute("aria-label") || a.textContent || "This").trim().replace(/\s+/g, " ").slice(0, 40);
+      toast(`${what} opens when the 101 backend is live. You're viewing the preview.`);
+    });
+  }
+  const PAGES = [["Home", "index.html"], ["Dashboard", "dashboard.html"], ["Courses", "courses.html"], ["Learn library", "learn.html"], ["Practice problems", "practice.html"], ["Online IDE", "ide.html"], ["Contests", "contests.html"], ["Interview prep", "interview.html"], ["AI Tools", "ai-tools.html"], ["Projects", "projects.html"], ["Launchpad", "launchpad.html"], ["Competitions", "competitions.html"], ["Study groups", "groups.html"], ["Resource library", "resources.html"], ["Daily tech news", "news.html"], ["Opportunities", "opportunities.html"], ["Announcements", "announcements.html"], ["Events & meetups", "events.html"], ["Live sessions", "sessions.html"], ["Marketplace", "marketplace.html"], ["Testing", "testing.html"], ["Sign in", "signin.html"], ["Join the community", "signup.html"], ["Privacy policy", "privacy.html"], ["Terms", "terms.html"]];
+  function searchIndex() {
+    const d = D || {}, out = PAGES.map(([t, h]) => ({ t, h, k: "Page" }));
+    (d.resources || []).forEach(r => out.push({ t: r.title, h: API ? API.goHref(r.id) : "resources.html", k: r.type || "Resource", ext: true }));
+    (d.externalCourses || []).forEach(r => out.push({ t: r.title, h: API ? API.goHref(r.id) : "courses.html", k: "Course", ext: true }));
+    (d.aiTools || []).forEach(r => out.push({ t: r.name || r.title, h: "ai-tools.html", k: "AI tool" }));
+    (d.projects || []).forEach(r => out.push({ t: r.name || r.title, h: "projects.html", k: "Project" }));
+    (d.groups || []).forEach(r => out.push({ t: r.name || r.title, h: "groups.html", k: "Group" }));
+    (d.paths || []).forEach(t => out.push({ t, h: "courses.html", k: "Path" }));
+    return out.filter(x => x.t);
+  }
+  function openSearch(q = "") {
+    let o = $("#cc-search");
+    if (!o) {
+      o = document.createElement("div"); o.id = "cc-search"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); o.setAttribute("aria-label", "Search 101 Codecrafts");
+      o.innerHTML = `<div class="ccs-box"><form class="ccs-bar" role="search"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search courses, tools, pages…" aria-label="Search" autocomplete="off"><button type="button" class="ccs-x" aria-label="Close search">✕</button></form><ul class="ccs-list" role="listbox"></ul></div>`;
+      document.body.appendChild(o);
+      const idx = searchIndex(), inp = $("input", o), list = $(".ccs-list", o);
+      const render = () => { const v = inp.value.trim().toLowerCase(); const hits = (v ? idx.filter(x => x.t.toLowerCase().includes(v) || x.k.toLowerCase().includes(v)) : idx.slice(0, 8)).slice(0, 12);
+        list.innerHTML = hits.length ? hits.map(x => `<li><a href="${esc(x.h)}"${x.ext ? ' target="_blank" rel="noopener noreferrer"' : ""}><span>${esc(x.t)}</span><small>${esc(x.k)}</small></a></li>`).join("") : `<li class="ccs-empty">No matches for “${esc(inp.value)}”. Try “python”, “AI” or “events”.</li>`; };
+      inp.addEventListener("input", render);
+      $("form", o).addEventListener("submit", e => { e.preventDefault(); const f = $("a", list); if (f) f.click(); });
+      const close = () => { o.hidden = true; document.body.style.overflow = ""; };
+      $(".ccs-x", o).onclick = close; o.addEventListener("click", e => { if (e.target === o) close(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && !o.hidden) close(); });
+      o._render = render;
+    }
+    o.hidden = false; document.body.style.overflow = "hidden"; const inp = $("input", o); inp.value = q; o._render(); setTimeout(() => inp.focus(), 30);
+  }
+  window.CC_UI.openSearch = openSearch;
+  function searchHooks() {
+    document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-search]"); if (b) { e.preventDefault(); openSearch(); } });
+    $$(".topbar .search input").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); openSearch(i.value); } }));
+    document.addEventListener("keydown", e => { if (e.key === "/" && !/input|textarea|select/i.test((document.activeElement || {}).tagName || "") && !document.activeElement.isContentEditable) { e.preventDefault(); openSearch(); } });
+  }
+  /* landing, desktop: keep the full-bleed navy header band aligned with the canvas header (promo bars above it can change height) */
+  function headerBand() {
+    if (document.body.dataset.page !== "landing") return; const pg = $(".page"); if (!pg) return;
+    const f = () => html.style.setProperty("--hdr-y", (pg.getBoundingClientRect().top + scrollY) + "px");
+    f(); addEventListener("resize", f); if (window.ResizeObserver) new ResizeObserver(f).observe(document.body);
+  }
   function ready(fn) { document.readyState !== "loading" ? fn() : document.addEventListener("DOMContentLoaded", fn); }
   ready(() => {
     fixGoLinks();
     if (STATIC) return;                       // mockup comparison mode: no injected UI, no network
-    toolbar(); cookieBanner(); whatsappShare(); socials();
+    toolbar(); cookieBanner(); whatsappShare(); socials(); deadLinks(); searchHooks(); headerBand();
+    if (window.CC_DEMO) demoNote(); else addEventListener("cc:demo", demoNote, { once: true });
     dashboardExtras(); landingExtras(); githubStats();
     // Cal.com booking buttons: data-cal-link="101codecrafts/workshop" opens the Cal.com page (embed snippet can replace this)
     $$("[data-cal-link]").forEach(b => b.addEventListener("click", e => { e.preventDefault(); window.open("https://cal.com/" + b.dataset.calLink, "_blank", "noopener"); }));

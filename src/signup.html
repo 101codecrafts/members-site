@@ -13,7 +13,7 @@
 <a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="82" height="41"><b>Codecrafts</b></a>
 
 <h1>JOIN 101 CODECRAFTS</h1>
-<form id="su" class="grid" style="gap:12px">
+<form id="su" novalidate class="grid" style="gap:12px">
  <label class="field">Full name<input name="name" autocomplete="name" required></label>
  <label class="field">Email<input name="email" type="email" autocomplete="email" required></label>
  <label class="field">Phone (for Mobile Money)<input name="phone" type="tel" autocomplete="tel" placeholder="+256…"></label>
@@ -24,6 +24,7 @@
  <label class="field">Password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
  <label class="row"><input type="checkbox" required style="width:20px;height:20px"> I agree to the <a href="terms.html"><b>Terms</b></a> and <a href="privacy.html"><b>Privacy Policy</b></a></label>
  <button class="btn or">Create account</button>
+ <p id="su-msg" role="status" aria-live="polite"></p>
  <p class="muted">Already a member? <a href="signin.html"><b>Sign in</b></a></p>
 </form>
 </div>

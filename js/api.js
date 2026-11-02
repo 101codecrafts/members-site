@@ -19,7 +19,9 @@
       return await r.json();
     } finally { clearTimeout(t); }
   }
-  async function backend(path, opts) { return getJSON(API_BASE + path, opts); }
+  /* when the backend is not reachable (static preview) every call falls back to bundled demo data; tell the UI once */
+  function markDemo() { if (STATIC || window.CC_DEMO) return; window.CC_DEMO = true; try { dispatchEvent(new CustomEvent("cc:demo")); } catch (e) {} }
+  async function backend(path, opts) { try { return await getJSON(API_BASE + path, opts); } catch (e) { markDemo(); throw e; } }
   async function tryChain(...fns) { for (const f of fns) { try { const v = await f(); if (v != null) return v; } catch (e) { /* next */ } } return null; }
 
   /* ---------- link-out helper: every external resource opens through /go/<id> ---------- */

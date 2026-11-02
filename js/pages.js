@@ -238,11 +238,30 @@
       if (q.get("code")) { $("#vf").code.value = q.get("code"); go(q.get("code")); }
     },
     /* ---------------- Auth + onboarding ---------------- */
-    async signin() { $("#si").onsubmit = async e => { e.preventDefault(); const f = e.target; const r = await API.signIn(f.email.value, f.password.value); $("#si-msg").textContent = r ? "Signed in." : "Sign-in needs the backend (POST /api/auth/sign-in). Opening the dashboard preview."; if (!r) setTimeout(() => location.href = "dashboard.html", 900); }; },
+    async signin() {
+      const f = $("#si"), msg = $("#si-msg"), btn = $("button.or", f) || $("button", f);
+      const say = (t, cls) => { msg.textContent = t; msg.className = "form-msg " + (cls || ""); };
+      f.noValidate = true;
+      f.onsubmit = async e => {
+        e.preventDefault();
+        const id = f.email.value.trim(), pw = f.password.value;
+        f.email.setAttribute("aria-invalid", !id); f.password.setAttribute("aria-invalid", !pw);
+        if (!id || !pw) { say(!id ? "Enter your email or phone number." : "Enter your password.", "err"); (!id ? f.email : f.password).focus(); return; }
+        if (id.includes("@") && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(id)) { f.email.setAttribute("aria-invalid", true); say("That email address doesn't look right.", "err"); f.email.focus(); return; }
+        btn.disabled = true; const label = btn.textContent; btn.textContent = "Signing in…"; say("Checking your details…");
+        const r = await API.signIn(id, pw);
+        btn.disabled = false; btn.textContent = label;
+        if (r) { say("Signed in. Taking you to your dashboard…", "ok"); setTimeout(() => location.href = "dashboard.html", 600); }
+        else say("Sign-in opens when the 101 backend is live. This is the preview: you can explore the dashboard without an account.", "info");
+      };
+      const g = $("#si-google"); if (g) g.onclick = () => say("Google sign-in opens when the 101 backend is live.", "info");
+    },
     async signup() {
       const f = $("#su"); const age = () => { const d = Date.parse(f.dob.value); return d ? (Date.now() - d) / 31557600000 : 99; };
       f.dob.onchange = () => { $("#guardian").hidden = age() >= 18; $$("#guardian input").forEach(i => i.required = age() < 18); };
-      f.onsubmit = async e => { e.preventDefault(); const data = Object.fromEntries(new FormData(f)); if (age() < 18) await API.requestGuardianConsent({ child: data.email, guardian: data.g_email, phone: data.g_phone });
+      f.onsubmit = async e => { e.preventDefault(); const sm = $("#su-msg"); if (!f.checkValidity()) { const bad = f.querySelector(":invalid"); if (sm) { sm.className = "form-msg err"; sm.textContent = (bad.closest("label") ? bad.closest("label").firstChild.textContent.trim() + ": " : "") + bad.validationMessage; } bad.focus(); return; }
+        if (sm) { sm.className = "form-msg info"; sm.textContent = "Accounts open when the 101 backend is live. Continuing to the onboarding preview…"; }
+        const data = Object.fromEntries(new FormData(f)); if (age() < 18) await API.requestGuardianConsent({ child: data.email, guardian: data.g_email, phone: data.g_phone });
         await API.signUp(data); sessionStorage.setItem("cc_signup", JSON.stringify({ name: data.name, minor: age() < 18 })); location.href = "onboarding.html"; };
     },
     async onboarding() {

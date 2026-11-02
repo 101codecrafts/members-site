@@ -450,7 +450,7 @@ ol.list{list-style:none}
 .below.has-ad-side{grid-template-columns:1fr 1fr 300px}
 .lite .ad-slot,.static .ad-slot{display:none!important}
 [data-theme=dark] .ad-infeed,[data-theme=dark] .ad-box{background:#121b23;border-color:#2b3a47}
-.promo-bar{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:#fff;border-bottom:3px solid var(--or);padding:6px 12px;min-height:40px;font:600 13px var(--body);position:relative;z-index:70}
+.promo-bar{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding:6px 12px;min-height:40px;font:600 13px var(--body);position:relative;z-index:70}
 .promo-bar p{margin:0;text-align:center}.promo-bar b{color:var(--or)}
 .promo-cd{color:var(--cy);font-weight:700;margin-left:6px;white-space:nowrap}
 .promo-bar button{background:transparent;border:2px solid #fff;color:#fff;width:32px;height:32px;cursor:pointer;flex:none;font:700 14px var(--body)}
@@ -477,6 +477,38 @@ ol.list{list-style:none}
 .playground .pg-out{white-space:pre-wrap;background:var(--ink);color:#e8edf1;border:2px solid var(--ink);padding:12px 14px;margin-top:12px;font:500 13px/1.5 ui-monospace,Consolas,monospace;max-height:320px;overflow:auto}
 [data-theme=dark] .sec-note{background:#2a1f10;color:#e8edf1}
 @media (max-width:760px){.ai-filters{grid-template-columns:1fr}}
+
+/* ---------- site search overlay, demo-data note, form states (js/ui.js, js/pages.js) ---------- */
+#cc-search{position:fixed;inset:0;z-index:1200;background:rgba(6,10,32,.72);display:flex;justify-content:center;align-items:flex-start;padding:min(12vh,96px) 12px 12px}
+#cc-search[hidden]{display:none}
+.ccs-box{width:100%;max-width:620px;background:#fff;color:var(--ink);border:2px solid var(--ink);box-shadow:6px 6px 0 var(--or);max-height:80vh;display:flex;flex-direction:column}
+.ccs-bar{display:flex;align-items:center;gap:10px;padding:0 6px 0 14px;border-bottom:2px solid var(--ink)}
+.ccs-bar svg{width:20px;height:20px;flex:none}
+.ccs-bar input{flex:1;min-width:0;border:0;outline:0;font:500 17px var(--body);padding:14px 0;background:transparent;color:inherit}
+.ccs-x{width:44px;height:44px;border:0;background:none;font:700 16px var(--body);cursor:pointer;color:inherit}
+.ccs-list{list-style:none;margin:0;padding:6px 0;overflow:auto}
+.ccs-list a{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:8px 16px;color:var(--ink);text-decoration:none;font:600 15px var(--body)}
+.ccs-list a:hover,.ccs-list a:focus-visible{background:#fff3e0;outline:0}
+.ccs-list small{flex:none;font:700 11px var(--body);letter-spacing:.5px;text-transform:uppercase;color:#5a6178}
+.ccs-empty{padding:16px;color:#5a6178;font:500 14px var(--body)}
+.cc-demo{position:fixed;left:12px;top:12px;z-index:900;display:flex;align-items:center;gap:6px;background:#fff;color:var(--ink);border:2px solid var(--ink);padding:4px 4px 4px 10px;font:700 12px var(--body);letter-spacing:.3px;box-shadow:3px 3px 0 var(--cy);transition:opacity .4s}
+.cc-demo button{width:28px;height:28px;border:0;background:none;cursor:pointer;font:700 12px var(--body);color:inherit}
+.cc-demo.min{opacity:0;pointer-events:none}
+.form-msg{margin:4px 0 0;padding:10px 12px;font:600 14px/1.4 var(--body);border-left:4px solid var(--ink);background:#f1f3f8}
+.form-msg:empty{display:none}
+.form-msg.err{border-color:#b42318;background:#fdecea;color:#7a1a12}
+.form-msg.ok{border-color:#1a7f37;background:#e9f7ee;color:#0f5132}
+.form-msg.info{border-color:var(--or);background:#fff4e5;color:var(--ink)}
+.field input[aria-invalid="true"]{border-color:#b42318!important;box-shadow:0 0 0 2px rgba(180,35,24,.18)}
+button:disabled{opacity:.6;cursor:progress}
+.topbar .top-links{display:flex;gap:18px}
+
+/* topbar between tablet and wide desktop: never push the profile chip off-screen */
+.topbar>*{min-width:0}
+.topbar .search input{min-width:0}
+@media (max-width:1280px){.topbar .top-links{display:none}.topbar{gap:10px}}
+@media (min-width:1024px) and (max-width:1180px){.topbar .chip-me div{display:none}}
+@media (max-width:1100px){.topbar{flex-wrap:wrap;row-gap:8px}}
 
 /* Public landing — laid out on the 1024x1536 mockup grid */
 body[data-page="landing"]{--nv:#0B1236;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9;background:#f3f6f7}
@@ -566,20 +598,43 @@ html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
 @media (max-width:1023px){
   html:not(.static) .page{width:auto;height:auto;overflow:visible;display:flex;flex-direction:column;gap:12px;padding:0 0 16px}
   html:not(.static) .page>*{position:relative!important;left:auto!important;top:auto!important;translate:none!important;scale:none!important;max-width:100%;margin-inline:16px}
-  html:not(.static) .page>.hdr,html:not(.static) .page>.lfoot,html:not(.static) .page>.band,html:not(.static) .page>.cta,html:not(.static) .page>.comm,html:not(.static) .page>.lhero{margin-inline:0}
+  html:not(.static) .page>*{max-width:calc(100% - 32px);box-sizing:border-box}
+  html:not(.static) .page>p,html:not(.static) .page>div:not(.hdr):not(.lfoot):not(.band):not(.cta):not(.comm){width:auto!important}
+  html:not(.static) .page>.hdr,html:not(.static) .page>.lfoot,html:not(.static) .page>.band,html:not(.static) .page>.cta,html:not(.static) .page>.comm,html:not(.static) .page>.lhero{margin-inline:0;max-width:100%}
   html:not(.static) .page>.lhero{display:none}
   html:not(.static) .page>img[src*="avatar-row"]{display:none}
   html:not(.static) .page>.tile[style*="width:28px"]{display:none}
   html:not(.static) .page .disp{white-space:normal;transform:none!important;font-size:clamp(28px,9vw,46px)!important;line-height:1.05}
   html:not(.static) .page p{white-space:normal}
   html:not(.static) .page p br{display:none}
-  html:not(.static) .hdr{width:auto;height:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px}
-  html:not(.static) .hdr>*,html:not(.static) .hdr nav a{position:static!important}
-  html:not(.static) .hdr nav{display:flex;gap:14px;overflow-x:auto;width:100%;order:5}
-  html:not(.static) .hdr nav a{min-height:44px;display:flex;align-items:center}
-  html:not(.static) .hdr .login,html:not(.static) .hdr .join{min-height:44px}
+  /* mobile / tablet header: row 1 = logo + wordmark | search, LOGIN, JOIN pill; row 2 = scrollable nav */
+  html:not(.static) .hdr{width:auto;height:auto;display:flex;flex-wrap:wrap;align-items:center;column-gap:6px;row-gap:0;padding:8px 12px 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  html:not(.static) .hdr>*{position:static!important}
+  html:not(.static) .hdr>img{order:1;width:56px!important;height:28px!important;flex:none;object-fit:contain}
+  html:not(.static) .hdr .wm{order:2;font-size:19px!important;line-height:1!important;margin-right:auto;white-space:nowrap;letter-spacing:.2px}
   html:not(.static) .hdr .tg{display:none}
-  html:not(.static) .page>img[alt^="Member coding"]{width:100%!important;height:auto!important}
+  html:not(.static) .hdr .hsearch{order:3;width:44px!important;height:44px!important;display:flex!important;align-items:center;justify-content:center}
+  html:not(.static) .hdr .hsearch svg{width:19px;height:19px}
+  html:not(.static) .hdr .login,html:not(.static) .hdr .join{order:4;width:auto!important;height:36px!important;min-height:36px;padding:0 12px;font-size:13px!important;letter-spacing:.4px;white-space:nowrap;border-radius:2px;margin-block:4px}
+  html:not(.static) .hdr .login{border-width:1.5px}
+  html:not(.static) .hdr .join{order:5;gap:6px;color:var(--nv)!important}
+  html:not(.static) .hdr .join .jx{display:none}
+  html:not(.static) .hdr nav{order:10;flex:1 0 100%;display:flex;gap:22px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:4px -12px 0;padding:0 28px 0 12px;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+  html:not(.static) .hdr nav::-webkit-scrollbar{display:none}
+  html:not(.static) .hdr nav a{position:relative!important;left:auto!important;top:auto!important;flex:none;min-height:44px;display:flex;align-items:center;font-size:13px!important;letter-spacing:.6px;color:rgba(255,255,255,.82);translate:none!important;scale:none!important}
+  html:not(.static) .hdr nav a.on{color:#fff}
+  html:not(.static) .hdr nav a.on::after{top:auto;bottom:0;left:0;right:0;height:3px}
+  /* "Desktop site" on phones (~980px) and tablets: one tidy row */
+  @media (min-width:900px){
+    html:not(.static) .hdr{flex-wrap:nowrap;padding:6px 24px;column-gap:10px}
+    html:not(.static) .hdr .wm{margin-right:24px}
+    html:not(.static) .hdr nav{order:2;flex:1 1 auto;margin:0;padding:0;justify-content:center;-webkit-mask-image:none;mask-image:none}
+    html:not(.static) .hdr nav a{min-height:52px}
+    html:not(.static) .hdr .hsearch{order:3}
+    html:not(.static) .hdr .join .jx{display:inline}
+  }
+  html:not(.static) .page>img[alt^="Member coding"]{width:calc(100% - 32px)!important;height:auto!important}
   html:not(.static) .page>[class*="btn-"]{width:auto!important;min-height:44px}
   html:not(.static) .page>.hov[style*="width:144px"]{width:auto!important;height:auto!important;padding:16px}
   html:not(.static) .page>.hov[style*="width:144px"]>*{position:static!important}
@@ -611,3 +666,21 @@ html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
 }
 
 @media (max-width:1023px){html:not(.static) .page :is(p,small,span,a,b,h3,h4,div){font-size:max(13px,1em)!important}}
+@media (max-width:420px){html:not(.static) .hdr .wm{font-size:17px!important}html:not(.static) .hdr .login,html:not(.static) .hdr .join{padding:0 10px}}
+@media (max-width:389px){html:not(.static) .hdr{column-gap:4px;padding-inline:10px}html:not(.static) .hdr>img{width:50px!important;height:25px!important}html:not(.static) .hdr .wm{font-size:16px!important}html:not(.static) .hdr .join svg{display:none}html:not(.static) .hdr .login,html:not(.static) .hdr .join{padding:0 9px;letter-spacing:.2px}html:not(.static) .hdr nav{margin-inline:-10px;padding-left:10px}}
+@media (max-width:329px){html:not(.static) .hdr .wm{display:none}html:not(.static) .hdr>img{margin-right:auto}}
+
+/* header search button (was a bare icon) */
+.hdr .hsearch{left:733px;top:11px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:none;border:0;padding:0;color:#fff;cursor:pointer}
+.hdr .hsearch svg{width:17px;height:17px}
+.hdr .hsearch:focus-visible{outline:2px solid var(--lcy);outline-offset:2px}
+
+/* desktop (live site): full-bleed navy header band behind the 1024px canvas, no sideways scroll */
+@media (min-width:1024px){
+  html:not(.static) body[data-page="landing"]{overflow-x:clip;background:linear-gradient(var(--nv),var(--nv)) 0 var(--hdr-y,0px)/100% 58px no-repeat,#f3f6f7}
+  html:not(.static) .hdr nav a{transition:color .15s}
+  html:not(.static) .hdr nav a:not(.on){color:rgba(255,255,255,.82)}
+  html:not(.static) .hdr nav a:hover{color:#fff}
+  html:not(.static) .page>.hov[style*="width:144px"] .disp{font-size:17px!important;letter-spacing:0!important}
+}
+@media (max-width:1023px){html:not(.static) body[data-page="landing"]{overflow-x:clip}html:not(.static) .page p{overflow-wrap:anywhere}}

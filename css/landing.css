@@ -86,20 +86,43 @@ html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
 @media (max-width:1023px){
   html:not(.static) .page{width:auto;height:auto;overflow:visible;display:flex;flex-direction:column;gap:12px;padding:0 0 16px}
   html:not(.static) .page>*{position:relative!important;left:auto!important;top:auto!important;translate:none!important;scale:none!important;max-width:100%;margin-inline:16px}
-  html:not(.static) .page>.hdr,html:not(.static) .page>.lfoot,html:not(.static) .page>.band,html:not(.static) .page>.cta,html:not(.static) .page>.comm,html:not(.static) .page>.lhero{margin-inline:0}
+  html:not(.static) .page>*{max-width:calc(100% - 32px);box-sizing:border-box}
+  html:not(.static) .page>p,html:not(.static) .page>div:not(.hdr):not(.lfoot):not(.band):not(.cta):not(.comm){width:auto!important}
+  html:not(.static) .page>.hdr,html:not(.static) .page>.lfoot,html:not(.static) .page>.band,html:not(.static) .page>.cta,html:not(.static) .page>.comm,html:not(.static) .page>.lhero{margin-inline:0;max-width:100%}
   html:not(.static) .page>.lhero{display:none}
   html:not(.static) .page>img[src*="avatar-row"]{display:none}
   html:not(.static) .page>.tile[style*="width:28px"]{display:none}
   html:not(.static) .page .disp{white-space:normal;transform:none!important;font-size:clamp(28px,9vw,46px)!important;line-height:1.05}
   html:not(.static) .page p{white-space:normal}
   html:not(.static) .page p br{display:none}
-  html:not(.static) .hdr{width:auto;height:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px}
-  html:not(.static) .hdr>*,html:not(.static) .hdr nav a{position:static!important}
-  html:not(.static) .hdr nav{display:flex;gap:14px;overflow-x:auto;width:100%;order:5}
-  html:not(.static) .hdr nav a{min-height:44px;display:flex;align-items:center}
-  html:not(.static) .hdr .login,html:not(.static) .hdr .join{min-height:44px}
+  /* mobile / tablet header: row 1 = logo + wordmark | search, LOGIN, JOIN pill; row 2 = scrollable nav */
+  html:not(.static) .hdr{width:auto;height:auto;display:flex;flex-wrap:wrap;align-items:center;column-gap:6px;row-gap:0;padding:8px 12px 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  html:not(.static) .hdr>*{position:static!important}
+  html:not(.static) .hdr>img{order:1;width:56px!important;height:28px!important;flex:none;object-fit:contain}
+  html:not(.static) .hdr .wm{order:2;font-size:19px!important;line-height:1!important;margin-right:auto;white-space:nowrap;letter-spacing:.2px}
   html:not(.static) .hdr .tg{display:none}
-  html:not(.static) .page>img[alt^="Member coding"]{width:100%!important;height:auto!important}
+  html:not(.static) .hdr .hsearch{order:3;width:44px!important;height:44px!important;display:flex!important;align-items:center;justify-content:center}
+  html:not(.static) .hdr .hsearch svg{width:19px;height:19px}
+  html:not(.static) .hdr .login,html:not(.static) .hdr .join{order:4;width:auto!important;height:36px!important;min-height:36px;padding:0 12px;font-size:13px!important;letter-spacing:.4px;white-space:nowrap;border-radius:2px;margin-block:4px}
+  html:not(.static) .hdr .login{border-width:1.5px}
+  html:not(.static) .hdr .join{order:5;gap:6px;color:var(--nv)!important}
+  html:not(.static) .hdr .join .jx{display:none}
+  html:not(.static) .hdr nav{order:10;flex:1 0 100%;display:flex;gap:22px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:4px -12px 0;padding:0 28px 0 12px;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+  html:not(.static) .hdr nav::-webkit-scrollbar{display:none}
+  html:not(.static) .hdr nav a{position:relative!important;left:auto!important;top:auto!important;flex:none;min-height:44px;display:flex;align-items:center;font-size:13px!important;letter-spacing:.6px;color:rgba(255,255,255,.82);translate:none!important;scale:none!important}
+  html:not(.static) .hdr nav a.on{color:#fff}
+  html:not(.static) .hdr nav a.on::after{top:auto;bottom:0;left:0;right:0;height:3px}
+  /* "Desktop site" on phones (~980px) and tablets: one tidy row */
+  @media (min-width:900px){
+    html:not(.static) .hdr{flex-wrap:nowrap;padding:6px 24px;column-gap:10px}
+    html:not(.static) .hdr .wm{margin-right:24px}
+    html:not(.static) .hdr nav{order:2;flex:1 1 auto;margin:0;padding:0;justify-content:center;-webkit-mask-image:none;mask-image:none}
+    html:not(.static) .hdr nav a{min-height:52px}
+    html:not(.static) .hdr .hsearch{order:3}
+    html:not(.static) .hdr .join .jx{display:inline}
+  }
+  html:not(.static) .page>img[alt^="Member coding"]{width:calc(100% - 32px)!important;height:auto!important}
   html:not(.static) .page>[class*="btn-"]{width:auto!important;min-height:44px}
   html:not(.static) .page>.hov[style*="width:144px"]{width:auto!important;height:auto!important;padding:16px}
   html:not(.static) .page>.hov[style*="width:144px"]>*{position:static!important}
@@ -131,3 +154,21 @@ html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
 }
 
 @media (max-width:1023px){html:not(.static) .page :is(p,small,span,a,b,h3,h4,div){font-size:max(13px,1em)!important}}
+@media (max-width:420px){html:not(.static) .hdr .wm{font-size:17px!important}html:not(.static) .hdr .login,html:not(.static) .hdr .join{padding:0 10px}}
+@media (max-width:389px){html:not(.static) .hdr{column-gap:4px;padding-inline:10px}html:not(.static) .hdr>img{width:50px!important;height:25px!important}html:not(.static) .hdr .wm{font-size:16px!important}html:not(.static) .hdr .join svg{display:none}html:not(.static) .hdr .login,html:not(.static) .hdr .join{padding:0 9px;letter-spacing:.2px}html:not(.static) .hdr nav{margin-inline:-10px;padding-left:10px}}
+@media (max-width:329px){html:not(.static) .hdr .wm{display:none}html:not(.static) .hdr>img{margin-right:auto}}
+
+/* header search button (was a bare icon) */
+.hdr .hsearch{left:733px;top:11px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:none;border:0;padding:0;color:#fff;cursor:pointer}
+.hdr .hsearch svg{width:17px;height:17px}
+.hdr .hsearch:focus-visible{outline:2px solid var(--lcy);outline-offset:2px}
+
+/* desktop (live site): full-bleed navy header band behind the 1024px canvas, no sideways scroll */
+@media (min-width:1024px){
+  html:not(.static) body[data-page="landing"]{overflow-x:clip;background:linear-gradient(var(--nv),var(--nv)) 0 var(--hdr-y,0px)/100% 58px no-repeat,#f3f6f7}
+  html:not(.static) .hdr nav a{transition:color .15s}
+  html:not(.static) .hdr nav a:not(.on){color:rgba(255,255,255,.82)}
+  html:not(.static) .hdr nav a:hover{color:#fff}
+  html:not(.static) .page>.hov[style*="width:144px"] .disp{font-size:17px!important;letter-spacing:0!important}
+}
+@media (max-width:1023px){html:not(.static) body[data-page="landing"]{overflow-x:clip}html:not(.static) .page p{overflow-wrap:anywhere}}
