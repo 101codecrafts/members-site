@@ -216,3 +216,23 @@ board" explains a drawn sketch; the widget streams an answer with a citation chi
   email, privacy-policy link, enabled payment methods) need founder sign-off.
 - pgvector retrieval, history and Realtime were verified against PGlite, not a live Supabase
   project (none was provisioned for this branch).
+
+## 101 AI hub (`/ai`) and quota
+
+The hub streams from `POST /api/ai/chat` (model picker + cross-provider fallback),
+but it does **not** keep its own counter. Every request is metered by the backend's
+generic AI quota API:
+
+- `services/ai.ts` `reserveAi(userId, "hub.<mode>", estTokens)` before the provider
+  call, `commitAi(usageId, ok|error|blocked, {model, tokens, latency})` when the
+  stream finishes, errors or is aborted (rows in `ai_usage`, Kampala days).
+- Limits and plan come from the backend: `site_settings.ai.quotas` (free / pro /
+  minor) and `app.has_pro()` (paid 101 Pro or the launch promo).
+- The hub UI reads usage from `GET /api/v1/ai/quota` (`my_ai_quota()`), mapped by
+  `lib/ai/hub/quota.ts` `toQuotaStatus()`.
+- Refusals: 429 `quota_exceeded` (body carries `quota`), 403 inactive account,
+  503 when AI is disabled (`ai.enabled`) or the quota service is down.
+- Without Supabase env (local dev) an in-memory store mirrors the seeded limits.
+
+The earlier `ai_hub_usage` table / `ai_hub_consume` RPC and `/api/ai/quota` were
+removed as duplicates of the backend API.

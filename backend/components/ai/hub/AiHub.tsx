@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 import s from "../ai.module.css";
 import h from "./hub.module.css";
 import { Markdown } from "../Markdown";
+import { toQuotaStatus, type BackendQuota } from "../../../lib/ai/hub/quota";
 
 type Quota = { used: number; limit: number; remaining: number; plan: "free" | "pro"; promoActive: boolean; resetsAt: string; safeMode?: boolean };
 type Model = { id: string; label: string; provider: string; note: string; code: boolean };
@@ -20,8 +21,10 @@ const MODES: { id: Mode; label: string; hint: string; soon?: boolean }[] = [
   { id: "image", label: "Image → text", hint: "Read text and code from screenshots.", soon: true },
 ];
 
-/** Endpoint is configurable so the hub can point at the backend's /api/v1/ai/chat when it lands. */
+/** Streaming hub chat (metered by the backend quota API). Configurable for other deployments. */
 const CHAT_API = process.env.NEXT_PUBLIC_AI_HUB_CHAT_ENDPOINT || "/api/ai/chat";
+/** Backend quota API: GET → { data: my_ai_quota() }. */
+const QUOTA_API = "/api/v1/ai/quota";
 
 export function quotaText(q: Quota) {
   return `${q.used} of ${q.limit} ${q.plan === "pro" ? "Pro" : "free"} messages today`;
@@ -65,8 +68,10 @@ export function AiHub() {
   const logRef = useRef<HTMLDivElement>(null);
 
   const refreshQuota = useCallback(async () => {
-    const r = await fetch("/api/ai/quota");
-    if (r.ok) setQuota((await r.json()) as Quota);
+    const r = await fetch(QUOTA_API, { credentials: "same-origin" });
+    if (!r.ok) return;
+    const j = (await r.json().catch(() => null)) as { data?: BackendQuota | null } | null;
+    if (j?.data) setQuota((q) => ({ ...toQuotaStatus(j.data, q?.promoActive ?? false), safeMode: q?.safeMode }));
   }, []);
 
   useEffect(() => {

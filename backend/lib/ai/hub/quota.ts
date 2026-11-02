@@ -1,30 +1,21 @@
 /**
- * Daily message quota for the 101 AI hub.
- *  - free: AI_HUB_DAILY_FREE (default 50) · pro: AI_HUB_DAILY_PRO (default 300)
- *  - "Pro" = backend app.has_pro(): paid 101 Pro OR the launch promo (everyone Pro).
- *  - The day resets at midnight Africa/Kampala (EAT, UTC+3, no DST).
- * Store: Supabase RPC ai_hub_consume / ai_hub_usage_get (service role only, see
- * migration 20261102121000_ai_hub_quota.sql) with an in-memory fallback.
+ * Daily quota for the 101 AI hub — backed by the backend's generic AI quota API.
  *
- * CONTRACT (mirrors the planned backend /api/v1/ai/* + ai_usage):
- *   QuotaStatus = { used, limit, remaining, plan: "free"|"pro", promoActive, resetsAt }
- * If the backend's ai_usage RPCs land, only `supabaseQuotaStore` needs repointing.
+ *  - Metering: services/ai.ts reserveAi → provider call → commitAi (ai_usage rows,
+ *    one per request, Africa/Kampala days). Limits live in site_settings `ai.quotas`
+ *    (free / pro / minor) and plan comes from app.has_pro() — paid 101 Pro OR the
+ *    launch promo (everyone Pro). Nothing about limits is configured here.
+ *  - Display: GET /api/v1/ai/quota (public.my_ai_quota) → toQuotaStatus().
+ *
+ * The in-memory store is only for local dev / tests when Supabase isn't configured;
+ * it mirrors the seeded `ai.quotas` request limits.
  */
-import { z } from "zod";
 
 export type Plan = "free" | "pro";
 export type QuotaStatus = { used: number; limit: number; remaining: number; plan: Plan; promoActive: boolean; resetsAt: string };
 
-const int = (def: number) =>
-  z
-    .string()
-    .optional()
-    .transform((v) => (v ? Number(v) : def))
-    .pipe(z.number().int().min(0).max(100_000));
-
-export function quotaLimits(env: Record<string, string | undefined> = process.env) {
-  return { free: int(50).parse(env.AI_HUB_DAILY_FREE), pro: int(300).parse(env.AI_HUB_DAILY_PRO) };
-}
+/** Mirrors the seeded site_settings `ai.quotas` request limits (fallback store only). */
+export const FALLBACK_LIMITS: Record<Plan, number> = { free: 20, pro: 200 };
 
 const EAT_OFFSET_MS = 3 * 60 * 60 * 1000;
 
@@ -36,60 +27,96 @@ export function kampalaDay(now = new Date()): { day: string; resetsAt: Date } {
   return { day, resetsAt: new Date(nextMidnightLocal - EAT_OFFSET_MS) };
 }
 
-export type QuotaStore = {
-  consume: (userId: string, day: string, limit: number) => Promise<{ allowed: boolean; used: number }>;
-  peek: (userId: string, day: string) => Promise<number>;
+/** Shape of public.my_ai_quota() (GET /api/v1/ai/quota → { data }). */
+export type BackendQuota = { plan?: string; limit_requests?: number; used_requests?: number; limit_tokens?: number; used_tokens?: number; enabled?: boolean };
+/** Shape of public.ai_reserve() (services/ai.ts Reservation + refusal fields). */
+export type BackendReservation = {
+  allowed: boolean;
+  usage_id?: string;
+  reason?: string;
+  plan?: string;
+  remaining_requests?: number;
+  limit_requests?: number;
+  used_requests?: number;
+  resets_at?: string;
 };
 
-const mem = new Map<string, number>();
-export const memoryQuotaStore: QuotaStore = {
-  async consume(userId, day, limit) {
-    const k = `${userId}:${day}`;
-    const used = mem.get(k) ?? 0;
-    if (used >= limit) return { allowed: false, used };
-    mem.set(k, used + 1);
-    return { allowed: true, used: used + 1 };
-  },
-  async peek(userId, day) {
-    return mem.get(`${userId}:${day}`) ?? 0;
-  },
+const asPlan = (p: unknown): Plan => (p === "pro" ? "pro" : "free");
+const n = (v: unknown, d = 0) => (typeof v === "number" && Number.isFinite(v) ? v : Number(v ?? d) || d);
+
+/** Map the backend's my_ai_quota() JSON to the hub's QuotaStatus. */
+export function toQuotaStatus(raw: BackendQuota | null | undefined, promoActive = false, now = new Date()): QuotaStatus {
+  const limit = n(raw?.limit_requests);
+  const used = n(raw?.used_requests);
+  return { used, limit, remaining: Math.max(0, limit - used), plan: asPlan(raw?.plan), promoActive, resetsAt: kampalaDay(now).resetsAt.toISOString() };
+}
+
+/** "3 of 20 free messages today" */
+export function quotaLabel(q: Pick<QuotaStatus, "used" | "limit" | "plan">): string {
+  return `${q.used} of ${q.limit} ${q.plan === "pro" ? "Pro" : "free"} messages today`;
+}
+
+export type CommitStatus = "ok" | "error" | "blocked";
+export type CommitDetails = { provider?: string; model?: string; input_tokens?: number; output_tokens?: number; latency_ms?: number };
+
+/** Per-request, per-member quota handle used by /api/ai/chat. */
+export type QuotaStore = {
+  /** Reserve one request (before calling a provider). */
+  reserve: (feature: string, estTokens: number) => Promise<{ allowed: boolean; usageId?: string; reason?: string; quota: QuotaStatus }>;
+  /** Settle a reservation (after the stream ends). Never throws. */
+  commit: (usageId: string, status: CommitStatus, details?: CommitDetails) => Promise<void>;
+  /** Current usage without reserving. */
+  peek: () => Promise<QuotaStatus>;
 };
+
+/** Backend API the store talks to (injected so it is unit-testable without Supabase). */
+export type BackendQuotaApi = {
+  reserve: (userId: string, feature: string, estTokens: number) => Promise<BackendReservation>;
+  commit: (usageId: string, status: CommitStatus, details?: CommitDetails) => Promise<void>;
+  myQuota: () => Promise<BackendQuota | null>;
+};
+
+export function backendQuotaStore(api: BackendQuotaApi, userId: string, promoActive: boolean): QuotaStore {
+  const peek = async () => toQuotaStatus(await api.myQuota(), promoActive);
+  return {
+    peek,
+    async reserve(feature, estTokens) {
+      const r = await api.reserve(userId, feature, estTokens);
+      if (!r.allowed) {
+        const quota = r.reason === "quota"
+          ? toQuotaStatus({ plan: r.plan, limit_requests: r.limit_requests, used_requests: r.used_requests }, promoActive)
+          : await peek().catch(() => toQuotaStatus({ plan: r.plan }, promoActive));
+        return { allowed: false, reason: r.reason ?? "unavailable", quota };
+      }
+      // my_ai_quota counts the reservation we just made.
+      const quota = await peek().catch(() => toQuotaStatus({ plan: r.plan }, promoActive));
+      return { allowed: true, usageId: r.usage_id, quota };
+    },
+    async commit(usageId, status, details) {
+      await api.commit(usageId, status, details).catch((e: Error) => console.warn("[ai-hub] commitAi failed:", e.message));
+    },
+  };
+}
+
+/* ---------- in-memory store (local dev / tests only) ---------- */
+const mem = new Map<string, number>();
 export function resetMemoryQuota() {
   mem.clear();
 }
-
-type Rpc = { rpc: (fn: string, args: Record<string, unknown>) => PromiseLike<{ data: unknown; error: { message: string } | null }> };
-
-export function supabaseQuotaStore(sb: Rpc): QuotaStore {
+export function memoryQuotaStore(userId: string, plan: Plan, promoActive: boolean, now = () => new Date()): QuotaStore {
+  const key = () => `${userId}:${kampalaDay(now()).day}`;
+  const limit = FALLBACK_LIMITS[plan];
+  const q = (used: number) => toQuotaStatus({ plan, limit_requests: limit, used_requests: used }, promoActive, now());
   return {
-    async consume(userId, day, limit) {
-      const { data, error } = await sb.rpc("ai_hub_consume", { p_user: userId, p_day: day, p_limit: limit });
-      if (error) throw new Error(error.message);
-      const row = (Array.isArray(data) ? data[0] : data) as { allowed: boolean; used: number };
-      return { allowed: row.allowed, used: row.used };
+    async peek() {
+      return q(mem.get(key()) ?? 0);
     },
-    async peek(userId, day) {
-      const { data, error } = await sb.rpc("ai_hub_usage_get", { p_user: userId, p_day: day });
-      if (error) throw new Error(error.message);
-      return Number(data ?? 0);
+    async reserve() {
+      const used = mem.get(key()) ?? 0;
+      if (used >= limit) return { allowed: false, reason: "quota", quota: q(used) };
+      mem.set(key(), used + 1);
+      return { allowed: true, usageId: `mem-${used + 1}`, quota: q(used + 1) };
     },
+    async commit() {},
   };
-}
-
-export function withQuotaFallback(primary: QuotaStore | null): QuotaStore {
-  if (!primary) return memoryQuotaStore;
-  return {
-    consume: (u, d, l) => primary.consume(u, d, l).catch((e: Error) => (console.warn("[ai-hub] quota store:", e.message), memoryQuotaStore.consume(u, d, l))),
-    peek: (u, d) => primary.peek(u, d).catch((e: Error) => (console.warn("[ai-hub] quota store:", e.message), memoryQuotaStore.peek(u, d))),
-  };
-}
-
-export function status(used: number, plan: Plan, promoActive: boolean, now = new Date(), env = process.env): QuotaStatus {
-  const limit = quotaLimits(env)[plan];
-  return { used, limit, remaining: Math.max(0, limit - used), plan, promoActive, resetsAt: kampalaDay(now).resetsAt.toISOString() };
-}
-
-/** "23 of 50 free messages today" */
-export function quotaLabel(q: Pick<QuotaStatus, "used" | "limit" | "plan">): string {
-  return `${q.used} of ${q.limit} ${q.plan === "pro" ? "Pro" : "free"} messages today`;
 }

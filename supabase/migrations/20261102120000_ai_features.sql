@@ -136,7 +136,9 @@ create table public.ai_rate_limits (
   count         integer not null default 0,
   primary key (key, window_start)
 );
-alter table public.ai_rate_limits enable row level security; -- no policies: service role only
+alter table public.ai_rate_limits enable row level security;
+-- Service role only (same pattern as backend's *_service_only policies): explicit deny for members.
+create policy ai_rate_limits_service_only on public.ai_rate_limits for select to authenticated using (false);
 revoke all on public.ai_rate_limits from anon, authenticated;
 
 create or replace function public.ai_rate_limit_hit(p_key text, p_limit integer, p_window_seconds integer)
