@@ -22,6 +22,7 @@
   "dependencies": {
     "@ai-sdk/gateway": "^4.0.132",
     "@ai-sdk/openai-compatible": "^3.0.82",
+    "@ai-sdk/provider": "^4.0.35",
     "@ai-sdk/react": "^4.0.163",
     "@clerk/nextjs": "^6.39.8",
     "@excalidraw/excalidraw": "^0.18.1",
