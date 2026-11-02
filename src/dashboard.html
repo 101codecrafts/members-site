@@ -1,17 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=1536">
-<title>Dashboard · 101 Codecrafts</title>
-<link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+{{HEAD title="Dashboard · 101 Codecrafts" desc="Your 101 Codecrafts member space: learning paths, community tools, projects, events and daily tech news." path="dashboard.html" noindex}}
 <link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" id="fitcss" href="css/dashboard.fit.css">
 </head>
 <body data-page="dashboard" data-role="member">
+<a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
-<div class="app">
+<main class="app" id="main">
 
 <!-- ============ SIDEBAR ============ -->
 <aside class="side">
@@ -43,7 +42,7 @@
   <div class="invite">
     <img src="assets/img/better-tech-art.png" alt="" width="104" height="96">
     <div class="t">Better<br>Tech<br>Together</div>
-    <a class="btn hov on-dark" href="#"><svg class="i"><use href="#i-userplus"/></svg>Invite Friends</a>
+    <a class="inv-btn hov on-dark" href="#" data-wa-share="Join me on 101 Codecrafts — learn, build and collaborate in tech:"><svg class="i"><use href="#i-userplus"/></svg>Invite Friends</a>
   </div>
 </aside>
 <div class="copy">© 2025 101 Codecrafts. All rights reserved.</div>
@@ -57,7 +56,7 @@
 <img class="me-av" src="assets/img/avatar-member.png" alt="">
 <div class="me-name">Cavendish Cuu</div>
 <div class="me-role">Member</div>
-<a class="role-switch" href="admin.html" title="Switch to admin view" style="left:1494px;top:24px;width:18px;height:18px;color:#1d2328"><svg class="i" style="width:18px;height:18px"><use href="#i-chev"/></svg></a>
+<a class="role-switch abs" href="admin.html" aria-label="Switch view: Learner, Tutor or Admin" style="left:1494px;top:24px;width:18px;height:18px;color:#1d2328"><svg class="i" style="width:18px;height:18px"><use href="#i-chev"/></svg></a>
 <div class="toprule"></div>
 
 <!-- ============ HERO ============ -->
@@ -157,9 +156,21 @@ COLLABORATE</h1>
 <!-- ============ FOOTER ============ -->
 <footer class="foot">
   <a href="#" style="left:926px">Home</a><a href="#" style="left:986px">Learn</a><a href="#" style="left:1045px">Community</a><a href="#" style="left:1127px">Resources</a><a href="#" style="left:1207px">About</a>
-  <svg style="left:1326px;width:20px;height:20px"><use href="#i-yt"/></svg><svg style="left:1360px"><use href="#i-ig"/></svg><svg style="left:1389px"><use href="#i-tt"/></svg><svg style="left:1421px"><use href="#i-x"/></svg><svg style="left:1454px"><use href="#i-in"/></svg><svg style="left:1488px;width:20px;height:20px"><use href="#i-discord"/></svg>
+  <div class="socials" data-socials><a href="#" aria-label="101 Codecrafts on YouTube" style="left:1326px;width:20px;height:20px"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="101 Codecrafts on Instagram" style="left:1360px"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="101 Codecrafts on TikTok" style="left:1389px"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="101 Codecrafts on X" style="left:1421px"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="101 Codecrafts on LinkedIn" style="left:1454px"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="101 Codecrafts on Discord" style="left:1488px;width:20px;height:20px"><svg><use href="#i-discord"/></svg></a></div>
 </footer>
-</div>
+</main>
+
+<!-- ============ BELOW THE MOCKUP (not part of the 1v1 comparison) ============ -->
+<section id="below-fold" class="below" aria-label="More for you">
+  <div class="below-col">
+    <div class="sec-title"><h2>DAILY NEWS</h2><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div>
+    <div id="daily-news-list" class="rgrid"></div>
+  </div>
+  <div class="below-col">
+    <div class="sec-title"><h2>FROM THE LIBRARY</h2><a class="viewall" href="resources.html">Open Library <svg class="i"><use href="#i-arrow"/></svg></a></div>
+    <div id="library-row" class="rgrid"></div>
+  </div>
+</section>
 {{SCRIPTS}}
 </body>
 </html>

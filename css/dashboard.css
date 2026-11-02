@@ -20,7 +20,7 @@
 .invite{left:23px;top:769px;width:204px;height:155px;border:1px solid #273643;border-radius:4px;background:#0e161d}
 .invite img{position:absolute;left:0;top:0}
 .invite .t{position:absolute;left:101px;top:25px;font-family:var(--disp2);font-size:15px;line-height:17px;color:#fff}
-.invite .btn{position:absolute;left:20px;top:94px;width:168px;height:42px;border:2px solid #e8edf1;border-radius:5px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;font-weight:600;color:#fff}
+.invite .inv-btn{position:absolute;left:20px;top:94px;width:168px;height:42px;border:2px solid #e8edf1;border-radius:5px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;font-weight:600;color:#fff}
 .copy{left:34px;top:984px;font-size:10.5px;color:#c9d0d6;z-index:2}
 
 /* top bar */
@@ -130,6 +130,12 @@
 .foot{left:0;top:972px;width:1536px;height:52px;background:#11181f;color:#fff}
 .foot>*{position:absolute}
 .foot a{top:16px;font-size:10px;color:#e5eaee}
-.foot svg{top:15px;width:18px;height:18px;color:#fff}
+.foot svg{width:18px;height:18px;color:#fff}
+.foot .socials a{top:15px;width:18px;height:18px}
 
 .hero p,.tool p,.act q{white-space:nowrap;width:auto}
+
+/* below the mockup */
+.below{width:1536px;margin:0 auto;padding:28px 24px 40px 260px;display:grid;grid-template-columns:1fr 1fr;gap:28px;background:#f7f8f8}
+.below .sec-title h2{font:400 18px var(--disp)}
+.below .rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}

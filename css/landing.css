@@ -65,6 +65,14 @@ body[data-page="landing"]{--nv:#011d3c;--nv2:#022142;--lor:#fd9104;--lcy:#00d5f9
 .lfoot{left:0;top:1462px;width:1024px;height:74px;background:var(--nv);color:#fff}
 .lfoot>*{position:absolute}
 .lfoot a{top:43px;font-size:9.5px}
-.lfoot svg{top:40px;width:17px;height:17px}
+.lfoot svg{width:17px;height:17px}
+.lfoot .socials a{top:40px;width:17px;height:17px}
 
 .page p{white-space:nowrap}
+
+/* Today in Tech (below the mockup) */
+.tit{width:1024px;margin:0 auto;padding:28px 33px 40px;background:#f3f6f7}
+.tit-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px}
+.tit-head h2{font:400 30px/1 var(--disp);color:var(--nv);margin-top:6px}
+.tit-head p{color:var(--nv);font-weight:600;margin-top:4px}
+.tit-cards{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}

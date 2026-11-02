@@ -1,18 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=1024">
-<title>101 Codecrafts · Your IT journey starts here</title>
-<meta name="description" content="101 Codecrafts is a tech community for learners, creators and problem-solvers: learning paths, workshops, projects and career support.">
-<link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+{{HEAD title="101 Codecrafts · Your IT journey starts here" desc="Join 10,000+ learners in Uganda and beyond: learning paths, skill-building workshops, hackathons, mentorship and certification support." path="index.html" jsonld="landing.json"}}
 <link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/landing.css">
 <link rel="stylesheet" id="fitcss" href="css/landing.fit.css">
 </head>
 <body data-page="landing">
+<a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
-<div class="page">
+<div class="page" id="main">
 
 <!-- ============ HEADER ============ -->
 <header class="hdr">
@@ -126,9 +124,17 @@ GROW</div>
 <footer class="lfoot">
   <span style="left:35px;top:43px;font-size:9.5px">© 2025 101 Codecrafts. All rights reserved.</span>
   <a href="index.html" style="left:384px">Home</a><a href="#paths" style="left:440px">Learn</a><a href="#community" style="left:493px">Community</a><a href="#" style="left:571px">Resources</a><a href="#" style="left:645px">About</a>
-  <svg style="left:798px;width:19px;height:19px"><use href="#i-yt"/></svg><svg style="left:835px"><use href="#i-ig"/></svg><svg style="left:868px"><use href="#i-tt"/></svg><svg style="left:901px"><use href="#i-x"/></svg><svg style="left:933px"><use href="#i-in"/></svg><svg style="left:966px;width:19px;height:19px"><use href="#i-discord"/></svg>
+  <div class="socials" data-socials><a href="#" aria-label="101 Codecrafts on YouTube" style="left:798px;width:19px;height:19px"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="101 Codecrafts on Instagram" style="left:835px"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="101 Codecrafts on TikTok" style="left:868px"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="101 Codecrafts on X" style="left:901px"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="101 Codecrafts on LinkedIn" style="left:933px"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="101 Codecrafts on Discord" style="left:966px;width:19px;height:19px"><svg><use href="#i-discord"/></svg></a></div>
 </footer>
 </div>
+
+<!-- ============ BELOW THE MOCKUP: Today in Tech ============ -->
+<section id="today-in-tech" class="tit" aria-labelledby="tit-h">
+  <div class="tit-head"><div><div class="kicker">Daily news</div><h2 id="tit-h">TODAY IN TECH</h2><p id="tit-date"></p></div>
+  <div class="row"><a class="btn" data-wa-share="Today in Tech on 101 Codecrafts" href="#"><svg><use href="#i-wa"/></svg>Share</a><a class="btn or" href="news.html">All news <svg><use href="#i-arrow"/></svg></a></div></div>
+  <div class="marquee" aria-label="Headlines"><div class="marquee-track"></div></div>
+  <div id="tit-cards" class="rgrid tit-cards"></div>
+</section>
 {{SCRIPTS}}
 </body>
 </html>

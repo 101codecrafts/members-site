@@ -58,6 +58,7 @@ async def main():
     async with async_playwright() as p:
         br = await p.chromium.launch(executable_path='/usr/bin/chromium', args=['--no-sandbox', '--font-render-hinting=none'])
         pg = await br.new_page(viewport={'width': W, 'height': H})
+        await pg.route(lambda u: not u.startswith('file:'), lambda r: r.abort())  # offline: mockup comparison never depends on the network
         await pg.goto('file://' + os.path.abspath(page) + '?static=1&notune=1')
         await pg.evaluate('document.fonts.ready'); await pg.wait_for_timeout(300)
         await pg.evaluate("()=>{const l=document.getElementById('fitcss'); if(l) l.remove();}"); await pg.wait_for_timeout(100)

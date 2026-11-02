@@ -1,20 +1,21 @@
+@import url("tokens.css");
 /* 101 Codecrafts — brutalist UI kit. Colours sampled from the mockups. */
-@font-face{font-family:"Archivo Black";src:url(../assets/fonts/archivo-black-400.woff2) format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Russo One";src:url(../assets/fonts/russo-one-400.woff2) format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/barlow-400.woff2) format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/barlow-500.woff2) format("woff2");font-weight:500;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/barlow-600.woff2) format("woff2");font-weight:600;font-display:block}
-@font-face{font-family:"Body";src:url(../assets/fonts/barlow-700.woff2) format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Archivo Black";src:url(../assets/fonts/archivo-black-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Russo One";src:url(../assets/fonts/russo-one-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-500.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Body";src:url(../assets/fonts/barlow-700.woff2) format("woff2");font-weight:700;font-display:swap}
 
-@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-400.woff2) format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-500.woff2) format("woff2");font-weight:500;font-display:block}
-@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-600.woff2) format("woff2");font-weight:600;font-display:block}
-@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-700.woff2) format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-500.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Cond";src:url(../assets/fonts/saira-semi-condensed-700.woff2) format("woff2");font-weight:700;font-display:swap}
 
 :root{
-  --or:#fc8c0c; --or2:#fd880f; --cy:#05e6f2; --ink:#10181f; --ink2:#0f171e; --navy:#0c1f34;
-  --bg:#f3f5f6; --line:#e0e6ea; --mut:#4f6b80; --blue:#1786c9; --white:#fff;
-  --disp:"Archivo Black","Russo One",Impact,sans-serif; --disp2:"Russo One",Impact,sans-serif; --body:"Body","Barlow",system-ui,sans-serif; --cond:"Cond","Saira Semi Condensed",system-ui,sans-serif;
+  --or:var(--color-orange); --cy:var(--color-cyan); --ink:var(--color-ink); --ink2:var(--color-ink-2); --navy:var(--color-navy-3);
+  --bg:var(--color-page); --line:var(--color-line); --mut:var(--color-muted); --blue:var(--color-link); --white:var(--color-white);
+  --disp:var(--font-display); --disp2:var(--font-display-2); --body:var(--font-body); --cond:var(--font-cond);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
@@ -28,6 +29,38 @@ img{display:block}
 
 /* ---------- interactive layer (disabled with ?static=1) ---------- */
 .fx .hov{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
-.fx .hov:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink)}
-.fx .hov.on-dark:hover{box-shadow:6px 6px 0 var(--or)}
+.fx .hov:hover{transform:translate(-3px,-3px);box-shadow:var(--shadow-brutal)}
+.fx .hov.on-dark:hover{box-shadow:var(--shadow-brutal-accent)}
 .fx-canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+
+/* ---------- accessibility ---------- */
+.skip{position:absolute;left:-9999px;top:8px;z-index:9999;background:var(--ink);color:#fff;padding:12px 16px;font-weight:700}
+.skip:focus{left:8px}
+:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* Lite / data saver: no motion, no particles, no decorative heavy images */
+.lite .fx-canvas{display:none}
+.lite img.heavy{display:none}
+.lite *{animation:none!important;transition:none!important}
+
+/* ---------- social icon rows ---------- */
+.socials{position:absolute;inset:0;pointer-events:none}
+.socials a{position:absolute;pointer-events:auto;color:#fff;display:block}
+.socials a svg{width:100%!important;height:100%!important;display:block;position:static!important}
+.socials.live{inset:auto 24px auto auto;display:flex;gap:14px;align-items:center;height:100%}
+.socials.live a{position:static;width:22px;height:22px}
+
+/* ---------- floating toolbar (role / lite / language / theme) + cookie notice ---------- */
+.cc-toolbar{position:fixed;right:12px;bottom:12px;z-index:900;display:flex;gap:6px;align-items:center;background:var(--ink);color:#fff;padding:6px;border:2px solid var(--ink);box-shadow:var(--shadow-brutal-accent);font:600 12px var(--body)}
+.cc-toolbar label,.cc-toolbar button{display:flex;align-items:center;gap:6px;min-height:var(--touch-min-target);padding:0 10px;background:#1b2630;color:#fff;border:0;font:inherit;cursor:pointer}
+.cc-toolbar select{background:transparent;color:#fff;border:0;font:inherit;min-height:32px}
+.cc-toolbar select option{color:#10181f}
+.cc-toolbar svg{width:16px;height:16px}
+.cc-toolbar button[aria-pressed=true]{background:var(--or);color:var(--ink)}
+.cc-cookie{position:fixed;left:12px;bottom:12px;z-index:901;max-width:420px;background:#fff;color:var(--ink);border:2px solid var(--ink);box-shadow:var(--shadow-brutal);padding:14px 16px;font:500 13px/1.45 var(--body)}
+.cc-cookie a{text-decoration:underline}
+.cc-cookie div{display:flex;gap:8px;margin-top:10px}
+.btn-line,.btn-solid{min-height:var(--touch-min-target);padding:0 16px;font:700 13px var(--body);border:2px solid var(--ink);cursor:pointer}
+.btn-line{background:#fff;color:var(--ink)} .btn-solid{background:var(--or);color:var(--ink)}
+.gh-live{position:absolute;right:12px;top:14px;font:600 10px var(--body);color:#cfd6dc}
