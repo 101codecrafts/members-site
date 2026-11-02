@@ -116,6 +116,20 @@
     <div class="card" id="courses"><div class="sec-title"><h2>MY COURSES</h2></div><div class="tbl-wrap"><table class="t" id="tb-tc"><thead><tr><th>Course</th><th>Learners</th><th>Status</th><th>Avg. completion</th></tr></thead><tbody></tbody></table></div></div>
     <div class="card" id="sessions"><div class="sec-title"><h2>UPCOMING SESSIONS</h2><a class="btn sm cy" href="#" data-cal-link="101codecrafts">Open Cal.com</a></div><div class="list" id="ls-sessions"></div></div>
   </section>
+  <section class="grid g2" id="add-content" aria-label="Add course content">
+    <div class="card"><div class="sec-title"><h2>ADD YOUTUBE LESSON</h2><a class="viewall" href="course.html">Open course player →</a></div>
+      <form id="yt-form" class="grid" style="gap:10px">
+        <label class="field">Course<select name="course"><option value="web-basics">Web Development Basics</option><option>Log Analysis with Python</option><option>Git &amp; GitHub for Teams</option></select></label>
+        <label class="field">YouTube link<input name="url" type="url" required placeholder="https://www.youtube.com/watch?v=…"></label>
+        <button class="btn or" type="submit">Preview video</button></form>
+      <div id="yt-prev" class="prev" hidden></div></div>
+    <div class="card"><div class="sec-title"><h2>ADD A BOOK</h2></div>
+      <form id="bk-form" class="grid" style="gap:10px">
+        <label class="field">ISBN or title<input name="q" required placeholder="9781593279509 or Eloquent JavaScript"></label>
+        <label class="field">Or a direct link (open textbook, PDF page)<input name="url" type="url" placeholder="https://…"></label>
+        <button class="btn or" type="submit">Find book</button></form>
+      <div id="bk-prev" class="prev" hidden></div></div>
+  </section>
   <section class="card" id="learners"><div class="sec-title"><h2>MY LEARNERS' PROGRESS</h2></div><div class="tbl-wrap"><table class="t" id="tb-tl"><thead><tr><th>Learner</th><th>Course</th><th style="width:34%">Progress</th><th>Last active</th></tr></thead><tbody></tbody></table></div></section>
   <section class="grid g2" id="earnings">
     <div class="card dark"><div class="sec-title"><h2 style="color:#fff">REQUEST A PAYOUT</h2></div>

@@ -160,6 +160,38 @@
         location.href = val("[data-role]")[0] === "Tutor" ? "tutor.html" : "dashboard.html"; };
       show();
     },
+    /* ---------------- Course player ---------------- */
+    async course() {
+      const c = await API.fetchCourse(q.get("id") || "web-basics"); const done = new Set(JSON.parse(localStorage.getItem("cc_done_" + c.id) || "null") || c.lessons.filter(l => l.done).map(l => l.id));
+      let cur = Math.max(0, c.lessons.findIndex(l => l.id === q.get("lesson")) ); if (!q.get("lesson")) cur = Math.max(0, c.lessons.findIndex(l => !done.has(l.id)));
+      $("#c-path").textContent = c.path; $("#c-title").textContent = c.title.toUpperCase();
+      $("#c-meta").innerHTML = `${levelBadge(c.level)}<span class="tagx">Tutor: ${esc(c.tutor)}</span><span class="tagx">${c.lessons.length} lessons</span>`;
+      const lite = () => document.documentElement.classList.contains("lite");
+      const progress = () => { const p = Math.round(done.size / c.lessons.length * 100); $("#c-pct").textContent = `${p}% complete · ${done.size}/${c.lessons.length} lessons`; $("#c-bar").style.width = p + "%"; };
+      const list = () => { $("#c-lessons").innerHTML = c.lessons.map((l, i) => `<li><a href="?lesson=${l.id}" data-i="${i}" ${i === cur ? 'aria-current="true"' : ""}><span class="tick ${done.has(l.id) ? "on" : ""}" aria-label="${done.has(l.id) ? "Completed" : "Not completed"}">${done.has(l.id) ? ico("check") : i + 1}</span><span>${esc(l.title)}</span></a></li>`).join(""); };
+      const video = l => {
+        if (!l.yt) { $("#c-video").innerHTML = `<div class="facade"><div class="thumb-ph">${ico("clipboard")}</div><span class="play-lbl">Hands-on lesson · no video</span></div>`; return; }
+        /* facade: only the thumbnail loads until the learner presses play (saves data); Lite mode uses the small thumbnail */
+        const th = `https://i.ytimg.com/vi/${l.yt}/${lite() ? "mqdefault" : "hqdefault"}.jpg`;
+        $("#c-video").innerHTML = `<button class="facade" type="button" aria-label="Play video: ${esc(l.title)}"><img src="${th}" alt="" loading="lazy" decoding="async"><span class="play">▶</span><span class="play-lbl">${lite() ? "Data saver on · tap to load video" : "Play lesson"}</span></button>`;
+        $("#c-video .facade").onclick = () => { $("#c-video").innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${l.yt}?autoplay=1&rel=0&modestbranding=1" title="${esc(l.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`; };
+      };
+      const show = () => { const l = c.lessons[cur]; $("#c-ltitle").textContent = `${cur + 1}. ${l.title}`; video(l); list(); progress();
+        $("#c-done").setAttribute("aria-pressed", done.has(l.id)); $("#c-done").lastChild.textContent = done.has(l.id) ? "Completed" : "Mark complete";
+        $("#c-next").disabled = cur === c.lessons.length - 1;
+        $("#p-ov").innerHTML = `<p>${esc(c.overview)}</p><p class="muted" style="margin-top:8px">Lesson ${cur + 1} of ${c.lessons.length}${l.quiz ? " · includes a short quiz" : ""}. Videos open from YouTube in privacy-enhanced mode.</p>`;
+        $("#c-notes").value = localStorage.getItem(`cc_notes_${c.id}_${l.id}`) || ""; history.replaceState(null, "", "?lesson=" + l.id); };
+      $("#c-lessons").addEventListener("click", e => { const a = e.target.closest("[data-i]"); if (!a) return; e.preventDefault(); cur = +a.dataset.i; show(); });
+      $("#c-done").onclick = async () => { const l = c.lessons[cur], on = !done.has(l.id); on ? done.add(l.id) : done.delete(l.id); await API.markLessonComplete(c.id, l.id, on); show(); };
+      $("#c-next").onclick = () => { if (cur < c.lessons.length - 1) { cur++; show(); } };
+      let tN; $("#c-notes").oninput = e => { clearTimeout(tN); tN = setTimeout(async () => { await API.saveNotes(c.id, c.lessons[cur].id, e.target.value); $("#c-saved").textContent = "Saved " + new Date().toLocaleTimeString(); }, 600); };
+      const tabs = $$("[role=tab]"); const sel = t => { tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $("#" + x.getAttribute("aria-controls")).hidden = !on; }); t.focus(); };
+      tabs.forEach((t, i) => { t.onclick = () => sel(t); t.onkeydown = e => { if (e.key === "ArrowRight") sel(tabs[(i + 1) % tabs.length]); if (e.key === "ArrowLeft") sel(tabs[(i + tabs.length - 1) % tabs.length]); }; });
+      $("#c-books").innerHTML = c.books.map(b => `<a class="rcard book hov" href="${API.goHref(b.id)}" target="_blank" rel="noopener noreferrer"><div class="rthumb cover"><img src="${esc(b.cover)}" alt="Cover of ${esc(b.title)}" loading="lazy" class="heavy" onerror="this.remove()"><span class="badge-t ${b.open ? "cy" : ""}">${b.open ? "Free / open" : "Book"}</span></div><div class="rbody"><h3>${esc(b.title)}</h3><div class="src">${esc(b.author)}</div><span class="open">Open on ${esc(b.site)} ↗</span></div></a>`).join("");
+      const disc = () => $("#c-disc").innerHTML = c.discussion.map(d => `<div class="li"><span class="date">${esc(d.who.split(" ").map(w => w[0]).join(""))}</span><div class="grow"><b>${esc(d.who)}</b><small>${esc(d.t)} · ${esc(d.ago)} ago${d.replies ? " · " + d.replies + " replies" : ""}</small></div></div>`).join("");
+      $("#c-dform").onsubmit = async e => { e.preventDefault(); const t = e.target.text.value.trim(); if (!t) return; c.discussion.unshift({ who: "You", t, ago: "now", replies: 0 }); disc(); e.target.reset(); await API.postDiscussion(c.id, t); };
+      disc(); show();
+    },
     /* ---------------- /go/<id> → original source ---------------- */
     async go() {
       const id = q.get("id") || (location.pathname.match(/\/go\/([^/?#]+)/) || [])[1];

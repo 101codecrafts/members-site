@@ -28,7 +28,7 @@
     return location.protocol === "file:" ? "go.html?id=" + encodeURIComponent(id) : "/go/" + encodeURIComponent(id);
   }
   function lookupGo(id) {
-    const all = [...(D().resources || []), ...(D().news || []), ...(window.__ccNewsCache || [])];
+    const all = [...(D().resources || []), ...(D().news || []), ...((D().course && D().course.books) || []), ...(window.__ccNewsCache || [])];
     return all.find(x => x.id === id) || null;
   }
 
@@ -148,6 +148,29 @@
   const toggleMilestone = (pid, i, done) => post(`/projects/${pid}/milestones/${i}`, { done });
   const promoteToLaunchpad = pid => post(`/projects/${pid}/promote`);
 
+  /* ---------- Course player ---------- */
+  const fetchCourse = async id => (await tryChain(() => backend("/courses/" + id))) || D().course;
+  const markLessonComplete = (courseId, lessonId, done = true) => { const k = "cc_done_" + courseId; const s = new Set(JSON.parse(localStorage.getItem(k) || "[]")); done ? s.add(lessonId) : s.delete(lessonId); localStorage.setItem(k, JSON.stringify([...s])); return post(`/courses/${courseId}/lessons/${lessonId}/complete`, { done }); };
+  const saveNotes = (courseId, lessonId, text) => { localStorage.setItem(`cc_notes_${courseId}_${lessonId}`, text); return post(`/courses/${courseId}/lessons/${lessonId}/notes`, { text }); };
+  const postDiscussion = (courseId, text) => post(`/courses/${courseId}/discussion`, { text });
+  /** YouTube preview via the public oEmbed endpoint (no key). Thumbnail from i.ytimg.com. */
+  function youtubeId(url) { try { const u = new URL(url); if (u.hostname === "youtu.be") return u.pathname.slice(1); if (u.pathname.startsWith("/shorts/") || u.pathname.startsWith("/embed/")) return u.pathname.split("/")[2]; return u.searchParams.get("v"); } catch (e) { return /^[\w-]{11}$/.test(url) ? url : null; } }
+  async function fetchYouTubePreview(url) {
+    const id = youtubeId(url); if (!id) return null;
+    const meta = await tryChain(() => getJSON("https://www.youtube.com/oembed?format=json&url=" + encodeURIComponent("https://www.youtube.com/watch?v=" + id)));
+    return { id, title: meta ? meta.title : "YouTube video " + id, author: meta ? meta.author_name : "", thumb: `https://i.ytimg.com/vi/${id}/hqdefault.jpg` };
+  }
+  /** Book preview via Open Library (public, no key): ISBN or search text. */
+  async function fetchBookPreview(q) {
+    const isbn = q.replace(/[^0-9X]/gi, "");
+    if (isbn.length === 10 || isbn.length === 13) { const j = await tryChain(() => getJSON(`https://openlibrary.org/isbn/${isbn}.json`)); if (j) return { title: j.title, author: "", cover: `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`, url: `https://openlibrary.org/isbn/${isbn}`, site: "Open Library" }; }
+    const r = await tryChain(() => getJSON("https://openlibrary.org/search.json?limit=1&q=" + encodeURIComponent(q)));
+    const d = r && r.docs && r.docs[0]; if (!d) return null;
+    return { title: d.title, author: (d.author_name || [])[0] || "", cover: d.cover_i ? `https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg` : "", url: "https://openlibrary.org" + d.key, site: "Open Library" };
+  }
+  const addLessonVideo = (courseId, lesson) => post(`/tutor/courses/${courseId}/lessons`, lesson);
+  const addCourseBook = (courseId, book) => post(`/tutor/courses/${courseId}/books`, book);
+
   /* ---------- Auth, onboarding, profile, certificates ---------- */
   const signIn = (email, password) => post("/auth/sign-in", { email, password });
   const signUp = data => post("/auth/sign-up", data);
@@ -175,5 +198,6 @@
     fetchModerationQueue, fetchEventsAdmin, fetchAuditLog, fetchFlags, adminAction, fetchTutorOverview, requestPayout, flutterwaveCheckout, downloadCSV, fetchSocialLinks, saveSocialLinks,
     fetchProducts, fetchProduct, upvoteProduct, commentProduct, fetchCampaigns, joinCampaign, becomeTester, submitBugReport, fetchTriage, moveBug,
     fetchCompetitions, registerCompetition, submitEntry, fetchLeaderboard, fetchGroups, fetchGroup, joinGroup, fetchProjects, toggleMilestone, promoteToLaunchpad,
+    fetchCourse, markLessonComplete, saveNotes, postDiscussion, youtubeId, fetchYouTubePreview, fetchBookPreview, addLessonVideo, addCourseBook,
     signIn, signUp, saveOnboarding, requestGuardianConsent, fetchProfile, verifyCertificate };
 })();

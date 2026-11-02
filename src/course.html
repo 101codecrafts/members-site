@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Course · Web Development Basics · 101 Codecrafts" desc="Learn web development step by step: video lessons, notes, books and discussion." path="course.html"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="flow" data-role="learner" data-page="course">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Learning"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<section class="course-top"><div><div class="kicker" id="c-path"></div><h1 id="c-title"></h1><div class="row" id="c-meta"></div></div>
+ <div class="c-prog"><small id="c-pct"></small><div class="prog"><i id="c-bar"></i></div></div></section>
+<div class="player-wrap">
+ <nav class="lessons card" aria-label="Lessons"><b class="mini-h">LESSONS</b><ol id="c-lessons"></ol></nav>
+ <section class="stage-area">
+  <div class="video" id="c-video"></div>
+  <div class="row" style="justify-content:space-between;margin:12px 0"><h2 class="h3" id="c-ltitle" style="margin:0"></h2>
+   <div class="row"><button class="btn" id="c-done" aria-pressed="false"><svg><use href="#i-check"/></svg>Mark complete</button><button class="btn or" id="c-next">Next lesson <svg><use href="#i-arrow"/></svg></button></div></div>
+  <div role="tablist" class="tabs" aria-label="Lesson tabs">
+   <button role="tab" id="t-ov" aria-controls="p-ov" aria-selected="true">Overview</button><button role="tab" id="t-no" aria-controls="p-no" aria-selected="false" tabindex="-1">Notes</button>
+   <button role="tab" id="t-bk" aria-controls="p-bk" aria-selected="false" tabindex="-1">Books &amp; Resources</button><button role="tab" id="t-di" aria-controls="p-di" aria-selected="false" tabindex="-1">Discussion</button></div>
+  <div class="card tabp" role="tabpanel" id="p-ov" aria-labelledby="t-ov"></div>
+  <div class="card tabp" role="tabpanel" id="p-no" aria-labelledby="t-no" hidden><label class="field">Your notes for this lesson (saved on this device and to your account)<textarea id="c-notes" rows="8"></textarea></label><p class="muted" id="c-saved" role="status"></p></div>
+  <div class="card tabp" role="tabpanel" id="p-bk" aria-labelledby="t-bk" hidden><div class="rgrid" id="c-books"></div></div>
+  <div class="card tabp" role="tabpanel" id="p-di" aria-labelledby="t-di" hidden><form id="c-dform" class="row" style="margin-bottom:12px"><label class="field" style="flex:1"><span class="sr-only">Ask a question</span><input name="text" placeholder="Ask a question or share a tip…"></label><button class="btn or">Post</button></form><div class="list" id="c-disc"></div></div>
+ </section>
+</div>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/pages.js" defer></script>
+</body></html>

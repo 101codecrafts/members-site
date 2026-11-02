@@ -204,3 +204,29 @@ ol.list{list-style:none}
 .opt{min-height:56px;padding:10px 14px;border:2px solid var(--ink);background:#fff;font:700 14px var(--body);cursor:pointer;text-align:left}
 .opt[aria-pressed=true]{background:var(--or)}
 .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:10px 0}
+/* course player */
+.course-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.course-top h1{font:400 30px/1 var(--disp);margin:6px 0 8px}
+.c-prog{min-width:260px}.c-prog small{font-weight:700}.c-prog .prog{height:12px;margin-top:6px}
+.player-wrap{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.lessons{position:sticky;top:84px}
+.lessons ol{list-style:none;display:grid;gap:4px;margin-top:8px}
+.lessons a{display:flex;gap:10px;align-items:center;min-height:var(--touch-min-target);padding:6px 8px;border:1px solid transparent;font-weight:600;font-size:13.5px}
+.lessons a:hover{border-color:var(--ink)}
+.lessons a[aria-current]{background:var(--ink);color:#fff}
+.tick{width:28px;height:28px;flex:none;display:grid;place-items:center;border:2px solid currentColor;font:700 12px var(--body)}
+.tick.on{background:var(--color-success);border-color:var(--color-success);color:#fff}.tick svg{width:16px;height:16px}
+.video{aspect-ratio:16/9;background:var(--ink);border:3px solid var(--ink);box-shadow:var(--shadow-brutal-accent)}
+.video iframe{width:100%;height:100%;border:0;display:block}
+.facade{position:relative;width:100%;height:100%;border:0;padding:0;background:var(--ink);cursor:pointer;display:block;color:#fff}
+.facade img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.facade .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:84px;height:60px;background:var(--or);color:var(--ink);border:3px solid var(--ink);display:grid;place-items:center;font-size:26px;box-shadow:var(--shadow-brutal)}
+.facade .play-lbl{position:absolute;left:12px;bottom:12px;background:var(--ink);padding:4px 10px;font:700 12px var(--body)}
+.facade .thumb-ph{height:100%}
+.tabs{display:flex;gap:0;border-bottom:3px solid var(--ink);overflow-x:auto}
+.tabs [role=tab]{min-height:var(--touch-min-target);padding:0 16px;border:0;background:transparent;font:700 13px var(--body);cursor:pointer;white-space:nowrap;color:var(--ink)}
+.tabs [aria-selected=true]{background:var(--ink);color:var(--or)}
+.tabp{border-top:0;margin-bottom:8px}
+.book .rthumb.cover{aspect-ratio:3/4;max-height:260px;background:#1b2630}
+.book .rthumb img{object-fit:contain}
+@media (max-width:900px){.player-wrap{grid-template-columns:1fr}.lessons{position:static;order:2}}

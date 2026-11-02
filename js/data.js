@@ -176,6 +176,29 @@ window.CC_DATA = {
       milestones: [{ t: "Interview 10 teachers", done: true }, { t: "Paper prototype", done: false }, { t: "Clickable prototype", done: false }] }
   ],
 
+  /* ---------------- Course player ---------------- */
+  course: {
+    id: "web-basics", title: "Web Development Basics", level: "University", path: "Software Engineering", tutor: "David Kato",
+    overview: "Build and publish your first website. You'll learn how the web works, write semantic HTML, style it with CSS, add interactivity with JavaScript and deploy it for free.",
+    lessons: [
+      { id: "l1", title: "How the web works", yt: "hJHvdBlSxug", done: true },
+      { id: "l2", title: "HTML crash course", yt: "qz0aGYrrlhU", done: true },
+      { id: "l3", title: "CSS: zero to hero", yt: "1Rs2ND1ryYc", done: false },
+      { id: "l4", title: "JavaScript in 100 seconds", yt: "DHjqpvDnNGE", done: false },
+      { id: "l5", title: "Git & GitHub for beginners", yt: "RGOj5yH7evk", done: false },
+      { id: "l6", title: "Deploy your site", yt: "", done: false, quiz: true }
+    ],
+    books: [
+      { id: "bk-eloquent", title: "Eloquent JavaScript (4th ed.)", author: "Marijn Haverbeke", cover: "https://covers.openlibrary.org/b/isbn/9781593279509-M.jpg", url: "https://eloquentjavascript.net/", site: "eloquentjavascript.net", open: true },
+      { id: "bk-html", title: "HTML & CSS: Design and Build Websites", author: "Jon Duckett", cover: "https://covers.openlibrary.org/b/isbn/9781118008188-M.jpg", url: "https://openlibrary.org/isbn/9781118008188", site: "Open Library", open: false },
+      { id: "bk-git", title: "Pro Git", author: "Scott Chacon & Ben Straub", cover: "https://covers.openlibrary.org/b/isbn/9781484200773-M.jpg", url: "https://git-scm.com/book/en/v2", site: "git-scm.com", open: true }
+    ],
+    discussion: [
+      { who: "Grace M.", t: "In lesson 3, why does margin collapse between the two paragraphs?", ago: "3h", replies: 4 },
+      { who: "Ivan M.", t: "Tip: use the browser dev tools 'Computed' tab to see final box sizes.", ago: "1d", replies: 2 }
+    ]
+  },
+
   /* ---------------- Social links (edited in admin → Social Links; GET/PUT /api/social) ---------------- */
   social: [
     { key: "youtube", label: "YouTube", icon: "yt", url: "", active: true },
