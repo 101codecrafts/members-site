@@ -63,7 +63,7 @@
     b.innerHTML = `<p><b>Cookies.</b> We use essential cookies to keep you signed in and, with your OK, anonymous analytics to improve 101 Codecrafts. See our <a href="privacy.html">Privacy Policy</a>.</p>
       <div><button type="button" data-v="essential" class="btn-line">Essential only</button><button type="button" data-v="all" class="btn-solid">Accept all</button></div>`;
     document.body.appendChild(b);
-    b.addEventListener("click", e => { const v = e.target.dataset && e.target.dataset.v; if (v) { localStorage.setItem("cookies", v); b.remove(); } });
+    b.addEventListener("click", e => { const v = e.target.dataset && e.target.dataset.v; if (v) { localStorage.setItem("cookies", v); b.remove(); dispatchEvent(new CustomEvent("cc:consent", { detail: v })); } });
   }
 
   /* ---------------- below-the-fold widgets on the mockup pages ---------------- */

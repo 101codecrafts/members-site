@@ -431,3 +431,30 @@ ol.list{list-style:none}
 [data-theme=dark] .cbody p,[data-theme=dark] .cbody .row small{color:#b9c6d0}
 @media (max-width:1100px){.cfilters{grid-template-columns:1fr 1fr}.csearch{grid-column:1/-1}}
 @media (max-width:760px){.cfilters{grid-template-columns:1fr}.cgrid{padding:14px;gap:14px}.region-h{padding:14px}.expiring{margin:14px 14px 0}.add-out{grid-template-columns:1fr}.exp-row{grid-auto-flow:row;grid-auto-columns:auto}.exp{flex-wrap:wrap}.cdx{margin-left:36px}}
+/* ---------- ads (js/ads.js) + launch promo bar ---------- */
+.ad-slot{display:flex;flex-direction:column;gap:6px;min-width:0;list-style:none;contain:layout}
+.ad-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.ad-label{font:700 11px var(--cond);letter-spacing:1px;text-transform:uppercase;color:var(--mut)}
+.ad-pro{font:700 11px var(--body);padding:3px 9px;border:2px solid var(--ink);background:var(--or);color:var(--ink);min-height:28px;display:inline-flex;align-items:center}
+.ad-pro:hover{background:var(--ink);color:var(--or)}
+.ad-box{height:var(--ad-h);min-height:var(--ad-h);overflow:hidden;background:#eef1f3;border:2px solid var(--ink);display:grid;place-items:center}
+.ad-box ins{display:block;width:100%;height:100%}
+.ad-ph{font:600 12px var(--body);color:var(--mut);text-align:center;padding:8px}
+.ad-infeed{background:#fff;border:2px solid var(--ink);padding:10px;box-shadow:var(--shadow-brutal-sm)}
+.ad-infeed .ad-box{border:0}
+.ad-banner{grid-column:1/-1}
+.region .ad-banner{margin:0 20px 20px}
+.ad-player{margin-top:10px}
+.lessons .ad-lesson{margin:6px 0}
+.tit .ad-banner{margin-top:16px}
+.below.has-ad-side{grid-template-columns:1fr 1fr 300px}
+.lite .ad-slot,.static .ad-slot{display:none!important}
+[data-theme=dark] .ad-infeed,[data-theme=dark] .ad-box{background:#121b23;border-color:#2b3a47}
+.promo-bar{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:#fff;border-bottom:3px solid var(--or);padding:6px 12px;min-height:40px;font:600 13px var(--body);position:relative;z-index:70}
+.promo-bar p{margin:0;text-align:center}.promo-bar b{color:var(--or)}
+.promo-cd{color:var(--cy);font-weight:700;margin-left:6px;white-space:nowrap}
+.promo-bar button{background:transparent;border:2px solid #fff;color:#fff;width:32px;height:32px;cursor:pointer;flex:none;font:700 14px var(--body)}
+.promo-bar button:hover{background:var(--or);color:var(--ink);border-color:var(--or)}
+@media (max-width:760px){.ad-banner .ad-box{height:100px;min-height:100px}.ad-sidebar .ad-box{height:250px;min-height:250px}.region .ad-banner{margin:0 14px 14px}}
+@media (max-width:1100px){.below.has-ad-side{grid-template-columns:1fr}}
+.lessons .ad-slot a.ad-pro{min-height:28px;padding:3px 9px;font:700 11px var(--body);border:2px solid var(--ink)}
