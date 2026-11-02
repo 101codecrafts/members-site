@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Article · 101 Learn" desc="101 Learn tutorial with runnable code examples." path="article.html"}}
+{{CSS}}
+<link rel="stylesheet" href="css/practice.css">
+</head>
+<body class="flow" data-role="learner" data-page="article">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Learn"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="crumbs" id="art-crumbs"></div>
+<div class="art-wrap">
+ <nav class="card art-nav" id="art-nav" aria-label="Articles in this topic"></nav>
+ <div style="display:grid;gap:20px;min-width:0">
+  <article class="card art" id="art-body"></article>
+  <section class="card" aria-labelledby="rel-h"><div class="sec-title"><h2 id="rel-h">Related articles</h2></div><div class="related" id="art-related"></div></section>
+  <section class="card" aria-labelledby="cmt-h" id="comments"><div class="sec-title"><h2 id="cmt-h">Comments (<span id="cmt-n">0</span>)</h2></div>
+   <form id="cmt-form" class="grid" style="gap:8px;margin-bottom:14px"><label class="field">Add a comment<textarea id="cmt-text" rows="3" placeholder="Ask a question or share a tip. Be kind."></textarea></label><div><button class="btn ink" type="submit">Post comment</button></div></form>
+   <div class="cmts" id="cmt-list"></div></section>
+ </div>
+ <nav class="card art-toc" id="art-toc" aria-label="Table of contents"></nav>
+</div>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/practice-data.js" defer></script>
+<script src="js/practice-api.js" defer></script>
+<script src="js/practice.js" defer></script>
+</body></html>

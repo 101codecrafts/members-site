@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Problem · 101 Practice" desc="Solve a coding problem in C++, Java, Python, JavaScript or C." path="problem.html"}}
+{{CSS}}
+<link rel="stylesheet" href="css/practice.css">
+</head>
+<body data-smooth="off" class="flow ws" data-role="learner" data-page="problem">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Practice"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<h1 class="sr-only">Coding problem workspace</h1>
+<div class="psplit">
+ <section class="pane pane-l" aria-labelledby="p-title">
+  <div class="p-head"><div class="crumbs"><a href="practice.html">Practice</a> /</div><h2 id="p-title" style="font:400 22px/1.15 var(--disp)">Loading…</h2><div class="row" id="p-meta"></div></div>
+  <div class="ptabs" role="tablist" aria-label="Problem sections" id="ptabs">
+   <button role="tab" type="button" id="t-statement" aria-controls="tp-statement" aria-selected="true">Statement</button>
+   <button role="tab" type="button" id="t-examples" aria-controls="tp-examples" aria-selected="false" tabindex="-1">Examples</button>
+   <button role="tab" type="button" id="t-constraints" aria-controls="tp-constraints" aria-selected="false" tabindex="-1">Constraints</button>
+   <button role="tab" type="button" id="t-editorial" aria-controls="tp-editorial" aria-selected="false" tabindex="-1">Editorial</button>
+   <button role="tab" type="button" id="t-hints" aria-controls="tp-hints" aria-selected="false" tabindex="-1">Hints</button>
+  </div>
+  <div class="p-body">
+   <div role="tabpanel" id="tp-statement" aria-labelledby="t-statement" tabindex="0"></div>
+   <div role="tabpanel" id="tp-examples" aria-labelledby="t-examples" tabindex="0" hidden></div>
+   <div role="tabpanel" id="tp-constraints" aria-labelledby="t-constraints" tabindex="0" hidden></div>
+   <div role="tabpanel" id="tp-editorial" aria-labelledby="t-editorial" tabindex="0" hidden></div>
+   <div role="tabpanel" id="tp-hints" aria-labelledby="t-hints" tabindex="0" hidden></div>
+  </div>
+ </section>
+ <button class="gutter" id="gutter" type="button" role="separator" aria-orientation="vertical" aria-label="Resize panels (left/right arrow keys)" aria-valuemin="25" aria-valuemax="75" aria-valuenow="50"></button>
+ <section class="pane pane-r" aria-label="Code editor">
+  <div class="ed-bar"><label for="lang" class="sr-only">Language</label><select id="lang"></select><button class="btn sm" type="button" id="reset">Reset</button><span class="sp"></span><button class="btn sm cy" type="button" id="hint"><svg aria-hidden="true"><use href="#i-info"/></svg>Get a hint</button><button class="btn sm" type="button" id="debug"><svg aria-hidden="true"><use href="#i-brain"/></svg>Debug with 101 AI</button></div>
+  <div id="editor" class="ed-host"></div>
+  <div class="res" id="res" hidden><div class="res-h">Result<span class="sp"></span><button class="btn sm" type="button" id="res-close" aria-label="Close result panel">✕</button></div><div class="res-b" id="res-b" aria-live="polite"></div></div>
+  <div class="ed-foot"><span class="mock-note">Ctrl+Enter run · Ctrl+Shift+Enter submit · Esc then Tab leaves the editor</span><span class="sp"></span><button class="btn" type="button" id="run">Run</button><button class="btn or" type="button" id="submit">Submit</button></div>
+ </section>
+</div>
+</main>
+
+</div></div>
+{{SCRIPTS}}
+<script src="js/practice-data.js" defer></script>
+<script src="js/practice-api.js" defer></script>
+<script src="js/code-editor.js" defer></script>
+<script src="js/practice.js" defer></script>
+</body></html>

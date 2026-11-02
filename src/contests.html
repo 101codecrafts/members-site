@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Contests · 101 Practice" desc="Live, upcoming and past 101 coding contests with live leaderboards." path="contests.html"}}
+{{CSS}}
+<link rel="stylesheet" href="css/practice.css">
+</head>
+<body class="flow" data-role="learner" data-page="contests">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Practice"}}
+<div class="main">
+{{TOPBAR role="learner" name="Cavendish Cuu" label="Learner"}}
+<main id="main" class="content">
+<div class="page-h"><div><div class="kicker">101 Practice</div><h1>CONTESTS</h1><p>Weekly rated rounds and university cups. All times in EAT.</p></div><nav class="filters" aria-label="Practice sections"><a class="chip" href="learn.html" style="display:inline-flex;align-items:center">Learn</a><a class="chip" href="practice.html" style="display:inline-flex;align-items:center">Practice</a><a class="chip" href="ide.html" style="display:inline-flex;align-items:center">Online IDE</a><a class="chip" href="contests.html" aria-current=page style="background:var(--ink);color:var(--or);display:inline-flex;align-items:center">Contests</a><a class="chip" href="interview.html" style="display:inline-flex;align-items:center">Interview prep</a></nav></div>
+<section aria-labelledby="h-live"><div class="sec-title"><h2 id="h-live">Live now</h2></div><div class="ctgrid" id="ct-live"></div></section>
+<section aria-labelledby="h-up"><div class="sec-title"><h2 id="h-up">Upcoming</h2></div><div class="ctgrid" id="ct-upcoming"></div></section>
+<section aria-labelledby="h-past"><div class="sec-title"><h2 id="h-past">Past contests</h2></div><div class="ctgrid" id="ct-past"></div></section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/practice-data.js" defer></script>
+<script src="js/practice-api.js" defer></script>
+<script src="js/practice.js" defer></script>
+</body></html>

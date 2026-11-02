@@ -42,6 +42,8 @@
     courses:   [{ type: "infeed", list: "#gfree" }, { type: "banner", append: "#cfree" }],     // Free Courses Worldwide region only
     launchpad: [{ type: "infeed", list: "#lp-list", li: true }, { type: "banner", after: "#lp-list" }],
     dashboard: [{ type: "sidebar", append: "#below-fold", member: true }],
+    learn:     [{ type: "infeed", list: "#learn-grid" }, { type: "banner", after: "#learn-grid" }],   // 101 Learn library (never on practice/problem/ide/contest pages)
+    article:   [{ type: "banner", after: "#art-related" }],
     course:    [{ type: "player", after: "#c-video", member: true }, { type: "lesson", list: "#c-lessons", li: true, every: 3, cap: 1, member: true }]
   };
 
