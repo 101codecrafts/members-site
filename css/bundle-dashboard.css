@@ -1659,6 +1659,6 @@ html:not(.static) .shell .topbar::after{bottom:-1px}   /* sits on the bar's own 
 .mc-cta:focus-visible{outline:3px solid var(--focus,#00b9e6);outline-offset:2px}
 html.static .mc-cta{display:none!important}
 html:not(.static) .page>p .mc-cta{display:flex;width:max-content;max-width:100%;margin-top:var(--s-4,16px);font-size:var(--step--1)!important;line-height:1.2!important}
-html:not(.static) .app.dz .dz-box-b-quick .qa-wide{grid-column:1/-1;display:flex;align-items:center;gap:var(--s-2);min-height:48px;padding:var(--s-2) var(--s-3);border:var(--border);background:var(--surface);color:var(--ink);font:700 var(--step--1)/1.2 var(--body);text-decoration:none;box-shadow:var(--shadow-accent)}
+html:not(.static) .app.dz .dz-box-b-quick .qa-wide{grid-column:1/-1;display:flex;align-items:center;gap:var(--s-2);min-height:48px;padding:var(--s-2) var(--s-3);border:var(--border);background:var(--surface);color:var(--text);font:700 var(--step--1)/1.2 var(--body);text-decoration:none;box-shadow:var(--shadow-accent)}
 html:not(.static) .app.dz .dz-box-b-quick .qa-wide svg{width:22px;height:22px;flex:none}
 html:not(.static) .app.dz .dz-box-b-quick .qa-wide span{flex:1}
