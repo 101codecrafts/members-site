@@ -18,6 +18,7 @@
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
+<link rel="stylesheet" href="css/courses.css">
 <link rel="stylesheet" href="css/bundle-app.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
 </head>
@@ -145,38 +146,42 @@
 
 <!-- ============ REGION 1: 101 COURSES ============ -->
 <section class="region r101" id="c101" aria-labelledby="h101">
- <header class="region-h"><div><span class="region-tag">ON 101 CODECRAFTS</span><h2 id="h101">101 COURSES</h2><p>Taught by our own tutors. Video lessons, notes, quizzes and a 101 certificate.</p></div><small id="n101" aria-live="polite"></small></header>
+ <header class="region-h"><div><span class="region-tag">ON 101 CODECRAFTS</span><h2 id="h101">101 COURSES</h2><p>Taught by our own tutors. Video lessons, notes, quizzes and a 101 certificate.</p></div><p class="region-n" id="n101" aria-live="polite"></p></header>
  <div class="cgrid" id="g101"></div>
 </section>
 
 <!-- ============ REGION 2: FREE COURSES WORLDWIDE ============ -->
 <section class="region rfree" id="cfree" aria-labelledby="hfree">
- <header class="region-h"><div><span class="region-tag cy">EXTERNAL · OPENS IN A NEW TAB</span><h2 id="hfree">FREE COURSES WORLDWIDE</h2><p>Hand-picked free courses on other sites. Check the badge: some are fully free, some are free to audit, some are free only for a limited time.</p></div><small id="nfree" aria-live="polite"></small></header>
+ <header class="region-h"><div><span class="region-tag cy">EXTERNAL · OPENS IN A NEW TAB</span><h2 id="hfree">FREE COURSES WORLDWIDE</h2><p>Hand-picked free courses on other sites. Check the badge: some are fully free, some are free to audit, some are free only for a limited time.</p></div><p class="region-n" id="nfree" aria-live="polite"></p></header>
  <div class="expiring" id="expiring" aria-labelledby="hexp" hidden>
-  <h3 id="hexp"><svg class="i" aria-hidden="true" style="width:20px;height:20px"><use href="#i-calendar"/></svg> EXPIRING SOON <small>Limited-time free offers</small></h3>
-  <div class="exp-row" id="exp-row"></div>
+  <div class="xp-h"><h3 id="hexp"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg> EXPIRING SOON</h3><p>Limited-time free offers, soonest first</p></div>
+  <ul class="xp-list" id="exp-row" role="list"></ul>
  </div>
  <div class="cgrid" id="gfree"></div>
 </section>
 
-<!-- ============ TUTOR / ADMIN: ADD BY LINK ============ -->
+<!-- ============ TUTOR / ADMIN: ADD BY LINK (a panel, not a card) ============ -->
 <section class="card add-ext" id="add-external" aria-labelledby="hadd">
  <div class="sec-title"><h2 id="hadd">ADD EXTERNAL COURSE BY LINK</h2><span class="tagx">Tutors &amp; admins</span></div>
- <p class="muted">Paste a course URL. We fetch a preview, you check the details, and it goes to admin review before it appears in Free Courses Worldwide.</p>
- <form class="row" id="xc-form" style="margin-top:10px">
-  <label class="field" style="flex:1;min-width:240px"><span>Course URL</span><input id="xc-url" type="url" required placeholder="https://www.coursera.org/learn/…" inputmode="url"></label>
-  <button class="btn or" type="submit" style="align-self:flex-end">Fetch preview</button>
+ <p class="muted xc-lead">Paste a course URL. We fetch a preview, you check the details, and it goes to admin review before it appears in Free Courses Worldwide.</p>
+ <form class="xc-url" id="xc-form">
+  <label class="field">Course URL<input id="xc-url" type="url" required placeholder="https://www.coursera.org/learn/…" inputmode="url" autocomplete="url"></label>
+  <button class="btn or" type="submit">Fetch preview</button>
  </form>
- <div class="grid add-out" id="xc-out" hidden>
-  <form class="grid" id="xc-edit" style="gap:10px">
-   <label class="field">Title<input name="title" required></label>
-   <div class="grid g2" style="gap:10px"><label class="field">Provider<select name="provider"></select></label><label class="field">Level<select name="level"></select></label></div>
-   <div class="grid g2" style="gap:10px"><label class="field">Category<select name="category"></select></label><label class="field">Access type<select name="access"></select></label></div>
-   <div class="grid g2" style="gap:10px"><label class="field">Free until (if limited-time)<input name="free_until" type="date"></label><label class="field row" style="align-self:end;font-weight:700"><input name="certFree" type="checkbox" style="width:22px;height:22px;min-height:0"> Certificate is free</label></div>
-   <label class="field">Short description<textarea name="desc" rows="2"></textarea></label>
-   <div class="row"><button class="btn ink" type="submit">Submit for review</button><span id="xc-msg" role="status" class="muted"></span></div>
+ <p class="xc-note" id="xc-urlmsg" role="status"></p>
+ <div class="add-out" id="xc-out" hidden>
+  <form class="xc-fields" id="xc-edit">
+   <label class="field xc-wide">Title<input name="title" required></label>
+   <label class="field">Provider<select name="provider"></select></label>
+   <label class="field">Level<select name="level"></select></label>
+   <label class="field">Category<select name="category"></select></label>
+   <label class="field">Access type<select name="access"></select></label>
+   <label class="field">Free until (if limited-time)<input name="free_until" type="date"></label>
+   <label class="xc-check"><input name="certFree" type="checkbox"> Certificate is free</label>
+   <label class="field xc-wide">Short description<textarea name="desc" rows="3"></textarea></label>
+   <div class="xc-actions xc-wide"><button class="btn ink" type="submit">Submit for review</button><span id="xc-msg" role="status" class="muted"></span></div>
   </form>
-  <div><div class="mini-h">Card preview</div><div id="xc-card"></div></div>
+  <div class="xc-prev"><h3 class="mini-h">Card preview</h3><div id="xc-card"></div></div>
  </div>
 </section>
 </main>
