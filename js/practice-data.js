@@ -127,8 +127,8 @@
   const leaderboard = [
     ["Kato Ivan", "Makerere", 400, 4, "01:02:11", [1, 1, 1, 1]], ["Achieng Mercy", "Strathmore", 400, 4, "01:10:45", [1, 1, 1, 2]], ["Ssali Joel", "Cavendish", 300, 3, "00:48:09", [1, 1, 1, 0]],
     ["Wanjiru Faith", "JKUAT", 300, 3, "00:55:30", [1, 2, 1, 0]], ["Mugisha Alan", "MUST", 300, 3, "01:04:02", [1, 1, 3, 0]], ["Nansubuga Ritah", "Kyambogo", 200, 2, "00:31:15", [1, 1, 0, -2]],
-    ["Okot Denis", "Gulu Univ", 200, 2, "00:39:50", [1, 2, 0, 0]], ["Cavendish Cuu", "Cavendish", 200, 2, "00:44:12", [1, 1, -1, 0]], ["Tumusiime Paul", "UCU", 100, 1, "00:12:40", [1, 0, 0, 0]], ["Akello Joan", "Makerere", 100, 1, "00:20:05", [1, -3, 0, 0]]
-  ].map(([user, org, score, solved, penalty, cells], i) => ({ rank: i + 1, user, org, score, solved, penalty, cells, me: user === "Cavendish Cuu" }));
+    ["Okot Denis", "Gulu Univ", 200, 2, "00:39:50", [1, 2, 0, 0]], ["Code Crafter", "Cavendish", 200, 2, "00:44:12", [1, 1, -1, 0]], ["Tumusiime Paul", "UCU", 100, 1, "00:12:40", [1, 0, 0, 0]], ["Akello Joan", "Makerere", 100, 1, "00:20:05", [1, -3, 0, 0]]
+  ].map(([user, org, score, solved, penalty, cells], i) => ({ rank: i + 1, user, org, score, solved, penalty, cells, me: user === "Code Crafter" }));
   const contestProblems = [{ code: "A", title: "Boda Fare Splitter", pts: 100 }, { code: "B", title: "Matatu Queue", pts: 100 }, { code: "C", title: "Rolex Stand Profits", pts: 100 }, { code: "D", title: "Lake Victoria Islands", pts: 100 }];
 
   const interview = {

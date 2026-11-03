@@ -53,9 +53,9 @@ window.CC_DATA = {
     alison: { name: "Alison", short: "Al", bg: "#8F1020", fg: "#ffffff" }
   },
   courses101: [
-    { id: "web-basics", title: "Web Development Basics", tutor: "David Kato", level: "University", category: "Web Development", rating: 4.8, reviews: 212, price: 0, lessons: 6, cover: "assets/img/courses/101-web.svg" },
-    { id: "log-python", title: "Log Analysis with Python", tutor: "David Kato", level: "Professional", category: "Data & AI", rating: 4.7, reviews: 96, price: 45000, lessons: 12, cover: "assets/img/courses/101-python.svg" },
-    { id: "git-teams", title: "Git & GitHub for Teams", tutor: "David Kato", level: "University", category: "Web Development", rating: 4.9, reviews: 64, price: 25000, lessons: 8, cover: "assets/img/courses/101-cloud.svg" },
+    { id: "web-basics", title: "Web Development Basics", tutor: "101 Codecrafts Team", level: "University", category: "Web Development", rating: 4.8, reviews: 212, price: 0, lessons: 6, cover: "assets/img/courses/101-web.svg" },
+    { id: "log-python", title: "Log Analysis with Python", tutor: "101 Codecrafts Team", level: "Professional", category: "Data & AI", rating: 4.7, reviews: 96, price: 45000, lessons: 12, cover: "assets/img/courses/101-python.svg" },
+    { id: "git-teams", title: "Git & GitHub for Teams", tutor: "101 Codecrafts Team", level: "University", category: "Web Development", rating: 4.9, reviews: 64, price: 25000, lessons: 8, cover: "assets/img/courses/101-cloud.svg" },
     { id: "ethical-hacking-101", title: "Ethical Hacking Foundations", tutor: "Ruth Atim", level: "A-Level", category: "Cybersecurity", rating: 4.6, reviews: 141, price: 60000, lessons: 14, cover: "assets/img/courses/101-security.svg" },
     { id: "scratch-kids", title: "Coding with Scratch for Kids", tutor: "Grace Mutesi", level: "Primary", category: "Computer Science", rating: 4.9, reviews: 88, price: 0, lessons: 10, cover: "assets/img/courses/101-kids.svg" },
     { id: "ict-olevel", title: "O-Level ICT: Networks & the Internet", tutor: "Brian Ochieng", level: "O-Level", category: "Networking", rating: 4.5, reviews: 57, price: 15000, lessons: 9, cover: "assets/img/courses/101-network.svg" },
@@ -112,7 +112,7 @@ window.CC_DATA = {
     funnel: { labels: ["Visits", "Sign-ups", "Enrolments", "Paid"], values: [48200, 10482, 6930, 2140] },
     users: [
       { id: "u1", name: "Sarah Namubiru", email: "sarah.n@example.com", role: "learner", status: "active", joined: "2025-11-01" },
-      { id: "u2", name: "David Kato", email: "david.k@example.com", role: "tutor", status: "verified", joined: "2025-10-28" },
+      { id: "u2", name: "Demo Tutor", email: "tutor@example.com", role: "tutor", status: "verified", joined: "2025-10-28" },
       { id: "u3", name: "Grace Mutesi", email: "grace.m@example.com", role: "learner", status: "active", joined: "2025-10-30" },
       { id: "u4", name: "Brian Ochieng", email: "brian.o@example.com", role: "tutor", status: "pending", joined: "2025-11-02" },
       { id: "u5", name: "Aisha Nalwoga", email: "aisha.n@example.com", role: "admin", status: "active", joined: "2025-03-14" },
@@ -131,10 +131,10 @@ window.CC_DATA = {
     courseApprovals: [
       { id: "c1", title: "Intro to Ethical Hacking with Kali", tutor: "Brian Ochieng", path: "Cybersecurity", price: 120000 },
       { id: "c2", title: "Pandas for Mobile Money Data", tutor: "Ruth Atim", path: "Data Science", price: 90000 },
-      { id: "c3", title: "Deploying Next.js on Vercel", tutor: "David Kato", path: "Cloud & DevOps", price: 0 }
+      { id: "c3", title: "Deploying Next.js on Vercel", tutor: "101 Codecrafts Team", path: "Cloud & DevOps", price: 0 }
     ],
     payouts: [
-      { id: "po1", tutor: "David Kato", amount: 850000, method: "MTN Mobile Money", account: "+256 77• ••• 214", requested: "Nov 01" },
+      { id: "po1", tutor: "101 Codecrafts Team", amount: 850000, method: "MTN Mobile Money", account: "+256 77• ••• 214", requested: "Nov 01" },
       { id: "po2", tutor: "Ruth Atim", amount: 420000, method: "Airtel Money", account: "+256 70• ••• 908", requested: "Nov 01" },
       { id: "po3", tutor: "Moses Byaruhanga", amount: 1250000, method: "Bank (Stanbic)", account: "••••4471", requested: "Oct 31" }
     ],
@@ -143,7 +143,7 @@ window.CC_DATA = {
       { id: "tx-9011", type: "Subscription", item: "101 Pro (monthly)", user: "Paul Wasswa", amount: 25000, status: "paid", when: "Nov 02 08:40" },
       { id: "tx-9010", type: "Event ticket", item: "Hackathon 2025", user: "Grace Mutesi", amount: 30000, status: "paid", when: "Nov 01 19:02" },
       { id: "tx-9009", type: "Marketplace", item: "UI Kit — Brutal 101", user: "Esther Akello", amount: 45000, status: "paid", when: "Nov 01 15:27" },
-      { id: "tx-9008", type: "Tutor session", item: "1:1 with David Kato (60 min)", user: "Ivan Mugisha", amount: 60000, status: "paid", when: "Nov 01 11:05" },
+      { id: "tx-9008", type: "Tutor session", item: "1:1 tutor session (60 min)", user: "Ivan Mugisha", amount: 60000, status: "paid", when: "Nov 01 11:05" },
       { id: "tx-9007", type: "Refund", item: "Duplicate charge", user: "Joseph Ssempala", amount: -25000, status: "refunded", when: "Oct 31 16:48" }
     ],
     moderation: [
@@ -159,7 +159,7 @@ window.CC_DATA = {
       { d: "22", m: "NOV", title: "Hackathon 2025", meta: "Online · All day", rsvps: 402 }
     ],
     audit: [
-      { when: "Nov 02 10:21", who: "aisha.n (admin)", what: "Approved tutor David Kato" },
+      { when: "Nov 02 10:21", who: "aisha.n (admin)", what: "Approved a tutor application" },
       { when: "Nov 02 09:58", who: "aisha.n (admin)", what: "Set commission to 15%" },
       { when: "Nov 01 18:12", who: "system", what: "Payout po-0007 sent via MTN MoMo" },
       { when: "Nov 01 16:40", who: "aisha.n (admin)", what: "Suspended user joseph.s (chargeback)" }
@@ -244,7 +244,7 @@ window.CC_DATA = {
 
   /* ---------------- Course player ---------------- */
   course: {
-    id: "web-basics", title: "Web Development Basics", level: "University", path: "Software Engineering", tutor: "David Kato",
+    id: "web-basics", title: "Web Development Basics", level: "University", path: "Software Engineering", tutor: "101 Codecrafts Team",
     overview: "Build and publish your first website. You'll learn how the web works, write semantic HTML, style it with CSS, add interactivity with JavaScript and deploy it for free.",
     lessons: [
       { id: "l1", title: "How the web works", yt: "hJHvdBlSxug", done: true },
@@ -281,7 +281,7 @@ window.CC_DATA = {
 
   /* ---------------- Tutor ---------------- */
   tutor: {
-    name: "David Kato",
+    name: "Demo Tutor",
     kpis: [
       { label: "Active Learners", value: 312 }, { label: "Courses", value: 4 },
       { label: "Earnings (UGX, Nov)", value: 1920000, money: true }, { label: "Avg. Rating", value: "4.8 ★" }

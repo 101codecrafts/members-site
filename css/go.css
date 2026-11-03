@@ -1,0 +1,20 @@
+/* /go/<id> outbound interstitial: "Leaving 101 Codecrafts" card, destination + favicon, 1.5s auto-continue bar. */
+.go-dest{display:flex;align-items:center;gap:14px;margin:18px 0 6px;padding:14px 16px;border:2px solid var(--ink);background:var(--color-surface);min-width:0}
+.go-fav{flex:none;width:44px;height:44px;display:grid;place-items:center;background:#fff;border:2px solid var(--ink)}
+.go-fav img{width:28px;height:28px;display:block}
+.go-fav svg{width:22px;height:22px}
+.go-dest div{min-width:0}
+.go-host{display:block;font:400 var(--step-2)/1.15 var(--disp2);color:var(--ink);overflow-wrap:anywhere}
+.go-url{display:block;font:500 var(--step--1)/1.35 var(--body);color:var(--color-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.go-bar{height:10px;margin:18px 0 10px;border:2px solid var(--ink);background:#fff;overflow:hidden}
+.go-bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--or) 0 10px,#ffb54d 10px 20px)}
+.go-bar.run i{animation:go-fill var(--go-ms,1500ms) linear forwards}
+.go-bar.paused i{animation-play-state:paused}
+@keyframes go-fill{to{width:100%}}
+.go-status{font:600 var(--step--1) var(--body);color:var(--ink);min-height:1.5em}
+.slab .go-safe{max-width:none;display:flex;gap:10px;align-items:flex-start;margin:20px 0 0!important;padding-top:16px;border-top:2px dashed var(--color-line);font-size:var(--step--1);color:var(--color-muted)}
+.go-safe svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--color-cyan-text)}
+.go-missing .go-bar,.go-missing .go-dest,.go-missing #go-link{display:none}
+.go-missing .slab-band{background:var(--cy)}
+@media (prefers-reduced-motion:reduce){.go-bar.run i{animation:none;width:100%}}
+@media (max-width:420px){.slab-actions .btn{flex:1 1 100%}.go-host{font-size:var(--step-1);overflow-wrap:break-word}}

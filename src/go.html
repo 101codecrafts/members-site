@@ -1,19 +1,40 @@
 <!doctype html>
 <html lang="en">
 <head>
-{{HEAD title="Opening… · 101 Codecrafts" desc="Redirecting to the original source." path="go.html" noindex}}
-<link rel="stylesheet" href="css/brutal.css">
-<link rel="stylesheet" href="css/app.css">
+{{HEAD title="Leaving 101 Codecrafts" desc="Opening the original source of a 101 Codecrafts library item." path="go.html" noindex}}
+{{CSS}}
+<link rel="stylesheet" href="css/pages.css">
+<link rel="stylesheet" href="css/go.css">
+<meta name="referrer" content="strict-origin">
+<!-- No JavaScript: the destination is looked up client-side, so fall back to the Library after a short pause. -->
+<noscript><meta http-equiv="refresh" content="6;url=/resources.html"></noscript>
 </head>
-<body class="flow" data-page="go">
+<body class="solo" data-page="go" data-abs>
 <a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
-<main id="main" class="center">
-<div class="panel-x">
-<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="82" height="41"><b>Codecrafts</b></a>
-
-<h1>OPENING THE ORIGINAL…</h1><p>Taking you to <span id="go-to">the source</span>.</p><p style="margin-top:12px"><a class="btn or" id="go-link" href="resources.html" rel="noopener noreferrer">Continue ↗</a></p>
-</div>
+<header class="solo-top">
+  <a class="solo-logo" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="64" height="32"><b>101 Codecrafts</b></a>
+</header>
+<main id="main" class="solo-main">
+  <section class="slab" id="go-card" aria-labelledby="go-h">
+    <div class="slab-band"><svg aria-hidden="true"><use href="#i-link"/></svg><span id="go-band">Leaving 101 Codecrafts</span></div>
+    <div class="slab-body">
+      <h1 id="go-h">Opening the original</h1>
+      <p class="lead" id="go-lead">You're heading to an external site.</p>
+      <div class="go-dest" id="go-dest">
+        <span class="go-fav"><img id="go-fav" src="assets/icons/favicon-32.png" alt="" width="28" height="28" referrerpolicy="no-referrer"></span>
+        <div><b class="go-host" id="go-host">Looking up the link…</b><span class="go-url" id="go-url"></span></div>
+      </div>
+      <div class="go-bar" id="go-bar" aria-hidden="true"><i></i></div>
+      <p class="go-status" id="go-status" role="status" aria-live="polite">One moment…</p>
+      <div class="slab-actions">
+        <a class="btn or" id="go-link" href="resources.html" rel="noopener noreferrer">Continue <span aria-hidden="true">↗</span></a>
+        <a class="btn" id="go-back" href="resources.html">Go back</a>
+      </div>
+      <noscript><p style="margin-top:16px"><b>JavaScript is off,</b> so we can't look up this link. Taking you to the <a href="resources.html">Library</a> in a few seconds.</p></noscript>
+      <p class="go-safe"><svg aria-hidden="true"><use href="#i-shield"/></svg><span>External sites aren't run by 101 Codecrafts. Check the address before you sign in or pay. We only send you to links in our catalogue.</span></p>
+    </div>
+  </section>
 </main>
 {{SCRIPTS}}
 <script src="js/market-data.js" defer></script>

@@ -27,8 +27,14 @@
     document.documentElement.classList.toggle("signed-out", !user);
     // dashboard mockup top bar (only visible in ?static=1 now; the live dashboard uses the shared shell)
     $$(".me-name").forEach(e => e.textContent = name);
-    $$(".me-role").forEach(e => e.innerHTML = user ? "Member" : '<a href="signin.html">Sign in</a> · <a href="signup.html">Join</a>');
-    $$(".me-av").forEach(e => { if (!user) { e.removeAttribute("srcset"); e.src = "assets/img/avatar-guest.svg"; e.alt = "Guest"; } else if (user.imageUrl && user.hasImage) { e.src = user.imageUrl; e.alt = name; } });
+    $$(".me-role").forEach(e => e.innerHTML = user ? "Member" : '<a href="/signin.html">Sign in</a> · <a href="/signup.html">Join</a>');
+    $$(".me-av").forEach(e => { if (!user) { e.removeAttribute("srcset"); e.src = "/assets/img/avatar-guest.svg"; e.alt = "Guest"; } else if (user.imageUrl && user.hasImage) { e.src = user.imageUrl; e.alt = name; } });
+    // shared top bar chip
+    $$(".chip-me").forEach(c => {
+      const b = c.querySelector("b"), sm = c.querySelector("small"), av = c.querySelector(".av");
+      if (b) b.textContent = name; if (av) av.textContent = initials(name);
+      if (sm) sm.innerHTML = user ? "Member" : '<a href="/signin.html">Sign in</a> · <a href="/signup.html">Join</a>';
+    });
     // no fake notification dots / badges; real unread count fills them in below
     $$(".dot, .sbar nav .badge, .side .nav .badge").forEach(e => { e.hidden = true; e.style.display = "none"; });
     // fake community stat on the dashboard (was a hard-coded 10K+)
@@ -66,13 +72,49 @@
       $$(".acct-role").forEach(e => e.textContent = top);
     } catch (e) { /* offline / API down: keep the switcher hidden */ }
   }
+  /* Clerk theme: brand colours, square corners, site fonts, orange primary with navy text. The page supplies the
+     heading and the sign-in/sign-up switch, so Clerk's own header and footer link are hidden (no box inside a box).
+     Variable names cover clerk-js v5 (Core 2) and the Core 3 renames; unknown keys are ignored. */
+  const NAVY = "#0B1236", ORANGE = "#fc8c0c", FONT = '"Body", "Barlow", system-ui, sans-serif';
+  const btn = { borderRadius: "0", minHeight: "48px", fontFamily: FONT, fontWeight: "700", fontSize: "15px", letterSpacing: ".5px", textTransform: "uppercase" };
+  const APPEARANCE = {
+    layout: { socialButtonsPlacement: "top", socialButtonsVariant: "blockButton", logoPlacement: "none", showOptionalFields: true },
+    options: { socialButtonsPlacement: "top", socialButtonsVariant: "blockButton", logoPlacement: "none", showOptionalFields: true },
+    variables: {
+      colorPrimary: ORANGE, colorTextOnPrimaryBackground: NAVY, colorPrimaryForeground: NAVY,
+      colorText: NAVY, colorForeground: NAVY, colorTextSecondary: "#3e5d74", colorMutedForeground: "#3e5d74",
+      colorBackground: "#ffffff", colorInputBackground: "#ffffff", colorInput: "#ffffff", colorInputText: NAVY, colorInputForeground: NAVY,
+      colorNeutral: NAVY, colorBorder: NAVY, colorRing: "#00b9e6", colorDanger: "#d93636", colorSuccess: "#0f7a45",
+      fontFamily: FONT, fontFamilyButtons: FONT, fontSize: "16px", borderRadius: "0px", spacingUnit: "1rem"
+    },
+    elements: {
+      rootBox: { width: "100%" },
+      cardBox: { width: "100%", maxWidth: "none", boxShadow: "none", border: "0", borderRadius: "0", overflow: "visible" },
+      card: { boxShadow: "none", border: "0", borderRadius: "0", padding: "0", background: "transparent", gap: "20px" },
+      header: { display: "none" },
+      socialButtonsBlockButton: Object.assign({}, btn, { textTransform: "none", border: "2px solid " + NAVY, background: "#fff", color: NAVY, boxShadow: "none" }),
+      socialButtonsBlockButtonText: { fontWeight: "700", fontSize: "15px" },
+      dividerLine: { background: "#e0e6ea", height: "2px" },
+      dividerText: { color: "#3e5d74", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", fontSize: "12px" },
+      formFieldLabel: { color: NAVY, fontWeight: "700", fontSize: "14px" },
+      formFieldInput: { borderRadius: "0", minHeight: "48px", fontSize: "16px", border: "2px solid " + NAVY, boxShadow: "none", background: "#fff" },
+      formButtonPrimary: Object.assign({}, btn, { background: ORANGE, color: NAVY, border: "2px solid " + NAVY, boxShadow: "4px 4px 0 " + NAVY,
+        "&:hover": { background: ORANGE, transform: "translate(-2px,-2px)", boxShadow: "6px 6px 0 " + NAVY }, "&:focus": { boxShadow: "4px 4px 0 " + NAVY } }),
+      footer: { background: "transparent", padding: "16px 0 0", border: "0" },
+      footerAction: { display: "none" },
+      formFieldAction: { color: "#146c9f", fontWeight: "700" },
+      identityPreviewEditButton: { color: "#146c9f" },
+      otpCodeFieldInput: { borderRadius: "0", border: "2px solid " + NAVY },
+      alert: { borderRadius: "0", border: "2px solid " + NAVY }
+    }
+  };
   function mountAuthUi(clerk) {
     const page = document.body && document.body.dataset.page;
     const form = page === "signin" ? document.getElementById("si") : page === "signup" ? document.getElementById("su") : null;
     if (!form) return;
     if (clerk.user) { location.replace(page === "signup" ? "onboarding.html" : "dashboard.html"); return; }
     const host = document.createElement("div"); host.id = "clerk-" + page; form.replaceWith(host);
-    const opts = { signInUrl: "signin.html", signUpUrl: "signup.html", forceRedirectUrl: page === "signup" ? "onboarding.html" : "dashboard.html", appearance: { variables: { colorPrimary: "#f26a1b", borderRadius: "0px" } } };
+    const opts = { signInUrl: "signin.html", signUpUrl: "signup.html", forceRedirectUrl: page === "signup" ? "onboarding.html" : "dashboard.html", appearance: APPEARANCE };
     page === "signin" ? clerk.mountSignIn(host, opts) : clerk.mountSignUp(host, opts);
   }
   function loadClerk() {

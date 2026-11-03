@@ -97,6 +97,7 @@ def sidebar(a):
 def topbar(a):
     """Navy top bar. The account area is a skeleton until js/auth.js resolves the session: no hard-coded names."""
     roles = ''.join(f'<a role="menuitem" href="{h}">{r}</a>' for r, h in [("Learner", "dashboard.html"), ("Tutor", "tutor.html"), ("Admin", "admin.html")])
+    name = a.get('name', 'Guest')  # default display name (ui/pages); the live account chip is filled by js/auth.js
     return f'''<header class="topbar">
   <button type="button" class="tb-nav" data-sb-open aria-controls="sbar" aria-expanded="false" aria-label="Open menu"><svg class="ic-menu" aria-hidden="true"><use href="#i-menu"/></svg><svg class="ic-panel" aria-hidden="true"><use href="#i-panel"/></svg></button>
   <a class="tb-brand" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="50" height="28"><b>101 Codecrafts</b><span class="sr-only">home</span></a>
@@ -148,6 +149,17 @@ def css_links(s):
     s = _re.sub(r'<link rel="stylesheet" href="css/(brutal|app|dashboard|landing)\.css">\n?', '', s)
     return s.replace('{{CSS}}', CSS_LINKS[k]) if '{{CSS}}' in s else s.replace('</head>', CSS_LINKS[k] + '\n</head>', 1) if 'id="fitcss"' not in s else s.replace('<link rel="stylesheet" id="fitcss"', CSS_LINKS[k] + '\n<link rel="stylesheet" id="fitcss"', 1)
 
+
+# Pages served at nested URLs (/go/<id>, /u/<handle>, any missing path -> 404.html) mark <body data-abs>: their relative
+# asset and page URLs are written root-absolute so CSS, fonts, logos and links resolve at any depth.
+_SKIP = ('/', '#', 'http:', 'https:', 'data:', 'mailto:', 'tel:', 'javascript:', 'blob:', '{')
+def _abs1(u):
+    u = u.strip()
+    return u if not u or u.startswith(_SKIP) else '/' + (u[2:] if u.startswith('./') else u)
+def rootabs(s):
+    s = re.sub(r'(\s(?:href|src|action|poster)=")([^"]*)"', lambda m: m.group(1) + _abs1(m.group(2)) + '"', s)
+    return re.sub(r'(\ssrcset=")([^"]*)"', lambda m: m.group(1) + ', '.join(' '.join([_abs1(x.split()[0])] + x.split()[1:]) for x in m.group(2).split(',') if x.strip()) + '"', s)
+
 for f in (root / 'src').glob('*.html'):
     s = css_links(f.read_text()); name = f.name
     charts = 'data-charts' in s
@@ -155,5 +167,6 @@ for f in (root / 'src').glob('*.html'):
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
     s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1))), s)
+    if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')

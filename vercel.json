@@ -1,9 +1,20 @@
 {
   "cleanUrls": false,
+  "redirects": [
+    {
+      "source": "/ai.html",
+      "destination": "/ai-tools.html",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/go/:id",
       "destination": "/go.html?id=:id"
+    },
+    {
+      "source": "/whiteboard/:id",
+      "destination": "/whiteboard.html?id=:id"
     },
     {
       "source": "/u/:handle",

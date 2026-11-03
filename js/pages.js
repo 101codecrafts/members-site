@@ -308,13 +308,39 @@
       $("#c-dform").onsubmit = async e => { e.preventDefault(); const t = e.target.text.value.trim(); if (!t) return; c.discussion.unshift({ who: "You", t, ago: "now", replies: 0 }); disc(); e.target.reset(); await API.postDiscussion(c.id, t); };
       disc(); show();
     },
-    /* ---------------- /go/<id> → original source ---------------- */
+    /* ---------------- /go/<id> → original source ----------------
+       Open-redirect guard: the id is looked up in our own catalogue (never a URL from the query string); the stored
+       URL must parse as http(s) with no user:pass@ part. Shows the destination domain, auto-continues after 1.5s. */
     async go() {
       const id = q.get("id") || (location.pathname.match(/\/go\/([^/?#]+)/) || [])[1];
-      if (!window.__ccNewsCache) await API.fetchNews();
-      const item = id && API.lookupGo(decodeURIComponent(id));
-      if (item && /^https?:\/\//.test(item.url)) { $("#go-to").textContent = item.url; $("#go-link").href = item.url; location.replace(item.url); }
-      else $("#go-to").textContent = "We couldn't find that link. It may have been removed from the Library.";
+      let key = null; try { key = id && decodeURIComponent(id); } catch (e) {}
+      let item = key && !q.get("missing") ? API.lookupGo(key) : null;
+      if (key && !item && !q.get("missing")) { try { if (!window.__ccNewsCache) await API.fetchNews(); item = API.lookupGo(key); } catch (e) {} }
+      let dest = null;
+      try { const u = item && new URL(item.url); if (u && /^https?:$/.test(u.protocol) && !u.username && !u.password) dest = u; } catch (e) {}
+      const back = $("#go-back"), sameRef = document.referrer && new URL(document.referrer).origin === location.origin;
+      if (sameRef) back.href = document.referrer;
+      if (!dest) {
+        $("#go-card").classList.add("go-missing");
+        $("#go-band").textContent = "Link not available"; $("#go-h").textContent = "We couldn't find that link";
+        $("#go-lead").textContent = "It may have been removed from the Library, or the address was mistyped.";
+        $("#go-status").textContent = ""; back.textContent = "Browse the Library"; back.href = "/resources.html"; back.classList.add("or");
+        document.title = "Link not available · 101 Codecrafts"; return;
+      }
+      const host = dest.hostname.replace(/^www\./, ""), href = dest.href;
+      $("#go-host").textContent = host; $("#go-url").textContent = href.replace(/^https?:\/\//, ""); $("#go-url").title = href;
+      $("#go-lead").textContent = item.title ? "Opening \u201c" + item.title + "\u201d on " + host + "." : "You're heading to an external site.";
+      const fav = $("#go-fav"), favSrc = item.favicon && /^https:\/\//.test(item.favicon) ? item.favicon : "https://www.google.com/s2/favicons?sz=64&domain=" + encodeURIComponent(dest.hostname);
+      fav.onerror = () => { fav.onerror = null; fav.src = "/assets/icons/favicon-32.png"; }; fav.src = favSrc;
+      $("#go-link").href = href;
+      document.title = "Leaving for " + host + " · 101 Codecrafts";
+      const MS = 1500, bar = $("#go-bar"), st = $("#go-status");
+      bar.style.setProperty("--go-ms", MS + "ms"); bar.classList.add("run");
+      st.textContent = "Taking you to " + host + "\u2026";
+      let timer = setTimeout(() => { st.textContent = "Opening " + host + "\u2026"; location.replace(href); }, MS);
+      const stop = (msg) => { if (!timer) return; clearTimeout(timer); timer = null; bar.classList.add("paused"); st.textContent = msg; };
+      back.addEventListener("click", e => { stop("Cancelled."); if (sameRef && history.length > 1) { e.preventDefault(); history.back(); } });
+      document.addEventListener("keydown", e => { if (e.key === "Escape") stop("Paused. Press Continue when you're ready."); });
     }
   };
   if (R[page]) R[page]();

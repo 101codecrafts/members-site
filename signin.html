@@ -19,8 +19,9 @@
 <script>/* early: lite/data-saver + theme before first paint */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(localStorage.theme==="dark")d.dataset.theme="dark";if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
 <link rel="stylesheet" href="css/bundle-app.css">
+<link rel="stylesheet" href="css/auth.css">
 </head>
-<body class="flow" data-page="signin">
+<body class="auth-page" data-page="signin">
 <a class="skip" href="#main">Skip to content</a>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
 <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 1.5 11.5h3V21h5.5v-6h4v6H19.5v-9.5h3z"/></symbol>
@@ -92,20 +93,37 @@
 <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M14 4H4v16h10"/><path d="M10 12h11M17 8l4 4-4 4"/></symbol>
 </svg>
 
-<main id="main" class="center">
-<div class="panel-x">
-<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="82" height="41"><b>Codecrafts</b></a>
-
-<h1>WELCOME BACK</h1>
+<div class="auth">
+<aside class="auth-brand" aria-label="About 101 Codecrafts">
+  <a class="auth-logo" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="72" height="36"><b>101 Codecrafts</b></a>
+  <div class="auth-pitch">
+    <p class="auth-kicker">Members</p>
+    <p class="auth-tag">Start at 101. <br>Craft your way up.</p>
+    <ul class="auth-points">
+      <li><svg aria-hidden="true"><use href="#i-learning"/></svg><span><b>Free courses &amp; a curated library</b>Structured paths from your first line of code to job-ready.</span></li>
+      <li><svg aria-hidden="true"><use href="#i-codebox"/></svg><span><b>Practice on real problems</b>Daily challenges, contests and projects you can show employers.</span></li>
+      <li><svg aria-hidden="true"><use href="#i-people"/></svg><span><b>Learn with a community</b>Tutors, study groups, live sessions and events across Uganda.</span></li>
+    </ul>
+  </div>
+  <p class="auth-legal">© 2025 101 Codecrafts · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+</aside>
+<main id="main" class="auth-main">
+<div class="auth-panel">
+<h1 class="auth-h">Welcome back</h1>
+<p class="auth-sub">Sign in to pick up where you left off.</p>
+<div class="auth-form">
 <form id="si" class="grid" style="gap:12px">
  <label class="field">Email or phone<input name="email" type="text" autocomplete="username" required></label>
  <label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label>
  <button class="btn or">Sign in</button>
  <button class="btn" type="button" id="si-google">Continue with Google</button>
- <p class="muted">New here? <a href="signup.html"><b>Create an account</b></a></p><p id="si-msg" role="status" aria-live="polite"></p>
+<p id="si-msg" role="status" aria-live="polite"></p>
 </form>
 </div>
+<p class="auth-switch">New to 101 Codecrafts? <a href="signup.html">Create a free account</a></p>
+</div>
 </main>
+</div>
 <script src="js/data.js" defer></script>
 <script src="js/api.js" defer></script>
 <script src="js/auth.js" defer></script>
