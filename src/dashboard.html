@@ -11,6 +11,10 @@
 <body data-page="dashboard" data-role="member">
 <a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
+<div class="shell dash-shell">
+{{SIDEBAR role="learner" active="Home"}}
+<div class="main">
+{{TOPBAR role="learner"}}
 <main class="app" id="main">
 
 <!-- ============ SIDEBAR ============ -->
@@ -175,6 +179,7 @@ COLLABORATE</h1>
     <div id="library-row" class="rgrid"></div>
   </div>
 </section>
+</div></div>
 {{SCRIPTS}}
 <script src="js/feed-data.js" defer></script>
 <script src="js/events-data.js" defer></script>

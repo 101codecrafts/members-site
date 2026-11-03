@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + system.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + system.css + shell.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -903,3 +903,185 @@ html:not(.static) .cbody p{color:var(--ink-muted)}
   html:not(.static) .exp .grow{flex:1 1 calc(100% - 48px)}
   html:not(.static) .exp .cdx{margin-left:46px}
 }
+
+/* ==== 101 Codecrafts app shell (2026-11): navy L-frame (sidebar + top bar), collapsible rail, mobile drawer ====
+   Markup: tools/build.py sidebar()/topbar(). Behaviour: js/shell.js. Loaded last in every CSS bundle so it wins over
+   the older .sbar/.topbar rules in app.css without editing them. Page content (.content and its cards) is not styled here. */
+:root{
+  --sh-navy:#0B1236; --sh-navy-2:#111A45; --sh-navy-3:#18214F; --sh-line:#26306A;
+  --sh-text:#E9ECF7; --sh-mut:#A9B1D6; --sh-or:var(--or,#fc8c0c); --sh-cy:var(--cy,#05e6f2);
+  --sb-w:256px; --sb-rail:72px; --tb-h:60px; --sb-cur:var(--sb-w);
+  --sh-ease:cubic-bezier(.2,0,0,1); --sh-dur:200ms;
+}
+
+/* ---------- frame ---------- */
+.shell{display:grid;grid-template-columns:var(--sb-cur) minmax(0,1fr);min-height:100vh;min-height:100dvh}
+html:not(.static) .shell{background:none} /* replaces the 244px gradient band from app.css */
+html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-ease)}
+.shell>.main{min-width:0;display:flex;flex-direction:column}
+.shell>.main>.content{flex:1 0 auto}
+
+/* ---------- sidebar ---------- */
+.shell .sbar{position:sticky;top:0;height:100vh;height:100dvh;align-self:start;z-index:70;display:flex;flex-direction:column;
+  overflow:hidden;padding:0;gap:0;background:var(--sh-navy);color:var(--sh-text);border-right:1px solid var(--sh-line);font-family:var(--cond);max-width:none}
+.sb-head{flex:none;height:var(--tb-h);display:flex;align-items:center;gap:8px;padding:0 10px 0 16px;border-bottom:1px solid var(--sh-line)}
+.sb-logo{display:flex;align-items:center;gap:10px;min-width:0;flex:1;color:#fff;text-decoration:none}
+.sb-logo img{width:57px;height:32px;flex:none}
+.sb-word{display:flex;flex-direction:column;min-width:0;line-height:1.1;white-space:nowrap}
+.sb-word b{font:400 15px/1.1 var(--disp2);letter-spacing:.2px;color:#fff}
+.sb-word small{font:500 12px/1.2 var(--cond);color:var(--sh-mut);margin-top:3px;letter-spacing:.3px}
+.sb-toggle,.tb-nav{flex:none;width:40px;height:40px;display:grid;place-items:center;background:transparent;border:1px solid transparent;color:var(--sh-text);cursor:pointer;padding:0}
+.sb-toggle:hover,.tb-nav:hover{border-color:var(--sh-line);background:var(--sh-navy-2)}
+.sb-toggle svg,.tb-nav svg{width:20px;height:20px}
+.shell .sb-nav{flex:1 1 auto;display:block;overflow-y:auto;overflow-x:hidden;padding:10px 10px 16px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--sh-line) transparent;min-width:0}
+.sb-sec+.sb-sec{margin-top:14px}
+.sb-h{margin:0 0 4px;padding:0 12px;height:24px;display:flex;align-items:center;font:700 12px/1 var(--cond);letter-spacing:1.5px;text-transform:uppercase;color:var(--sh-mut);white-space:nowrap}
+.shell .sb-nav a{position:relative;display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:12px;height:42px;min-height:42px;padding:0 12px;margin:0;
+  font:500 14.5px/1 var(--cond);color:#D9DEF0;text-decoration:none;white-space:nowrap;border-radius:0;background:transparent}
+.shell .sb-nav a svg{width:20px;height:20px;flex:none;color:#AEB7DD}
+.shell .sb-nav a span{overflow:hidden;text-overflow:ellipsis}
+.shell .sb-nav a:hover{background:var(--sh-navy-2);color:#fff}
+.shell .sb-nav a:hover svg{color:#fff}
+.shell .sb-nav a[aria-current=page]{background:var(--sh-navy-3);color:#fff;font-weight:600;box-shadow:inset 3px 0 0 var(--sh-or)}
+.shell .sb-nav a[aria-current=page] svg{color:var(--sh-or)}
+.sb-foot{flex:none;padding:12px 10px 14px;border-top:1px solid var(--sh-line)}
+.sb-wa{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:12px;height:42px;padding:0 12px;border:1px solid var(--sh-line);color:var(--sh-text);font:600 14px/1 var(--cond);white-space:nowrap;text-decoration:none}
+.sb-wa svg{width:20px;height:20px;color:#25D366}
+.sb-wa span{overflow:hidden;text-overflow:ellipsis}
+.sb-wa:hover{border-color:var(--sh-or);color:#fff}
+.shell .sbar :focus-visible,.topbar :focus-visible,.acct-menu :focus-visible{outline:2px solid var(--sh-cy);outline-offset:-2px}
+
+/* ---------- desktop: collapsed icon rail ---------- */
+@media (min-width:1024px){
+  html.sb-collapsed{--sb-cur:var(--sb-rail)}
+  html.sb-collapsed .sb-head{padding:0;justify-content:center}
+  html.sb-collapsed .sb-logo{display:none}
+  html.sb-collapsed .shell .sb-nav{padding:10px 12px 16px}
+  html.sb-collapsed .sb-sec+.sb-sec{margin-top:10px;padding-top:10px;border-top:1px solid var(--sh-line)}
+  html.sb-collapsed .sb-h{display:none}
+  html.sb-collapsed .shell .sb-nav a,html.sb-collapsed .sb-wa{grid-template-columns:20px;justify-content:center;padding:0;width:47px}
+  html.sb-collapsed .shell .sb-nav a span,html.sb-collapsed .sb-wa span{display:none}
+  html.sb-collapsed .sb-foot{padding:12px}
+  html.sb-collapsed .sb-toggle svg{transform:scaleX(-1)}
+  html.sb-collapsed .tb-nav .ic-panel{transform:scaleX(-1)}
+  .tb-nav .ic-menu{display:none}
+  /* the brand lives in the sidebar head; when that is a bare rail the top bar shows it instead */
+  html:not(.sb-collapsed) .tb-brand{display:none}
+}
+.sb-tip{position:fixed;z-index:1200;transform:translateY(-50%);pointer-events:none;background:var(--sh-navy);color:#fff;border:1px solid var(--sh-or);
+  padding:6px 10px;font:600 13px/1.2 var(--cond);letter-spacing:.2px;white-space:nowrap;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+.sb-tip[hidden]{display:none}
+
+/* ---------- tablet + phone: off-canvas drawer ---------- */
+@media (max-width:1023.98px){
+  .shell,html:not(.static) .shell{grid-template-columns:minmax(0,1fr)!important}
+  .shell .sbar{position:fixed;left:0;top:0;bottom:0;height:100%;width:min(300px,86vw);max-width:86vw;z-index:1100;transform:translateX(-100%);visibility:hidden;box-shadow:none}
+  html.sb-ready .shell .sbar{transition:transform var(--sh-dur) var(--sh-ease),visibility 0s linear var(--sh-dur)}
+  html.sb-open .shell .sbar{transform:none;visibility:visible;box-shadow:8px 0 0 rgba(11,18,54,.25)}
+  html.sb-ready.sb-open .shell .sbar{transition:transform var(--sh-dur) var(--sh-ease),visibility 0s}
+  .sb-toggle .ic{display:none}
+  .tb-nav .ic-panel{display:none}
+  html.sb-open,html.sb-open body{overflow:hidden!important}
+  .sb-scrim{position:fixed;inset:0;z-index:1090;background:rgba(5,8,25,.62)}
+  html.sb-ready .sb-scrim{animation:sh-fade var(--sh-dur) var(--sh-ease)}
+}
+.sb-scrim[hidden]{display:none}
+@keyframes sh-fade{from{opacity:0}to{opacity:1}}
+
+/* ---------- top bar ---------- */
+.shell .topbar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:nowrap;align-items:center;gap:10px;height:var(--tb-h);min-height:var(--tb-h);padding:0 20px 0 12px;
+  background:var(--sh-navy);color:var(--sh-text);border-bottom:1px solid var(--sh-line);row-gap:0}
+.shell .topbar>*{min-width:0}
+.tb-brand{display:flex;align-items:center;gap:10px;flex:none;color:#fff;text-decoration:none;margin-right:6px}
+.tb-brand img{width:50px;height:28px}
+.tb-brand b{font:400 15px/1 var(--disp2);white-space:nowrap}
+.tb-search{flex:1 1 auto;max-width:520px;display:flex;align-items:center;gap:10px;height:40px;padding:0 10px 0 12px;background:var(--sh-navy-2);border:1px solid var(--sh-line);color:var(--sh-mut);cursor:text}
+.tb-search:focus-within{border-color:var(--sh-cy)}
+.tb-search svg{width:18px;height:18px;flex:none}
+.tb-search input{flex:1;min-width:0;height:38px;border:0;background:transparent;color:#fff;font:500 16px var(--body);outline:none}
+.tb-search input::placeholder{color:var(--sh-mut);opacity:1}
+.tb-search kbd{flex:none;min-width:22px;height:22px;display:grid;place-items:center;border:1px solid var(--sh-line);font:600 12px var(--body);color:var(--sh-mut)}
+.shell .topbar .top-links{display:flex;gap:18px;margin-left:8px}
+.shell .topbar .top-links a{font:600 14px var(--cond);color:#D9DEF0;letter-spacing:.3px;padding:6px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.shell .topbar .top-links a:hover{color:#fff;border-bottom-color:var(--sh-or)}
+.shell .topbar .sp{flex:1 1 0}
+.shell .topbar .ib{width:40px;height:40px;display:grid;place-items:center;position:relative;color:var(--sh-text);background:transparent;border:1px solid transparent;flex:none;cursor:pointer}
+.shell .topbar .ib:hover{border-color:var(--sh-line);background:var(--sh-navy-2)}
+.shell .topbar .ib svg{width:20px;height:20px}
+.shell .topbar .ib .dot{position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--sh-or);box-shadow:0 0 0 2px var(--sh-navy)}
+.shell .topbar .bell-n{position:absolute;top:3px;right:2px;min-width:18px;height:18px;padding:0 4px;display:grid;place-items:center;background:var(--sh-or);color:var(--sh-navy);font:700 12px/1 var(--body);font-style:normal}
+.tb-search-btn{display:none!important}
+.shell .topbar .role-tabs:not(.am-roles){display:none!important}
+
+/* account area: skeleton -> guest buttons or member menu */
+.acct{position:relative;display:flex;align-items:center;flex:none;min-height:40px;padding-left:12px;margin-left:2px;border-left:1px solid var(--sh-line)}
+.acct-sk{display:flex;align-items:center;gap:10px}
+.acct-sk i,.acct-sk b{display:block;background:linear-gradient(90deg,var(--sh-navy-2),var(--sh-navy-3),var(--sh-navy-2));background-size:200% 100%;animation:sh-sk 1.2s linear infinite}
+.acct-sk i{width:32px;height:32px}
+.acct-sk b{width:96px;height:12px}
+@keyframes sh-sk{to{background-position:-200% 0}}
+.acct-guest,.acct-user{display:flex;align-items:center;gap:8px}
+.acct-guest[hidden],.acct-user[hidden]{display:none}
+.acct-av{width:32px;height:32px;flex:none;display:grid;place-items:center;overflow:hidden;background:var(--sh-or);color:var(--sh-navy);font:400 13px/1 var(--disp2);letter-spacing:.5px;border:1px solid var(--sh-or)}
+.acct-av img{width:100%;height:100%;object-fit:cover}
+.acct-av.is-guest{background:transparent;border-color:var(--sh-line);color:var(--sh-mut)}
+.acct-av.is-guest svg{width:18px;height:18px}
+.tb-btn{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;font:700 14px/1 var(--body);letter-spacing:.2px;white-space:nowrap;text-decoration:none;border:1px solid transparent}
+.tb-btn.ghost{color:#fff;border-color:#5B66A3;background:transparent}
+.tb-btn.ghost:hover{border-color:#fff}
+.tb-btn.cta{color:var(--sh-navy);background:var(--sh-or);border-color:var(--sh-or)}
+.tb-btn.cta:hover{background:#fff;border-color:#fff}
+.acct-btn{display:flex;align-items:center;gap:10px;height:44px;padding:0 6px 0 4px;background:transparent;border:1px solid transparent;color:var(--sh-text);cursor:pointer;text-align:left}
+.acct-btn:hover,.acct-btn[aria-expanded=true]{border-color:var(--sh-line);background:var(--sh-navy-2)}
+.acct-id{display:flex;flex-direction:column;min-width:0;max-width:170px}
+.acct-id b{font:600 14px/1.15 var(--body);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acct-id small{font:500 12px/1.2 var(--cond);color:var(--sh-mut);letter-spacing:.4px;text-transform:uppercase}
+.acct-chev{width:16px;height:16px;color:var(--sh-mut)}
+.acct-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:1000;min-width:240px;background:#fff;color:var(--sh-navy);border:2px solid var(--sh-navy);box-shadow:5px 5px 0 var(--sh-or);padding:6px 0}
+.acct-menu[hidden]{display:none}
+.am-head{display:flex;flex-direction:column;gap:3px;padding:8px 14px 10px;border-bottom:1px solid #DDE2EE;margin-bottom:4px}
+.am-head b{font:700 14px var(--body)}
+.am-head small{font:500 13px var(--body);color:#44506E;word-break:break-all}
+.acct-menu [role=menuitem]{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:0 14px;background:none;border:0;font:600 14px var(--body);color:var(--sh-navy);text-decoration:none;text-align:left;cursor:pointer}
+.acct-menu [role=menuitem] svg{width:18px;height:18px}
+.acct-menu [role=menuitem]:hover,.acct-menu [role=menuitem]:focus{background:#EEF1F8}
+.acct-menu .am-roles{display:block;border:0;border-top:1px solid #DDE2EE;margin-top:4px;padding-top:4px}
+.acct-menu .am-roles a{padding-left:42px}
+.am-label{display:block;padding:6px 14px 2px;font:700 12px var(--cond);letter-spacing:1.4px;text-transform:uppercase;color:#44506E}
+.acct-menu .am-out{border-top:1px solid #DDE2EE;margin-top:4px}
+
+/* top bar responsive */
+@media (max-width:1279.98px){.shell .topbar .top-links{display:none}}
+@media (max-width:1023.98px){.shell .topbar{padding:0 12px 0 8px}}
+@media (max-width:759.98px){
+  .tb-search{display:none}
+  .tb-search-btn{display:grid!important}
+  .acct-id,.acct-chev{display:none}
+  .acct-av.is-guest{display:none}
+  .shell .topbar{gap:6px}
+  .acct{padding-left:8px}
+}
+@media (max-width:479.98px){
+  .tb-brand b{display:none}
+  .tb-brand{margin-right:0}
+  html.signed-out .tb-bell{display:none}
+  .tb-btn{padding:0 11px;height:36px}
+  .acct-sk b{display:none}
+}
+
+/* ---------- dashboard: the shared shell replaces the mockup's own sidebar + search on the live site ---------- */
+html:not(.static) body[data-page=dashboard]{padding-left:0!important}
+html:not(.static) .dash-shell .app>.side,html:not(.static) .dash-shell .app>label.search{display:none!important}
+html:not(.static) .dash-shell>.main>.app{margin-inline:auto;width:100%}
+html:not(.static) .dash-shell>.main>.ann-banner{box-shadow:none;border-width:0 0 2px}
+/* ?static=1 mockup: the wrapper disappears and the pixel canvas renders exactly as before */
+html.static .dash-shell,html.static .dash-shell>.main{display:contents}
+html.static .dash-shell>.sbar,html.static .dash-shell>.sb-scrim,html.static .dash-shell>.main>.topbar{display:none!important}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  html.sb-ready .shell,html.sb-ready .shell .sbar,html.sb-ready.sb-open .shell .sbar{transition:none!important}
+  .sb-scrim,.acct-sk i,.acct-sk b{animation:none!important}
+}
+/* dark theme opt-in: the shell is already dark; keep the top bar navy rather than app.css's grey */
+[data-theme=dark] .shell .topbar{background:var(--sh-navy);border-color:var(--sh-line)}

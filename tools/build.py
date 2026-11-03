@@ -21,7 +21,7 @@ def attrs(s):
 ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": SITE + "/", "logo": SITE + "/assets/icons/icon-512.png",
           "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}
 
-EARLY = '''<script>/* early: lite/data-saver + theme before first paint */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else if(localStorage.theme==="dark")d.dataset.theme="dark";}catch(e){}})(document.documentElement)</script>'''
+EARLY = '''<script>/* early: lite/data-saver + theme before first paint */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(localStorage.theme==="dark")d.dataset.theme="dark";if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>'''
 
 def head(a, page):
     t = a.get('title', '101 Codecrafts'); d = a.get('desc', '101 Codecrafts: learn, build and collaborate in tech.'); p = a.get('path', page)
@@ -52,36 +52,73 @@ def scripts(charts=False):
     tags = ['<script src="js/data.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
-    tags += ['<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/ads.js" defer></script>']
+    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/ads.js" defer></script>']
     return '\n'.join(tags)
 
+# Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
 NAV = {
- 'learner': [("Home", "home", "dashboard.html"), ("Community", "users", "profile.html"), ("Learning", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"), ("Groups", "people", "groups.html"), ("Library", "folder", "resources.html"), ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Announcements", "megaphone", "announcements.html"), ("Marketplace", "store", "marketplace.html"), ("Events & Meetups", "calendar", "events.html"), ("Messages", "chat", "#", 3), ("Notifications", "bell", "#", 5)],
- 'tutor': [("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "tutor.html#sessions"), ("Earnings & Payouts", "cash", "tutor.html#earnings"), ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"), ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"), ("Messages", "chat", "#", 2), ("Settings", "gear", "#")],
- 'admin': [("Overview", "home", "admin.html"), ("Analytics", "chart", "admin.html#analytics"), ("Members", "users", "admin.html#users"), ("Learners", "cap", "admin.html#users"), ("Tutors", "teacher", "admin.html#users"), ("Approvals", "clipboard", "admin.html#approvals", 17), ("Courses & Paths", "learning", "admin.html#courses"), ("Projects", "code", "#"), ("Tools/Software", "toolbox", "#"), ("Library", "folder", "admin.html#add-resource"), ("Announcements", "megaphone", "admin.html#announcements"), ("Opportunity review", "briefcase", "admin.html#opp-queue"), ("Events", "calendar", "admin.html#events"), ("Marketplace", "store", "marketplace.html"), ("Payments & Payouts", "cash", "admin.html#payments"), ("Messages", "chat", "#", 4), ("Reports", "report", "admin.html#moderation"), ("Audit Log", "list", "admin.html#audit"), ("Settings", "gear", "admin.html#settings")],
+ 'learner': ["", ("Home", "home", "dashboard.html"), ("Community", "users", "profile.html"), ("Messages", "chat", "#"), ("Notifications", "bell", "announcements.html"),
+             "Learn", ("Learning", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"),
+             "Build", ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"),
+             "Community", ("Groups", "people", "groups.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
+             "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Announcements", "megaphone", "announcements.html"), ("Library", "folder", "resources.html"),
+             "Your space", ("My Courses", "cap", "courses.html#c101"), ("My Projects", "codebox", "projects.html"), ("My Downloads", "download", "resources.html"), ("My Profile", "user", "profile.html"), ("Settings", "gear", "settings-apps.html")],
+ 'tutor': ["Teach", ("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "sessions.html"), ("Earnings & Payouts", "cash", "tutor.html#earnings"),
+           "Explore", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
+           "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
+           "Your space", ("Messages", "chat", "#"), ("Settings", "gear", "settings-apps.html")],
+ 'admin': ["Overview", ("Overview", "home", "admin.html"), ("Analytics", "chart", "admin.html#analytics"),
+           "People", ("Members", "users", "admin.html#users"), ("Learners", "cap", "admin.html#users"), ("Tutors", "teacher", "admin.html#users"), ("Approvals", "clipboard", "admin.html#approvals"),
+           "Content", ("Courses & Paths", "learning", "admin.html#courses"), ("Projects", "code", "#"), ("Tools/Software", "toolbox", "#"), ("Library", "folder", "admin.html#add-resource"), ("Announcements", "megaphone", "admin.html#announcements"), ("Opportunity review", "briefcase", "admin.html#opp-queue"), ("Events", "calendar", "admin.html#events"),
+           "Money", ("Marketplace", "store", "marketplace.html"), ("Payments & Payouts", "cash", "admin.html#payments"),
+           "System", ("Messages", "chat", "#"), ("Reports", "report", "admin.html#moderation"), ("Audit Log", "list", "admin.html#audit"), ("Settings", "gear", "admin.html#settings")],
 }
 
 def sidebar(a):
-    role = a.get('role', 'learner'); act = a.get('active', '')
-    items = ''.join(f'<a href="{h}"{" aria-current=page" if n == act else ""}><svg aria-hidden="true"><use href="#i-{i}"/></svg><span>{n}</span>{f"<i class=badge>{b[0]}</i>" if b else ""}</a>' for n, i, h, *b in NAV[role])
-    return f'''<aside class="sbar" aria-label="Main navigation">
-  <a class="logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="101 Codecrafts home" width="82" height="46"><div><b>101<br>Codecrafts</b><small>Build. Learn. Grow.</small></div></a>
-  <nav>{items}</nav>
-  <hr><a class="btn or side-extra" href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" style="width:100%"><svg aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp community</a>
-</aside>'''
+    """App-shell sidebar (js/shell.js + css/shell.css): full width or a 72px icon rail at >=1024px, off-canvas drawer below."""
+    role = a.get('role', 'learner'); act = html.unescape(a.get('active', ''))
+    secs, cur = [], None
+    for it in NAV[role]:
+        if isinstance(it, str):
+            cur = [it, []]; secs.append(cur); continue
+        n, i, h = it
+        cur[1].append(f'<a href="{h}"{" aria-current=page" if n == act else ""}><svg aria-hidden="true"><use href="#i-{i}"/></svg><span>{html.escape(n)}</span></a>')
+    nav = ''.join('<div class="sb-sec">' + (f'<h2 class="sb-h">{html.escape(t)}</h2>' if t else '') + ''.join(links) + '</div>' for t, links in secs)
+    return f'''<div class="sbar" id="sbar">
+  <div class="sb-head">
+    <a class="sb-logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="57" height="32"><span class="sb-word"><b>101 Codecrafts</b><small>Build. Learn. Grow.</small></span><span class="sr-only">101 Codecrafts home</span></a>
+    <button type="button" class="sb-toggle" data-sb-toggle aria-controls="sbar" aria-expanded="true" aria-label="Collapse sidebar"><svg aria-hidden="true"><use href="#i-panel"/></svg></button>
+  </div>
+  <nav class="sb-nav" aria-label="Main">{nav}</nav>
+  <div class="sb-foot"><a class="sb-wa" href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>
+</div>
+<div class="sb-scrim" data-sb-scrim hidden></div>'''
 
 def topbar(a):
-    role = a.get('role', 'learner'); name = a.get('name', 'Cavendish Cuu'); label = a.get('label', role.title())
-    tabs = ''.join(f'<a href="{h}"{" aria-current=page" if r == role else ""}>{r.title()}</a>' for r, h in [("learner", "dashboard.html"), ("tutor", "tutor.html"), ("admin", "admin.html")])
-    initials = ''.join(w[0] for w in name.split()[:2])
+    """Navy top bar. The account area is a skeleton until js/auth.js resolves the session: no hard-coded names."""
+    roles = ''.join(f'<a role="menuitem" href="{h}">{r}</a>' for r, h in [("Learner", "dashboard.html"), ("Tutor", "tutor.html"), ("Admin", "admin.html")])
     return f'''<header class="topbar">
-  <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Search</span><input type="search" placeholder="Search courses, projects, people, or resources..."></label>
+  <button type="button" class="tb-nav" data-sb-open aria-controls="sbar" aria-expanded="false" aria-label="Open menu"><svg class="ic-menu" aria-hidden="true"><use href="#i-menu"/></svg><svg class="ic-panel" aria-hidden="true"><use href="#i-panel"/></svg></button>
+  <a class="tb-brand" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="50" height="28"><b>101 Codecrafts</b><span class="sr-only">home</span></a>
+  <label class="tb-search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Search</span><input type="search" placeholder="Search courses, projects, people…"><kbd aria-hidden="true">/</kbd></label>
   <nav class="top-links" aria-label="Quick links"><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a></nav>
   <span class="sp"></span>
-  <nav class="role-tabs" aria-label="Switch role view">{tabs}</nav>
-  <a class="ib" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
-  <a class="ib" href="#" aria-label="Messages"><svg aria-hidden="true"><use href="#i-msg"/></svg></a>
-  <div class="chip-me"><span class="av" aria-hidden="true">{initials}</span><div><b>{name}</b><small>{label}</small></div></div>
+  <button type="button" class="ib tb-search-btn" data-search aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
+  <a class="ib tb-bell" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
+  <div class="acct" data-acct aria-busy="true">
+    <span class="acct-sk" aria-hidden="true"><i></i><b></b></span><span class="sr-only acct-loading">Loading account</span>
+    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="signin.html">Sign in</a><a class="tb-btn cta" href="signup.html">Join</a></div>
+    <div class="acct-user" hidden>
+      <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu"><span class="acct-av" aria-hidden="true"></span><span class="acct-id"><b class="acct-name"></b><small class="acct-role">Member</small></span><svg class="acct-chev" aria-hidden="true"><use href="#i-chev"/></svg><span class="sr-only">account menu</span></button>
+      <div class="acct-menu" id="acct-menu" role="menu" aria-label="Account" hidden>
+        <div class="am-head" role="none"><b class="acct-name"></b><small class="acct-email"></small></div>
+        <a role="menuitem" href="profile.html"><svg aria-hidden="true"><use href="#i-user"/></svg>Profile</a>
+        <a role="menuitem" href="settings-apps.html"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+        <div class="role-tabs am-roles" role="group" aria-label="Switch role"><span class="am-label" aria-hidden="true">Switch role</span>{roles}</div>
+        <button type="button" role="menuitem" class="am-out" data-signout><svg aria-hidden="true"><use href="#i-logout"/></svg>Sign out</button>
+      </div>
+    </div>
+  </div>
 </header>'''
 
 FOOTER = '''<footer class="flow-foot">
@@ -95,9 +132,9 @@ def bundle(name, parts):
     out = '/* GENERATED bundle: ' + ' + '.join(parts) + ' — edit the sources, then run tools/build.py */\n'
     out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
     (root / 'css' / name).write_text(out)
-bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css'])
-bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css'])
-bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css'])
+bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
     'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',

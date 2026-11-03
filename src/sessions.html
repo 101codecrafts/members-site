@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Live sessions · 101 Codecrafts" desc="Schedule live classes with Jitsi, Google Meet, Zoom or Teams, with a shared whiteboard." path="sessions.html" noindex}}
+{{CSS}}
+<link rel="stylesheet" href="css/sessions.css">
+</head>
+<body class="flow" data-role="tutor" data-page="sessions">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+
+<div class="shell">
+{{SIDEBAR role="tutor" active="Sessions"}}
+<div class="main">
+{{TOPBAR role="tutor"}}
+<main id="main" class="content">
+  <div class="page-h">
+    <div><div class="kicker">Live sessions</div><h1>LIVE SESSIONS</h1><p>Schedule a live class, pick the video app, and teach next to a shared whiteboard.</p></div>
+    <div class="row"><a class="btn" href="settings-apps.html">Connected apps</a></div>
+  </div>
+  <section class="grid g2">
+    <div class="card"><div class="sec-title"><h2>SCHEDULE A SESSION</h2></div>
+      <form id="ses-form" class="ses-form" novalidate>
+        <label class="field">Title<input name="title" required maxlength="140" placeholder="e.g. Python loops — live practice"></label>
+        <label class="field">Description<textarea name="description" rows="3" maxlength="2000" placeholder="What will you cover? What should learners prepare?"></textarea></label>
+        <div class="two">
+          <label class="field">Date &amp; time (your local time)<input name="starts_at" type="datetime-local" required></label>
+          <label class="field">Duration (minutes)<input name="duration_min" type="number" min="15" max="480" step="15" value="60"></label>
+        </div>
+        <div class="two">
+          <label class="field">Video app<select name="provider" aria-describedby="prov-help"><option value="jitsi">Jitsi Meet</option></select></label>
+          <label class="field">Capacity<input name="capacity" type="number" min="1" max="500" value="30"></label>
+        </div>
+        <small id="prov-help">Jitsi works with no setup and embeds inside 101. Connect Google Meet, Zoom or Teams in <a href="settings-apps.html">Connected apps</a>.</small>
+        <label class="ses-check"><input type="checkbox" name="whiteboard" checked> Open a shared whiteboard next to the video</label>
+        <button class="btn or" type="submit">Schedule session</button>
+        <p id="ses-form-msg" class="ses-msg" role="status"></p>
+      </form></div>
+    <div class="card"><div class="sec-title"><h2>UPCOMING</h2></div><div class="list" id="ses-list"><p class="ses-empty">Loading…</p></div></div>
+  </section>
+</main>
+<footer class="flow-foot">
+  <span>© 2025 101 Codecrafts. All rights reserved.</span>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
+  <div class="socials" data-socials><a href="#" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="X"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="Discord"><svg><use href="#i-discord"/></svg></a></div>
+</footer>
+</div></div>
+<script src="js/data.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/auth.js" defer></script>
+<script src="js/shell.js" defer></script>
+<script src="js/ui.js" defer></script>
+<script src="js/sessions-api.js" defer></script>
+<script src="js/sessions.js" defer></script>
+</body>
+</html>

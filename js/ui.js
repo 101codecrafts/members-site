@@ -163,7 +163,7 @@
   window.CC_UI.openSearch = openSearch;
   function searchHooks() {
     document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-search]"); if (b) { e.preventDefault(); openSearch(); } });
-    $$(".topbar .search input").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); openSearch(i.value); } }));
+    $$(".topbar .search input, .topbar .tb-search input").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); openSearch(i.value); } }));
     document.addEventListener("keydown", e => { if (e.key === "/" && !/input|textarea|select/i.test((document.activeElement || {}).tagName || "") && !document.activeElement.isContentEditable) { e.preventDefault(); openSearch(); } });
   }
   /* landing, desktop: keep the full-bleed navy header band aligned with the canvas header (promo bars above it can change height) */

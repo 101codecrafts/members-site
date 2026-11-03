@@ -80,7 +80,7 @@
       return orStub(api("/sessions/" + encodeURIComponent(id) + "/join", { method: "POST", body: "{}" }), function () {
         var db = seed(), s = db.sessions.filter(function (x) { return x.id === id; })[0];
         if (!s) throw { status: 404, message: "Session not found" };
-        var me = (document.querySelector(".chip-me b") || {}).textContent || "Member";
+        var me = (document.querySelector(".acct-user:not([hidden]) .acct-name") || {}).textContent || "Member";
         s.attendance = s.attendance || [];
         if (!s.attendance.some(function (a) { return a.name === me; })) s.attendance.push({ name: me, joined_at: new Date().toISOString(), role: s.role === "tutor" ? "Tutor" : "Learner" });
         save(db);
