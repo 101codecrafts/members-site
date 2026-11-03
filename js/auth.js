@@ -19,25 +19,26 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const initials = n => n.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "G";
 
-  function paint(user) {
+  /* final=false: the early pass (guest classes, no fake badges) while Clerk loads. The account chip keeps its skeleton
+     until final=true, so a signed-in member never sees a flash of "Sign in / Join" (or a fake name). */
+  function paint(user, final) {
     const name = user ? (user.fullName || user.firstName || (user.primaryEmailAddress && user.primaryEmailAddress.emailAddress.split("@")[0]) || "Member") : "Guest";
     document.documentElement.classList.toggle("signed-in", !!user);
     document.documentElement.classList.toggle("signed-out", !user);
-    // dashboard top bar
+    // dashboard mockup top bar (only visible in ?static=1 now; the live dashboard uses the shared shell)
     $$(".me-name").forEach(e => e.textContent = name);
     $$(".me-role").forEach(e => e.innerHTML = user ? "Member" : '<a href="signin.html">Sign in</a> · <a href="signup.html">Join</a>');
     $$(".me-av").forEach(e => { if (!user) { e.removeAttribute("srcset"); e.src = "assets/img/avatar-guest.svg"; e.alt = "Guest"; } else if (user.imageUrl && user.hasImage) { e.src = user.imageUrl; e.alt = name; } });
-    // shared top bar chip
-    $$(".chip-me").forEach(c => {
-      const b = c.querySelector("b"), sm = c.querySelector("small"), av = c.querySelector(".av");
-      if (b) b.textContent = name; if (av) av.textContent = initials(name);
-      if (sm) sm.innerHTML = user ? "Member" : '<a href="signin.html">Sign in</a> · <a href="signup.html">Join</a>';
-    });
     // no fake notification dots / badges; real unread count fills them in below
     $$(".dot, .sbar nav .badge, .side .nav .badge").forEach(e => { e.hidden = true; e.style.display = "none"; });
     // fake community stat on the dashboard (was a hard-coded 10K+)
     $$(".stat.s1 b[data-count]").forEach(b => { b.removeAttribute("data-count"); b.textContent = "—"; });
     document.documentElement.classList.remove("has-roles");
+    if (!final) return;
+    const email = user && user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : "";
+    const img = user && user.hasImage && user.imageUrl ? user.imageUrl : "";
+    const detail = { user, name, initials: user ? initials(name) : "", email, image: img };
+    if (window.CC_SHELL) window.CC_SHELL.account(detail); else document.addEventListener("cc:shell", () => window.CC_SHELL.account(detail), { once: true });
     if (user) { unread(); roles(); }
     AUTH.user = user; AUTH.ready = true; listeners.forEach(f => { try { f(user); } catch (e) {} });
   }
@@ -61,6 +62,8 @@
       const n = Object.values(has).filter(Boolean).length;
       $$(".role-tabs a").forEach(a => { const k = (a.textContent || "").trim().toLowerCase(); a.hidden = !has[k]; });
       document.documentElement.classList.toggle("has-roles", n > 1);
+      const top = has.admin ? "Admin" : has.tutor ? "Tutor" : "Learner";
+      $$(".acct-role").forEach(e => e.textContent = top);
     } catch (e) { /* offline / API down: keep the switcher hidden */ }
   }
   function mountAuthUi(clerk) {
@@ -81,10 +84,12 @@
       s.onload = () => res(window.Clerk); s.onerror = rej; document.head.appendChild(s);
     });
   }
-  // guest state first (no flash of a fake signed-in user), then the real session
-  const start = () => { paint(null); loadClerk().then(async Clerk => {
-      await Clerk.load(); AUTH.clerk = Clerk; paint(Clerk.user || null); mountAuthUi(Clerk);
-      Clerk.addListener(({ user }) => { if ((user && user.id) !== (AUTH.user && AUTH.user.id)) paint(user || null); });
-    }).catch(() => { AUTH.ready = true; listeners.forEach(f => f(null)); }); };
+  // guest classes first, account chip stays a skeleton; then the real session (or the guest state if Clerk can't load within 6 s)
+  const start = () => { paint(null, false);
+    const fallback = setTimeout(() => { if (!AUTH.ready) paint(null, true); }, 6000);
+    loadClerk().then(async Clerk => {
+      await Clerk.load(); AUTH.clerk = Clerk; clearTimeout(fallback); paint(Clerk.user || null, true); mountAuthUi(Clerk);
+      Clerk.addListener(({ user }) => { if ((user && user.id) !== (AUTH.user && AUTH.user.id)) paint(user || null, true); });
+    }).catch(() => { clearTimeout(fallback); if (!AUTH.ready) paint(null, true); }); };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();
 })();

@@ -94,10 +94,10 @@
       const b = document.createElement("div"); b.className = "ann-banner"; b.setAttribute("role", "region"); b.setAttribute("aria-label", "Pinned announcement");
       b.innerHTML = `<span class="ab-ic">${ico("megaphone")}</span><p><b>${esc(pin.title)}</b> <span>${esc(pin.body)}</span></p>${pin.link ? `<a class="btn sm ink" href="${esc(pin.link)}">Open</a>` : ""}<a class="btn sm" href="announcements.html">All announcements</a><button type="button" class="btn sm" aria-label="Hide pinned announcement">✕</button>`;
       b.querySelector("button").onclick = () => { localStorage.setItem("cc_ann_hide", pin.id); F.markRead([pin.id]); b.remove(); };
-      const host = $(".content") || $("#main"); page === "dashboard" ? document.body.insertBefore(b, $("#main")) : host.insertBefore(b, host.firstChild);
+      const host = $(".content") || $("#main"); page === "dashboard" ? $("#main").parentNode.insertBefore(b, $("#main")) : host.insertBefore(b, host.firstChild);
     }
     /* bell */
-    let bell = $(".topbar .ib[aria-label=Notifications]");
+    let bell = document.documentElement.classList.contains("static") && page === "dashboard" ? null : $(".topbar .ib[aria-label=Notifications]"); // ?static=1 dashboard keeps its mockup bell (the shell top bar is hidden there)
     if (!bell && page === "dashboard") { bell = document.createElement("button"); bell.className = "dash-bell"; $("#main").appendChild(bell); }
     if (!bell) return;
     const btn = document.createElement("button"); btn.type = "button"; btn.className = bell.className + " bell-btn"; btn.setAttribute("aria-haspopup", "true"); btn.setAttribute("aria-expanded", "false"); btn.setAttribute("aria-controls", "bell-pop");
