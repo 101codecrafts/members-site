@@ -21,24 +21,24 @@ place={ # nth : (cols, rows, extra)
  17:(c(7,12),'2/7','align-self:stretch;margin-top:var(--space-fluid-l)!important'),
  18:(c(7,9),'7/10',HT),
  19:(c(10,12),'7/10',HT),
- 20:(c(1,8),'10','margin-top:var(--space-fluid-2xl)!important'),
+ 20:(c(1,8),'10','margin-top:var(--space-fluid-xl)!important'),
  21:(c(1,9),'11',''),
  22:(c(9,12),'11','justify-self:end;align-self:center'),
  23:(c(1,12),'12',''),
  24:(c(1,4),'13',''),25:(c(5,8),'13',''),26:(c(9,12),'13',''),
  27:(c(1,3),'14',''),28:(c(4,6),'14',''),29:(c(7,9),'14',''),30:(c(10,12),'14',''),
- 31:(c(1,6),'15/17','margin-top:var(--space-fluid-2xl)!important;padding:var(--space-fluid-l)!important;justify-content:center'),
- 32:(c(7,9),'15','margin-top:var(--space-fluid-2xl)!important'),33:(c(10,12),'15','margin-top:var(--space-fluid-2xl)!important'),
+ 31:(c(1,6),'15/17','margin-top:var(--space-fluid-xl)!important;padding:var(--space-fluid-l)!important;justify-content:center'),
+ 32:(c(7,9),'15','margin-top:var(--space-fluid-xl)!important'),33:(c(10,12),'15','margin-top:var(--space-fluid-xl)!important'),
  35:(c(7,9),'16',''),36:(c(10,12),'16',''),
  34:('auto','auto','display:none!important'),37:('auto','auto','display:none!important'),
- 38:(c(1,12),'17','width:auto!important;margin-top:var(--space-fluid-2xl)!important'),
+ 38:(c(1,12),'17','width:auto!important;margin-top:var(--space-fluid-xl)!important'),
  39:(c(1,8),'18','margin-top:var(--space-fluid-s)!important'),
  40:(c(1,8),'19',''),
  42:(c(9,12),'19','justify-self:end;align-self:center'),
  41:(c(1,12),'20',''),
  43:(c(1,2),'21',''),44:(c(3,4),'21',''),45:(c(5,6),'21',''),46:(c(7,8),'21',''),47:(c(9,10),'21',''),48:(c(11,12),'21',''),
- 49:(FULL,'22/26','display:block!important;position:relative!important;height:auto!important;margin-top:var(--space-fluid-2xl)!important;margin-inline:0!important;align-self:stretch;z-index:0'),
- 50:(c(1,3),'22','margin-top:calc(var(--space-fluid-2xl) + var(--space-fluid-l))!important;color:var(--lcy)!important'),
+ 49:(FULL,'22/26','display:block!important;position:relative!important;height:auto!important;margin-top:var(--space-fluid-xl)!important;margin-inline:0!important;align-self:stretch;z-index:0'),
+ 50:(c(1,3),'22','margin-top:calc(var(--space-fluid-xl) + var(--space-fluid-l))!important;color:var(--lcy)!important'),
  51:(c(1,3),'23','color:#fff!important'),
  52:(c(1,3),'24','color:#e7edf3!important'),
  53:(c(4,6),'22/26',''),54:(c(7,9),'22/26',''),55:(c(10,12),'22/26',''),
@@ -50,7 +50,7 @@ for k,n in enumerate(range(10,15)): place[n]=(c(1,6),'8',f'display:block!importa
 place[15]=(c(1,6),'8','justify-self:start;align-self:start;margin-left:calc(4 * 34px + clamp(30px,2.2vw + 6px,40px) + var(--space-fluid-s))!important;margin-top:var(--space-fluid-m)!important;font-size:var(--step-1)!important')
 place[16]=(c(1,6),'8','justify-self:start;align-self:start;margin-left:calc(4 * 34px + clamp(30px,2.2vw + 6px,40px) + var(--space-fluid-s))!important;margin-top:calc(var(--space-fluid-m) + 1.6em)!important;font-size:var(--step--1)!important')
 # tcards: inner padding so the band shows above/below
-for n in (53,54,55): place[n]=(place[n][0],place[n][1],'margin-block:calc(var(--space-fluid-2xl) + var(--space-fluid-m)) var(--space-fluid-m)!important;align-self:stretch;height:auto!important')
+for n in (53,54,55): place[n]=(place[n][0],place[n][1],'margin-block:calc(var(--space-fluid-xl) + var(--space-fluid-m)) var(--space-fluid-m)!important;align-self:stretch;height:auto!important')
 out=[B,'@media (min-width:1024px){',
  f'{P}{{display:grid!important;width:auto!important;height:auto!important;padding:0 0 var(--space-fluid-l)!important;'
  'grid-template-columns:[full-start] minmax(var(--space-fluid-l),1fr) repeat(12,minmax(0,84px)) minmax(var(--space-fluid-l),1fr) [full-end];'
