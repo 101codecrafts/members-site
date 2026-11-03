@@ -65,9 +65,48 @@
       $("#cf-prov").innerHTML = `<option value="">All providers</option><option value="101">101 Codecrafts</option>` + Object.entries(P).map(([k, p]) => `<option value="${k}">${esc(p.name)}</option>`).join("");
       $("#cf-acc").innerHTML = `<option value="">Any access</option>` + ACC.map(a => `<option>${a}</option>`).join("");
       const hit = (s) => !st.q || s.toLowerCase().includes(st.q);
+      /* ?path=<slug> (landing "Popular learning paths") and ?skill=<slug> (landing skills strip): a topic filter = categories
+         plus a keyword test on title/description. When it matches nothing, every card shows and the chip says so. */
+      const TOPICS = {
+        path: {
+          "software-dev": { label: "Software Development", cats: ["Web Development", "Computer Science"], re: /software|programming|javascript|python|web dev|git|computer science|cs50/i },
+          "ui-ux": { label: "UI/UX Design", cats: [], re: /\b(ui|ux)\b|design|figma|prototype/i },
+          "data-ai": { label: "Data & AI", cats: ["Data & AI"], re: /\bdata\b|machine learning|\bai\b|analytics/i },
+          "digital-marketing": { label: "Digital Marketing", cats: [], re: /marketing|digital skills|seo|social media|grow with google/i },
+          "cyber-security": { label: "Cyber Security", cats: ["Cybersecurity"], re: /cyber|security|ethical hacking/i },
+          "mobile-dev": { label: "Mobile Development", cats: [], re: /mobile|android|ios\b|flutter|kotlin|react native/i }
+        },
+        skill: {
+          "python": { label: "Python", cats: [], re: /python/i },
+          "html-css": { label: "HTML & CSS", cats: [], re: /html|css|responsive web|web design|web development basics/i },
+          "ui-design": { label: "UI design", cats: [], re: /\b(ui|ux)\b|design|figma/i },
+          "cloud": { label: "Cloud", cats: ["Cloud"], re: /cloud|azure|aws|devops/i },
+          "cyber-security": { label: "Cyber security", cats: ["Cybersecurity"], re: /cyber|security|ethical hacking/i },
+          "data-analysis": { label: "Data analysis", cats: ["Data & AI"], re: /\bdata\b|analy/i }
+        }
+      };
+      let tKind = q.get("path") ? "path" : q.get("skill") ? "skill" : "";
+      const tKey = tKind && q.get(tKind).toLowerCase();
+      st.topic = (tKind && TOPICS[tKind][tKey]) || null;
+      const topicHit = (cat, text) => !st.topic || st.topic.cats.includes(cat) || st.topic.re.test(text);
+      const chip = $("#cf-topic");
+      const paintChip = (none) => {
+        if (!chip) return;
+        if (!st.topic && !tKind) { chip.hidden = true; chip.innerHTML = ""; return; }
+        chip.hidden = false;
+        const name = st.topic ? st.topic.label : q.get(tKind);
+        const what = tKind === "path" ? "Learning path" : "Skill";
+        chip.innerHTML = `<span class="tchip on">${esc(what)}: <b>${esc(name)}</b><button type="button" class="tchip-x" aria-label="Clear the ${esc(what.toLowerCase())} filter">${ico("xmark")}</button></span>`
+          + (none || !st.topic ? `<small class="muted">No courses for ${esc(name)} yet, so every course is shown below.</small>` : "");
+        $(".tchip-x", chip).onclick = () => { st.topic = null; history.replaceState(null, "", location.pathname + location.hash); q.delete(tKind); tKind = ""; chip.hidden = true; chip.innerHTML = ""; draw(); };
+      };
       const draw = () => {
-        const a = c101.filter(c => (!st.prov || st.prov === "101") && (!st.cat || c.category === st.cat) && (!st.level || c.level === st.level) && (!st.acc || (st.acc === "Free" && !c.price)) && hit(c.title + c.tutor + c.category + " 101 codecrafts"));
-        const b = ext.filter(x => (!st.prov || st.prov === x.provider) && (!st.cat || x.category === st.cat) && (!st.level || x.level === st.level) && (!st.acc || x.access === st.acc || (st.acc === "Financial aid" && x.aid)) && hit(x.title + x.desc + prov(x.provider).name + x.category));
+        const run = withTopic => [
+          c101.filter(c => (!st.prov || st.prov === "101") && (!st.cat || c.category === st.cat) && (!st.level || c.level === st.level) && (!st.acc || (st.acc === "Free" && !c.price)) && hit(c.title + c.tutor + c.category + " 101 codecrafts") && (!withTopic || topicHit(c.category, c.title))),
+          ext.filter(x => (!st.prov || st.prov === x.provider) && (!st.cat || x.category === st.cat) && (!st.level || x.level === st.level) && (!st.acc || x.access === st.acc || (st.acc === "Financial aid" && x.aid)) && hit(x.title + x.desc + prov(x.provider).name + x.category) && (!withTopic || topicHit(x.category, x.title + " " + (x.desc || ""))))];
+        let [a, b] = run(true), none = false;
+        if (st.topic && !a.length && !b.length) { [a, b] = run(false); none = true; }
+        if (tKind) paintChip(none);
         $("#g101").innerHTML = a.map(card101).join("") || `<p class="muted empty">No 101 courses match these filters.</p>`;
         $("#gfree").innerHTML = b.map(extCard).join("") || `<p class="muted empty">No free courses match these filters.</p>`;
         $("#n101").textContent = a.length + " of " + c101.length; $("#nfree").textContent = b.length + " of " + ext.length;

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- TODO(founder): the "10,000+" in this description is a placeholder too; keep it in step with js/site-stats.js (members). -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>101 Codecrafts · Your IT journey starts here</title>
@@ -103,16 +104,18 @@
   <img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101" style="left:30px;top:6px;width:92px;height:46px">
   <div class="wm">Codecrafts</div>
   <div class="tg">Start at 101. Craft your way up.</div>
-  <nav>
+  <nav id="lnav" aria-label="Main">
     <a class="on" aria-current="page" href="index.html" data-i18n="nav.home" style="left:385px">HOME</a>
     <a href="courses.html" data-i18n="nav.learn" style="left:439px">LEARN</a>
-    <a href="#community" data-i18n="nav.community" style="left:492px">COMMUNITY</a>
+    <a href="community.html" data-i18n="nav.community" style="left:492px">COMMUNITY</a>
     <a href="resources.html" data-i18n="nav.resources" style="left:573px">RESOURCES</a>
-    <a href="#about" data-i18n="nav.about" style="left:652px">ABOUT</a>
+    <a href="about.html" data-i18n="nav.about" style="left:652px">ABOUT</a>
+    <a class="nav-login" href="signin.html">LOGIN</a>
   </nav>
   <button class="hsearch" type="button" data-search aria-label="Search 101 Codecrafts"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
   <a class="login hov on-dark" href="signin.html" data-i18n="cta.login">LOGIN</a>
   <a class="join hov on-dark" href="signup.html"><span><span class="jl">JOIN</span><span class="jx"> COMMUNITY</span></span> <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
+  <button class="hburg" type="button" aria-controls="lnav" aria-expanded="false" aria-label="Open menu"><svg class="i ic-open" aria-hidden="true"><use href="#i-menu"/></svg><svg class="i ic-close" aria-hidden="true"><use href="#i-xmark"/></svg></button>
 </header>
 
 <!-- ============ HERO ============ -->
@@ -129,17 +132,18 @@
 <img src="assets/img/avatar-row-3.webp" alt="" style="left:96px;top:383px;width:30px;height:31px">
 <img src="assets/img/avatar-row-4.webp" alt="" style="left:127px;top:383px;width:30px;height:31px">
 <img src="assets/img/avatar-row-5.webp" alt="" style="left:158px;top:383px;width:30px;height:31px">
-<b style="left:202px;top:381px;font-size:14px;font-weight:700" data-count="10000" data-suffix="+" data-sep="1">10,000+</b>
-<span style="left:203px;top:398px;font-size:11px;font-weight:500">members and growing</span>
+<b style="left:202px;top:381px;font-size:14px;font-weight:700" data-count="10000" data-suffix="+" data-sep="1" data-site-stat="members">10,000+</b>
+<span style="left:203px;top:398px;font-size:11px;font-weight:500"><i class="avs" aria-hidden="true"><img src="assets/img/avatar-row-1.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-2.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-3.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-4.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-5.webp" alt="" width="30" height="31"></i>members and growing</span>
 
 <img fetchpriority="high" decoding="async" src="assets/img/landing-hero-photo.webp" srcset="assets/img/landing-hero-photo.webp 443w, assets/img/landing-hero-photo-800.webp 800w" sizes="(max-width:1023px) 100vw, 443px" width="443" height="370" alt="Member coding on a 101 Codecrafts laptop" class="heavy-hero" style="left:405px;top:64px;width:443px;height:370px">
-<div class="hov words-tile" style="left:855px;top:70px;width:144px;height:190px;background:var(--lor)">
-  <div class="disp" style="position:absolute;left:15px;top:23px;font-family:var(--disp2);font-size:20px;line-height:28px;color:var(--nv);white-space:pre">LEARN
+<a class="hov words-tile" href="signup.html" aria-label="Learn, build, collaborate, grow: join 101 Codecrafts" style="left:855px;top:70px;width:144px;height:190px;background:var(--lor)">
+  <div class="disp" aria-hidden="true" style="position:absolute;left:15px;top:23px;font-family:var(--disp2);font-size:20px;line-height:28px;color:var(--nv);white-space:pre">LEARN
 BUILD
 COLLABORATE
 GROW</div>
-  <svg class="i" style="position:absolute;left:15px;top:146px;width:24px;height:22px;color:var(--nv)"><use href="#i-arrow"/></svg>
-</div>
+  <ul class="wt-list" aria-hidden="true"><li><b>Learn</b><span>Free courses and six paths</span></li><li><b>Build</b><span>Real projects you can show</span></li><li><b>Collaborate</b><span>Study groups and hackathons</span></li><li><b>Grow</b><span>Mentors, jobs, certificates</span></li></ul>
+  <svg class="i" aria-hidden="true" style="position:absolute;left:15px;top:146px;width:24px;height:22px;color:var(--nv)"><use href="#i-arrow"/></svg>
+</a>
 <a class="hov on-dark hero-badge" href="signup.html" style="left:856px;top:270px;width:142px;height:154px"><img src="assets/img/logo-101-tile.webp" alt="101 Codecrafts" width="142" height="154"><span class="hb-k">Launch month</span><b class="hb-v">FREE</b><span class="hb-s">Every course, path and workshop. No ads.</span><span class="hb-cd"><span data-promo-cd>Ends one month after launch</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
 
 <!-- era92 polish: hero collage (live only; hidden under ?static=1). Overlaps the bento photo at >=1024px, a two-up row below. -->
@@ -156,14 +160,14 @@ GROW</div>
 <a href="dashboard.html" style="left:872px;top:466px;font-size:11px;font-weight:700;display:flex;gap:9px;align-items:center;color:var(--nv)">VIEW ALL FEATURES <svg class="i" style="width:18px;height:16px"><use href="#i-arrow"/></svg></a>
 <p style="left:35px;top:508px;font-size:13px;font-weight:500;color:var(--nv)">Get hands-on learning, real-world projects, and career support — all in one place.</p>
 
-<article class="feat hov" style="left:33px;top:537px;width:310px;height:120px"><div class="ib" style="top:14px;background:var(--lor)"><svg><use href="#i-teacher"/></svg></div><h3 style="left:93px;top:15px">EXPERT-LED <br>LEARNING</h3><p style="left:93px;top:53px;width:200px">Gain insights from industry <br>professionals through webinars, <br>Q&amp;A sessions, and project feedback.</p><svg class="ar" style="left:93px;top:98px"><use href="#i-arrow"/></svg></article>
-<article class="feat hov" style="left:356px;top:537px;width:317px;height:120px"><div class="ib" style="top:14px;background:var(--lcy)"><svg><use href="#i-code"/></svg></div><h3 style="left:94px;top:15px">SKILL-BUILDING <br>WORKSHOPS</h3><p style="left:94px;top:53px;width:215px">Master programming, AI, ethical hacking, <br>cybersecurity, cloud computing, or DevOps <br>through hands-on tutorials and bootcamps.</p><svg class="ar" style="left:94px;top:98px"><use href="#i-arrow"/></svg></article>
-<article class="feat hov" style="left:687px;top:537px;width:307px;height:120px"><div class="ib" style="top:14px;background:var(--lor)"><svg><use href="#i-people"/></svg></div><h3 style="left:94px;top:15px">COLLABORATIVE <br>PROJECTS</h3><p style="left:94px;top:53px;width:200px">Team up on coding challenges, <br>hackathons, open-source contributions, <br>and real-world tech solutions.</p><svg class="ar" style="left:94px;top:98px"><use href="#i-arrow"/></svg></article>
+<article class="feat hov" style="left:33px;top:537px;width:310px;height:120px"><div class="ib" style="top:14px;background:var(--lor)"><svg><use href="#i-teacher"/></svg></div><h3 style="left:93px;top:15px"><a class="feat-a" href="sessions.html">EXPERT-LED <br>LEARNING</a></h3><p style="left:93px;top:53px;width:200px">Gain insights from industry <br>professionals through webinars, <br>Q&amp;A sessions, and project feedback.</p><svg class="ar" style="left:93px;top:98px"><use href="#i-arrow"/></svg></article>
+<article class="feat hov" style="left:356px;top:537px;width:317px;height:120px"><div class="ib" style="top:14px;background:var(--lcy)"><svg><use href="#i-code"/></svg></div><h3 style="left:94px;top:15px"><a class="feat-a" href="events.html">SKILL-BUILDING <br>WORKSHOPS</a></h3><p style="left:94px;top:53px;width:215px">Master programming, AI, ethical hacking, <br>cybersecurity, cloud computing, or DevOps <br>through hands-on tutorials and bootcamps.</p><svg class="ar" style="left:94px;top:98px"><use href="#i-arrow"/></svg></article>
+<article class="feat hov" style="left:687px;top:537px;width:307px;height:120px"><div class="ib" style="top:14px;background:var(--lor)"><svg><use href="#i-people"/></svg></div><h3 style="left:94px;top:15px"><a class="feat-a" href="projects.html">COLLABORATIVE <br>PROJECTS</a></h3><p style="left:94px;top:53px;width:200px">Team up on coding challenges, <br>hackathons, open-source contributions, <br>and real-world tech solutions.</p><svg class="ar" style="left:94px;top:98px"><use href="#i-arrow"/></svg></article>
 
-<article class="feat hov" style="left:33px;top:669px;width:287px;height:119px"><div class="ib" style="top:13px;background:var(--lcy)"><svg><use href="#i-briefcase"/></svg></div><h3 style="left:93px;top:18px">CAREER DEVELOPMENT</h3><p style="left:93px;top:42px;width:190px;font-size:10px;line-height:13.2px">Access mentorship, resume reviews, <br>and mock interviews to pursue careers <br>in software engineering, cybersecurity, <br>data science, cloud, project management, <br>and more.</p><svg class="ar" style="left:93px;top:104px"><use href="#i-arrow"/></svg></article>
-<article class="feat hov" style="left:333px;top:669px;width:240px;height:119px"><div class="ib" style="top:13px;background:var(--lor)"><svg><use href="#i-openbook"/></svg></div><h3 style="left:89px;top:19px;font-size:11px">TECH RESOURCE HUB</h3><p style="left:89px;top:42px;width:145px;font-size:8.4px;line-height:13px">Explore curated libraries of coding tools, <br>ethical hacking guides, AI frameworks, <br>and IT infrastructure resources.</p><svg class="ar" style="left:89px;top:91px"><use href="#i-arrow"/></svg></article>
-<article class="feat hov" style="left:585px;top:669px;width:213px;height:119px"><div class="ib" style="top:13px;background:var(--lcy)"><svg><use href="#i-people"/></svg></div><h3 style="left:84px;top:19px;font-size:10.8px">PEER STUDY GROUPS</h3><p style="left:84px;top:42px;width:125px;font-size:8.4px;line-height:13px">Join focused groups to deepen <br>expertise in machine learning, <br>blockchain, systems administration.</p><svg class="ar" style="left:84px;top:91px"><use href="#i-arrow"/></svg></article>
-<article class="feat hov" style="left:808px;top:669px;width:186px;height:119px"><div class="ib" style="top:13px;left:10px;width:58px;background:var(--lor)"><svg><use href="#i-badge"/></svg></div><h3 style="left:71px;top:21px;font-size:8.6px">CERTIFICATION SUPPORT</h3><p style="left:71px;top:42px;width:112px;font-size:8.2px;line-height:13px">Prepare for certifications <br>(e.g., CompTIA, AWS, CEH, <br>Cisco CCNA, PMP) with study <br>resources and guidance.</p></article>
+<article class="feat hov" style="left:33px;top:669px;width:287px;height:119px"><div class="ib" style="top:13px;background:var(--lcy)"><svg><use href="#i-briefcase"/></svg></div><h3 style="left:93px;top:18px"><a class="feat-a" href="opportunities.html">CAREER DEVELOPMENT</a></h3><p style="left:93px;top:42px;width:190px;font-size:10px;line-height:13.2px">Access mentorship, resume reviews, <br>and mock interviews to pursue careers <br>in software engineering, cybersecurity, <br>data science, cloud, project management, <br>and more.</p><svg class="ar" style="left:93px;top:104px"><use href="#i-arrow"/></svg></article>
+<article class="feat hov" style="left:333px;top:669px;width:240px;height:119px"><div class="ib" style="top:13px;background:var(--lor)"><svg><use href="#i-openbook"/></svg></div><h3 style="left:89px;top:19px;font-size:11px"><a class="feat-a" href="resources.html">TECH RESOURCE HUB</a></h3><p style="left:89px;top:42px;width:145px;font-size:8.4px;line-height:13px">Explore curated libraries of coding tools, <br>ethical hacking guides, AI frameworks, <br>and IT infrastructure resources.</p><svg class="ar" style="left:89px;top:91px"><use href="#i-arrow"/></svg></article>
+<article class="feat hov" style="left:585px;top:669px;width:213px;height:119px"><div class="ib" style="top:13px;background:var(--lcy)"><svg><use href="#i-people"/></svg></div><h3 style="left:84px;top:19px;font-size:10.8px"><a class="feat-a" href="groups.html">PEER STUDY GROUPS</a></h3><p style="left:84px;top:42px;width:125px;font-size:8.4px;line-height:13px">Join focused groups to deepen <br>expertise in machine learning, <br>blockchain, systems administration.</p><svg class="ar" style="left:84px;top:91px"><use href="#i-arrow"/></svg></article>
+<article class="feat hov" style="left:808px;top:669px;width:186px;height:119px"><div class="ib" style="top:13px;left:10px;width:58px;background:var(--lor)"><svg><use href="#i-badge"/></svg></div><h3 style="left:71px;top:21px;font-size:8.6px"><a class="feat-a" href="courses.html">CERTIFICATION SUPPORT</a></h3><p style="left:71px;top:42px;width:112px;font-size:8.2px;line-height:13px">Prepare for certifications <br>(e.g., CompTIA, AWS, CEH, <br>Cisco CCNA, PMP) with study <br>resources and guidance.</p><svg class="ar ar-live" aria-hidden="true" style="left:71px;top:98px"><use href="#i-arrow"/></svg></article>
 
 <!-- ============ COMMUNITY ============ -->
 <section class="comm" id="community">
@@ -173,11 +177,11 @@ GROW</div>
   <p class="about-p" style="left:38px;top:117px;width:390px;font-size:12.5px;line-height:16.5px;font-weight:500;color:var(--nv)">We're building a global community of learners, creators, <br>and problem-solvers. Whether you're just starting or leveling up, <br>101 Codecrafts gives you the tools, support, and network <br>to achieve your goals.</p>
   <a class="btn-nv hov on-dark" href="dashboard.html" style="left:37px;top:191px;width:178px;height:33px">JOIN THE COMMUNITY <svg class="i" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
 </section>
-<div class="tile hov" style="left:440px;top:819px;width:226px;height:112px;background:var(--lcy)"><svg style="left:32px;top:21px"><use href="#i-people"/></svg><b style="left:32px;top:60px" data-count="10" data-suffix="K+">10K+</b><small style="left:32px;top:88px">ACTIVE MEMBERS</small></div>
-<div class="tile hov on-dark" style="left:677px;top:819px;width:277px;height:112px;background:var(--nv);color:#fff"><svg style="left:33px;top:16px;color:var(--lcy)"><use href="#i-openbook"/></svg><b style="left:33px;top:60px;color:var(--lcy)" data-count="50" data-suffix="+">50+</b><small style="left:33px;top:86px">LEARNING RESOURCES</small></div>
+<div class="tile" style="left:440px;top:819px;width:226px;height:112px;background:var(--lcy)"><svg style="left:32px;top:21px"><use href="#i-people"/></svg><b style="left:32px;top:60px" data-count="10" data-suffix="K+" data-site-stat="members" data-fmt="short">10K+</b><small style="left:32px;top:88px">ACTIVE MEMBERS</small></div>
+<div class="tile on-dark" style="left:677px;top:819px;width:277px;height:112px;background:var(--nv);color:#fff"><svg style="left:33px;top:16px;color:var(--lcy)"><use href="#i-openbook"/></svg><b style="left:33px;top:60px;color:var(--lcy)" data-count="50" data-suffix="+" data-site-stat="resources">50+</b><small style="left:33px;top:86px">LEARNING RESOURCES</small></div>
 <div class="tile" style="left:966px;top:818px;width:28px;height:108px;background:var(--lcy)"></div>
-<div class="tile hov" style="left:440px;top:939px;width:226px;height:108px;background:var(--lor)"><svg style="left:32px;top:12px"><use href="#i-cap"/></svg><b style="left:32px;top:58px" data-count="100" data-suffix="+">100+</b><small style="left:32px;top:84px">ONLINE WORKSHOPS</small></div>
-<div class="tile hov" style="left:676px;top:938px;width:278px;height:109px;background:var(--lcy)"><svg style="left:35px;top:12px"><use href="#i-trophy"/></svg><b style="left:35px;top:58px" data-count="500" data-suffix="+">500+</b><small style="left:35px;top:84px">PROJECTS &amp; HACKATHONS</small></div>
+<div class="tile" style="left:440px;top:939px;width:226px;height:108px;background:var(--lor)"><svg style="left:32px;top:12px"><use href="#i-cap"/></svg><b style="left:32px;top:58px" data-count="100" data-suffix="+" data-site-stat="workshops">100+</b><small style="left:32px;top:84px">ONLINE WORKSHOPS</small></div>
+<div class="tile" style="left:676px;top:938px;width:278px;height:109px;background:var(--lcy)"><svg style="left:35px;top:12px"><use href="#i-trophy"/></svg><b style="left:35px;top:58px" data-count="500" data-suffix="+" data-site-stat="hackathons">500+</b><small style="left:35px;top:84px">PROJECTS &amp; HACKATHONS</small></div>
 <div class="tile" style="left:966px;top:933px;width:28px;height:114px;background:var(--lor)"></div>
 
 <!-- ============ FIND YOUR PATH ============ -->
@@ -199,12 +203,12 @@ GROW</div>
   <div class="e-in">
     <div class="e-head"><div><p class="e-kick">Learning paths</p><h2 id="e-paths-h">Popular learning paths</h2></div><a class="e-all" href="courses.html">View all courses <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
     <div class="e-grid e-grid-3">
-    <article class="e-card e-pcard"><span class="e-chip or" aria-hidden="true"><svg><use href="#i-code"/></svg></span><h3>Software Development</h3><p>Build web apps and APIs from your very first line of code.</p><a class="e-more" href="courses.html">View<span class="sr-only"> Software Development courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
-    <article class="e-card e-pcard"><span class="e-chip cy" aria-hidden="true"><svg><use href="#i-grid"/></svg></span><h3>UI/UX Design</h3><p>Design screens people enjoy using, from sketch to prototype.</p><a class="e-more" href="courses.html">View<span class="sr-only"> UI/UX Design courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
-    <article class="e-card e-pcard"><span class="e-chip or" aria-hidden="true"><svg><use href="#i-brain"/></svg></span><h3>Data &amp; AI</h3><p>Turn raw data into answers, then into working AI models.</p><a class="e-more" href="courses.html">View<span class="sr-only"> Data &amp; AI courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
-    <article class="e-card e-pcard"><span class="e-chip cy" aria-hidden="true"><svg><use href="#i-megaphone"/></svg></span><h3>Digital Marketing</h3><p>Grow an audience with content, search and analytics.</p><a class="e-more" href="courses.html">View<span class="sr-only"> Digital Marketing courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
-    <article class="e-card e-pcard"><span class="e-chip or" aria-hidden="true"><svg><use href="#i-shield"/></svg></span><h3>Cyber Security</h3><p>Learn to find weak spots and defend real systems.</p><a class="e-more" href="courses.html">View<span class="sr-only"> Cyber Security courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
-    <article class="e-card e-pcard"><span class="e-chip cy" aria-hidden="true"><svg><use href="#i-phone"/></svg></span><h3>Mobile Development</h3><p>Ship Android and cross-platform apps people can install.</p><a class="e-more" href="courses.html">View<span class="sr-only"> Mobile Development courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+    <article class="e-card e-pcard"><span class="e-chip or" aria-hidden="true"><svg><use href="#i-code"/></svg></span><h3>Software Development</h3><p>Build web apps and APIs from your very first line of code.</p><a class="e-more" href="courses.html?path=software-dev">View<span class="sr-only"> Software Development courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+    <article class="e-card e-pcard"><span class="e-chip cy" aria-hidden="true"><svg><use href="#i-grid"/></svg></span><h3>UI/UX Design</h3><p>Design screens people enjoy using, from sketch to prototype.</p><a class="e-more" href="courses.html?path=ui-ux">View<span class="sr-only"> UI/UX Design courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+    <article class="e-card e-pcard"><span class="e-chip or" aria-hidden="true"><svg><use href="#i-brain"/></svg></span><h3>Data &amp; AI</h3><p>Turn raw data into answers, then into working AI models.</p><a class="e-more" href="courses.html?path=data-ai">View<span class="sr-only"> Data &amp; AI courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+    <article class="e-card e-pcard"><span class="e-chip cy" aria-hidden="true"><svg><use href="#i-megaphone"/></svg></span><h3>Digital Marketing</h3><p>Grow an audience with content, search and analytics.</p><a class="e-more" href="courses.html?path=digital-marketing">View<span class="sr-only"> Digital Marketing courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+    <article class="e-card e-pcard"><span class="e-chip or" aria-hidden="true"><svg><use href="#i-shield"/></svg></span><h3>Cyber Security</h3><p>Learn to find weak spots and defend real systems.</p><a class="e-more" href="courses.html?path=cyber-security">View<span class="sr-only"> Cyber Security courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+    <article class="e-card e-pcard"><span class="e-chip cy" aria-hidden="true"><svg><use href="#i-phone"/></svg></span><h3>Mobile Development</h3><p>Ship Android and cross-platform apps people can install.</p><a class="e-more" href="courses.html?path=mobile-dev">View<span class="sr-only"> Mobile Development courses</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
     </div>
   </div>
 </section>
@@ -235,7 +239,7 @@ GROW</div>
 
 <section class="e92 e-marq" aria-labelledby="e-marq-h">
   <div class="e-in"><p class="e-kick" id="e-marq-h">Learn from free courses by</p></div>
-  <div class="e-marquee"><div class="e-track"><ul class="e-set"><li><a class="e-tag " href="courses.html">freeCodeCamp</a></li><li><a class="e-tag or" href="courses.html">Coursera</a></li><li><a class="e-tag cy" href="courses.html">edX</a></li><li><a class="e-tag inv" href="courses.html">Khan Academy</a></li><li><a class="e-tag " href="courses.html">MIT OpenCourseWare</a></li><li><a class="e-tag or" href="courses.html">Google</a></li><li><a class="e-tag cy" href="courses.html">Microsoft Learn</a></li><li><a class="e-tag inv" href="courses.html">Cisco NetAcad</a></li></ul><ul class="e-set" aria-hidden="true"><li><a class="e-tag " href="courses.html" tabindex="-1">freeCodeCamp</a></li><li><a class="e-tag or" href="courses.html" tabindex="-1">Coursera</a></li><li><a class="e-tag cy" href="courses.html" tabindex="-1">edX</a></li><li><a class="e-tag inv" href="courses.html" tabindex="-1">Khan Academy</a></li><li><a class="e-tag " href="courses.html" tabindex="-1">MIT OpenCourseWare</a></li><li><a class="e-tag or" href="courses.html" tabindex="-1">Google</a></li><li><a class="e-tag cy" href="courses.html" tabindex="-1">Microsoft Learn</a></li><li><a class="e-tag inv" href="courses.html" tabindex="-1">Cisco NetAcad</a></li></ul></div></div>
+  <div class="e-marquee"><div class="e-track"><ul class="e-set"><li><a class="e-tag " href="/go/p-freecodecamp" target="_blank" rel="noopener noreferrer">freeCodeCamp<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-coursera" target="_blank" rel="noopener noreferrer">Coursera<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-edx" target="_blank" rel="noopener noreferrer">edX<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-khan" target="_blank" rel="noopener noreferrer">Khan Academy<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag " href="/go/p-mitocw" target="_blank" rel="noopener noreferrer">MIT OpenCourseWare<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-google" target="_blank" rel="noopener noreferrer">Google<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-microsoft" target="_blank" rel="noopener noreferrer">Microsoft Learn<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-cisco" target="_blank" rel="noopener noreferrer">Cisco NetAcad<span class="sr-only"> (opens in a new tab)</span></a></li></ul><ul class="e-set" aria-hidden="true"><li><a class="e-tag " href="/go/p-freecodecamp" target="_blank" rel="noopener noreferrer" tabindex="-1">freeCodeCamp<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-coursera" target="_blank" rel="noopener noreferrer" tabindex="-1">Coursera<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-edx" target="_blank" rel="noopener noreferrer" tabindex="-1">edX<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-khan" target="_blank" rel="noopener noreferrer" tabindex="-1">Khan Academy<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag " href="/go/p-mitocw" target="_blank" rel="noopener noreferrer" tabindex="-1">MIT OpenCourseWare<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-google" target="_blank" rel="noopener noreferrer" tabindex="-1">Google<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-microsoft" target="_blank" rel="noopener noreferrer" tabindex="-1">Microsoft Learn<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-cisco" target="_blank" rel="noopener noreferrer" tabindex="-1">Cisco NetAcad<span class="sr-only"> (opens in a new tab)</span></a></li></ul></div></div>
 </section>
 
 <section class="e92 e-skills" aria-labelledby="e-skills-h">
@@ -248,7 +252,7 @@ GROW</div>
     </div>
     <div class="e-shot">
       <img loading="lazy" decoding="async" src="assets/img/dash-hero-photo-800.webp" width="800" height="501" alt="A member learning to code on a laptop">
-      <ul class="e-stack" aria-label="Skills you can learn"><li class="inv">Python</li><li class="or">HTML &amp; CSS</li><li class="cy">UI design</li><li class="">Cloud</li><li class="inv">Cyber security</li><li class="or">Data analysis</li></ul>
+      <ul class="e-stack" aria-label="Skills you can learn"><li class="inv"><a href="courses.html?skill=python">Python</a></li><li class="or"><a href="courses.html?skill=html-css">HTML &amp; CSS</a></li><li class="cy"><a href="courses.html?skill=ui-design">UI design</a></li><li class=""><a href="courses.html?skill=cloud">Cloud</a></li><li class="inv"><a href="courses.html?skill=cyber-security">Cyber security</a></li><li class="or"><a href="courses.html?skill=data-analysis">Data analysis</a></li></ul>
     </div>
   </div>
 </section>
@@ -293,9 +297,9 @@ GROW</div>
 <!-- ============ FOOTER ============ -->
 <footer class="lfoot">
   <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
-  <span style="left:35px;top:43px;font-size:9.5px">© 2025 101 Codecrafts. All rights reserved.</span>
-  <a href="index.html" style="left:384px">Home</a><a href="courses.html" style="left:440px">Learn</a><a href="#community" style="left:493px">Community</a><a href="resources.html" style="left:571px">Resources</a><a href="#about" style="left:645px">About</a>
-  <div class="socials" data-socials><a href="#" aria-label="101 Codecrafts on YouTube" style="left:798px;width:19px;height:19px"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="101 Codecrafts on Instagram" style="left:835px"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="101 Codecrafts on TikTok" style="left:868px"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="101 Codecrafts on X" style="left:901px"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="101 Codecrafts on LinkedIn" style="left:933px"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="101 Codecrafts on Discord" style="left:966px;width:19px;height:19px"><svg><use href="#i-discord"/></svg></a></div>
+  <span style="left:35px;top:43px;font-size:9.5px">© <span class="yr-s">2025</span><span class="yr-l" data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
+  <a href="index.html" style="left:384px">Home</a><a href="courses.html" style="left:440px">Learn</a><a href="community.html" style="left:493px">Community</a><a href="resources.html" style="left:571px">Resources</a><a href="about.html" style="left:645px">About</a>
+  <div class="socials" data-socials><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on YouTube" style="left:798px;width:19px;height:19px"><svg><use href="#i-yt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Instagram" style="left:835px"><svg><use href="#i-ig"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on TikTok" style="left:868px"><svg><use href="#i-tt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on X" style="left:901px"><svg><use href="#i-x"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on LinkedIn" style="left:933px"><svg><use href="#i-in"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Discord" style="left:966px;width:19px;height:19px"><svg><use href="#i-discord"/></svg></a></div>
 </footer>
 </div>
 
@@ -307,6 +311,7 @@ GROW</div>
   <div id="tit-cards" class="rgrid tit-cards"></div>
 </section>
 <script src="js/data.js" defer></script>
+<script src="js/site-stats.js" defer></script>
 <script src="js/api.js" defer></script>
 <script src="js/auth.js" defer></script>
 <script src="js/share.js" defer></script>
@@ -319,7 +324,6 @@ GROW</div>
 <script src="js/motion.js" defer></script>
 <script src="js/era.js" defer></script>
 <script src="js/ads.js" defer></script>
-<script src="js/site-stats.js" defer></script>
 <script src="js/feed-data.js" defer></script>
 </body>
 </html>

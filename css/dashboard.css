@@ -291,3 +291,12 @@ html:not(.static) .app>:nth-child(68){grid-column:46/61;grid-row:12;align-self:s
 html:not(.static) .app>:nth-child(69){grid-column:1/-1;grid-row:14;margin-top:var(--space-fluid-l)!important}
 }
 /* <<< desktop fluid grid */
+
+/* links-fix (2026-11-03): CodeCraft IDE card is a real link (ide.html); the four mockup tools with no page yet lose the arrow
+   and the hover lift on the live site (TODO(founder) in src/dashboard.html). ?static=1 is untouched. */
+.tool .tool-a{color:inherit;text-decoration:none}
+html:not(.static) .app.dz .dz-grid-tools>.tool:has(.tool-a){position:relative}
+html:not(.static) .tool .tool-a::after{content:"";position:absolute;inset:0;z-index:1}
+html:not(.static) .tool:has(.tool-a:focus-visible){outline:3px solid var(--lcy);outline-offset:3px}
+html:not(.static) .tool .tool-a:focus-visible{outline:none}
+html:not(.static) .tool-soon .go{display:none!important}

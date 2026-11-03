@@ -42,7 +42,25 @@
       const l = c.querySelector("a"); l.textContent = a.title; l.href = a.link || "news.html"; });
   }
 
-  const go = () => { try { latest(); } catch (e) {} try { stats(); } catch (e) {} try { reveal(); } catch (e) {} };
+  /* footer © year: always the current year (the HTML carries the build year as the no-JS fallback) */
+  function year() { const y = String(new Date().getFullYear()); document.querySelectorAll("[data-year]").forEach(el => { if (+y >= 2026) el.textContent = y; }); }
+
+  /* landing header: hamburger below 900px (and on touch screens up to 1023px, e.g. a phone in "Desktop site" mode).
+     The button toggles .nav-open on .hdr; Escape, a link tap, a tap outside or growing past the breakpoint closes it. */
+  function landingMenu() {
+    const hdr = document.querySelector(".page > .hdr"), btn = hdr && hdr.querySelector(".hburg"), nav = hdr && hdr.querySelector("nav");
+    if (!btn || !nav) return;
+    const mq = matchMedia("(max-width: 899px), (hover: none) and (pointer: coarse) and (max-width: 1023px)");
+    const set = open => { hdr.classList.toggle("nav-open", open); btn.setAttribute("aria-expanded", String(open)); btn.setAttribute("aria-label", open ? "Close menu" : "Open menu"); };
+    btn.addEventListener("click", () => { const open = !hdr.classList.contains("nav-open"); set(open); if (open) { const a = nav.querySelector("a"); if (a) a.focus({ preventScroll: true }); } });
+    nav.addEventListener("click", e => { if (e.target.closest("a")) set(false); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && hdr.classList.contains("nav-open")) { set(false); btn.focus(); } });
+    document.addEventListener("click", e => { if (hdr.classList.contains("nav-open") && !hdr.contains(e.target)) set(false); });
+    const sync = () => { if (!mq.matches) set(false); };
+    mq.addEventListener ? mq.addEventListener("change", sync) : mq.addListener(sync);
+  }
+
+  const go = () => { try { year(); } catch (e) {} try { landingMenu(); } catch (e) {} try { latest(); } catch (e) {} try { stats(); } catch (e) {} try { reveal(); } catch (e) {} };
   /* deferred: wait for DOMContentLoaded so the later deferred data files (site-stats.js, feed-data.js) have run */
   document.readyState === "complete" ? go() : document.addEventListener("DOMContentLoaded", go);
 })();

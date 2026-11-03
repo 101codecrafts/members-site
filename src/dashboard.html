@@ -31,7 +31,7 @@
     <a href="resources.html" style="top:253px"><svg><use href="#i-folder"/></svg><span>Resources</span></a>
     <a href="marketplace.html" style="top:293px"><svg><use href="#i-store"/></svg><span>Marketplace</span></a>
     <a href="events.html" style="top:334px"><svg><use href="#i-calendar"/></svg><span>Events</span></a>
-    <a href="#" style="top:376px"><svg><use href="#i-chat"/></svg><span>Messages</span><i class="badge">3</i></a>
+    <a aria-disabled="true" style="top:376px"><svg><use href="#i-chat"/></svg><span>Messages</span><i class="badge">3</i></a>
     <a href="announcements.html" style="top:415px"><svg><use href="#i-bell"/></svg><span>Notifications</span><i class="badge">5</i></a>
   </nav>
   <div class="side-rule" style="top:468px"></div>
@@ -83,7 +83,7 @@ COLLABORATE</h1>
   <i class="abs blk o" style="left:63px;top:236px;width:24px;height:27px"></i>
 </section>
 
-<div class="stat s1"><svg style="left:16px;color:var(--or)"><use href="#i-people"/></svg><b style="left:72px;top:10px" data-count="10" data-suffix="K+">10K+</b><small style="left:72px;top:33px">Active Members</small></div>
+<div class="stat s1"><svg style="left:16px;color:var(--or)"><use href="#i-people"/></svg><b style="left:72px;top:10px" data-count="10" data-suffix="K+" data-site-stat="members" data-fmt="short">10K+</b><small style="left:72px;top:33px">Active Members</small></div>
 <div class="stat s2"><svg style="left:14px;color:#0B1236"><use href="#i-code"/></svg><b style="left:68px;top:10px" data-count="500" data-suffix="+">500+</b><small style="left:68px;top:33px">Projects &amp; Resources</small></div>
 <div class="stat s3"><svg style="left:14px;color:#0B1236"><use href="#i-book"/></svg><b style="left:68px;top:10px" data-count="100" data-suffix="+">100+</b><small style="left:68px;top:33px">Learning Paths</small></div>
 
@@ -94,11 +94,12 @@ COLLABORATE</h1>
 <div class="sec-sub" style="left:281px;top:469px">Access our community-built tools, software and services.</div>
 <a class="viewall" href="ai-tools.html" style="left:1137px;top:450px">View All <svg class="i"><use href="#i-arrow"/></svg></a>
 
-<article class="tool hov on-dark" style="left:261px"><div class="ib bg-or"><svg><use href="#i-code"/></svg></div><h3>CodeCraft IDE</h3><p>A lightweight IDE for <br>modern developers.</p><span class="tag">Development Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool hov on-dark" style="left:457px"><div class="ib bg-cy"><svg><use href="#i-shield"/></svg></div><h3>SecureScan</h3><p>Scan and assess your <br>web applications.</p><span class="tag">Security Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool hov on-dark" style="left:652px"><div class="ib bg-or"><svg><use href="#i-bars"/></svg></div><h3>DataInsight Pro</h3><p>Analyze your data <br>with ease.</p><span class="tag">Data Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool hov on-dark" style="left:846px"><div class="ib bg-cy"><svg><use href="#i-cloud"/></svg></div><h3>CloudDeploy</h3><p>Deploy your apps <br>in minutes.</p><span class="tag">Cloud Service</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool hov on-dark" style="left:1039px"><div class="ib bg-or"><svg><use href="#i-list"/></svg></div><h3>TaskFlow</h3><p>Manage your projects <br>and teams.</p><span class="tag">Productivity Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
+<!-- TODO(founder): SecureScan, DataInsight Pro, CloudDeploy and TaskFlow are mockup tools with no page yet; on the live site they show without an arrow (.tool-soon). Link each one when it exists. -->
+<article class="tool hov on-dark" style="left:261px"><div class="ib bg-or"><svg><use href="#i-code"/></svg></div><h3><a class="tool-a" href="ide.html">CodeCraft IDE</a></h3><p>A lightweight IDE for <br>modern developers.</p><span class="tag">Development Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
+<article class="tool on-dark tool-soon" style="left:457px"><div class="ib bg-cy"><svg><use href="#i-shield"/></svg></div><h3>SecureScan</h3><p>Scan and assess your <br>web applications.</p><span class="tag">Security Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
+<article class="tool on-dark tool-soon" style="left:652px"><div class="ib bg-or"><svg><use href="#i-bars"/></svg></div><h3>DataInsight Pro</h3><p>Analyze your data <br>with ease.</p><span class="tag">Data Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
+<article class="tool on-dark tool-soon" style="left:846px"><div class="ib bg-cy"><svg><use href="#i-cloud"/></svg></div><h3>CloudDeploy</h3><p>Deploy your apps <br>in minutes.</p><span class="tag">Cloud Service</span><svg class="go"><use href="#i-arrow"/></svg></article>
+<article class="tool on-dark tool-soon" style="left:1039px"><div class="ib bg-or"><svg><use href="#i-list"/></svg></div><h3>TaskFlow</h3><p>Manage your projects <br>and teams.</p><span class="tag">Productivity Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
 
 <!-- ============ LEARNING PATHS ============ -->
 <div class="rule" style="top:655px"></div>
@@ -161,7 +162,7 @@ COLLABORATE</h1>
 <!-- ============ FOOTER ============ -->
 <footer class="foot">
   <a href="index.html" style="left:926px">Home</a><a href="courses.html" style="left:986px">Learn</a><a href="index.html#community" style="left:1045px">Community</a><a href="resources.html" style="left:1127px">Resources</a><a href="index.html#about" style="left:1207px">About</a>
-  <div class="socials" data-socials><a href="#" aria-label="101 Codecrafts on YouTube" style="left:1326px;width:20px;height:20px"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="101 Codecrafts on Instagram" style="left:1360px"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="101 Codecrafts on TikTok" style="left:1389px"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="101 Codecrafts on X" style="left:1421px"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="101 Codecrafts on LinkedIn" style="left:1454px"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="101 Codecrafts on Discord" style="left:1488px;width:20px;height:20px"><svg><use href="#i-discord"/></svg></a></div>
+  <div class="socials" data-socials><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on YouTube" style="left:1326px;width:20px;height:20px"><svg><use href="#i-yt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Instagram" style="left:1360px"><svg><use href="#i-ig"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on TikTok" style="left:1389px"><svg><use href="#i-tt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on X" style="left:1421px"><svg><use href="#i-x"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on LinkedIn" style="left:1454px"><svg><use href="#i-in"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Discord" style="left:1488px;width:20px;height:20px"><svg><use href="#i-discord"/></svg></a></div>
 </footer>
 </main>
 <script src="js/dash-layout.js"></script>

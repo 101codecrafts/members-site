@@ -74,7 +74,7 @@
   function promoTile(p) {
     const t = $(".hero-badge"); if (!t || q.has("static")) return;
     const cd = $("[data-promo-cd]", t);
-    if (!p.active) { const k = $(".hb-k", t), v = $(".hb-v", t), s = $(".hb-s", t); if (k) k.textContent = "Members"; if (v) v.textContent = "10K+"; if (s) s.textContent = "Learners, builders and mentors across Uganda and beyond."; if (cd) cd.textContent = "Join the community"; return; }
+    if (!p.active) { const k = $(".hb-k", t), v = $(".hb-v", t), s = $(".hb-s", t); if (k) k.textContent = "Members"; if (v) v.textContent = (window.CC_SITE_STATS && window.CC_SITE_STATS.short("members")) || "10K+"; if (s) s.textContent = "Learners, builders and mentors across Uganda and beyond."; if (cd) cd.textContent = "Join the community"; return; }
     if (!p.end || !cd) return;
     const tick = () => { const ms = Math.max(0, p.end - Date.now()), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5); cd.textContent = `Ends in ${d}d ${h}h`; };
     tick(); setInterval(tick, 60000);

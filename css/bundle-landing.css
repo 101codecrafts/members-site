@@ -552,6 +552,27 @@ html:not(.static) .promo-bar{min-height:44px;padding-top:0;padding-bottom:0}
 html:not(.static) .promo-bar button{width:44px;height:44px}
 /* integrate3: flow-page footer social row sizes to its icons (height:100% from .socials.live made it as tall as the footer, so the GitHub mark hung below the band) */
 html:not(.static) .flow-foot .socials.live{height:auto;align-self:center}
+/* links-fix: courses.html?path= / ?skill= active filter chip (orange fill, navy ink, hard shadow) */
+.cf-topic{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:12px}
+.cf-topic[hidden]{display:none}
+.tchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 4px 0 14px;border:2px solid var(--brand-navy,#0B1236);background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);font:700 var(--step--1) var(--body);letter-spacing:.02em;box-shadow:3px 3px 0 var(--brand-navy,#0B1236)}
+.tchip b{font-weight:800}
+.tchip-x{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}
+.tchip-x svg{width:16px;height:16px}
+.tchip-x:focus-visible{outline:3px solid var(--brand-navy,#0B1236);outline-offset:1px}
+/* links-fix: about.html / community.html */
+.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin:14px 0 6px;padding:0;list-style:none}
+.about-grid>li{margin:0}
+.about-card{display:flex;flex-direction:column;gap:6px;height:100%;padding:16px;border:var(--bw,2px) solid var(--brand-navy,#0B1236);background:var(--surface-1,#fff);color:var(--text,#0B1236);box-shadow:4px 4px 0 var(--shadow-ink,#0B1236);text-decoration:none}
+.about-card b{font:400 var(--step-0) var(--disp2,var(--disp));text-transform:uppercase;letter-spacing:.03em}
+.about-card span{font-size:var(--step--1);line-height:1.45}
+.about-card i{font-style:normal;font-weight:700;font-size:var(--step--1);color:var(--color-link,#0b57d0);margin-top:auto}
+a.about-card:hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink,#0B1236)}
+a.about-card:focus-visible{outline:3px solid var(--accent-2,#00b9e6);outline-offset:3px}
+.about-steps{counter-reset:st;list-style:none;padding:0;display:grid;gap:10px}
+.about-steps li{counter-increment:st;display:flex;gap:12px;align-items:flex-start}
+.about-steps li::before{content:counter(st);flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);border:2px solid var(--brand-navy,#0B1236);font-weight:800}
+.about-cta{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
 
 /* Fluid typography base — scale tokens live in tokens.css (--step-*, --space-fluid-*, --measure-*).
    Live site only: the ?static=1 mockup (html.static) keeps its exact pixel sizes. */
@@ -768,6 +789,61 @@ html:not(.static) .page>.hdr nav a{letter-spacing:.3px!important}
 html:not(.static) .page>.hdr .join .jx{display:none!important}
 html:not(.static) .page>.hdr .tg{min-width:0;white-space:normal!important;line-height:1.15!important;text-wrap:balance}
 }
+
+/* ===== links-fix (2026-11-03): real links for everything that looks clickable, phone header menu ===== */
+/* ?static=1 keeps the mockup: none of the additions render there */
+html.static .hdr .hburg,html.static .hdr .nav-login,html.static .words-tile .wt-list,html.static .page .avs,html.static .feat .ar-live,html.static .yr-l{display:none!important}
+html:not(.static) .yr-s{display:none}
+.feat .feat-a,.e-stack a{color:inherit;text-decoration:none}
+html:not(.static) .hdr .hburg{display:none}
+html:not(.static) .hdr nav .nav-login{display:none!important}
+html:not(.static) :is(#about,#community,#paths,#today-in-tech){scroll-margin-top:88px}
+/* hamburger: below 900px, and on touch screens up to 1023px (a phone in Chrome's "Desktop site" mode lays out at ~980px) */
+@media (max-width:899px),(hover:none) and (pointer:coarse) and (max-width:1023px){
+  html:not(.static) .hdr{flex-wrap:wrap;padding:8px 12px;column-gap:6px}
+  html:not(.static) .hdr .wm{margin-right:auto}
+  html:not(.static) .hdr .join .jx{display:none}
+  html:not(.static) .hdr .hburg{order:6;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-height:44px;padding:0;margin:0;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.55);border-radius:2px;cursor:pointer}
+  html:not(.static) .hdr .hburg svg{width:22px;height:22px}
+  html:not(.static) .hdr .hburg .ic-close,html:not(.static) .hdr.nav-open .hburg .ic-open{display:none}
+  html:not(.static) .hdr.nav-open .hburg .ic-close{display:block}
+  html:not(.static) .hdr.nav-open .hburg{background:var(--lor);border-color:var(--lor);color:var(--nv)}
+  html:not(.static) .hdr nav{display:none!important}
+  html:not(.static) .hdr.nav-open nav{display:flex!important;order:10;flex:1 0 100%;flex-direction:column;gap:0;justify-content:flex-start;margin:8px -12px 0;padding:0 12px 6px;overflow:visible;-webkit-mask-image:none;mask-image:none;border-top:2px solid var(--lor)}
+  html:not(.static) .hdr.nav-open nav a{min-height:48px;padding-left:14px;font-size:15px!important;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.12);justify-content:flex-start}
+  html:not(.static) .hdr.nav-open nav a.on::after{top:12px;bottom:12px;left:0;right:auto;width:4px;height:auto}
+}
+@media (max-width:420px){
+  html:not(.static) .hdr>.login{display:none!important}
+  html:not(.static) .hdr.nav-open nav .nav-login{display:flex!important}
+}
+/* hero member line: the five faces sit in front of "members and growing" below 1024px (the canvas avatars are hidden there) */
+html:not(.static) .page .avs{display:none}
+@media (max-width:1023px){
+  html:not(.static) .page>span:has(>.avs){display:flex;align-items:center;gap:10px}
+  html:not(.static) .page .avs{display:inline-flex;flex:none;gap:2px}
+  html:not(.static) .page .avs img{width:30px;height:31px;display:block}
+}
+/* LEARN / BUILD / COLLABORATE / GROW: a real link (signup) with one short line per word */
+html:not(.static) .page>.words-tile{display:flex!important;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:12px;padding:16px!important;color:var(--nv);text-decoration:none}
+html:not(.static) .page>.words-tile>.disp{display:none!important}
+html:not(.static) .page>.words-tile .wt-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1 1 auto;min-width:0}
+html:not(.static) .page>.words-tile .wt-list li{display:flex;flex-direction:column;gap:1px;min-width:0}
+html:not(.static) .page>.words-tile .wt-list b{font-family:var(--disp2);font-weight:400;font-size:var(--step-0)!important;line-height:1.1;letter-spacing:.04em;text-transform:uppercase;color:var(--nv)}
+html:not(.static) .page>.words-tile .wt-list span{font-size:var(--step--1)!important;line-height:1.3;font-weight:600;color:var(--nv);overflow-wrap:anywhere}
+html:not(.static) .page>.words-tile>svg{position:static!important;flex:none;width:24px!important;height:22px!important;margin:0!important}
+html:not(.static) .page>.words-tile:focus-visible{outline:3px solid var(--nv);outline-offset:3px}
+@media (min-width:600px) and (max-width:1023px){html:not(.static) .page>.words-tile .wt-list{grid-template-columns:1fr 1fr;column-gap:16px}}
+/* What We Offer: the whole card is the link (stretched title link); Certification Support gets its arrow too */
+html:not(.static) .page>.feat .feat-a::after{content:"";position:absolute;inset:0;z-index:1}
+html:not(.static) .page>.feat:has(.feat-a:focus-visible){outline:3px solid var(--lcy);outline-offset:3px}
+html:not(.static) .page>.feat .feat-a:focus-visible{outline:none}
+/* skills strip tags are links to courses.html?skill=… */
+html:not(.static) .page .e92 .e-stack li:has(>a){padding:0}
+html:not(.static) .page .e92 .e-stack a{display:flex;align-items:center;min-height:44px;padding:4px var(--s-3)}
+@media (min-width:600px){html:not(.static) .page .e92 .e-stack{flex-direction:row;flex-wrap:wrap;align-items:flex-end;right:var(--s-4)}}
+html:not(.static) .e-stack a:hover{text-decoration:underline;text-underline-offset:3px}
+html:not(.static) .e-stack a:focus-visible{outline:3px solid var(--lcy);outline-offset:2px}
 /* >>> desktop fluid grid (generated by tools/landing_grid.py) */
 @media (min-width:1024px){
 html:not(.static) .page{display:grid!important;width:auto!important;height:auto!important;padding:0 0 var(--space-fluid-l)!important;grid-template-columns:[full-start] minmax(var(--space-fluid-l),1fr) repeat(12,minmax(0,84px)) minmax(var(--space-fluid-l),1fr) [full-end];column-gap:var(--space-fluid-m);row-gap:var(--space-fluid-s);align-items:start;overflow:visible}
@@ -1803,8 +1879,8 @@ html.rv-on:not(.static) .rv:not(.rv-in){opacity:0;transform:translateY(16px)}
 
 /* ---------------------------------------------------------------- 8c. hover lift: translate + a bigger hard shadow (hover devices only) */
 @media (hover:hover){
-  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
-  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
+  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
+  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
   html:not(.static) .e92 :is(.e-pcard,.e-stat.inv):hover{box-shadow:7px 7px 0 var(--accent)}
   html:not(.static) .page .e92 .e-btn:hover,html:not(.static) .page .hcol .hc-stat:hover{translate:-2px -2px;box-shadow:6px 6px 0 var(--accent)}
   html:not(.static) .page .e92 .e-btn.or:hover{box-shadow:6px 6px 0 var(--on-inverse)}

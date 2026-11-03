@@ -552,6 +552,27 @@ html:not(.static) .promo-bar{min-height:44px;padding-top:0;padding-bottom:0}
 html:not(.static) .promo-bar button{width:44px;height:44px}
 /* integrate3: flow-page footer social row sizes to its icons (height:100% from .socials.live made it as tall as the footer, so the GitHub mark hung below the band) */
 html:not(.static) .flow-foot .socials.live{height:auto;align-self:center}
+/* links-fix: courses.html?path= / ?skill= active filter chip (orange fill, navy ink, hard shadow) */
+.cf-topic{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:12px}
+.cf-topic[hidden]{display:none}
+.tchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 4px 0 14px;border:2px solid var(--brand-navy,#0B1236);background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);font:700 var(--step--1) var(--body);letter-spacing:.02em;box-shadow:3px 3px 0 var(--brand-navy,#0B1236)}
+.tchip b{font-weight:800}
+.tchip-x{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}
+.tchip-x svg{width:16px;height:16px}
+.tchip-x:focus-visible{outline:3px solid var(--brand-navy,#0B1236);outline-offset:1px}
+/* links-fix: about.html / community.html */
+.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin:14px 0 6px;padding:0;list-style:none}
+.about-grid>li{margin:0}
+.about-card{display:flex;flex-direction:column;gap:6px;height:100%;padding:16px;border:var(--bw,2px) solid var(--brand-navy,#0B1236);background:var(--surface-1,#fff);color:var(--text,#0B1236);box-shadow:4px 4px 0 var(--shadow-ink,#0B1236);text-decoration:none}
+.about-card b{font:400 var(--step-0) var(--disp2,var(--disp));text-transform:uppercase;letter-spacing:.03em}
+.about-card span{font-size:var(--step--1);line-height:1.45}
+.about-card i{font-style:normal;font-weight:700;font-size:var(--step--1);color:var(--color-link,#0b57d0);margin-top:auto}
+a.about-card:hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink,#0B1236)}
+a.about-card:focus-visible{outline:3px solid var(--accent-2,#00b9e6);outline-offset:3px}
+.about-steps{counter-reset:st;list-style:none;padding:0;display:grid;gap:10px}
+.about-steps li{counter-increment:st;display:flex;gap:12px;align-items:flex-start}
+.about-steps li::before{content:counter(st);flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);border:2px solid var(--brand-navy,#0B1236);font-weight:800}
+.about-cta{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
 
 /* Fluid typography base — scale tokens live in tokens.css (--step-*, --space-fluid-*, --measure-*).
    Live site only: the ?static=1 mockup (html.static) keeps its exact pixel sizes. */
@@ -1474,8 +1495,8 @@ html.rv-on:not(.static) .rv:not(.rv-in){opacity:0;transform:translateY(16px)}
 
 /* ---------------------------------------------------------------- 8c. hover lift: translate + a bigger hard shadow (hover devices only) */
 @media (hover:hover){
-  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
-  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
+  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
+  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
   html:not(.static) .e92 :is(.e-pcard,.e-stat.inv):hover{box-shadow:7px 7px 0 var(--accent)}
   html:not(.static) .page .e92 .e-btn:hover,html:not(.static) .page .hcol .hc-stat:hover{translate:-2px -2px;box-shadow:6px 6px 0 var(--accent)}
   html:not(.static) .page .e92 .e-btn.or:hover{box-shadow:6px 6px 0 var(--on-inverse)}

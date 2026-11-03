@@ -49,7 +49,7 @@ def head(a, page):
 <script type="application/ld+json">{json.dumps(ld if len(ld) > 1 else ld[0])}</script>'''
 
 def scripts(charts=False):
-    tags = ['<script src="js/data.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
+    tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
     tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>']
@@ -57,7 +57,7 @@ def scripts(charts=False):
 
 # Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
 NAV = {
- 'learner': ["", ("Home", "home", "dashboard.html"), ("Community", "users", "profile.html"), ("Messages", "chat", "#"), ("Notifications", "bell", "announcements.html"),
+ 'learner': ["", ("Home", "home", "dashboard.html"), ("Community", "users", "profile.html"), ("Notifications", "bell", "announcements.html"),
              "Learn", ("Learning", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"),
              "Build", ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"),
              "Community", ("Groups", "people", "groups.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
@@ -66,13 +66,20 @@ NAV = {
  'tutor': ["Teach", ("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "sessions.html"), ("Earnings & Payouts", "cash", "tutor.html#earnings"),
            "Explore", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
            "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
-           "Your space", ("Messages", "chat", "#"), ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
+           "Your space", ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
  'admin': ["Overview", ("Overview", "home", "admin.html"), ("Analytics", "chart", "admin.html#analytics"),
            "People", ("Members", "users", "admin.html#users"), ("Learners", "cap", "admin.html#users"), ("Tutors", "teacher", "admin.html#users"), ("Approvals", "clipboard", "admin.html#approvals"),
-           "Content", ("Courses & Paths", "learning", "admin.html#courses"), ("Projects", "code", "#"), ("Tools/Software", "toolbox", "#"), ("Library", "folder", "admin.html#add-resource"), ("Announcements", "megaphone", "admin.html#announcements"), ("Opportunity review", "briefcase", "admin.html#opp-queue"), ("Events", "calendar", "admin.html#events"),
+           "Content", ("Courses & Paths", "learning", "admin.html#courses"), ("Projects", "code", "projects.html"), ("Tools/Software", "toolbox", "ai-tools.html"), ("Library", "folder", "admin.html#add-resource"), ("Announcements", "megaphone", "admin.html#announcements"), ("Opportunity review", "briefcase", "admin.html#opp-queue"), ("Events", "calendar", "admin.html#events"),
            "Money", ("Marketplace", "store", "marketplace.html"), ("Payments & Payouts", "cash", "admin.html#payments"),
-           "System", ("Messages", "chat", "#"), ("Reports", "report", "admin.html#moderation"), ("Audit Log", "list", "admin.html#audit"), ("Settings", "gear", "admin.html#settings")],
+           "System", ("Reports", "report", "admin.html#moderation"), ("Audit Log", "list", "admin.html#audit"), ("Settings", "gear", "admin.html#settings")],
 }
+
+# TODO(founder): paste the real WhatsApp community invite (https://chat.whatsapp.com/<code>) here, then re-run tools/build.py.
+# While it is empty the sidebar shows no WhatsApp link at all (an invite URL without a code only opens a dead page).
+WA_INVITE = ""
+def wa_foot():
+    if not re.match(r'^https://chat\.whatsapp\.com/[A-Za-z0-9]{10,}$', WA_INVITE): return '<!-- WhatsApp community link hidden until WA_INVITE is set in tools/build.py -->'
+    return f'<div class="sb-foot"><a class="sb-wa" href="{WA_INVITE}" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>'
 
 def sidebar(a):
     """App-shell sidebar (js/shell.js + css/shell.css): full width or a 72px icon rail at >=1024px, off-canvas drawer below."""
@@ -90,7 +97,7 @@ def sidebar(a):
     <button type="button" class="sb-toggle" data-sb-toggle aria-controls="sbar" aria-expanded="true" aria-label="Collapse sidebar"><svg aria-hidden="true"><use href="#i-panel"/></svg></button>
   </div>
   <nav class="sb-nav" aria-label="Main">{nav}</nav>
-  <div class="sb-foot"><a class="sb-wa" href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>
+  {wa_foot()}
 </div>
 <div class="sb-scrim" data-sb-scrim hidden></div>'''
 
@@ -124,9 +131,9 @@ def topbar(a, page=''):
 
 FOOTER = '''<footer class="flow-foot">
   <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
-  <span>© 2025 101 Codecrafts. All rights reserved.</span>
-  <nav aria-label="Footer"><a href="index.html">Home</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
-  <div class="socials" data-socials><a href="#" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="X"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="Discord"><svg><use href="#i-discord"/></svg></a></div>
+  <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
+  <div class="socials" data-socials><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg><use href="#i-gh"/></svg></a></div>
 </footer>'''
 
 # CSS bundles (fewer render-blocking requests; sources stay in css/*.css)

@@ -147,8 +147,8 @@ html.rv-on:not(.static) .rv:not(.rv-in){opacity:0;transform:translateY(16px)}
 
 /* ---------------------------------------------------------------- 8c. hover lift: translate + a bigger hard shadow (hover devices only) */
 @media (hover:hover){
-  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
-  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
+  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
+  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
   html:not(.static) .e92 :is(.e-pcard,.e-stat.inv):hover{box-shadow:7px 7px 0 var(--accent)}
   html:not(.static) .page .e92 .e-btn:hover,html:not(.static) .page .hcol .hc-stat:hover{translate:-2px -2px;box-shadow:6px 6px 0 var(--accent)}
   html:not(.static) .page .e92 .e-btn.or:hover{box-shadow:6px 6px 0 var(--on-inverse)}

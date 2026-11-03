@@ -61,6 +61,18 @@ window.CC_DATA = {
     { id: "ict-olevel", title: "O-Level ICT: Networks & the Internet", tutor: "Brian Ochieng", level: "O-Level", category: "Networking", rating: 4.5, reviews: 57, price: 15000, lessons: 9, cover: "assets/img/courses/101-network.svg" },
     { id: "data-uganda", title: "Data Analysis with Ugandan Open Data", tutor: "Aisha Nalwoga", level: "University", category: "Data & AI", rating: 4.7, reviews: 73, price: 50000, lessons: 11, cover: "assets/img/courses/101-data.svg" }
   ],
+  /* ---------------- Free-course providers: official homepages, opened through /go/<id> (landing "Learn from free courses by" strip) ---------------- */
+  providerLinks: [
+    { id: "p-freecodecamp", title: "freeCodeCamp", url: "https://www.freecodecamp.org/" },
+    { id: "p-coursera", title: "Coursera", url: "https://www.coursera.org/" },
+    { id: "p-edx", title: "edX", url: "https://www.edx.org/" },
+    { id: "p-khan", title: "Khan Academy", url: "https://www.khanacademy.org/" },
+    { id: "p-mitocw", title: "MIT OpenCourseWare", url: "https://ocw.mit.edu/" },
+    { id: "p-google", title: "Grow with Google", url: "https://grow.google/" },
+    { id: "p-microsoft", title: "Microsoft Learn", url: "https://learn.microsoft.com/" },
+    { id: "p-cisco", title: "Cisco Networking Academy", url: "https://www.netacad.com/" }
+  ],
+
   externalCourses: [
     { id: "x-fcc-rwd", provider: "freecodecamp", title: "Responsive Web Design Certification", url: "https://www.freecodecamp.org/learn/2022/responsive-web-design/", level: "O-Level", category: "Web Development", access: "Free", certFree: true, hours: 300, desc: "HTML & CSS through 20 projects, with a free certification at the end." },
     { id: "x-fcc-learn", provider: "freecodecamp", title: "JavaScript, Python & more: full curriculum", url: "https://www.freecodecamp.org/learn", level: "University", category: "Computer Science", access: "Free", certFree: true, hours: 3000, desc: "The whole freeCodeCamp curriculum: JavaScript, Python, data analysis, ML and more." },
