@@ -2,26 +2,43 @@
 <html lang="en">
 <head>
 {{HEAD title="Sign in · 101 Codecrafts" desc="Sign in to your 101 Codecrafts account." path="signin.html"}}
-<link rel="stylesheet" href="css/brutal.css">
-<link rel="stylesheet" href="css/app.css">
+{{CSS}}
+<link rel="stylesheet" href="css/auth.css">
 </head>
-<body class="flow" data-page="signin">
+<body class="auth-page" data-page="signin">
 <a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
-<main id="main" class="center">
-<div class="panel-x">
-<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="82" height="41"><b>Codecrafts</b></a>
-
-<h1>WELCOME BACK</h1>
+<div class="auth">
+<aside class="auth-brand" aria-label="About 101 Codecrafts">
+  <a class="auth-logo" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="72" height="36"><b>101 Codecrafts</b></a>
+  <div class="auth-pitch">
+    <p class="auth-kicker">Members</p>
+    <p class="auth-tag">Start at 101. <br>Craft your way up.</p>
+    <ul class="auth-points">
+      <li><svg aria-hidden="true"><use href="#i-learning"/></svg><span><b>Free courses &amp; a curated library</b>Structured paths from your first line of code to job-ready.</span></li>
+      <li><svg aria-hidden="true"><use href="#i-codebox"/></svg><span><b>Practice on real problems</b>Daily challenges, contests and projects you can show employers.</span></li>
+      <li><svg aria-hidden="true"><use href="#i-people"/></svg><span><b>Learn with a community</b>Tutors, study groups, live sessions and events across Uganda.</span></li>
+    </ul>
+  </div>
+  <p class="auth-legal">© 2025 101 Codecrafts · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+</aside>
+<main id="main" class="auth-main">
+<div class="auth-panel">
+<h1 class="auth-h">Welcome back</h1>
+<p class="auth-sub">Sign in to pick up where you left off.</p>
+<div class="auth-form">
 <form id="si" class="grid" style="gap:12px">
  <label class="field">Email or phone<input name="email" type="text" autocomplete="username" required></label>
  <label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label>
  <button class="btn or">Sign in</button>
  <button class="btn" type="button" id="si-google">Continue with Google</button>
- <p class="muted">New here? <a href="signup.html"><b>Create an account</b></a></p><p id="si-msg" role="status" aria-live="polite"></p>
+<p id="si-msg" role="status" aria-live="polite"></p>
 </form>
 </div>
+<p class="auth-switch">New to 101 Codecrafts? <a href="signup.html">Create a free account</a></p>
+</div>
 </main>
+</div>
 {{SCRIPTS}}
 <script src="js/pages.js" defer></script>
 </body></html>

@@ -2,17 +2,31 @@
 <html lang="en">
 <head>
 {{HEAD title="Join 101 Codecrafts" desc="Create your free 101 Codecrafts account — learners and tutors welcome." path="signup.html"}}
-<link rel="stylesheet" href="css/brutal.css">
-<link rel="stylesheet" href="css/app.css">
+{{CSS}}
+<link rel="stylesheet" href="css/auth.css">
 </head>
-<body class="flow" data-page="signup">
+<body class="auth-page" data-page="signup">
 <a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
-<main id="main" class="center">
-<div class="panel-x">
-<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="82" height="41"><b>Codecrafts</b></a>
-
-<h1>JOIN 101 CODECRAFTS</h1>
+<div class="auth">
+<aside class="auth-brand" aria-label="About 101 Codecrafts">
+  <a class="auth-logo" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="72" height="36"><b>101 Codecrafts</b></a>
+  <div class="auth-pitch">
+    <p class="auth-kicker">Join free</p>
+    <p class="auth-tag">Start at 101. <br>Craft your way up.</p>
+    <ul class="auth-points">
+      <li><svg aria-hidden="true"><use href="#i-learning"/></svg><span><b>Free courses &amp; a curated library</b>Structured paths from your first line of code to job-ready.</span></li>
+      <li><svg aria-hidden="true"><use href="#i-codebox"/></svg><span><b>Practice on real problems</b>Daily challenges, contests and projects you can show employers.</span></li>
+      <li><svg aria-hidden="true"><use href="#i-people"/></svg><span><b>Learn with a community</b>Tutors, study groups, live sessions and events across Uganda.</span></li>
+    </ul>
+  </div>
+  <p class="auth-legal">© 2025 101 Codecrafts · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+</aside>
+<main id="main" class="auth-main">
+<div class="auth-panel">
+<h1 class="auth-h">Create your account</h1>
+<p class="auth-sub">Free for learners. Takes under a minute.</p>
+<div class="auth-form">
 <form id="su" novalidate class="grid" style="gap:12px">
  <label class="field">Full name<input name="name" autocomplete="name" required></label>
  <label class="field">Email<input name="email" type="email" autocomplete="email" required></label>
@@ -25,10 +39,13 @@
  <label class="row"><input type="checkbox" required style="width:20px;height:20px"> I agree to the <a href="terms.html"><b>Terms</b></a> and <a href="privacy.html"><b>Privacy Policy</b></a></label>
  <button class="btn or">Create account</button>
  <p id="su-msg" role="status" aria-live="polite"></p>
- <p class="muted">Already a member? <a href="signin.html"><b>Sign in</b></a></p>
+
 </form>
 </div>
+<p class="auth-switch">Already a member? <a href="signin.html">Sign in</a></p>
+</div>
 </main>
+</div>
 {{SCRIPTS}}
 <script src="js/pages.js" defer></script>
 </body></html>
