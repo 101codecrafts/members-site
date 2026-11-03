@@ -603,6 +603,11 @@ html.promo-space:not(.static) body:not(:has(>.promo-bar)){padding-top:var(--prom
 @media (max-width:767px){html.promo-space:not(.static){--promo-h:var(--promo-h-m,70px)}}
 /* cards round: launchpad list + sidebar stack on phones (the inline 1fr|280px grid left the product rows 80px wide) */
 @media (max-width:767px){html:not(.static) #lp-wrap{grid-template-columns:minmax(0,1fr)!important}}
+/* round5 integration — 360px: the wider mono chip labels made two rows overflow the viewport.
+   Footer social rows (now with 44px "coming soon" tiles) wrap instead of running off the edge; the events
+   List/Calendar/Map toggle + count wrap onto two lines on narrow phones instead of pushing the count off-screen. */
+html:not(.static) :is(.foot,.lfoot,.flow-foot) .socials{flex-wrap:wrap;max-width:100%;min-width:0}
+@media (max-width:760px){html:not(.static) .feed-bar:has(>.vtoggle){flex-wrap:wrap;row-gap:var(--s-2,8px)}}
 
 /* 101 Codecrafts type system (live site). Tokens: css/tokens.css (--step-*, --leading-*, --tracking-*, --font-*).
    Three faces, three jobs (research + decision: work/research/type-system.md):
@@ -1381,6 +1386,19 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
   html.signed-out .tb-bell{display:none}
   .tb-btn{padding:0 11px;height:36px}
   .acct-sk b{display:none}
+}
+
+/* round5 integration — guests on very narrow phones (<380px): "Join" collapses to a 44px icon button (its name stays
+   "Join" for screen readers) and the guest bell goes, so Sign in + Join fit without horizontal overflow. */
+.tb-btn .tb-ic{display:none;width:18px;height:18px;flex:none}
+@media (max-width:379.98px){
+  html.signed-out .tb-bell,.shell .topbar:has(.acct-guest:not([hidden])) .tb-bell{display:none}
+  .acct-guest{gap:6px}
+  .acct-guest .tb-btn{min-height:44px}
+  .acct-guest .tb-btn.cta{width:44px;padding:0}
+  .acct-guest .tb-btn.cta .tb-ic{display:block}
+  .acct-guest .tb-btn.cta .tb-lbl{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+  .acct{padding-left:6px}
 }
 
 /* ---------- dashboard: the shared shell replaces the mockup's own sidebar + search on the live site ---------- */

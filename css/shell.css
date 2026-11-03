@@ -170,6 +170,19 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
   .acct-sk b{display:none}
 }
 
+/* round5 integration — guests on very narrow phones (<380px): "Join" collapses to a 44px icon button (its name stays
+   "Join" for screen readers) and the guest bell goes, so Sign in + Join fit without horizontal overflow. */
+.tb-btn .tb-ic{display:none;width:18px;height:18px;flex:none}
+@media (max-width:379.98px){
+  html.signed-out .tb-bell,.shell .topbar:has(.acct-guest:not([hidden])) .tb-bell{display:none}
+  .acct-guest{gap:6px}
+  .acct-guest .tb-btn{min-height:44px}
+  .acct-guest .tb-btn.cta{width:44px;padding:0}
+  .acct-guest .tb-btn.cta .tb-ic{display:block}
+  .acct-guest .tb-btn.cta .tb-lbl{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+  .acct{padding-left:6px}
+}
+
 /* ---------- dashboard: the shared shell replaces the mockup's own sidebar + search on the live site ---------- */
 html:not(.static) body[data-page=dashboard]{padding-left:0!important}
 html:not(.static) .dash-shell .app>.side,html:not(.static) .dash-shell .app>label.search{display:none!important}

@@ -100,3 +100,9 @@ html:not(.static) [data-page=courses] #xc-card{max-width:22rem}
   html:not(.static) [data-page=courses] #xc-card{max-width:none}
 }
 @media (prefers-reduced-motion:reduce){html:not(.static) [data-page=courses] .xc-prev{position:static}}
+
+/* round5 integration — CLS: reserve the space the courses script fills (~0.4 s after load) so nothing below jumps.
+   The level-chip row is one 44px row at every width; the course grids keep at least a viewport of height until their
+   first render, so the next region starts below the fold and the render never moves anything the reader can see. */
+.cf-lv[data-levels]:empty{min-height:44px}
+#g101:empty,#gfree:empty{min-height:100vh;min-height:100svh}

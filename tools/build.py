@@ -127,7 +127,7 @@ def topbar(a, page=''):
   <a class="ib tb-bell" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
   <div class="acct" data-acct aria-busy="true">
     <span class="acct-sk" aria-hidden="true"><i></i><b></b></span><span class="sr-only acct-loading">Loading account</span>
-    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="signin.html">Sign in</a><a class="tb-btn cta" href="signup.html">Join</a></div>
+    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="signin.html">Sign in</a><a class="tb-btn cta" href="signup.html"><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
     <div class="acct-user" hidden>
       <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu"><span class="acct-av" aria-hidden="true"></span><span class="acct-id"><b class="acct-name"></b><small class="acct-role">Member</small></span><svg class="acct-chev" aria-hidden="true"><use href="#i-chev"/></svg><span class="sr-only">account menu</span></button>
       <div class="acct-menu" id="acct-menu" role="menu" aria-label="Account" hidden>
