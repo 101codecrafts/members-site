@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Type system · 101 Codecrafts" desc="Living style guide for the 101 Codecrafts type system: Archivo Black display, IBM Plex Sans body, JetBrains Mono for code, labels and numbers, on one fluid scale." path="type.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<style>
+/* style-guide page only: layout of the specimen. Every sample uses the real role classes from css/type.css. */
+.tg{display:grid;gap:var(--s-8,32px);padding-bottom:var(--s-12,48px)}
+.tg section{display:grid;gap:var(--s-4,16px);border-top:2px solid var(--border-strong,#0B1236);padding-top:var(--s-4,16px)}
+.tg .note{color:var(--text-muted);font-size:var(--step--1);max-width:var(--measure-body)}
+.tg .faces{display:grid;gap:var(--gap-card,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.tg .face{border:2px solid var(--border-strong,#0B1236);box-shadow:4px 4px 0 var(--shadow-ink,#0B1236);padding:var(--s-4,16px);background:var(--surface-1,#fff);display:grid;gap:var(--s-2,8px);min-width:0}
+.tg .face.navy{background:var(--fill-inverse,#0B1236);color:var(--on-inverse,#fff)}
+.tg .face.or{background:var(--accent,#fc8c0c);color:var(--on-accent,#0B1236)}
+.tg .face.cy{background:var(--accent-2,#05e6f2);color:var(--on-accent-2,#0B1236)}
+.tg .glyphs{overflow-wrap:anywhere}
+.tg .scale{display:grid;gap:var(--s-2,8px);margin:0;padding:0;list-style:none}
+.tg .scale li{display:grid;grid-template-columns:minmax(0,9rem) minmax(0,1fr);gap:var(--s-3,12px);align-items:baseline;border-bottom:1px solid var(--border-subtle,#e0e6ea);padding-bottom:var(--s-2,8px)}
+@media (max-width:560px){.tg .scale li{grid-template-columns:minmax(0,1fr)}}
+.tg .sample{overflow-wrap:anywhere;min-width:0}
+.tg .roles{display:grid;gap:var(--s-3,12px)}
+.tg .role{display:grid;grid-template-columns:minmax(0,9rem) minmax(0,1fr);gap:var(--s-3,12px);align-items:baseline}
+@media (max-width:560px){.tg .role{grid-template-columns:minmax(0,1fr)}}
+.tg .chiprow{display:flex;flex-wrap:wrap;gap:var(--s-2,8px);align-items:center}
+.tg .demo-chip{display:inline-flex;align-items:center;min-height:32px;padding:0 10px;border:2px solid currentColor}
+.tg .stats{display:grid;gap:var(--gap-card,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.tg .stats>div{border:2px solid var(--border-strong,#0B1236);padding:var(--s-4,16px);box-shadow:4px 4px 0 var(--shadow-ink,#0B1236);background:var(--surface-1,#fff)}
+.tg pre{background:var(--fill-inverse,#0B1236);color:#EEF1F8;padding:var(--s-4,16px);border:2px solid var(--border-strong,#0B1236);margin:0}
+.tg .langs p{max-width:var(--measure-body)}
+</style>
+</head>
+<body class="flow" data-page="type">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<header class="topbar"><a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101 Codecrafts home" width="82" height="41"><b>Codecrafts</b></a><span class="sp"></span><a class="btn or" href="signup.html">Join</a></header>
+<main id="main" class="content"><div class="tg">
+
+<header><p class="t-label">Design system</p><h1 class="t-h1">Type system</h1>
+<p class="t-body-lg">Three faces, three jobs. Archivo Black shouts the headings, IBM Plex Sans carries the reading, and JetBrains Mono marks everything a programmer would read character by character: code, labels, chips, the nav, stats, countdowns and prices.</p>
+<p class="note">Sources: <code>tokens/tokens.json</code> → <code>css/tokens.css</code> (scale, leading, tracking) and <code>css/type.css</code> (faces, roles). Live site only; <code>?static=1</code> keeps the mockup fonts.</p></header>
+
+<section aria-labelledby="h-faces"><h2 class="t-h2" id="h-faces">Faces</h2>
+<div class="faces">
+  <div class="face navy"><p class="t-label">Display · Archivo Black</p><p class="t-h2">BUILD. SHIP. REPEAT.</p><p class="t-small glyphs" style="font-family:var(--font-display)">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 Ŋ Œ É</p></div>
+  <div class="face"><p class="t-label">Body · IBM Plex Sans 400–700</p><p class="t-body-lg">Learn to code with people who build in Kampala.</p><p class="t-small glyphs">Aa Bb Cc 0123456789 ŋ œ é à ç « » — <b>Bold 700</b> <span style="font-weight:600">Semibold 600</span></p></div>
+  <div class="face or"><p class="t-label">Mono · JetBrains Mono 400–700</p><p class="t-code" style="font-size:var(--step-1)">0O 1lI| {}[] =&gt; !=</p><p class="t-small glyphs" style="font-family:var(--font-mono)">0123456789 ŋ œ é — ligatures off</p></div>
+</div></section>
+
+<section aria-labelledby="h-scale"><h2 class="t-h2" id="h-scale">Fluid scale</h2>
+<p class="note">Utopia method: each step grows linearly from a 360px viewport (base 16px, ratio about 1.17) to a 1536px viewport (base 18px, ratio about 1.24). Written as <code>clamp(rem, rem + vw, rem)</code>, so zoom and the user's font size still scale it, and no step grows more than 2.5× (WCAG 1.4.4).</p>
+<ul class="scale">
+  <li><span class="t-label">step-6 · 43→67</span><span class="sample" style="font:400 var(--step-6)/var(--leading-6) var(--font-display);letter-spacing:var(--tracking-display)">HERO</span></li>
+  <li><span class="t-label">step-5 · 36→54</span><span class="sample" style="font:400 var(--step-5)/var(--leading-5) var(--font-display);letter-spacing:var(--tracking-display)">PAGE TITLE</span></li>
+  <li><span class="t-label">step-4 · 30→43</span><span class="sample" style="font:400 var(--step-4)/var(--leading-4) var(--font-display);letter-spacing:var(--tracking-display)">SECTION</span></li>
+  <li><span class="t-label">step-3 · 25→34</span><span class="sample" style="font:700 var(--step-3)/var(--leading-3) var(--font-sans)">Section head</span></li>
+  <li><span class="t-label">step-2 · 21→27</span><span class="sample" style="font:700 var(--step-2)/var(--leading-2) var(--font-sans)">Sub-head</span></li>
+  <li><span class="t-label">step-1 · 18→22</span><span class="sample" style="font:600 var(--step-1)/var(--leading-1) var(--font-sans)">Card title, lead text</span></li>
+  <li><span class="t-label">step-0 · 16→18</span><span class="sample" style="font:400 var(--step-0)/var(--leading-0) var(--font-sans)">Body copy and every form control</span></li>
+  <li><span class="t-label">step--1 · 14→15</span><span class="sample" style="font:400 var(--step--1)/var(--leading--1) var(--font-sans)">Small UI text, table cells, nav</span></li>
+  <li><span class="t-label">step--2 · 12→13</span><span class="sample" style="font:400 var(--step--2)/var(--leading--2) var(--font-sans)">Meta, captions, timestamps (the floor)</span></li>
+</ul></section>
+
+<section aria-labelledby="h-roles"><h2 class="t-h2" id="h-roles">Roles</h2>
+<div class="roles">
+  <div class="role"><code>.t-display</code><p class="t-display">Start at 101</p></div>
+  <div class="role"><code>.t-h1</code><p class="t-h1">Free courses</p></div>
+  <div class="role"><code>.t-h2</code><p class="t-h2">Popular paths</p></div>
+  <div class="role"><code>.t-h3</code><p class="t-h3">Python Foundations</p></div>
+  <div class="role"><code>.t-h4</code><p class="t-h4">Week 3: functions and loops</p></div>
+  <div class="role"><code>.t-body-lg</code><p class="t-body-lg">Hands-on lessons that get you building real projects.</p></div>
+  <div class="role"><code>.t-body</code><p class="t-body t-measure">Body text is set in IBM Plex Sans at step-0 with a 1.55 line height and a 68-character measure, inside the 45 to 90 characters Butterick recommends and the 60 to 75 this system caps at.</p></div>
+  <div class="role"><code>.t-small</code><p class="t-small">Posted 3 hours ago by a mentor</p></div>
+  <div class="role"><code>.t-label</code><p class="t-label">Beginner · 12 lessons</p></div>
+  <div class="role"><code>.t-code</code><p class="t-code">npm run build &amp;&amp; git push origin main</p></div>
+  <div class="role"><code>.t-stat</code><p class="t-stat">1,024</p></div>
+  <div class="role"><code>.t-price</code><p class="t-price">UGX 45,000</p></div>
+</div></section>
+
+<section aria-labelledby="h-ui"><h2 class="t-h2" id="h-ui">In the UI</h2>
+<p class="kicker">Eyebrow · kicker</p>
+<div class="chiprow"><span class="badge-t" style="position:static">New</span><span class="pill">Published</span><span class="tag" style="margin:0!important">Python</span><span class="demo-chip t-label">Filter: free</span></div>
+<div class="stats">
+  <div><p class="t-stat">6</p><p class="t-label">Learning paths</p></div>
+  <div><p class="t-stat">02:14:09</p><p class="t-label">Countdown · tabular</p></div>
+  <div><p class="t-price">UGX 120,000</p><p class="t-label">Price</p></div>
+</div>
+<pre><code>// code blocks: JetBrains Mono, ligatures off, 1.6 leading
+function greet(name) {
+  if (name !== "") return `Oli otya, ${name}!`;  // 0 O 1 l I
+  return null;
+}</code></pre>
+<p class="t-body t-measure">Inline code sits at 0.9em so its taller x-height matches the body: run <code>python3 main.py</code>, then open <kbd>Ctrl</kbd> + <kbd>K</kbd>.</p>
+</section>
+
+<section class="langs" aria-labelledby="h-lang"><h2 class="t-h2" id="h-lang">Languages</h2>
+<p class="note">Latin and Latin Extended subsets cover the site's languages; all three faces include ŋ/Ŋ for Luganda and œ, « », accented vowels for French.</p>
+<p lang="lg"><b>Luganda:</b> Tukwaniriza mu 101 Codecrafts. Oli otya? Eŋŋoma, eŋŋaali, EŊŊAALI.</p>
+<p lang="sw"><b>Kiswahili:</b> Karibu 101 Codecrafts. Jifunze kuandika programu pamoja na wanajamii wa Kampala.</p>
+<p lang="fr"><b>Français :</b> Bienvenue chez 101 Codecrafts. « Apprendre à coder », c’est être curieux, créatif et à l’œuvre.</p>
+<p class="t-label">Eŋŋaali · œuvre · Kiswahili</p>
+</section>
+
+</div></main>
+{{FOOTER}}
+{{SCRIPTS}}
+</body>
+</html>

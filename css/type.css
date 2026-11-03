@@ -1,14 +1,108 @@
-/* Fluid typography base — scale tokens live in tokens.css (--step-*, --space-fluid-*, --measure-*).
-   Live site only: the ?static=1 mockup (html.static) keeps its exact pixel sizes. */
+/* 101 Codecrafts type system (live site). Tokens: css/tokens.css (--step-*, --leading-*, --tracking-*, --font-*).
+   Three faces, three jobs (research + decision: work/research/type-system.md):
+     display  Archivo Black      H1/H2, hero, brutal uppercase headings      (--font-display)
+     sans     IBM Plex Sans var  body copy, UI, forms, card titles           (--font-body / --font-sans)
+     mono     JetBrains Mono var code, eyebrows, labels, chips, badges, nav, stats, countdowns, prices (--font-mono / --font-cond)
+   Everything is scoped to html:not(.static): the ?static=1 mockup keeps Archivo Black + Barlow + Saira Semi Condensed + Russo One
+   from css/brutal.css, never references the families below, so it never downloads them and stays pixel-identical.
+   The brand wordmark keeps Russo One (--font-display-2) everywhere: it is part of the logo, not a type role. */
+
+/* ---------- live faces: subsetted latin + latin-ext woff2 (Luganda ŋ Ŋ, French œ « », Kiswahili), OFL ---------- */
+@font-face{font-family:"CC Display";src:url(../assets/fonts/archivo-black-cc.woff2) format("woff2");font-weight:400 900;font-style:normal;font-display:swap}
+@font-face{font-family:"CC Sans";src:url(../assets/fonts/ibm-plex-sans-var.woff2) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:"CC Mono";src:url(../assets/fonts/jetbrains-mono-var.woff2) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+/* metric-matched fallbacks (size-adjust / ascent / descent from the real font files, letter-frequency weighted widths):
+   the swap from system font to web font keeps line boxes and line breaks, so no layout shift. -R = Android (Roboto). */
+@font-face{font-family:"CC Sans Fallback";src:local("Arial"),local("ArialMT"),local("Liberation Sans"),local("Arimo"),local("Helvetica");size-adjust:101.57%;ascent-override:100.92%;descent-override:27.07%;line-gap-override:0%}
+@font-face{font-family:"CC Sans Fallback R";src:local("Roboto"),local("Roboto-Regular");size-adjust:101.03%;ascent-override:101.45%;descent-override:27.22%;line-gap-override:0%}
+@font-face{font-family:"CC Display Fallback";src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("Arimo Bold");size-adjust:115.43%;ascent-override:76.06%;descent-override:18.19%;line-gap-override:0%}
+@font-face{font-family:"CC Display Fallback R";src:local("Roboto Black"),local("Roboto-Black");size-adjust:121.88%;ascent-override:72.04%;descent-override:17.23%;line-gap-override:0%}
+@font-face{font-family:"CC Mono Fallback";src:local("Courier New"),local("CourierNewPSMT"),local("Liberation Mono"),local("Cousine"),local("Roboto Mono"),local("Droid Sans Mono"),local("DejaVu Sans Mono");size-adjust:100%;ascent-override:102.02%;descent-override:30%;line-gap-override:0%}
+
+/* ---------- swap the role variables (live only); every component reads --disp / --body / --cond ---------- */
+html:not(.static){
+  --font-display:var(--font-brand-display);
+  --font-body:var(--font-sans);
+  --font-cond:var(--font-mono);
+}
+
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html:not(.static) body{font-family:var(--font-sans);
+  font-variant-ligatures:no-contextual;font-synthesis-weight:none;text-rendering:optimizeLegibility}
 html:not(.static) :where(h1,h2,h3,h4){text-wrap:balance;overflow-wrap:break-word}
 html:not(.static) :where(p,li,dd,blockquote){text-wrap:pretty;overflow-wrap:break-word}
-/* readable measure for running text */
+/* running text: body leading + readable measure (60-75ch; --measure-body = 68ch) */
+html:not(.static) :where(main,.content,article,.prose,.below) :where(p,li,dd,blockquote){line-height:var(--leading-0)}
 html:not(.static) :where(main,.content,article,.prose,.below) :where(p){max-width:var(--measure-body)}
+html:not(.static) :where(.prose,article) :where(li,dd,blockquote){max-width:var(--measure-body)}
 /* form controls: >=16px everywhere so iOS Safari never zooms on focus */
 html:not(.static) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){font-size:max(1rem,var(--step-0))}
+html:not(.static) :is(input,select,textarea,button){font-family:inherit}
 html:not(.static) :is(input,textarea)::placeholder{font-size:inherit}
 /* fluid rhythm for headings that follow content */
 html:not(.static) :where(.content,main) :where(h1,h2){margin-block-end:var(--space-fluid-2xs)}
 /* <small> defaults to font-size:smaller; never let it drop under the 12px meta floor */
 :where(html:not(.static)) small{font-size:max(var(--step--2),.875em)}
+/* faces that are only regular: never fake a bold (Archivo Black is already the heaviest cut) */
+html:not(.static) :where(.disp){font-synthesis:none}
+
+/* ---------- code: always the mono face, ligatures off (code is read character by character) ---------- */
+html:not(.static) :where(code,kbd,samp,pre,tt,var){font-family:var(--font-mono);font-variant-ligatures:none;font-variant-numeric:slashed-zero;font-feature-settings:"liga" 0,"calt" 0;font-style:normal}
+html:not(.static) :where(:not(pre)>code,kbd,samp){font-size:.9em;letter-spacing:0}
+html:not(.static) :where(pre){font-size:var(--step--1);line-height:var(--leading-code);tab-size:2;overflow-x:auto;max-width:100%}
+html:not(.static) :where(pre) :where(code){font-size:inherit}
+html:not(.static) :where(kbd){font-weight:600}
+
+/* ---------- role classes (use these on new markup; tokens.json "type" documents each role) ---------- */
+html:not(.static) .t-display{font:400 var(--step-6)/var(--leading-6) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase}
+html:not(.static) .t-h1{font:400 var(--step-5)/var(--leading-5) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase}
+html:not(.static) .t-h2{font:400 var(--step-4)/var(--leading-4) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase}
+html:not(.static) .t-h3{font:700 var(--step-2)/var(--leading-2) var(--font-sans);letter-spacing:var(--tracking-heading)}
+html:not(.static) .t-h4{font:700 var(--step-1)/var(--leading-1) var(--font-sans);letter-spacing:var(--tracking-heading)}
+html:not(.static) .t-body-lg{font:400 var(--step-1)/var(--leading-1) var(--font-sans)}
+html:not(.static) .t-body{font:400 var(--step-0)/var(--leading-0) var(--font-sans)}
+html:not(.static) .t-small{font:400 var(--step--1)/var(--leading--1) var(--font-sans)}
+html:not(.static) .t-label{font:600 var(--step--2)/var(--leading--2) var(--font-mono);letter-spacing:var(--tracking-label);text-transform:uppercase}
+html:not(.static) .t-code{font:400 var(--step--1)/var(--leading-code) var(--font-mono);font-variant-ligatures:none;font-variant-numeric:slashed-zero;font-feature-settings:"liga" 0,"calt" 0}
+html:not(.static) .t-stat{font:700 var(--step-5)/1 var(--font-mono);letter-spacing:var(--tracking-stat);font-variant-numeric:tabular-nums slashed-zero}
+html:not(.static) .t-price{font:700 var(--step-1)/1.1 var(--font-mono);letter-spacing:var(--tracking-stat);font-variant-numeric:tabular-nums}
+html:not(.static) .t-measure{max-width:var(--measure-body)}
+
+/* ---------- apply the roles site-wide (live only) ---------- */
+/* display headings stay brutal: Archivo Black, slightly tightened (letter-spacing in em, scales with the step) */
+html:not(.static) :where(h1,h2,.disp,.page-h,.sec-h,.e-h){letter-spacing:var(--tracking-display)}
+html:not(.static) :where(h1,h2){line-height:var(--leading-4)}
+html:not(.static) :where(h3,h4){line-height:var(--leading-2)}
+
+/* mono labels: eyebrows, kickers, chips, badges, tags, pills, table heads, sidebar headings */
+html:not(.static) :is(.eyebrow,.ck-eyebrow,.kicker,.auth-kicker,.e-eyebrow,.sb-h,.am-label,.region-tag,.ad-label,.side-h,
+  .badge,.badge-t,.fbadge,.obadge,.hero-badge,.chip,.cd-chip,.tchip,.e-chip,.tag,.e-tag,.mk-tag,.auth-tag,
+  .pill,.ses-pill,.dpill,.cd-stage,.ses-stage,.kpi small,.ck-lbl,.e-lbl,.t th){
+  font-family:var(--font-mono);font-variant-ligatures:none;font-feature-settings:"calt" 0}
+html:not(.static) :is(.eyebrow,.ck-eyebrow,.kicker,.auth-kicker,.sb-h,.am-label,.region-tag,.ad-label,.side-h,.kpi small,.ck-lbl,.e-lbl){
+  letter-spacing:var(--tracking-label)}
+html:not(.static) :is(.badge,.badge-t,.fbadge,.obadge,.hero-badge,.pill,.ses-pill,.dpill,.cd-stage,.ses-stage,.tag,.e-tag,.mk-tag,.auth-tag){
+  letter-spacing:var(--tracking-chip)}
+
+/* navigation: top bar links, sidebar items, account menu, mobile tab bar */
+html:not(.static) :is(.top-links a,.sb-nav a,.sb-wa,.tb-nav a,.acct-menu [role=menuitem],.sl-nav a,.art-nav a){
+  font-family:var(--font-mono);font-variant-ligatures:none;font-feature-settings:"calt" 0;letter-spacing:0}
+html:not(.static) .top-links a{font-size:var(--step--1);font-weight:500}
+html:not(.static) :is(.sb-nav a,.sb-wa){font-size:var(--step--1)}
+html:not(.static) .acct-menu [role=menuitem]{font-size:var(--step--1)}
+html:not(.static) :is(.sb-h,.am-label,.acct-id small,.sb-word small){font-size:var(--step--2)}
+/* sentences that used the old condensed face (--cond) stay in the reading face, not mono */
+html:not(.static) :is(.hero p,.sb-word small,.sbar .logo small,.sb-tip){font-family:var(--font-sans);letter-spacing:0}
+html:not(.static) :is(.am-head b,.acct-id b,.tb-btn){font-size:var(--step--1)}
+html:not(.static) .am-head small{font-size:var(--step--2)}
+html:not(.static) :is(.tb-search kbd,.bell-n){font-size:var(--step--2)}
+html:not(.static) .tb-search input{font-size:max(1rem,var(--step-0))}
+html:not(.static) :is(.sb-word b,.tb-brand b){font-size:var(--step-0)}
+html:not(.static) .acct-av{font-size:var(--step--1)}
+
+/* numbers: stats, KPIs, counters, countdowns, prices — mono, tabular so digits do not jump while counting */
+html:not(.static) :is(.kpi b,.stat b,.e-stat b,.hc-stat b,.ck--stat .ck-num,.vstats b,.pi-sstats b,.org-stats b){
+  font-family:var(--font-mono)!important;font-weight:700!important;letter-spacing:var(--tracking-stat);font-variant-numeric:tabular-nums slashed-zero}
+html:not(.static) .dz-stat b{font-family:var(--font-mono)!important;font-weight:700!important;letter-spacing:var(--tracking-stat);font-variant-numeric:tabular-nums slashed-zero}
+html:not(.static) :is(.bigtimer,.timer,.cd-count,.e404-num){font-family:var(--font-mono);font-variant-numeric:tabular-nums slashed-zero;font-variant-ligatures:none}
+html:not(.static) :is(.price,.pi-price,.mk-price,.ev-price,.cart-price){font-family:var(--font-mono);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:var(--tracking-stat)}
