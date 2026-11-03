@@ -101,9 +101,12 @@
     if (!bell && page === "dashboard") { bell = document.createElement("button"); bell.className = "dash-bell"; $("#main").appendChild(bell); }
     if (!bell) return;
     const btn = document.createElement("button"); btn.type = "button"; btn.className = bell.className + " bell-btn"; btn.setAttribute("aria-haspopup", "true"); btn.setAttribute("aria-expanded", "false"); btn.setAttribute("aria-controls", "bell-pop");
-    const unread = () => list.filter(a => !F.readSet().has(a.id)).length;
-    const paint = () => { const n = unread(); btn.setAttribute("aria-label", `Announcements, ${n} unread`); btn.innerHTML = `${ico("bell")}${n ? `<i class="bell-n">${n}</i>` : ""}`; };
+    /* badge = the signed-in member's real unread count from the API (CC_AUTH.unread, set by js/auth.js); guests, 0,
+       errors and "still loading" all mean no badge. Local announcement read-state only styles the list rows. */
+    const unread = () => { const A = window.CC_AUTH; const n = A && A.user ? A.unread : null; return Number.isInteger(n) && n > 0 ? n : 0; };
+    const paint = () => { const n = unread(); btn.setAttribute("aria-label", n ? `Notifications, ${n} unread` : "Notifications"); btn.innerHTML = `${ico("bell")}${n ? `<i class="bell-n" aria-hidden="true">${n > 99 ? "99+" : n}</i>` : ""}`; };
     paint(); bell.replaceWith(btn);
+    document.addEventListener("cc:unread", paint);
     const pop = document.createElement("div"); pop.id = "bell-pop"; pop.className = "bell-pop"; pop.hidden = true; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", "Announcements");
     pop.innerHTML = `<div class="bp-h"><b>ANNOUNCEMENTS</b><button type="button" class="btn sm" data-all>Mark all read</button></div><ul class="ann-list">${list.slice(0, 5).map(a => annItem(a, read)).join("") || "<li class=muted>No announcements</li>"}</ul><a class="bp-more" href="announcements.html">See all announcements →</a>`;
     btn.after(pop);

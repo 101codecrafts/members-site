@@ -3,6 +3,7 @@
 (function () {
   const { $, $$, esc, ugx, ico } = window.CC_UI, API = window.CC_API, D = window.CC_DATA;
   const page = document.body.dataset.page, q = new URLSearchParams(location.search);
+  const STATIC = API ? !!API.STATIC : q.has("static");
   const LV_CLR = { Primary: "#13a35c", "O-Level": "#1b8acb", "A-Level": "#7a3fb0", University: "#a85400", Professional: "#0B1236" };
   const levelBadge = l => l ? `<span class="lvl" style="--lv:${LV_CLR[l] || "#0B1236"}">${esc(l)}</span>` : "";
   const avatars = arr => `<span class="avs">${arr.map(a => `<i aria-hidden="true">${esc(a)}</i>`).join("")}</span>`;
@@ -303,7 +304,7 @@
       let tN; $("#c-notes").oninput = e => { clearTimeout(tN); tN = setTimeout(async () => { await API.saveNotes(c.id, c.lessons[cur].id, e.target.value); $("#c-saved").textContent = "Saved " + new Date().toLocaleTimeString(); }, 600); };
       const tabs = $$("[role=tab]"); const sel = t => { tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $("#" + x.getAttribute("aria-controls")).hidden = !on; }); t.focus(); };
       tabs.forEach((t, i) => { t.onclick = () => sel(t); t.onkeydown = e => { if (e.key === "ArrowRight") sel(tabs[(i + 1) % tabs.length]); if (e.key === "ArrowLeft") sel(tabs[(i + tabs.length - 1) % tabs.length]); }; });
-      $("#c-books").innerHTML = c.books.map(b => `<a class="rcard book hov" href="${API.goHref(b.id)}" target="_blank" rel="noopener noreferrer"><div class="rthumb cover"><img src="${esc(b.cover)}" alt="Cover of ${esc(b.title)}" loading="lazy" class="heavy" onerror="this.remove()"><span class="badge-t ${b.open ? "cy" : ""}">${b.open ? "Free / open" : "Book"}</span></div><div class="rbody"><h3>${esc(b.title)}</h3><div class="src">${esc(b.author)}</div><span class="open">Open on ${esc(b.site)} ↗</span></div></a>`).join("");
+      $("#c-books").innerHTML = c.books.map(b => `<a class="rcard book hov" href="${API.goHref(b.id)}" target="_blank" rel="noopener noreferrer"><div class="rthumb cover t-cy">${STATIC ? "" : `<span class="rt-fallback"><span class="rm-ic" aria-hidden="true">${window.CC_UI.ico("openbook")}</span><span class="rm-meta"><b>${esc(b.site)}</b><small>Book</small></span></span>`}<img src="${esc(b.cover)}${!STATIC && /covers\.openlibrary\.org/.test(b.cover) && !/default=/.test(b.cover) ? "?default=false" : ""}" alt="Cover of ${esc(b.title)}" loading="lazy" class="heavy${STATIC ? "" : " rt-img"}"${STATIC ? ' onerror="this.remove()"' : ""}><span class="badge-t ${b.open ? "cy" : ""}">${b.open ? "Free / open" : "Book"}</span></div><div class="rbody"><h3>${esc(b.title)}</h3><div class="src">${esc(b.author)}</div><span class="open">Open on ${esc(b.site)} ↗</span></div></a>`).join("");
       const disc = () => $("#c-disc").innerHTML = c.discussion.map(d => `<div class="li"><span class="date">${esc(d.who.split(" ").map(w => w[0]).join(""))}</span><div class="grow"><b>${esc(d.who)}</b><small>${esc(d.t)} · ${esc(d.ago)} ago${d.replies ? " · " + d.replies + " replies" : ""}</small></div></div>`).join("");
       $("#c-dform").onsubmit = async e => { e.preventDefault(); const t = e.target.text.value.trim(); if (!t) return; c.discussion.unshift({ who: "You", t, ago: "now", replies: 0 }); disc(); e.target.reset(); await API.postDiscussion(c.id, t); };
       disc(); show();

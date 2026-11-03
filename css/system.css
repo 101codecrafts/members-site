@@ -226,6 +226,37 @@ html:not(.static) .rthumb .thumb-ph{width:auto;height:auto;background:none;order
 html:not(.static) .rthumb .thumb-ph svg{width:24px;height:24px}
 html:not(.static) .rthumb .thumb-ph.news{display:none}
 html:not(.static) .rthumb:is(:has(.thumb-ph),.noimg)::before{content:"";order:1;width:24px;height:4px;background:var(--accent-2)}
+/* media band v2 (js/ui.js resourceCard/newsCard): one fixed 64px band on every resource card -> rows line up, no empty slabs.
+   [type chip] provider / TYPE ............ [poster: real thumbnail only once it truly loaded] */
+html:not(.static) .rmedia{flex:none;display:flex;align-items:center;gap:var(--s-3);height:64px;padding:0 var(--s-4);background:var(--navy-2);border-bottom:1px solid var(--navy-3);color:var(--ink-inv);overflow:hidden}
+html:not(.static) :is(.rmedia,.rt-fallback) .rm-ic{flex:none;display:grid;place-items:center;width:36px;height:36px;background:var(--accent);color:var(--navy);border:2px solid var(--navy)}
+html:not(.static) :is(.rmedia,.rthumb).t-cy .rm-ic{background:var(--accent-2)}
+html:not(.static) :is(.rmedia,.rthumb).t-ink .rm-ic{background:var(--ink-inv)}
+html:not(.static) :is(.rmedia,.rt-fallback) .rm-ic svg{width:20px;height:20px}
+html:not(.static) :is(.rmedia,.rt-fallback) .rm-meta{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+html:not(.static) :is(.rmedia,.rt-fallback) .rm-meta b{font:600 var(--step--1)/1.15 var(--body);color:var(--ink-inv);overflow-wrap:anywhere}
+html:not(.static) :is(.rmedia,.rt-fallback) .rm-meta small{font:400 var(--step--2)/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-inv-muted)}
+html:not(.static) .rm-poster{flex:none;position:relative;display:grid;place-items:center;width:86px;height:48px;background:var(--navy-3);border:1px solid var(--navy-3);overflow:hidden}
+html:not(.static) .rm-poster.tall{width:36px}
+html:not(.static) .rm-poster .rm-pi{position:relative;z-index:1;width:18px;height:18px;color:var(--ink-inv-muted)}
+html:not(.static) .rm-poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .2s}
+html:not(.static) .rm-poster.ok img{opacity:1}
+html:not(.static) .rm-poster.ok .rm-pi{display:none}
+html:not(.static) .rm-poster.wide.ok:has(.rm-pi) .rm-pi{display:block}
+html:not(.static) .rc2[data-type=Video] .rm-poster.ok::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgb(11 18 54/.55))}
+html:not(.static) .rc2[data-type=Video] .rm-poster.ok .rm-pi{color:#fff;filter:drop-shadow(0 1px 2px rgb(0 0 0/.6))}
+html:not(.static) .rc2:not([data-type=Video]) .rm-poster.ok .rm-pi{display:none}
+html:not(.static) .rc2 .rbody h3{margin:0}
+/* news photo: 16:9 while it loads shows the band content centred (never an empty slab); missing / failed -> 64px band */
+html:not(.static) .rthumb .rt-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:var(--s-3);padding:0 var(--s-4)}
+html:not(.static) .rthumb .rt-fallback .rm-meta{flex:0 1 auto}
+html:not(.static) .rthumb .rt-img{position:relative;z-index:1}
+html:not(.static) .rthumb.noimg:has(.rt-fallback){height:64px;padding:0 var(--s-4)}
+html:not(.static) .rthumb.noimg:has(.rt-fallback)::before,html:not(.static) .rthumb.noimg:has(.rt-fallback) .badge-t{display:none}
+html:not(.static) .rthumb.noimg .rt-fallback{position:static;justify-content:flex-start;padding:0;width:100%}
+/* phones: band stays 64px, poster a touch smaller so provider names keep room */
+@media (max-width:480px){html:not(.static) .rm-poster{width:72px;height:40px}html:not(.static) .rm-poster.tall{width:30px}}
+html:not(.static) :is(.side .nav,.sbar nav) .badge{display:none!important}
 html:not(.static) .rbody{padding:var(--s-4);gap:var(--s-2)}
 html:not(.static) .rbody .src{color:var(--ink-inv-muted)}
 html:not(.static) .rbody p{color:var(--ink-inv-muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
