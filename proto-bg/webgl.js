@@ -4,8 +4,8 @@
   var el = CCH.layer(), cv = document.createElement("canvas"), gl = cv.getContext("webgl2", { alpha: true, premultipliedAlpha: true, antialias: false, powerPreference: "low-power" });
   if (!gl) { var s = document.createElement("script"); s.src = "/proto-bg/canvas.js"; document.head.appendChild(s); return; }
   el.appendChild(cv);
-  var VS = "#version 300 es\nin vec2 q;in vec4 a0;in vec4 a1;in vec4 a2;in vec2 a3;uniform vec2 R;uniform float t;uniform vec4 G[24];uniform int NG;out vec2 uv;out vec4 col;" +
-    "void main(){vec2 o=mod(a0.xy+a0.zw*t,R+80.)-40.,c0=o+a1.xy*.5,p=o+q*a1.xy;float k=1.;for(int i=0;i<24;i++){if(i>=NG)break;vec4 g=G[i];vec2 d=max(max(g.xy-c0,c0-g.xy-g.zw),0.);k=min(k,.1+.9*clamp((length(d)-max(a1.x,a1.y)*.5)/28.,0.,1.));}" +
+  var VS = "#version 300 es\nin vec2 q;in vec4 a0;in vec4 a1;in vec4 a2;in vec2 a3;uniform vec2 R;uniform float t;uniform vec4 G[40];uniform int NG;out vec2 uv;out vec4 col;" +
+    "void main(){vec2 o=mod(a0.xy+a0.zw*t,R+80.)-40.,c0=o+a1.xy*.5,p=o+q*a1.xy;float k=1.;for(int i=0;i<40;i++){if(i>=NG)break;vec4 g=G[i];vec2 d=max(max(g.xy-c0,c0-g.xy-g.zw),0.);k=min(k,.1+.9*clamp((length(d)-max(a1.x,a1.y)*.5)/28.,0.,1.));}" +
     "uv=vec2(mix(a1.z,a1.w,q.x),q.y);col=vec4(a2.rgb,k*a2.a*(.75+.25*sin(t*a3.y+a3.x)));" +
     "vec2 c=p/R*2.-1.;gl_Position=vec4(c.x,-c.y,0,1);}";
   var FS = "#version 300 es\nprecision mediump float;in vec2 uv;in vec4 col;uniform sampler2D T;out vec4 o;void main(){float a=texture(T,uv).a*col.a;o=vec4(col.rgb*a,a);}";
@@ -35,8 +35,8 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, ib); gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW); N = F.g.length + F.x.length; L.once();
   }
   function frame(t) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.uniform2f(uR, W, H); gl.uniform1f(uT, t); gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, N); }
-  var L = CCLOOP(frame, 30), red = CCH.reduced();
-  CCH.guard(function (r) { var a = new Float32Array(96); r.forEach(function (q, i) { a.set(q, i * 4); }); gl.uniform4fv(uG, a); gl.uniform1i(uN, r.length); if (red && N) L.once(); });
+  var L = CCLOOP(frame, CCH.fps()), red = CCH.reduced();
+  CCH.guard(function (r) { var a = new Float32Array(160); r.forEach(function (q, i) { a.set(q, i * 4); }); gl.uniform4fv(uG, a); gl.uniform1i(uN, r.length); if (red && N) L.once(); });
   (document.fonts ? document.fonts.load('22px "CC Mono"') : Promise.resolve()).then(function () { setup(); if (!red) L.start(); });
   CCH.onResize(setup); CCH.onTheme(setup);
   CCH.onPause(el, function (p) { if (red) return; p ? L.stop() : L.start(); });

@@ -22,7 +22,7 @@
   }
   (document.fonts ? document.fonts.load('16px "CC Mono"') : Promise.resolve()).then(build);
   /* text guard for DOM: the compositor owns each glyph's position, so JS cannot dim one glyph; instead cut holes in the layer with a mask */
-  CCH.guard(function (r) { var m = ["linear-gradient(#000,#000)"].concat(r.map(function (q) { return "linear-gradient(#000,#000) " + (q[0] - 6).toFixed(0) + "px " + (q[1] - 6).toFixed(0) + "px/" + (q[2] + 12).toFixed(0) + "px " + (q[3] + 12).toFixed(0) + "px no-repeat"; })).join(",");
+  if (!/noguard/.test(location.search)) CCH.guard(function (r) { var m = ["linear-gradient(#000,#000)"].concat(r.map(function (q) { return "linear-gradient(#000,#000) " + (q[0] - 6).toFixed(0) + "px " + (q[1] - 6).toFixed(0) + "px/" + (q[2] + 12).toFixed(0) + "px " + (q[3] + 12).toFixed(0) + "px no-repeat"; })).join(",");
     box.style.webkitMask = box.style.mask = r.length ? m : ""; box.style.webkitMaskComposite = "xor"; box.style.maskComposite = "exclude"; });
   CCH.onResize(build); CCH.onTheme(build);
   CCH.onPause(el, function (p) { anims.forEach(function (a) { p ? a.pause() : a.play(); }); });

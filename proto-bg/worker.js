@@ -5,7 +5,7 @@
   if (!cv.transferControlToOffscreen || !window.Worker || /[?&]noworker/.test(location.search)) { var s = document.createElement("script"); s.src = "/proto-bg/canvas.js"; document.head.appendChild(s); return; }
   el.appendChild(cv);
   var off = cv.transferControlToOffscreen(), w = new Worker("/proto-bg/worker-thread.js"), red = CCH.reduced();
-  var msg = function () { return { W: innerWidth, H: innerHeight, dpr: CCH.dpr(), theme: CCH.theme(), run: !red }; };
+  var msg = function () { return { W: innerWidth, H: innerHeight, dpr: CCH.dpr(), theme: CCH.theme(), run: !red, fps: CCH.fps() }; };
   var m = msg(); m.canvas = off; w.postMessage(m, [off]);
   CCH.guard(function (r) { w.postMessage({ rects: r }); });
   var up = function () { w.postMessage(msg()); }; CCH.onResize(up); CCH.onTheme(up);

@@ -7,5 +7,8 @@
   var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/proto-bg/base.css"; document.head.appendChild(l);
   ["common", "field", "draw", "static", e].forEach(function (f) { var s = document.createElement("script"); s.src = "/proto-bg/" + f + ".js"; s.async = false; document.head.appendChild(s); });
   };
-  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", go) : go();
+  /* start after the load event + an idle slot, so the background never competes with LCP (?eager to skip) */
+  var idle = function () { (window.requestIdleCallback || setTimeout)(go, { timeout: 1500 }); };
+  if (q.has("eager")) document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", go) : go();
+  else document.readyState === "complete" ? idle() : addEventListener("load", idle);
 })();
