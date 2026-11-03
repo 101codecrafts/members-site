@@ -61,6 +61,8 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
   .tb-nav .ic-menu{display:none}
   /* the brand lives in the sidebar head; when that is a bare rail the top bar shows it instead */
   html:not(.sb-collapsed) .tb-brand{display:none}
+  /* the sidebar head already has the collapse toggle: one control, not two side by side */
+  .tb-nav{display:none}
 }
 .sb-tip{position:fixed;z-index:1200;transform:translateY(-50%);pointer-events:none;background:var(--sh-navy);color:#fff;border:1px solid var(--sh-or);
   padding:6px 10px;font:600 13px/1.2 var(--cond);letter-spacing:.2px;white-space:nowrap;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
