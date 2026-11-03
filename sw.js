@@ -1,10 +1,10 @@
 /* 101 Codecrafts service worker — cached app shell + offline fallback.
    Strategy: HTML = network-first (falls back to cache, then offline.html); static assets = stale-while-revalidate;
    API and cross-origin requests are never cached here (except CDN libraries pinned by version). Small cache for mobile data. */
-const VERSION = "cc-v15";
+const VERSION = "cc-v16";
 const SHELL = ["./", "index.html", "dashboard.html", "offline.html", "404.html", "courses.html", "resources.html", "news.html", "course.html",
   "css/bundle-app.css", "css/bundle-dashboard.css", "css/bundle-landing.css", "css/bundle-theme.css", "css/courses.css", "css/dashboard.fit.css", "css/landing.fit.css",
-  "js/data.js", "js/api.js", "js/shell.js", "js/dash-layout.js", "js/activity.js", "js/share.js", "js/ui.js", "js/motion.js", "js/era.js", "js/site-stats.js", "js/site-social.js", "js/pages.js",
+  "js/data.js", "js/api.js", "js/shell.js", "js/dash-layout.js", "js/activity.js", "js/share.js", "js/ui.js", "js/motion.js", "js/era.js", "js/site-stats.js", "js/site-social.js", "js/pages.js", "js/bg.js", "js/bg-paint.js", "js/bg-worker.js",
   "assets/fonts/archivo-black-400.woff2", "assets/fonts/russo-one-400.woff2", "assets/fonts/archivo-black-cc.woff2", "assets/fonts/ibm-plex-sans-var.woff2", "assets/fonts/jetbrains-mono-var.woff2",
   "assets/img/team/businge-daglous.webp", "assets/img/team/mwesigwa-allan.webp", "assets/img/team/ngabirano-octavious.webp", "assets/img/logo-101-sidebar.webp", "assets/img/logo-101-header.webp", "assets/icons/icon-192.png", "manifest.webmanifest"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });

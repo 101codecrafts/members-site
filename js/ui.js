@@ -97,7 +97,8 @@
       <button type="button" class="cc-tb-toggle" aria-expanded="false" aria-label="View settings: Lite mode, language, theme">${ico("gear")}</button>
       <button type="button" id="cc-lite" aria-pressed="${html.classList.contains("lite")}">${ico("download")} Lite</button>
       <label>${ico("chat")}<select id="cc-lang" aria-label="Language"><option value="en">English</option><option value="lg">Luganda</option><option value="sw">Kiswahili</option><option value="fr">Français</option></select></label>
-      <button type="button" id="cc-theme" aria-pressed="${html.dataset.theme === "dark"}" aria-label="Toggle dark theme">◐</button>`;
+      <button type="button" id="cc-theme" aria-pressed="${html.dataset.theme === "dark"}" aria-label="Toggle dark theme">◐</button>
+      <label class="cc-bgm">${ico("grid")}<select id="cc-bgm" aria-label="Background animation"><option value="on">Background: On</option><option value="reduced">Background: Reduced</option><option value="off">Background: Off</option></select></label>`;
     document.body.appendChild(bar);
     const tg = bar.querySelector(".cc-tb-toggle");
     /* shell pages: dock the settings toggle in the top bar (a fixed corner button covers card content); the open panel drops below the bar */
@@ -126,6 +127,9 @@
     $("#cc-lite").onclick = e => { const on = !html.classList.contains("lite"); html.classList.toggle("lite", on); localStorage.setItem("lite", on ? "1" : "0"); e.currentTarget.setAttribute("aria-pressed", on); if (!on) location.reload(); };
     const lang = localStorage.getItem("lang") || "en"; $("#cc-lang").value = lang; if (lang !== "en") setLang(lang);
     $("#cc-lang").onchange = e => setLang(e.target.value);
+    /* background animation (dark theme only; WCAG 2.2.2 pause control): On / Reduced (one still frame) / Off, in localStorage.cc_bg_motion */
+    const bgm = $("#cc-bgm"); try { bgm.value = ["on", "reduced", "off"].includes(localStorage.cc_bg_motion) ? localStorage.cc_bg_motion : "on"; } catch (e) {}
+    bgm.onchange = e => { const v = e.target.value; if (window.CC_BG) window.CC_BG.set(v); else try { localStorage.cc_bg_motion = v; } catch (x) {} };
     /* theme: an explicit choice is stored ("dark"/"light"); with none stored the page follows the system setting live */
     const applyTheme = (dark, anim) => {
       if (html.classList.contains("static")) return;

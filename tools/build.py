@@ -62,7 +62,7 @@ def scripts(charts=False):
     tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
-    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>']
+    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>']
     return '\n'.join(tags)
 
 # Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
@@ -182,7 +182,7 @@ def bundle(name, parts):
     out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
-bundle('bundle-theme.css', ['theme-dark.css', 'theme.css'])   # loaded LAST on every page (see THEME_LINK)
+bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css'])   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
 bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])

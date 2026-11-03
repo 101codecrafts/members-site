@@ -1885,17 +1885,7 @@ html:not(.static) :is(input,select,textarea)[aria-invalid=true]{border-color:var
 /* ---------------------------------------------------------------- 5. brand motif */
 html:not(.static) .shell .topbar::after,html:not(.static) .page>.hdr::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--stripe);pointer-events:none;z-index:2}
 html:not(.static) .shell .topbar::after{bottom:-1px}   /* sits on the bar's own bottom edge, so it reads on navy even above an orange banner */
-/* faint grid-line field behind the landing hero: phones (.page::before, above the fold) and desktop (.lhero::after) */
-@media (max-width:1023.98px){
-  html:not(.static) .page:has(>.lhero)::before{content:"";position:absolute;left:0;right:0;top:0;height:min(900px,140vh);pointer-events:none;
-    background-image:linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),linear-gradient(var(--grid-line) 1px,transparent 1px);background-size:44px 44px;background-position:-1px -1px;
-    -webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent)}
-}
-@media (min-width:1024px){
-  html:not(.static) .page>.lhero::after{content:"";position:absolute;inset:0;pointer-events:none;
-    background-image:linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),linear-gradient(var(--grid-line) 1px,transparent 1px);background-size:44px 44px;background-position:-1px -1px;
-    -webkit-mask-image:radial-gradient(120% 90% at 30% 40%,#000 40%,transparent);mask-image:radial-gradient(120% 90% at 30% 40%,#000 40%,transparent)}
-}
+/* (the landing hero's own 44px grid-line field was removed in round 6: the site grid in css/bg.css replaces it) */
 
 /* the member-card CTAs added on the landing hero, dashboard and profile/settings */
 .mc-cta{display:inline-flex;align-items:center;gap:var(--s-2,8px);min-height:44px;margin-top:var(--s-3,12px);padding:0 var(--s-3,12px);border:var(--bw,2px) solid var(--border-strong,#0B1236);background:var(--surface-1,#fff);color:var(--text,#0B1236);font:700 var(--step--1)/1.2 var(--body);text-decoration:none;box-shadow:var(--sh,4px) var(--sh,4px) 0 var(--accent,#fc8c0c)}
