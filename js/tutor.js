@@ -2,7 +2,7 @@
 (async function () {
   const { $, esc, ugx } = window.CC_UI, API = window.CC_API;
   const t = await API.fetchTutorOverview(); const cls = ["or", "", "ink", "cy"];
-  $("#t-kpis").innerHTML = t.kpis.map((k, i) => `<div class="kpi ${cls[i]}"><small>${esc(k.label)}</small><b>${k.money ? ugx(k.value) : esc(k.value)}</b></div>`).join("");
+  $("#t-kpis").innerHTML = t.kpis.map((k, i) => `<div class="kpi ck-skin ${cls[i]}"><small>${esc(k.label)}</small><b>${k.money ? ugx(k.value) : esc(k.value)}</b></div>`).join("");
   $("#tb-tc tbody").innerHTML = t.courses.map(c => `<tr><td><b>${esc(c.title)}</b></td><td>${c.learners}</td><td><span class="pill ${c.status.split(" ")[0]}">${esc(c.status)}</span></td><td>${c.completion ? c.completion + "%" : "—"}</td></tr>`).join("");
   $("#tb-tl tbody").innerHTML = t.learners.map(l => `<tr><td><b>${esc(l.name)}</b></td><td>${esc(l.course)}</td><td><div class="row" style="flex-wrap:nowrap"><div class="prog" style="flex:1" role="progressbar" aria-valuenow="${l.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(l.name)} progress"><i style="width:${l.progress}%"></i></div><b>${l.progress}%</b></div></td><td>${esc(l.last)}</td></tr>`).join("");
   $("#ls-sessions").innerHTML = t.sessions.map(s => `<div class="li"><span class="date"><span>${s.m}<br><b>${s.d}</b></span></span><div class="grow"><b>${esc(s.title)}</b><small>${esc(s.meta)}</small></div></div>`).join("");

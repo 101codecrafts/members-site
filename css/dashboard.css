@@ -296,7 +296,4 @@ html:not(.static) .app>:nth-child(69){grid-column:1/-1;grid-row:14;margin-top:va
    and the hover lift on the live site (TODO(founder) in src/dashboard.html). ?static=1 is untouched. */
 .tool .tool-a{color:inherit;text-decoration:none}
 html:not(.static) .app.dz .dz-grid-tools>.tool:has(.tool-a){position:relative}
-html:not(.static) .tool .tool-a::after{content:"";position:absolute;inset:0;z-index:1}
-html:not(.static) .tool:has(.tool-a:focus-visible){outline:3px solid var(--lcy);outline-offset:3px}
-html:not(.static) .tool .tool-a:focus-visible{outline:none}
 html:not(.static) .tool-soon .go{display:none!important}

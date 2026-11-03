@@ -1,0 +1,158 @@
+/* =====================================================================================
+   101 Codecrafts card system ("ck") — ONE brutalist card for the whole live site.
+   Research + principles: work/research/card-ui-principles.md · living style guide: cards.html
+   Every rule is html:not(.static), so ?static=1 (the pixel-matched mockups) never changes.
+   Paints with ROLE tokens only (css/theme.css), so dark mode needs no generated mapping.
+
+   Anatomy (all slots optional, source order = reading order):
+     .ck                     the card (article/li). Never an <a>: the link lives on the title.
+       .ck-media[--1x1|--4x3]  media, fixed aspect ratio (16:9 default), decorative unless it carries meaning
+       .ck-eyebrow             badge / category / kicker (one line)
+       .ck-title               heading element (h2/h3), clamped to 2 lines; holds the primary .ck-link
+       .ck-meta                meta row (source, date, level...)
+       .ck-body                supporting text, clamped to 3 lines
+       .ck-foot                footer actions, pinned to the bottom so rows line up
+   Whole-card click (Heydon Pickering, Inclusive Components "Cards"): ONE primary link (.ck-link) whose ::after
+   is stretched over the card; secondary buttons/links are raised above it (position:relative; z-index:2).
+   No nested interactive elements, no block <a> around headings.
+   Variants: (default outlined) · --inv (navy) · --accent (orange fill) · --stat · --compact (list row) · --media (flush media)
+   States: hover lift (hover devices only, link cards only) · pressed (pushes into the shadow) · focus-visible (thick, offset,
+           two-colour) · .is-selected / [aria-current] · .is-disabled / [aria-disabled=true] · --skeleton · --empty · --error
+   .ck-skin = the same skin and states for legacy cards whose LAYOUT is owned elsewhere (landing/dashboard mockup grids).
+   ===================================================================================== */
+:root{
+  --ck-bw:2px;                       /* the one border */
+  --ck-line:var(--border-strong);    /* light: navy #0B1236 = 17.6:1 on white, 16.4:1 on the page */
+  --ck-sh:4px;                       /* resting hard shadow offset */
+  --ck-sh-up:7px;                    /* hover: lifted 3px, shadow grows by the same 3px (the card "floats") */
+  --ck-sh-c:var(--shadow-ink);
+  --ck-bg:var(--surface-1); --ck-ink:var(--text); --ck-mut:var(--text-muted);
+  --ck-pad:var(--pad-card,16px); --ck-gap:var(--gap-stack,8px);
+  --ck-focus:#00758A;                /* focus ring: dark cyan, 5.4:1 on white, 4.9:1 on the page; never the shadow colour */
+  --ck-focus-2:var(--surface-1);     /* inner ring of the two-colour focus indicator (WCAG C40) */
+  --ck-sel:var(--accent);
+  --ck-ease:cubic-bezier(.2,.8,.2,1); --ck-dur:.16s;
+  --ck-min:260px;                    /* min column width in .ck-grid */
+}
+:root[data-theme=dark]{
+  --ck-line:#61709A;                 /* 3.6:1 on --surface-1, 3.3:1 on --surface-2, 3.25:1 on --fill-inverse, 4.0:1 on --bg */
+  --ck-focus:#5FE3F0;                /* 13.6:1 on --bg */
+  --ck-focus-2:var(--bg);
+}
+
+/* ---------------------------------------------------------------- skin: border, shadow, motion (shared by .ck and .ck-skin) */
+html:not(.static) :is(.ck,.ck-skin){border:var(--ck-bw) solid var(--ck-line)!important;border-radius:0!important;box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--ck-sh-c);
+  transition:translate var(--ck-dur) var(--ck-ease),box-shadow var(--ck-dur) var(--ck-ease)}
+/* ---------------------------------------------------------------- layout: the anatomy */
+html:not(.static) .ck{position:relative;display:flex;flex-direction:column;gap:var(--ck-gap);min-width:0;height:100%;margin:0;padding:var(--ck-pad);
+  background:var(--ck-bg);color:var(--ck-ink);text-align:left;overflow-wrap:anywhere}
+html:not(.static) .ck>*{margin-block:0}
+html:not(.static) .ck-media{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;margin:calc(-1 * var(--ck-pad)) calc(-1 * var(--ck-pad)) 0;
+  border-bottom:var(--ck-bw) solid var(--ck-line);background:var(--surface-3)}
+html:not(.static) .ck-media--1x1{aspect-ratio:1/1} html:not(.static) .ck-media--4x3{aspect-ratio:4/3}
+html:not(.static) .ck-media>img,html:not(.static) .ck-media>picture>img{display:block;width:100%;height:100%;object-fit:cover}
+html:not(.static) .ck-eyebrow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2,8px);font:700 var(--step--2)/1.2 var(--cond,var(--body));letter-spacing:.06em;text-transform:uppercase;color:var(--ck-mut)}
+html:not(.static) .ck-title{font:600 var(--step-0)/1.3 var(--body);color:inherit;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;text-wrap:pretty}
+html:not(.static) .ck-meta{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-1,4px) var(--s-3,12px);font-size:var(--step--2);color:var(--ck-mut)}
+html:not(.static) .ck-body{font-size:var(--step--1);line-height:1.45;color:var(--ck-mut);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
+html:not(.static) .ck-foot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2,8px);margin-top:auto!important;padding-top:var(--s-2,8px)}
+html:not(.static) .ck-foot :is(a,button){min-height:44px}
+html:not(.static) .ck-cta{display:inline-flex;align-items:center;gap:var(--s-2,8px);min-height:44px;font:700 var(--step--1) var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--ck-ink)}
+html:not(.static) .ck-cta svg{width:18px;height:18px}
+/* media cards: media flush to the border, the rest padded (works for legacy inner wrappers too) */
+html:not(.static) .ck.ck--media{padding:0;gap:0}
+html:not(.static) .ck.ck--media>.ck-media{margin:0}
+html:not(.static) .ck.ck--media>:not(.ck-media){padding-inline:var(--ck-pad)}
+html:not(.static) .ck.ck--media>:not(.ck-media):nth-child(2){padding-top:var(--ck-pad)}
+html:not(.static) .ck.ck--media>:last-child{padding-bottom:var(--ck-pad)}
+
+/* flush cards: legacy inner wrappers (.cbody, .rbody, .mk-body) own their padding; media sits flush */
+html:not(.static) .ck.ck--flush{padding:0;gap:0}
+html:not(.static) .ck.ck--flush>.ck-media{margin:0}
+
+/* ---------------------------------------------------------------- the stretched primary link */
+html:not(.static) .ck-link{color:inherit;text-decoration:none}
+html:not(.static) .ck-link::after{content:"";position:absolute;inset:calc(-1 * var(--ck-bw));z-index:1}
+/* anything that could become the ::after's containing block is neutralised; media keeps its own badges */
+html:not(.static) .ck:has(.ck-link) :where(:not(.ck-media,.ck-media *,.ck-raise,.ck-raise *,svg,svg *)){position:static}
+html:not(.static) .ck:has(.ck-link) :is(a[href],button,input,select,textarea,summary,label,[tabindex]:not([tabindex="-1"]),.ck-raise):not(.ck-link){position:relative;z-index:2}
+html:not(.static) .ck:has(.ck-link){cursor:pointer}
+html:not(.static) .ck-link:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+/* focus: the ring goes round the WHOLE card (it is the target), thick + offset, two colours so it shows on any page/theme */
+html:not(.static) .ck-link:focus-visible{outline:none}
+html:not(.static) :is(.ck,.ck-skin):has(.ck-link:focus-visible){outline:3px solid var(--ck-focus);outline-offset:4px;
+  box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--ck-sh-c),0 0 0 4px var(--ck-focus-2)}
+html:not(.static) :is(.ck,.ck-skin) :is(a[href],button,summary,input,select,textarea):not(.ck-link):focus-visible{outline:3px solid var(--ck-focus);outline-offset:2px}
+
+/* ---------------------------------------------------------------- interaction states (link cards only) */
+@media (hover:hover) and (pointer:fine){
+  html:not(.static) :is(.ck,.ck-skin):has(.ck-link):hover{translate:-3px -3px;box-shadow:var(--ck-sh-up) var(--ck-sh-up) 0 var(--ck-sh-c)}
+  html:not(.static) :is(.ck,.ck-skin).ck--inv:has(.ck-link):hover{box-shadow:var(--ck-sh-up) var(--ck-sh-up) 0 var(--accent)}
+}
+/* pressed: pushed INTO its shadow (only when the primary link is pressed, never when a secondary button is) */
+html:not(.static) :is(.ck,.ck-skin):has(.ck-link:active){translate:var(--ck-sh) var(--ck-sh)!important;box-shadow:0 0 0 var(--ck-sh-c)!important;transition-duration:.05s}
+/* container cards (actions, no single destination) never lift: hover means "you can click this", and they are not clickable */
+
+/* selected: thick accent bar + a visible "Selected" mark, never colour alone */
+html:not(.static) :is(.ck,.ck-skin):is(.is-selected,[aria-current=true],[aria-current=page],[aria-selected=true]){box-shadow:inset 0 6px 0 var(--ck-sel),var(--ck-sh) var(--ck-sh) 0 var(--ck-sh-c);outline:var(--ck-bw) solid var(--ck-line);outline-offset:0}
+html:not(.static) .ck:is(.is-selected,[aria-current=true],[aria-current=page],[aria-selected=true])::before{content:"\2713  Selected";position:absolute;top:calc(-1 * var(--ck-bw));right:calc(-1 * var(--ck-bw));z-index:3;padding:2px 8px;pointer-events:none;
+  font:700 var(--step--2)/1.4 var(--body);letter-spacing:.04em;text-transform:uppercase;background:var(--ck-line);color:var(--ck-bg)}
+/* disabled: dashed outline, no shadow, no lift, the link inert (inactive components are exempt from 1.4.11 but stay readable) */
+html:not(.static) :is(.ck,.ck-skin):is(.is-disabled,[aria-disabled=true]){border-style:dashed!important;box-shadow:none!important;translate:none!important;cursor:not-allowed}
+html:not(.static) .ck:is(.is-disabled,[aria-disabled=true]) :is(.ck-title,.ck-eyebrow){color:var(--ck-mut)}
+html:not(.static) .ck:is(.is-disabled,[aria-disabled=true]) .ck-media{filter:grayscale(1)}
+html:not(.static) .ck:is(.is-disabled,[aria-disabled=true]) .ck-link{pointer-events:none}
+
+/* ---------------------------------------------------------------- variants */
+html:not(.static) .ck.ck--inv,html:not(.static) .ck-skin.ck--inv{--ck-bg:var(--fill-inverse);--ck-ink:var(--on-inverse);--ck-mut:var(--ink-inv-muted,#B9C1DA);--ck-focus-2:var(--fill-inverse)}
+html:not(.static) .ck.ck--accent{--ck-bg:var(--accent);--ck-ink:var(--on-accent);--ck-mut:var(--on-accent);--ck-line:var(--brand-navy)}
+html:not(.static) .ck.ck--stat{justify-content:flex-end;gap:var(--s-1,4px)}
+html:not(.static) .ck.ck--stat .ck-num{font:400 var(--step-4)/1 var(--disp);color:inherit;font-variant-numeric:tabular-nums}
+html:not(.static) .ck.ck--stat .ck-lbl{font:700 var(--step--2)/1.3 var(--cond,var(--body));letter-spacing:.06em;text-transform:uppercase;color:var(--ck-mut)}
+/* compact / list row: icon | text | action on one row, denser padding; still 44px targets */
+html:not(.static) .ck.ck--compact{--ck-pad:var(--s-3,12px);flex-direction:row;align-items:center;gap:var(--s-3,12px)}
+html:not(.static) .ck.ck--compact>.ck-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+html:not(.static) .ck.ck--compact .ck-title{-webkit-line-clamp:1;line-clamp:1}
+html:not(.static) .ck.ck--compact .ck-foot{margin-top:0!important;padding-top:0}
+
+/* cards on a navy band (paths, closing-soon): the hard shadow switches to orange so it still reads against the band */
+html:not(.static) :is(.e-paths,.closing,.cw-row) :is(.ck,.ck-skin){--ck-sh-c:var(--accent)}
+
+/* ---------------------------------------------------------------- loading skeleton (brutal hatch, no shimmer under reduced motion) */
+html:not(.static) .ck.ck--skeleton{box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--border-subtle);border-color:var(--border-subtle)!important;cursor:progress}
+html:not(.static) .ck-sk{display:block;min-height:12px;background:repeating-linear-gradient(-45deg,var(--border-subtle) 0 8px,var(--surface-3) 8px 16px);background-size:200% 100%;animation:ck-sk 1.2s linear infinite}
+html:not(.static) .ck-sk.ck-media{border-bottom-color:var(--border-subtle)}
+html:not(.static) .ck-sk.t{height:1.3em;width:80%} html:not(.static) .ck-sk.m{height:.9em;width:45%} html:not(.static) .ck-sk.b{height:.9em;width:100%}
+html:not(.static) .ck-sk.f{height:44px;width:40%;margin-top:auto}
+@keyframes ck-sk{to{background-position:-22.6px 0}}
+
+/* ---------------------------------------------------------------- empty + error */
+html:not(.static) .ck.ck--empty{border-style:dashed!important;box-shadow:none;align-items:flex-start;background:var(--surface-2)}
+html:not(.static) .ck.ck--error{--ck-line:var(--color-danger,#d93636);box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--color-danger,#d93636)}
+html:not(.static) .ck.ck--error .ck-eyebrow{color:var(--text)}
+html:not(.static) :is(.ck--empty,.ck--error) .ck-ic{width:40px;height:40px;display:grid;place-items:center;border:var(--ck-bw) solid currentColor;font:700 20px/1 var(--body)}
+:root[data-theme=dark] .ck.ck--error{--ck-line:#FF8A8A}
+
+/* ---------------------------------------------------------------- grids: equal heights per row, actions pinned */
+html:not(.static) .ck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--ck-min)),1fr));gap:var(--gap-card,16px);align-items:stretch;margin:0;padding:0;list-style:none}
+html:not(.static) .ck-grid>li{display:flex;min-width:0;margin:0}
+html:not(.static) .ck-grid>li>:is(.ck,.ck-skin){flex:1}
+/* a list that holds cards: no bullets, equal-height children */
+html:not(.static) :is(ul,ol):has(>li>.ck){list-style:none;padding-left:0}
+
+/* ---------------------------------------------------------------- motion + performance */
+@media (prefers-reduced-motion:reduce){
+  html:not(.static) :is(.ck,.ck-skin){transition:none!important}
+  html:not(.static) :is(.ck,.ck-skin):hover{translate:none!important}
+  html:not(.static) .ck-sk{animation:none!important;background-size:auto}
+}
+html.lite:not(.static) :is(.ck,.ck-skin){transition:none}
+html.lite:not(.static) .ck-sk{animation:none}
+/* long grids: let the browser skip layout/paint for off-screen cards (content-visibility) without layout shift */
+html:not(.static) .ck-grid.ck-cv>li{content-visibility:auto;contain-intrinsic-size:auto 320px}
+
+/* forced colours (Windows High Contrast): keep the outline and focus visible */
+@media (forced-colors:active){
+  html:not(.static) :is(.ck,.ck-skin){border-color:CanvasText!important;box-shadow:none}
+  html:not(.static) :is(.ck,.ck-skin):has(.ck-link:focus-visible){outline:3px solid Highlight}
+}

@@ -44,11 +44,11 @@
   /* ---------------- news card ---------------- */
   function newsCard(n, savedSet) {
     const on = savedSet.has(n.id);
-    return `<article class="fcard news-c" data-id="${esc(n.id)}">
+    return `<article class="fcard news-c ck" data-id="${esc(n.id)}">
       <div class="fc-meta"><span class="fbadge t-${esc(n.tab)}">${esc(TAB_LABEL[n.tab] || "Dev")}</span><span class="src"><b>${esc(n.source)}</b> · <time${n.at ? ` datetime="${esc(n.at)}"` : ""}>${esc(n.at ? agoTxt(n.at) : (n.ago ? n.ago + " ago" : ""))}</time></span>${saveBtn(on)}</div>
-      <h3><a href="${go(n.id)}" target="_blank" rel="noopener noreferrer">${esc(n.title)}</a></h3>
+      <h3 class="ck-title"><a href="${go(n.id)}" target="_blank" rel="noopener noreferrer">${esc(n.title)}<span class="sr-only"> (opens in a new tab)</span></a></h3>
       <p class="sum" title="AI summary">${ico("brain", "i ai-i")}${esc(n.summary || "")}</p>
-      <div class="fc-act"><a class="btn or sm" href="${go(n.id)}" target="_blank" rel="noopener noreferrer" aria-label="Read on ${esc(n.source)} (opens in a new tab)">Read on source ↗</a>
+      <div class="fc-act ck-foot"><a class="btn or sm" href="${go(n.id)}" target="_blank" rel="noopener noreferrer" aria-label="Read on ${esc(n.source)} (opens in a new tab)">Read on source ↗</a>
         <button type="button" class="btn sm" data-explain>${ico("brain")}Explain with 101 AI</button></div>
     </article>`;
   }
@@ -63,13 +63,13 @@
   /* ---------------- opportunity card ---------------- */
   function oppCard(o, savedSet, rem) {
     const l = left(o.deadline), on = savedSet.has(o.id), r = !!rem[o.id];
-    return `<article class="fcard opp-c" data-id="${esc(o.id)}">
+    return `<article class="fcard opp-c ck" data-id="${esc(o.id)}">
       <div class="fc-meta"><span class="fbadge ty-${esc(o.type)}">${esc(cap(o.type))}</span><span class="fcd ${l.cls}" data-deadline="${esc(o.deadline)}">${ico("calendar")}${l.t}</span>${saveBtn(on)}</div>
-      <h3>${esc(o.title)}</h3>
+      <h3 class="ck-title">${esc(o.title)}</h3>
       <div class="org">${ico("briefcase")}<b>${esc(o.org)}</b></div>
       <dl class="facts"><div><dt>Deadline</dt><dd>${fmtDay(o.deadline)}, 23:59 EAT</dd></div><div><dt>Level</dt><dd>${esc(o.level)}</dd></div><div><dt>Where</dt><dd>${esc(o.location)}${o.remote ? ' <span class="atag">Remote</span>' : ""}</dd></div>${o.value ? `<div><dt>Value</dt><dd>${esc(o.value)}</dd></div>` : ""}</dl>
       <p class="elig"><b>Eligibility:</b> ${esc(o.eligibility)}</p>
-      <div class="fc-act"><a class="btn or sm" href="${go(o.id)}" target="_blank" rel="noopener noreferrer" aria-label="Apply for ${esc(o.title)} on ${esc(o.org)} site (opens in a new tab)">Apply on site ↗</a>
+      <div class="fc-act ck-foot"><a class="btn or sm" href="${go(o.id)}" target="_blank" rel="noopener noreferrer" aria-label="Apply for ${esc(o.title)} on ${esc(o.org)} site (opens in a new tab)">Apply on site ↗</a>
         <button type="button" class="btn sm" data-remind aria-pressed="${r}">${ico("bell")}<span>${r ? "Reminder set" : "Remind me"}</span></button></div>
     </article>`;
   }
@@ -154,7 +154,7 @@
       $("#os-type").innerHTML = FD.oppTypes.map(t => `<option value="${t}">${cap(t)}</option>`).join("");
       $("#os-level").innerHTML = FD.oppLevels.map(t => `<option>${t}</option>`).join("");
       const week = all.filter(o => { const l = left(o.deadline); return l.d >= 0 && l.d < 7; });
-      $("#closing-row").innerHTML = week.map(o => { const l = left(o.deadline); return `<a class="cw hov" href="${go(o.id)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(o.title)}, ${l.t} (opens in a new tab)"><span class="fcd ${l.cls}" data-deadline="${esc(o.deadline)}">${ico("calendar")}${l.t}</span><b>${esc(o.title)}</b><small>${esc(o.org)} · ${esc(cap(o.type))}</small></a>`; }).join("");
+      $("#closing-row").innerHTML = week.map(o => { const l = left(o.deadline); return `<article class="cw ck"><span class="fcd ${l.cls}" data-deadline="${esc(o.deadline)}">${ico("calendar")}${l.t}</span><h3 class="ck-title"><a class="ck-link" href="${go(o.id)}" target="_blank" rel="noopener noreferrer">${esc(o.title)}<span class="sr-only">, ${l.t} (opens in a new tab)</span></a></h3><small class="ck-meta">${esc(o.org)} · ${esc(cap(o.type))}</small></article>`; }).join("");
       $("#closing").hidden = !week.length;
       const grid = $("#opp-grid");
       const draw = () => { const sv = F.saved("opportunity"), rem = F.reminders();

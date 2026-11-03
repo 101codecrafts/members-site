@@ -83,8 +83,6 @@
 
 /* ---------- product card ---------- */
 .mk-card{display:flex;flex-direction:column;background:#fff;border:2px solid var(--ink);min-width:0;transition:transform .15s,box-shadow .15s}
-.mk-card:hover{transform:translate(-3px,-3px);box-shadow:var(--shadow-brutal-accent)}
-.mk-card:focus-within{outline:3px solid var(--color-focus);outline-offset:2px}
 .mk-thumb{position:relative;display:block;aspect-ratio:1;border-bottom:2px solid var(--ink);background:var(--color-surface)}
 .mk-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .mk-off{position:absolute;right:8px;top:8px;background:var(--color-danger);color:#fff;font:800 var(--step--2) var(--body);padding:3px 7px;border:2px solid var(--ink)}
@@ -296,7 +294,6 @@
 /* ---------- dark theme ---------- */
 
 /* ---------- Lite / static ---------- */
-.lite .mk-card:hover{transform:none;box-shadow:none}
 .lite .mk-slide{background-image:none!important}
 .lite .mk-slide-in{max-width:none}
 .lite .pi-main{cursor:default}.lite .pi-zoombtn{display:none}
@@ -352,3 +349,12 @@ main.content{overflow-x:clip}
   @container (min-width:1146px){.mk-row{--n:5}}
   @container (min-width:1372px){.mk-row{--n:6}}
 }
+/* cards round: loading skeletons hold each row's final height (no layout shift when the products arrive) */
+html:not(.static) .mk-row>.ck--skeleton .mk-sk-b{display:block;height:285px;margin:var(--s-3,12px);width:auto}
+html:not(.static) .mk-aff .mk-row>.ck--skeleton .mk-sk-b{height:190px}
+/* cards round: hold the market bar's height until js/market.js fills it (it pushed every product row down 116px at >=768px) */
+html:not(.static) .mk-top:empty{min-height:116px}
+@media (max-width:767px){html:not(.static) .mk-top:empty{min-height:170px}}
+html:not(.static) .mk-slides:empty{min-height:312px}
+@media (min-width:768px) and (max-width:1279px){html:not(.static) .mk-slides:empty{min-height:359px}}
+@media (max-width:767px){html:not(.static) .mk-slides:empty{min-height:291px}}

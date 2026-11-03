@@ -42,20 +42,20 @@
       const accLabel = x => x.access === "Free until" && x.free_until ? `Free until ${fmtDate(x.free_until)}` : x.access;
       const accCls = a => ({ "Free": "a-free", "Free audit": "a-audit", "Free trial": "a-trial", "Free until": "a-until", "Financial aid": "a-aid" }[a] || "a-free");
       const stars = r => `<span class="rating" aria-label="Rated ${r} out of 5">${ico("star")}<b>${r.toFixed(1)}</b></span>`;
-      const cover = (src, label, bg) => `<div class="cthumb" style="--pbg:${bg}"><span class="cph" aria-hidden="true">${esc(label)}</span><img class="heavy" src="${esc(src)}" alt="" width="640" height="360" loading="lazy" decoding="async" onerror="this.remove()">`;
-      const card101 = c => `<a class="ccard c101 hov" href="course.html?id=${encodeURIComponent(c.id)}" data-id="${esc(c.id)}">
+      const cover = (src, label, bg) => `<div class="cthumb ck-media" style="--pbg:${bg}"><span class="cph" aria-hidden="true">${esc(label)}</span><img class="heavy" src="${esc(src)}" alt="" width="640" height="360" loading="lazy" decoding="async" onerror="this.remove()">`;
+      const card101 = c => `<article class="ccard c101 ck ck--flush" data-id="${esc(c.id)}">
         ${cover(c.cover, c.category, "#0B1236")}<span class="price ${c.price ? "" : "free"}">${c.price ? ugx(c.price) : "Free"}</span></div>
-        <div class="cbody"><h3>${esc(c.title)}</h3><div class="tutor">${ico("teacher")}<span>Tutor: <b>${esc(c.tutor)}</b></span></div>
+        <div class="cbody"><h3 class="ck-title"><a class="ck-link" href="course.html?id=${encodeURIComponent(c.id)}">${esc(c.title)}</a></h3><div class="tutor">${ico("teacher")}<span>Tutor: <b>${esc(c.tutor)}</b></span></div>
           <div class="row">${levelBadge(c.level)}${stars(c.rating)}<small>(${c.reviews})</small></div>
           <div class="meta"><span>${esc(c.category)}</span><span>${c.lessons} lessons</span></div>
-          <span class="open">Start learning →</span></div></a>`;
+          <span class="open ck-foot" aria-hidden="true">Start learning →</span></div></article>`;
       const extCard = x => { const p = prov(x.provider);
-        return `<article class="ccard ext" data-id="${esc(x.id)}">
+        return `<article class="ccard ext ck ck--flush" data-id="${esc(x.id)}">
         ${cover(x.cover || `assets/img/courses/${x.provider}.svg`, p.name, p.bg)}<span class="acc ${accCls(x.access)}">${esc(accLabel(x))}</span></div>
         <a class="btn or cbtn" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(x.title)} on ${esc(p.name)} (opens in a new tab)">Open on ${esc(p.name)} ↗</a>
-        <div class="cbody"><h3>${esc(x.title)}</h3>
+        <div class="cbody"><h3 class="ck-title">${esc(x.title)}</h3>
           <div class="prov"><span class="pmark" style="background:${p.bg};color:${p.fg}" aria-hidden="true">${esc(p.short)}</span><span>${esc(p.name)}</span></div>
-          <p>${esc(x.desc || "")}</p>
+          <p class="ck-body">${esc(x.desc || "")}</p>
           <div class="row">${levelBadge(x.level)}${x.certFree ? `<span class="cert">${ico("check")}Certificate free</span>` : ""}${x.aid && x.access !== "Financial aid" ? `<span class="aidc">Financial aid</span>` : ""}</div>
           ${x.free_until ? `<div class="cdm"><b data-until="${esc(x.free_until)}">${left(x.free_until)}</b>${x.free_until_status === "TODO-CONFIRM" ? `<small>Date to be confirmed</small>` : ""}</div>` : ""}
         </div></article>`; };
@@ -137,8 +137,8 @@
     /* ---------------- Free AI tools & APIs + BYOK playground ---------------- */
     async aitools() {
       const all = D.aiTools, st = { q: "", cat: "", student: false };
-      const card = t => `<article class="ccard ai" data-id="${esc(t.id)}">
-        <div class="cthumb ai-thumb" style="--pbg:${t.bg}"><span class="cph" aria-hidden="true">${esc(t.name)}</span><img class="heavy" src="assets/img/ai/${esc(t.id)}.svg" alt="" width="640" height="300" loading="lazy" decoding="async" onerror="this.remove()">${t.student ? `<span class="acc a-student">Student perk</span>` : ""}</div>
+      const card = t => `<article class="ccard ai ck ck--flush" data-id="${esc(t.id)}">
+        <div class="cthumb ai-thumb ck-media" style="--pbg:${t.bg}"><span class="cph" aria-hidden="true">${esc(t.name)}</span><img class="heavy" src="assets/img/ai/${esc(t.id)}.svg" alt="" width="640" height="300" loading="lazy" decoding="async" onerror="this.remove()">${t.student ? `<span class="acc a-student">Student perk</span>` : ""}</div>
         <div class="ai-btns"><a class="btn or" href="${API.goHref("ai-" + t.id)}" target="_blank" rel="noopener noreferrer" aria-label="Get a free API key from ${esc(t.name)} (opens in a new tab)">${t.id === "copilot" ? "Get Copilot free ↗" : t.id === "colab" ? "Open Colab ↗" : "Get free API key ↗"}</a><a class="btn" href="${API.goHref("ai-" + t.id + "-docs")}" target="_blank" rel="noopener noreferrer" aria-label="${esc(t.name)} docs (opens in a new tab)">Docs ↗</a></div>
         <div class="cbody"><h3><span class="pmark" style="background:${t.bg};color:${t.fg}" aria-hidden="true">${esc(t.mono)}</span> ${esc(t.name)}</h3>
           <p>${esc(t.what)}</p>
@@ -182,9 +182,9 @@
       const draw = async () => {
         const ps = await API.fetchProducts(level); const feat = D.products.find(p => p.featured);
         $("#lp-featured").innerHTML = feat ? `<a class="feat-slot hov" href="product.html?id=${feat.id}"><span class="badge-t">FEATURED</span><b>${esc(feat.name)}</b><span>${esc(feat.tagline)}</span><small>Sponsored slot · book it in Marketplace</small></a>` : "";
-        $("#lp-list").innerHTML = ps.map((p, i) => `<li class="prod card hov" data-id="${p.id}">
+        $("#lp-list").innerHTML = ps.map((p, i) => `<li class="prod card ck ck--compact" data-id="${p.id}">
           <span class="rank">#${i + 1}</span><span class="plogo" aria-hidden="true">${esc(p.name.slice(0, 2).toUpperCase())}</span>
-          <div class="grow"><a href="product.html?id=${p.id}"><h3>${esc(p.name)}</h3></a><p>${esc(p.tagline)}</p>
+          <div class="grow ck-text"><h3 class="ck-title"><a class="ck-link" href="product.html?id=${p.id}">${esc(p.name)}</a></h3><p>${esc(p.tagline)}</p>
             <div class="row">${levelBadge(p.level)}<span class="stage s-${p.stage}">${p.stage}</span>${p.tags.map(t => `<span class="tagx">${esc(t)}</span>`).join("")}${avatars(p.makers)}<small>${ico("comment")} ${p.comments}</small></div></div>
           <button class="vote" type="button" aria-pressed="false" aria-label="Upvote ${esc(p.name)}">▲<b>${p.votes}</b></button></li>`).join("");
       };
@@ -226,9 +226,9 @@
       const st = { level: "", track: "" };
       $("#f-track").innerHTML = `<option value="">All tracks</option>` + [...new Set(D.competitions.map(c => c.track))].map(t => `<option>${esc(t)}</option>`).join("");
       const draw = async () => { const cs = await API.fetchCompetitions(st.level, st.track);
-        $("#comp").innerHTML = cs.map(c => `<article class="card comp" data-id="${c.id}"><div class="row" style="justify-content:space-between">${levelBadge(c.level)}<span class="tagx">${esc(c.track)}</span></div>
-          <h3 class="h3">${esc(c.name)}</h3><div class="cd" data-starts="${c.starts}">${countdown(c.starts)}</div><small>Teams ${esc(c.team)} · ${c.registered} registered · Prize: <b>${esc(c.prize)}</b></small>
-          <div class="row" style="margin-top:10px"><button class="btn sm or" data-reg="solo">Register solo</button><button class="btn sm ink" data-reg="team">Register a team</button><button class="btn sm" data-sub>Submit</button></div></article>`).join("") || `<p class="muted">No competitions for this filter yet.</p>`; };
+        $("#comp").innerHTML = cs.map(c => `<article class="card comp ck" data-id="${c.id}"><div class="row" style="justify-content:space-between">${levelBadge(c.level)}<span class="tagx">${esc(c.track)}</span></div>
+          <h3 class="h3 ck-title">${esc(c.name)}</h3><div class="cd" data-starts="${c.starts}">${countdown(c.starts)}</div><small>Teams ${esc(c.team)} · ${c.registered} registered · Prize: <b>${esc(c.prize)}</b></small>
+          <div class="row ck-foot"><button class="btn sm or" data-reg="solo">Register solo</button><button class="btn sm ink" data-reg="team">Register a team</button><button class="btn sm" data-sub>Submit</button></div></article>`).join("") || `<p class="muted">No competitions for this filter yet.</p>`; };
       setInterval(() => $$(".cd").forEach(el => el.textContent = countdown(el.dataset.starts)), 30000);
       $("#comp").addEventListener("click", async e => { const b = e.target.closest("button"); if (!b) return; const id = b.closest("[data-id]").dataset.id;
         if (b.dataset.reg) { const team = b.dataset.reg === "team" ? prompt("Team name?") : null; if (b.dataset.reg === "team" && !team) return; await API.registerCompetition(id, { mode: b.dataset.reg, team }); toast(`Registered ${team ? "team " + team : "solo"}.`); }
@@ -352,7 +352,7 @@
       let tN; $("#c-notes").oninput = e => { clearTimeout(tN); tN = setTimeout(async () => { await API.saveNotes(c.id, c.lessons[cur].id, e.target.value); $("#c-saved").textContent = "Saved " + new Date().toLocaleTimeString(); }, 600); };
       const tabs = $$("[role=tab]"); const sel = t => { tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $("#" + x.getAttribute("aria-controls")).hidden = !on; }); t.focus(); };
       tabs.forEach((t, i) => { t.onclick = () => sel(t); t.onkeydown = e => { if (e.key === "ArrowRight") sel(tabs[(i + 1) % tabs.length]); if (e.key === "ArrowLeft") sel(tabs[(i + tabs.length - 1) % tabs.length]); }; });
-      $("#c-books").innerHTML = c.books.map(b => `<a class="rcard book hov" href="${API.goHref(b.id)}" target="_blank" rel="noopener noreferrer"><div class="rthumb cover t-cy">${STATIC ? "" : `<span class="rt-fallback"><span class="rm-ic" aria-hidden="true">${window.CC_UI.ico("openbook")}</span><span class="rm-meta"><b>${esc(b.site)}</b><small>Book</small></span></span>`}<img src="${esc(b.cover)}${!STATIC && /covers\.openlibrary\.org/.test(b.cover) && !/default=/.test(b.cover) ? "?default=false" : ""}" alt="Cover of ${esc(b.title)}" loading="lazy" class="heavy${STATIC ? "" : " rt-img"}"${STATIC ? ' onerror="this.remove()"' : ""}><span class="badge-t ${b.open ? "cy" : ""}">${b.open ? "Free / open" : "Book"}</span></div><div class="rbody"><h3>${esc(b.title)}</h3><div class="src">${esc(b.author)}</div><span class="open">Open on ${esc(b.site)} ↗</span></div></a>`).join("");
+      $("#c-books").innerHTML = c.books.map(b => (STATIC ? `<a class="rcard book hov" href="${API.goHref(b.id)}" target="_blank" rel="noopener noreferrer">` : `<article class="rcard book ck ck--inv ck--flush">`) + `<div class="rthumb cover ck-media t-cy">${STATIC ? "" : `<span class="rt-fallback"><span class="rm-ic" aria-hidden="true">${window.CC_UI.ico("openbook")}</span><span class="rm-meta"><b>${esc(b.site)}</b><small>Book</small></span></span>`}<img src="${esc(b.cover)}${!STATIC && /covers\.openlibrary\.org/.test(b.cover) && !/default=/.test(b.cover) ? "?default=false" : ""}" alt="Cover of ${esc(b.title)}" loading="lazy" class="heavy${STATIC ? "" : " rt-img"}"${STATIC ? ' onerror="this.remove()"' : ""}><span class="badge-t ${b.open ? "cy" : ""}">${b.open ? "Free / open" : "Book"}</span></div><div class="rbody">` + (STATIC ? `<h3>${esc(b.title)}</h3>` : `<h3 class="ck-title"><a class="ck-link" href="${API.goHref(b.id)}" target="_blank" rel="noopener noreferrer">${esc(b.title)}<span class="sr-only">, on ${esc(b.site)} (opens in a new tab)</span></a></h3>`) + `<div class="src">${esc(b.author)}</div><span class="open ck-foot"${STATIC ? "" : ' aria-hidden="true"'}>Open on ${esc(b.site)} ↗</span></div>` + (STATIC ? `</a>` : `</article>`)).join("");
       const disc = () => $("#c-disc").innerHTML = c.discussion.map(d => `<div class="li"><span class="date">${esc(d.who.split(" ").map(w => w[0]).join(""))}</span><div class="grow"><b>${esc(d.who)}</b><small>${esc(d.t)} · ${esc(d.ago)} ago${d.replies ? " · " + d.replies + " replies" : ""}</small></div></div>`).join("");
       $("#c-dform").onsubmit = async e => { e.preventDefault(); const t = e.target.text.value.trim(); if (!t) return; c.discussion.unshift({ who: "You", t, ago: "now", replies: 0 }); disc(); e.target.reset(); await API.postDiscussion(c.id, t); };
       disc(); show();

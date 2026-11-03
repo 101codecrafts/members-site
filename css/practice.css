@@ -24,7 +24,6 @@
 .lfilters{display:grid;grid-template-columns:minmax(220px,2fr) repeat(2,minmax(150px,1fr));gap:12px;align-items:end}
 .agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .acard{display:flex;flex-direction:column;gap:8px;background:#fff;border:2px solid var(--ink);padding:14px;box-shadow:var(--shadow-brutal-sm);min-width:0;color:var(--ink)}
-.acard:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow-brutal)}
 .acard .atop{display:flex;justify-content:space-between;gap:8px;align-items:center}
 .acard .atopic{font:700 var(--step--2) var(--cond);letter-spacing:1px;text-transform:uppercase;background:var(--cy);padding:2px 8px}
 .acard h3{font:700 var(--step-1)/1.25 var(--body)}

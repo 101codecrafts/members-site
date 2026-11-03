@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
-<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
+<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
 <link rel="stylesheet" href="css/bundle-app.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
@@ -105,14 +105,14 @@
 <p>Make the first steps into tech free, practical and less lonely. We point you to the best free courses, give you real projects to show for them, and connect you with peers and mentors who help you keep going.</p>
 
 <h2>What 101 offers</h2>
-<ul class="about-grid">
-<li><a class="about-card" href="sessions.html"><b>Expert-led learning</b><span>Live sessions, webinars and Q&amp;A with people who work in tech.</span><i>Live sessions →</i></a></li>
-<li><a class="about-card" href="events.html"><b>Skill-building workshops</b><span>Hands-on workshops and bootcamps: programming, AI, security, cloud.</span><i>Events →</i></a></li>
-<li><a class="about-card" href="projects.html"><b>Collaborative projects</b><span>Team up on coding challenges, open source and real-world builds.</span><i>Projects →</i></a></li>
-<li><a class="about-card" href="opportunities.html"><b>Career development</b><span>Internships, jobs, scholarships and other openings in one list.</span><i>Opportunities →</i></a></li>
-<li><a class="about-card" href="resources.html"><b>Tech resource hub</b><span>A curated library of tools, guides and references.</span><i>Library →</i></a></li>
-<li><a class="about-card" href="groups.html"><b>Peer study groups</b><span>Small groups that learn the same topic together.</span><i>Study groups →</i></a></li>
-<li><a class="about-card" href="courses.html"><b>Certification support</b><span>101 courses plus free courses from Coursera, edX, freeCodeCamp, Google, Microsoft Learn, Cisco NetAcad and more.</span><i>Courses →</i></a></li>
+<ul class="about-grid ck-grid">
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="sessions.html">Expert-led learning</a></h3><p class="ck-body">Live sessions, webinars and Q&amp;A with people who work in tech.</p><span class="ck-cta ck-foot" aria-hidden="true">Live sessions →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="events.html">Skill-building workshops</a></h3><p class="ck-body">Hands-on workshops and bootcamps: programming, AI, security, cloud.</p><span class="ck-cta ck-foot" aria-hidden="true">Events →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="projects.html">Collaborative projects</a></h3><p class="ck-body">Team up on coding challenges, open source and real-world builds.</p><span class="ck-cta ck-foot" aria-hidden="true">Projects →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="opportunities.html">Career development</a></h3><p class="ck-body">Internships, jobs, scholarships and other openings in one list.</p><span class="ck-cta ck-foot" aria-hidden="true">Opportunities →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="resources.html">Tech resource hub</a></h3><p class="ck-body">A curated library of tools, guides and references.</p><span class="ck-cta ck-foot" aria-hidden="true">Library →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="groups.html">Peer study groups</a></h3><p class="ck-body">Small groups that learn the same topic together.</p><span class="ck-cta ck-foot" aria-hidden="true">Study groups →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="courses.html">Certification support</a></h3><p class="ck-body">101 courses plus free courses from Coursera, edX, freeCodeCamp, Google, Microsoft Learn, Cisco NetAcad and more.</p><span class="ck-cta ck-foot" aria-hidden="true">Courses →</span></article></li>
 </ul>
 
 <h2>How to join</h2>

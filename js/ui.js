@@ -39,12 +39,12 @@
     if (STATIC) return legacyResourceCard(r);
     const th = thumbOf(r), clr = TYPE_CLR[r.type] || "or";
     const poster = th ? `<span class="rm-poster ${th.shape}" aria-hidden="true">${ico(TYPE_ICO[r.type] || "doc", "i rm-pi")}<img class="rm-img heavy" src="${esc(th.src)}" alt="" width="${th.shape === "tall" ? 54 : 96}" height="54" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>` : "";
-    return `<a class="rcard rc2 hov" href="${API.goHref(r.id)}" target="_blank" rel="noopener noreferrer" data-id="${esc(r.id)}" data-type="${esc(r.type)}" data-path="${esc(r.path || "")}">
+    return `<article class="rcard rc2 ck ck--inv ck--flush" data-id="${esc(r.id)}" data-type="${esc(r.type)}" data-path="${esc(r.path || "")}">
       <div class="rmedia t-${clr}${th ? " has-poster" : ""}"><span class="rm-ic" aria-hidden="true">${ico(TYPE_ICO[r.type] || "doc")}</span><span class="rm-meta"><b>${esc(r.site)}</b><small>${esc(r.type)}</small></span>${poster}</div>
-      <div class="rbody"><h3>${esc(r.title)}</h3>
-        <p>${esc(r.desc)}</p>
+      <div class="rbody"><h3 class="ck-title"><a class="ck-link" href="${API.goHref(r.id)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}<span class="sr-only">, ${esc(r.type)} on ${esc(r.site)} (opens in a new tab)</span></a></h3>
+        <p class="ck-body">${esc(r.desc)}</p>
         <div class="tags">${(r.tags || []).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-        <span class="open">Open on ${esc(r.site)} ↗</span></div></a>`;
+        <span class="open ck-foot" aria-hidden="true">Open on ${esc(r.site)} ↗</span></div></article>`;
   }
   /* poster / hero images: decide once they settle (capture-phase listeners see every <img>, wherever it was rendered) */
   function settleImg(img, ok) {
@@ -73,12 +73,12 @@
     const clr = n.cat === "Africa Tech" ? "cy" : "or";
     const band = `<span class="rm-ic" aria-hidden="true">${ico("megaphone")}</span><span class="rm-meta"><b>${esc(n.source)}</b><small>${esc(n.cat)}</small></span>`;
     const media = n.image
-      ? `<div class="rthumb rt-hero t-${clr}"><span class="rt-fallback">${band}</span><img class="rt-img heavy" src="${esc(n.image)}" alt="" loading="lazy" decoding="async"><span class="badge-t ${clr}">${esc(n.cat)}</span></div>`
+      ? `<div class="rthumb rt-hero ck-media t-${clr}"><span class="rt-fallback">${band}</span><img class="rt-img heavy" src="${esc(n.image)}" alt="" loading="lazy" decoding="async"><span class="badge-t ${clr}">${esc(n.cat)}</span></div>`
       : `<div class="rmedia t-${clr}">${band}</div>`;
-    return `<a class="ncard nc2 hov ${big ? "big" : ""}" href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer" data-cat="${esc(n.cat)}">
+    return `<article class="ncard nc2 ck ck--inv ck--flush ${big ? "big" : ""}" data-cat="${esc(n.cat)}">
       ${media}
-      <div class="rbody"><div class="src">${esc(n.source)} · ${esc(n.ago)} ago</div>
-      <h3>${esc(n.title)}</h3><p>${esc(n.summary || "")}</p><span class="open">Read on ${esc(n.source)} ↗</span></div></a>`;
+      <div class="rbody"><h3 class="ck-title"><a class="ck-link" href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer">${esc(n.title)}<span class="sr-only">, on ${esc(n.source)} (opens in a new tab)</span></a></h3>
+      <div class="src ck-meta">${esc(n.source)} · ${esc(n.ago)} ago</div><p class="ck-body">${esc(n.summary || "")}</p><span class="open ck-foot" aria-hidden="true">Read on ${esc(n.source)} ↗</span></div></article>`;
   }
   window.CC_UI.resourceCard = resourceCard; window.CC_UI.newsCard = newsCard;
 

@@ -22,8 +22,8 @@
     return sel;
   }
   function articleCard(a) {
-    return `<a class="acard" href="article.html?slug=${encodeURIComponent(a.slug)}"><div class="atop"><span class="atopic">${esc(topicName(a.topic))}</span><span class="dpill ${a.level === "Beginner" ? "d-easy" : a.level === "Intermediate" ? "d-medium" : "d-hard"}">${esc(a.level)}</span></div>
-      <h3>${esc(a.title)}</h3><p>${esc(a.desc)}</p><div class="ameta"><span>${esc(a.sub)}</span><span>${a.mins} min read</span><span>${esc(a.edu)}</span></div></a>`;
+    return `<article class="acard ck"><div class="atop ck-eyebrow"><span class="atopic">${esc(topicName(a.topic))}</span><span class="dpill ${a.level === "Beginner" ? "d-easy" : a.level === "Intermediate" ? "d-medium" : "d-hard"}">${esc(a.level)}</span></div>
+      <h3 class="ck-title"><a class="ck-link" href="article.html?slug=${encodeURIComponent(a.slug)}">${esc(a.title)}</a></h3><p class="ck-body">${esc(a.desc)}</p><div class="ameta ck-meta ck-foot"><span>${esc(a.sub)}</span><span>${a.mins} min read</span><span>${esc(a.edu)}</span></div></article>`;
   }
   function toast(msg) { let t = $("#pr-toast"); if (!t) { t = document.createElement("div"); t.id = "pr-toast"; t.setAttribute("role", "status"); t.className = "sr-only"; document.body.appendChild(t); } t.textContent = ""; setTimeout(() => t.textContent = msg, 30); }
 
@@ -195,7 +195,7 @@
     const items = (await API.contests()).items;
     const card = c => {
       const live = c.status === "live", up = c.status === "upcoming";
-      return `<article class="ct ${live ? "live" : ""}" data-id="${c.id}">
+      return `<article class="ct ck${live ? " live ck--inv" : ""}" data-id="${c.id}">
         <div class="row" style="justify-content:space-between">${live ? `<span class="livedot">LIVE</span>` : `<span class="tagx">${up ? "Upcoming" : "Finished"}</span>`}${c.rated ? `<span class="tagx">Rated</span>` : `<span class="tagx">Unrated</span>`}</div>
         <h3>${esc(c.name)}</h3><div class="when">${fmtEAT(c.start)} · ${Math.round((Date.parse(c.end) - Date.parse(c.start)) / 6e4)} min · ${c.problems} problems</div>
         ${c.prize ? `<div class="muted" style="font-weight:700">${ico("trophy", "i")} ${esc(c.prize)}</div>` : ""}
@@ -228,7 +228,7 @@
     const r = await API.companies(); let co = Q.get("company") || "all";
     $("#co-grid").innerHTML = `<button class="co" type="button" data-co="all" aria-pressed="false"><b>All</b><small>${r.sets.length} sets</small></button>` + r.items.map(c => `<button class="co" type="button" data-co="${c.id}" aria-pressed="false"><b>${esc(c.name)}</b><small>${c.sets} problems · ${c.mcq} MCQs</small><small>${c.tags.map(esc).join(" · ")}</small></button>`).join("");
     const render = () => { $$(".co").forEach(b => b.setAttribute("aria-pressed", b.dataset.co === co)); const l = r.sets.filter(s => co === "all" || s.company === co);
-      $("#sets").innerHTML = l.length ? l.map(s => `<a class="acard" href="practice.html?company=${encodeURIComponent(s.company)}"><div class="atop"><span class="atopic">${esc((r.items.find(c => c.id === s.company) || {}).name)}</span><span class="dpill ${dcls(s.level)}">${s.level}</span></div><h3>${esc(s.title)}</h3><div class="ameta"><span>${s.problems} questions</span><span>${s.mins} min</span></div></a>`).join("") : `<p class="muted">No sets for this company yet — the quiz below is a good warm-up.</p>`; };
+      $("#sets").innerHTML = l.length ? l.map(s => `<article class="acard ck"><div class="atop ck-eyebrow"><span class="atopic">${esc((r.items.find(c => c.id === s.company) || {}).name)}</span><span class="dpill ${dcls(s.level)}">${s.level}</span></div><h3 class="ck-title"><a class="ck-link" href="practice.html?company=${encodeURIComponent(s.company)}">${esc(s.title)}</a></h3><div class="ameta ck-meta ck-foot"><span>${s.problems} questions</span><span>${s.mins} min</span></div></article>`).join("") : `<p class="muted">No sets for this company yet — the quiz below is a good warm-up.</p>`; };
     $("#co-grid").onclick = e => { const b = e.target.closest(".co"); if (b) { co = b.dataset.co; render(); } }; render();
     const qz = await API.quiz("dsa-basics-1"); let i = 0, score = 0;
     $("#qz-title").textContent = qz.title;

@@ -48,7 +48,7 @@
     }
     /* ---- tilt + magnetic hover (pointer devices only) ---- */
     if (matchMedia("(hover:hover)").matches) {
-      document.querySelectorAll(".tilt, .tool, .feat, .rcard, .ncard").forEach(el => {
+      document.querySelectorAll(".tilt, .tool, .feat, .rcard, .ncard").forEach(el => { if (el.matches(".ck, .ck-skin")) return;
         el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
           el.style.transform = `perspective(700px) rotateX(${(-y * 5).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg) translate(-3px,-3px)`; });
         el.addEventListener("pointerleave", () => el.style.transform = "");

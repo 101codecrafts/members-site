@@ -156,7 +156,6 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 html:where([data-theme=dark]):not(.static) .shell{background:linear-gradient(90deg,var(--fill-inverse) 0 244px,transparent 244px);color:var(--on-inverse)}
 }
 :where([data-theme=dark]) .tchip{border:2px solid var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
-:where([data-theme=dark]) .about-card{border:var(--bw,2px) solid var(--border-strong)}
 :where([data-theme=dark]) .about-steps li::before{border:2px solid var(--border-strong)}
 /* --- dashboard.css --- */
 :where([data-theme=dark]) .app{background:var(--bg);color:var(--text)}
@@ -318,7 +317,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .fcd.closed{background:var(--surface-3);color:var(--text-muted)}
 :where([data-theme=dark]) .closing{background:var(--fill-inverse);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .closing h2{color:var(--accent-text)}
-:where([data-theme=dark]) .cw{background:var(--fill-inverse);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ann-card.unread h2::after{border:2px solid var(--border-strong);color:var(--on-accent)}
 :where([data-theme=dark]) .ann-banner{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .bell-btn{color:var(--text)}

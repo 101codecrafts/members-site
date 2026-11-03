@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Card system · 101 Codecrafts" desc="Living style guide for the 101 Codecrafts brutalist card system: anatomy, variants and states in light and dark." path="cards.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<style>
+/* style-guide page only: layout + the frozen demo states (real hover/press/focus come from css/cards.css) */
+.cg{display:grid;gap:var(--s-8,32px);padding-bottom:var(--s-12,48px)}
+.cg section{display:grid;gap:var(--s-4,16px)}
+.cg h2{font:400 var(--step-2)/1.1 var(--disp);text-transform:uppercase;margin:0}
+.cg .note{max-width:72ch;color:var(--text-muted);font-size:var(--step--1)}
+.cg .lbl{font:700 var(--step--2)/1.2 var(--cond,var(--body));letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin:0 0 var(--s-2,8px)}
+.cg .cell{display:flex;flex-direction:column;min-width:0}
+.cg .row3{display:grid;gap:var(--gap-card,16px);grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));align-items:start}
+.cg code{font-size:.9em;background:var(--surface-3);padding:0 4px}
+.cg .anat{display:grid;gap:var(--s-4,16px);grid-template-columns:minmax(0,320px) minmax(0,1fr);align-items:start}
+@media (max-width:700px){.cg .anat{grid-template-columns:minmax(0,1fr)}}
+.cg .anat ol{margin:0;padding-left:20px;display:grid;gap:6px;font-size:var(--step--1)}
+.cg .media-ph{position:absolute;inset:0;display:grid;place-items:center;font:400 var(--step-1) var(--disp);color:var(--on-inverse);background:repeating-linear-gradient(45deg,var(--fill-inverse) 0 12px,#1A2560 12px 24px)}
+.cg .media-ph.or{color:var(--on-accent);background:repeating-linear-gradient(45deg,var(--accent) 0 12px,#ffa53d 12px 24px)}
+.cg .media-ph.cy{color:var(--on-accent-2);background:repeating-linear-gradient(45deg,var(--accent-2) 0 12px,#7af0f7 12px 24px)}
+.cg .badge{display:inline-block;padding:2px 8px;border:2px solid var(--ck-line);background:var(--accent);color:var(--on-accent);font:700 var(--step--2)/1.3 var(--body);letter-spacing:.04em;text-transform:uppercase}
+.cg .ic{display:grid;place-items:center;width:44px;height:44px;flex:none;background:var(--accent-2);color:var(--on-accent-2);border:2px solid var(--ck-line);font:400 var(--step-0) var(--disp)}
+html:not(.static) .cg .ck.demo-hover{translate:-3px -3px;box-shadow:var(--ck-sh-up) var(--ck-sh-up) 0 var(--ck-sh-c)}
+html:not(.static) .cg .ck.demo-press{translate:var(--ck-sh) var(--ck-sh);box-shadow:0 0 0 var(--ck-sh-c)}
+html:not(.static) .cg .ck.demo-focus{outline:3px solid var(--ck-focus);outline-offset:4px;box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--ck-sh-c),0 0 0 4px var(--ck-focus-2)}
+/* the dark preview: the dark role values from css/theme.css, scoped to a panel so both themes show on one page */
+.cg-dark{--text:#EEF1F8;--text-muted:#AEB8CE;--bg:#0A0D17;--surface-1:#121828;--surface-2:#192034;--surface-3:#222B42;--border-subtle:#283149;--border-strong:#4A557A;
+  --fill-inverse:#151E4C;--on-inverse:#fff;--accent-text:#FFAD5C;--shadow-ink:#02040A;--focus:#5FE3F0;--link:#7CC4FF;
+  --ck-line:#61709A;--ck-sh-c:#02040A;--ck-bg:#121828;--ck-ink:#EEF1F8;--ck-mut:#AEB8CE;--ck-focus:#5FE3F0;--ck-focus-2:#0A0D17;
+  background:var(--bg);color:var(--text);padding:var(--s-6,24px);border:2px solid var(--ck-line)}
+.cg-dark .lbl,.cg-dark .note{color:var(--text-muted)}
+.cg-dark .ck.ck--error{--ck-line:#FF8A8A}
+</style>
+</head>
+<body class="flow" data-page="cards">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<header class="topbar"><a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101 Codecrafts home" width="82" height="41"><b>Codecrafts</b></a><span class="sp"></span><a class="btn or" href="signup.html">Join</a></header>
+<main id="main" class="content"><div class="cg">
+
+<header><p class="kicker">Design system</p><h1 class="page-h" style="font:400 var(--step-4) var(--disp)">CARD SYSTEM</h1>
+<p class="note">One brutalist card for the whole site: a 2px outline, a hard offset shadow, square corners, and the same slots in the same order. Use a card for a summary that leads somewhere else; use a plain list when people scan or compare. Source: <code>css/cards.css</code>.</p></header>
+
+<section aria-labelledby="h-anat"><h2 id="h-anat">Anatomy</h2>
+<div class="anat">
+  <article class="ck ck--media"><div class="ck-media" aria-hidden="true"><span class="media-ph">16:9 MEDIA</span></div>
+    <p class="ck-eyebrow"><span class="badge">Course</span> Beginner</p>
+    <h3 class="ck-title"><a class="ck-link" href="courses.html?path=software-dev">Python Foundations: from your first line to a working app</a></h3>
+    <p class="ck-meta"><span>12 lessons</span><span>Free</span></p>
+    <p class="ck-body">Variables, loops and functions, then a small project you can show. Long descriptions are clamped to three lines so every card in a row lines up, and the full text is on the course page.</p>
+    <div class="ck-foot"><span class="ck-cta" aria-hidden="true">Start learning →</span></div></article>
+  <ol>
+    <li><b>Media</b> <code>.ck-media</code>: fixed ratio 16:9 (or <code>--1x1</code>, <code>--4x3</code>), <code>object-fit:cover</code>, decorative unless it carries meaning.</li>
+    <li><b>Eyebrow</b> <code>.ck-eyebrow</code>: badge or category, one line.</li>
+    <li><b>Title</b> <code>.ck-title</code>: a real heading (h2/h3 to fit the page outline), clamped to 2 lines. It holds the one primary link, <code>.ck-link</code>, stretched over the whole card.</li>
+    <li><b>Meta</b> <code>.ck-meta</code>: source, date, level.</li>
+    <li><b>Body</b> <code>.ck-body</code>: supporting text, clamped to 3 lines.</li>
+    <li><b>Footer</b> <code>.ck-foot</code>: actions, pinned to the bottom. Secondary buttons sit above the stretched link and stay clickable. No links inside links.</li>
+  </ol>
+</div></section>
+
+<section aria-labelledby="h-var"><h2 id="h-var">Variants</h2>
+<ul class="ck-grid">
+  <li><article class="ck"><p class="ck-eyebrow">Default · outlined</p><h3 class="ck-title"><a class="ck-link" href="events.html">Skill-building workshops</a></h3><p class="ck-body">Hands-on bootcamps in programming, AI, security and cloud.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Events →</span></div></article></li>
+  <li><article class="ck ck--inv"><p class="ck-eyebrow">Inverse · navy</p><h3 class="ck-title"><a class="ck-link" href="resources.html">Resource hub</a></h3><p class="ck-body">Guides, tutorials and toolkits, all free, picked by members.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Library →</span></div></article></li>
+  <li><article class="ck ck--accent"><p class="ck-eyebrow">Accent · orange fill</p><h3 class="ck-title"><a class="ck-link" href="signup.html">Join 101 Codecrafts</a></h3><p class="ck-body">Orange is a fill with navy ink, never text on white.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Join →</span></div></article></li>
+  <li><article class="ck ck--stat"><span class="ck-num">120+</span><span class="ck-lbl">Projects shipped (stat, not clickable)</span></article></li>
+  <li><article class="ck ck--media"><div class="ck-media ck-media--1x1" aria-hidden="true"><span class="media-ph or">1:1</span></div><h3 class="ck-title"><a class="ck-link" href="marketplace.html">Media 1:1 · product</a></h3><p class="ck-meta"><b>UGX 45,000</b></p><div class="ck-foot"><button type="button" class="btn sm or" data-demo-add>Add to cart</button></div></article></li>
+  <li><article class="ck ck--media"><div class="ck-media ck-media--4x3" aria-hidden="true"><span class="media-ph cy">4:3</span></div><h3 class="ck-title"><a class="ck-link" href="news.html">Media 4:3 · story</a></h3><p class="ck-body">The secondary button in the card before this one is raised above the stretched link.</p></article></li>
+</ul>
+<p class="lbl">Compact / list row (a list stays a list)</p>
+<ul class="ck-grid" style="--ck-min:320px">
+  <li><article class="ck ck--compact"><span class="ic" aria-hidden="true">#1</span><div class="ck-text"><h3 class="ck-title"><a class="ck-link" href="launchpad.html">StudyBuddy</a></h3><p class="ck-meta">Beta · 12 comments</p></div><button type="button" class="btn sm" aria-pressed="false" data-demo-vote>▲ 48</button></article></li>
+  <li><article class="ck ck--compact"><span class="ic" aria-hidden="true">#2</span><div class="ck-text"><h3 class="ck-title"><a class="ck-link" href="launchpad.html">Boda Route Planner</a></h3><p class="ck-meta">Launched · 7 comments</p></div><button type="button" class="btn sm" aria-pressed="false" data-demo-vote>▲ 31</button></article></li>
+</ul>
+<p class="lbl">Container card: several equal actions, no single destination, so no stretched link and no hover lift</p>
+<div class="row3"><article class="ck"><p class="ck-eyebrow">Hackathon · Intermediate</p><h3 class="ck-title">101 Weekend Hack</h3><p class="ck-meta">Teams of 2–4 · 86 registered</p><div class="ck-foot"><button type="button" class="btn sm or">Register solo</button><button type="button" class="btn sm ink">Register a team</button></div></article></div>
+</section>
+
+<section aria-labelledby="h-states"><h2 id="h-states">States</h2>
+<p class="note">Hover lifts the card and grows the hard shadow (mouse and trackpad only). Pressing pushes it into its shadow. Keyboard focus draws a thick ring round the whole card, offset and two-coloured so it shows on any background. Frozen copies below; the real ones work on every card above.</p>
+<div class="row3" id="state-row">
+  <div class="cell"><p class="lbl">Rest</p><article class="ck"><h3 class="ck-title"><a class="ck-link" href="courses.html">Rest</a></h3><p class="ck-body">2px outline + 4px hard shadow.</p></article></div>
+  <div class="cell"><p class="lbl">Hover (pointer devices)</p><article class="ck demo-hover"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Hover</a></h3><p class="ck-body">Moves 3px up-left, shadow grows to 7px.</p></article></div>
+  <div class="cell"><p class="lbl">Pressed</p><article class="ck demo-press"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Pressed</a></h3><p class="ck-body">Pushed into its shadow.</p></article></div>
+  <div class="cell"><p class="lbl">Focus-visible</p><article class="ck demo-focus"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Focus</a></h3><p class="ck-body">3px ring, 4px offset, inner gap ring.</p></article></div>
+  <div class="cell"><p class="lbl">Selected</p><article class="ck is-selected"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Selected</a></h3><p class="ck-body">Accent bar + a written "Selected" mark, not colour alone.</p></article></div>
+  <div class="cell"><p class="lbl">Disabled</p><article class="ck is-disabled"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1" aria-disabled="true">Disabled</a></h3><p class="ck-body">Dashed outline, no shadow, not clickable.</p></article></div>
+  <div class="cell"><p class="lbl">Loading skeleton</p><article class="ck ck--skeleton" aria-busy="true" aria-label="Loading"><div class="ck-media ck-sk"></div><span class="ck-sk t"></span><span class="ck-sk m"></span><span class="ck-sk b"></span><span class="ck-sk f"></span></article></div>
+  <div class="cell"><p class="lbl">Empty</p><article class="ck ck--empty"><span class="ck-ic" aria-hidden="true">0</span><h3 class="ck-title">No saved courses yet</h3><p class="ck-body">Save a course and it shows up here.</p><div class="ck-foot"><a class="btn sm" href="courses.html">Browse courses</a></div></article></div>
+  <div class="cell"><p class="lbl">Error</p><article class="ck ck--error" role="alert"><p class="ck-eyebrow"><span class="ck-ic" aria-hidden="true">!</span>Couldn't load</p><h3 class="ck-title">News did not load</h3><p class="ck-body">Check your connection and try again.</p><div class="ck-foot"><button type="button" class="btn sm" data-demo-retry>Try again</button></div></article></div>
+</div></section>
+
+<section aria-labelledby="h-dark"><h2 id="h-dark">Dark theme</h2>
+<div class="cg-dark"><p class="note">Same cards on the dark roles. The outline is #61709A: at least 3:1 against the page, the card and the navy fill (WCAG 1.4.11).</p>
+<div class="row3">
+  <div class="cell"><p class="lbl">Default</p><article class="ck"><p class="ck-eyebrow">Course</p><h3 class="ck-title"><a class="ck-link" href="courses.html">Data &amp; AI basics</a></h3><p class="ck-body">Turn raw data into answers.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Start →</span></div></article></div>
+  <div class="cell"><p class="lbl">Inverse</p><article class="ck ck--inv"><h3 class="ck-title"><a class="ck-link" href="resources.html">Library</a></h3><p class="ck-body">Free guides and toolkits.</p></article></div>
+  <div class="cell"><p class="lbl">Accent</p><article class="ck ck--accent"><h3 class="ck-title"><a class="ck-link" href="signup.html">Join</a></h3><p class="ck-body">Navy ink on orange.</p></article></div>
+  <div class="cell"><p class="lbl">Hover</p><article class="ck demo-hover"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Hover</a></h3><p class="ck-body">Lift + bigger shadow.</p></article></div>
+  <div class="cell"><p class="lbl">Focus-visible</p><article class="ck demo-focus"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Focus</a></h3><p class="ck-body">Cyan ring, page-colour gap.</p></article></div>
+  <div class="cell"><p class="lbl">Selected</p><article class="ck is-selected"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Selected</a></h3><p class="ck-body">Accent bar + mark.</p></article></div>
+  <div class="cell"><p class="lbl">Disabled</p><article class="ck is-disabled"><h3 class="ck-title">Disabled</h3><p class="ck-body">Dashed, flat.</p></article></div>
+  <div class="cell"><p class="lbl">Skeleton</p><article class="ck ck--skeleton" aria-busy="true" aria-label="Loading"><span class="ck-sk t"></span><span class="ck-sk m"></span><span class="ck-sk b"></span><span class="ck-sk f"></span></article></div>
+  <div class="cell"><p class="lbl">Error</p><article class="ck ck--error"><p class="ck-eyebrow"><span class="ck-ic" aria-hidden="true">!</span>Error</p><h3 class="ck-title">Couldn't load</h3><p class="ck-body">Try again.</p></article></div>
+</div></div></section>
+
+<section aria-labelledby="h-grid"><h2 id="h-grid">Grid: equal heights, actions pinned</h2>
+<p class="note"><code>.ck-grid</code> is a list (screen readers announce how many cards there are). Every card in a row is as tall as the tallest, and footers line up because <code>.ck-foot</code> is pushed to the bottom.</p>
+<ul class="ck-grid" id="eq-grid">
+  <li><article class="ck"><h3 class="ck-title"><a class="ck-link" href="sessions.html">Short</a></h3><p class="ck-body">One line.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Open →</span></div></article></li>
+  <li><article class="ck"><h3 class="ck-title"><a class="ck-link" href="groups.html">A much longer card title that wraps onto a second line and then is clamped</a></h3><p class="ck-body">A longer description that runs over several lines, so it is clamped at three lines and the card keeps its rhythm with the others in the same row however much text an editor adds here.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Open →</span></div></article></li>
+  <li><article class="ck"><h3 class="ck-title"><a class="ck-link" href="projects.html">Medium</a></h3><p class="ck-body">Two short lines of supporting text for this card.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Open →</span></div></article></li>
+</ul></section>
+
+<section aria-labelledby="h-not"><h2 id="h-not">When not to use a card</h2>
+<p class="note">Homogeneous items that people scan or compare (prices, deadlines, names) read faster as a list or table with fixed columns. Settings, forms and filters are panels, not cards: they never lift or take a stretched link.</p>
+<ul class="fw-list" style="list-style:none;padding:0;margin:0;border:2px solid var(--ck-line)">
+  <li style="padding:12px 16px;border-bottom:1px solid var(--border-subtle)"><a href="opportunities.html">Scholarships closing this week</a> · 3 open</li>
+  <li style="padding:12px 16px;border-bottom:1px solid var(--border-subtle)"><a href="events.html">Meetups this month</a> · 5 in Kampala</li>
+  <li style="padding:12px 16px"><a href="news.html">Today's tech news</a> · updated hourly</li>
+</ul></section>
+
+</div></main>
+{{FOOTER}}
+{{SCRIPTS}}
+<script>/* style guide demo controls only */document.addEventListener("click",function(e){var v=e.target.closest("[data-demo-vote]");if(v){v.setAttribute("aria-pressed",v.getAttribute("aria-pressed")!=="true")}var a=e.target.closest("[data-demo-add]");if(a){a.textContent="Added ✓"}var r=e.target.closest("[data-demo-retry]");if(r){r.textContent="Retrying…"}});</script>
+</body></html>

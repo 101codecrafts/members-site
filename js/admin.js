@@ -6,7 +6,7 @@
 
   async function kpis() {
     const k = await API.fetchAdminKpis(); const cls = ["ink", "", "", "or", "", "cy", "", "or"];
-    $("#kpis").innerHTML = k.map((x, i) => `<div class="kpi ${cls[i] || ""}"><small>${esc(x.label)}</small><b>${x.money ? ugx(x.value) : Number(x.value).toLocaleString("en-US")}</b><i>${esc(x.delta || "")}</i></div>`).join("");
+    $("#kpis").innerHTML = k.map((x, i) => `<div class="kpi ck-skin ${cls[i] || ""}"><small>${esc(x.label)}</small><b>${x.money ? ugx(x.value) : Number(x.value).toLocaleString("en-US")}</b><i>${esc(x.delta || "")}</i></div>`).join("");
   }
   async function charts() {
     const a = cache.analytics = await API.fetchAnalytics();

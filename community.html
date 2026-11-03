@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
-<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
+<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
 <link rel="stylesheet" href="css/bundle-app.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
@@ -102,13 +102,13 @@
 <p>We're building a community of learners, creators and problem-solvers. Whether you're just starting or leveling up, 101 Codecrafts gives you the tools, the support and the people to reach your goals. Joining is free.</p>
 
 <h2>Where members meet</h2>
-<ul class="about-grid">
-<li><a class="about-card" href="groups.html"><b>Study groups</b><span>Learn one topic with a small group, from Primary and O-Level to university and professional.</span><i>Find a group →</i></a></li>
-<li><a class="about-card" href="events.html"><b>Events &amp; meetups</b><span>Workshops, talks and meetups for every level.</span><i>See events →</i></a></li>
-<li><a class="about-card" href="competitions.html"><b>Hackathons &amp; competitions</b><span>Build something in a weekend, with a team, for prizes and practice.</span><i>Competitions →</i></a></li>
-<li><a class="about-card" href="projects.html"><b>Member projects</b><span>Open projects you can join, learn from or contribute to.</span><i>Projects →</i></a></li>
-<li><a class="about-card" href="launchpad.html"><b>Launchpad</b><span>Products members are building. Try them and upvote the ones you like.</span><i>Launchpad →</i></a></li>
-<li><a class="about-card" href="testing.html"><b>Beta testing</b><span>Test what members are building and send bug reports straight to the makers.</span><i>Testing →</i></a></li>
+<ul class="about-grid ck-grid">
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="groups.html">Study groups</a></h3><p class="ck-body">Learn one topic with a small group, from Primary and O-Level to university and professional.</p><span class="ck-cta ck-foot" aria-hidden="true">Find a group →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="events.html">Events &amp; meetups</a></h3><p class="ck-body">Workshops, talks and meetups for every level.</p><span class="ck-cta ck-foot" aria-hidden="true">See events →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="competitions.html">Hackathons &amp; competitions</a></h3><p class="ck-body">Build something in a weekend, with a team, for prizes and practice.</p><span class="ck-cta ck-foot" aria-hidden="true">Competitions →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="projects.html">Member projects</a></h3><p class="ck-body">Open projects you can join, learn from or contribute to.</p><span class="ck-cta ck-foot" aria-hidden="true">Projects →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="launchpad.html">Launchpad</a></h3><p class="ck-body">Products members are building. Try them and upvote the ones you like.</p><span class="ck-cta ck-foot" aria-hidden="true">Launchpad →</span></article></li>
+<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="testing.html">Beta testing</a></h3><p class="ck-body">Test what members are building and send bug reports straight to the makers.</p><span class="ck-cta ck-foot" aria-hidden="true">Testing →</span></article></li>
 </ul>
 
 <h2>Stay in the loop</h2>

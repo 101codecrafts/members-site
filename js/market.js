@@ -20,10 +20,10 @@
   /* ---------------- product card ---------------- */
   function card(p, opts = {}) {
     const s = A.seller(p.seller), o = off(p);
-    return `<article class="mk-card${opts.wide ? " wide" : ""}">
-      <a class="mk-thumb" href="product-item.html?id=${encodeURIComponent(p.id)}" tabindex="-1" aria-hidden="true"><img src="${img(p.img)}" alt="" width="400" height="400" loading="lazy">${o ? `<span class="mk-off">−${o}%</span>` : ""}${p.made101 ? `<span class="mk-src m101">MADE BY 101</span>` : ""}</a>
+    return `<article class="mk-card ck ck--flush${opts.wide ? " wide" : ""}">
+      <a class="mk-thumb ck-media ck-media--1x1" href="product-item.html?id=${encodeURIComponent(p.id)}" tabindex="-1" aria-hidden="true"><img src="${img(p.img)}" alt="" width="400" height="400" loading="lazy">${o ? `<span class="mk-off">−${o}%</span>` : ""}${p.made101 ? `<span class="mk-src m101">MADE BY 101</span>` : ""}</a>
       <div class="mk-body">
-        <h3><a href="product-item.html?id=${encodeURIComponent(p.id)}">${esc(p.title)}</a></h3>
+        <h3 class="ck-title"><a class="ck-link" href="product-item.html?id=${encodeURIComponent(p.id)}">${esc(p.title)}</a></h3>
         <div class="mk-meta">${stars(p.rating)} <span>${p.rating} (${p.reviews})</span> · <span>${p.sold.toLocaleString()} sold</span></div>
         <div class="mk-pr"><b>${ugx(p.price)}</b>${p.compare > p.price ? `<s>${ugx(p.compare)}</s>` : ""}</div>
         <div class="mk-tags"><span class="mk-tag st-${s.type}">${SELLER_T[s.type]}</span><span class="mk-tag">${esc(p.condition)}</span><span class="mk-tag">${DELIV_T[p.delivery[0]]}</span></div>
@@ -34,9 +34,9 @@
   }
   function affCard(a) {
     const fx = D.marketFx.usdUgx;
-    return `<article class="mk-card aff">
-      <a class="mk-thumb" href="${goHref(a.id)}" target="_blank" rel="noopener noreferrer sponsored" tabindex="-1" aria-hidden="true"><img src="${img(a.img)}" alt="" width="400" height="400" loading="lazy"><span class="mk-src ${a.source.toLowerCase()}">${esc(a.source.toUpperCase())}</span></a>
-      <div class="mk-body"><h3><a href="${goHref(a.id)}" target="_blank" rel="noopener noreferrer sponsored">${esc(a.title)}<span class="sr-only"> (opens ${esc(a.source)} in a new tab)</span></a></h3>
+    return `<article class="mk-card aff ck ck--flush">
+      <a class="mk-thumb ck-media ck-media--1x1" href="${goHref(a.id)}" target="_blank" rel="noopener noreferrer sponsored" tabindex="-1" aria-hidden="true"><img src="${img(a.img)}" alt="" width="400" height="400" loading="lazy"><span class="mk-src ${a.source.toLowerCase()}">${esc(a.source.toUpperCase())}</span></a>
+      <div class="mk-body"><h3 class="ck-title"><a class="ck-link" href="${goHref(a.id)}" target="_blank" rel="noopener noreferrer sponsored">${esc(a.title)}<span class="sr-only"> (opens ${esc(a.source)} in a new tab)</span></a></h3>
         <div class="mk-pr"><b>~US$${a.usd}${esc(a.unit || "")}</b><small>≈ ${ugx(a.usd * fx)}</small></div>
         <p class="mk-seller-l">${esc(a.note)}</p>
         <a class="btn sm mk-add" href="${goHref(a.id)}" target="_blank" rel="noopener noreferrer sponsored">View on ${esc(a.source)} ↗</a></div></article>`;
@@ -325,7 +325,7 @@
   /* ================= seller.html ================= */
   async function seller() {
     const S = await A.fetchSellerOverview(), k = S.kpis;
-    $("#overview").innerHTML = [["Revenue · 30 days", ugx(k.revenue30), "or"], ["Orders · 30 days", k.orders30, ""], ["Conversion", k.conversion, "cy"], ["Shop rating", "★ " + k.rating, "ink"]].map(([l, v, c]) => `<div class="kpi ${c}"><small>${l}</small><b>${v}</b></div>`).join("");
+    $("#overview").innerHTML = [["Revenue · 30 days", ugx(k.revenue30), "or"], ["Orders · 30 days", k.orders30, ""], ["Conversion", k.conversion, "cy"], ["Shop rating", "★ " + k.rating, "ink"]].map(([l, v, c]) => `<div class="kpi ck-skin ${c}"><small>${l}</small><b>${v}</b></div>`).join("");
     $("#sl-cat").innerHTML = D.marketCategories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join("");
     // images preview
     $("#sl-imgs").onchange = e => { const fs = [...e.target.files].slice(0, 8); $("#sl-prev").innerHTML = fs.map((f, i) => `<figure><img src="${URL.createObjectURL(f)}" alt="Upload ${i + 1}: ${esc(f.name)}" width="88" height="88">${i === 0 ? "<figcaption>Cover</figcaption>" : ""}</figure>`).join(""); };
@@ -340,7 +340,7 @@
     const FLOW = { "New": "Shipped", "Paid · in escrow": "Delivered", "Shipped": "Delivered" };
     $$("[data-adv]").forEach(b => b.onclick = async () => { const o = S.queue[b.dataset.adv]; o.status = FLOW[o.status]; await A.updateOrderStatus(o.id, o.status); $(`[data-st="${b.dataset.adv}"]`).textContent = o.status; b.replaceWith(Object.assign(document.createElement("span"), { className: "muted", textContent: "Updated" })); });
     // payouts
-    $("#sl-bal").innerHTML = `<div class="kpi or"><small>Available to withdraw</small><b>${ugx(k.available)}</b></div><div class="kpi"><small>Held in escrow</small><b>${ugx(k.escrow)}</b><i>Released when buyers confirm delivery</i></div>`;
+    $("#sl-bal").innerHTML = `<div class="kpi ck-skin or"><small>Available to withdraw</small><b>${ugx(k.available)}</b></div><div class="kpi ck-skin"><small>Held in escrow</small><b>${ugx(k.escrow)}</b><i>Released when buyers confirm delivery</i></div>`;
     const pl = () => $("#sl-plist").innerHTML = S.payouts.map(p => `<div class="li"><span class="date"><b>${p.date.slice(8)}</b>${new Date(p.date).toLocaleString("en", { month: "short" })}</span><div class="grow"><b>${ugx(p.amount)}</b><small>${esc(p.to)}</small></div><span class="pill ${p.status === "paid" ? "paid" : "pending"}">${p.status}</span></div>`).join(""); pl();
     $("#sl-payout").onsubmit = async e => { e.preventDefault(); const a = +e.target.amount.value; if (a > k.available) { $("#sl-pmsg").textContent = "That is more than your available balance."; return; }
       await A.requestSellerPayout(a, e.target.to.value); k.available -= a; S.payouts.unshift({ date: new Date().toISOString().slice(0, 10), amount: a, to: e.target.to.value, status: "pending" }); pl();

@@ -65,7 +65,7 @@
     const b = document.createElement("div"); b.className = "promo-bar"; b.setAttribute("role", "region"); b.setAttribute("aria-label", "Launch offer");
     const left = () => { if (!p.end) return "ends one month after launch"; const ms = Math.max(0, p.end - Date.now()), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `ends in ${d}d ${h}h ${m}m`; };
     b.innerHTML = `<p><b>Launch month:</b> everything on 101 is free — no ads. <span class="promo-cd">${left()}</span></p><button type="button" aria-label="Dismiss launch offer banner">✕</button>`;
-    b.querySelector("button").onclick = () => { localStorage.setItem("cc_promo_dismissed", String(LAUNCH_PROMO.endsAt)); b.remove(); };
+    b.querySelector("button").onclick = () => { localStorage.setItem("cc_promo_dismissed", String(LAUNCH_PROMO.endsAt)); b.remove(); html.classList.remove("promo-space"); };
     document.body.insertBefore(b, document.body.firstChild);
     if (p.end) setInterval(() => { const s = b.querySelector(".promo-cd"); if (s) s.textContent = left(); }, 60000);
   }
@@ -148,7 +148,9 @@
 
   function init() {
     const p = promo(); promoTile(p);
-    if (p.active && !PREVIEW) { promoBanner(p); return; }        // launch month: no AdSense at all
+    if (p.active && !PREVIEW) promoBanner(p);
+    if (!document.querySelector(".promo-bar")) html.classList.remove("promo-space");   // the space reserved before first paint (tools/build.py EARLY) is released
+    if (p.active && !PREVIEW) return;                            // launch month: no AdSense at all
     const v = VIEW = viewer(); if (!adsAllowed(v)) return;
     let n = 0;
     for (const pl of PLACEMENTS[page]) {

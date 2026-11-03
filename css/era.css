@@ -26,13 +26,7 @@ html:not(.static) .page .e92 .e-all svg,html:not(.static) .page .e92 .e-more svg
 html:not(.static) .e92 .e-grid{display:grid;gap:var(--gap-card);grid-template-columns:minmax(0,1fr)}
 @media (min-width:600px){html:not(.static) .e92 .e-grid-3,html:not(.static) .e92 .e-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:1024px){html:not(.static) .e92 .e-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}html:not(.static) .e92 .e-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}}
-html:not(.static) .e92 .e-card{position:relative;display:flex;flex-direction:column;gap:var(--s-2);padding:var(--pad-card);background:var(--surface-1);color:var(--text);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh) var(--sh) 0 var(--shadow-ink);border-radius:0;min-width:0}
 html:not(.static) .page .e92 .e-more{display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;margin-top:auto;font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);text-decoration:none}
-/* stretched link: the whole card is the target */
-html:not(.static) .e92 .e-pcard .e-more::after,html:not(.static) .e92 .e-stretch::after{content:"";position:absolute;inset:0}
-html:not(.static) .e92 .e-stretch{color:inherit;text-decoration:none}
-html:not(.static) .e92 :is(.e-more,.e-stretch):focus-visible{outline:none}
-html:not(.static) .e92 :is(.e-more,.e-stretch):focus-visible::after{outline:3px solid var(--focus);outline-offset:3px}
 /* buttons */
 html:not(.static) .page .e92 .e-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);min-height:48px;padding:0 var(--s-6);font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;background:var(--fill-inverse);color:var(--on-inverse);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh) var(--sh) 0 var(--accent);transition:translate .15s,box-shadow .15s}
 html:not(.static) .page .e92 .e-btn.or{background:var(--accent);color:var(--on-accent);border-color:var(--brand-navy);box-shadow:var(--sh) var(--sh) 0 var(--on-inverse)}
@@ -63,7 +57,7 @@ html:not(.static) .page>.e-paths{background:var(--fill-inverse);color:var(--on-i
 html:not(.static) .page>.e-paths::before{content:"";position:absolute;left:0;top:0;width:clamp(40px,6vw,72px);height:clamp(40px,6vw,72px);background:linear-gradient(135deg,transparent 50%,var(--accent) 50%,var(--accent) calc(50% + 10px),transparent calc(50% + 10px))}
 html:not(.static) .page .e-paths .e-kick,html:not(.static) .page .e-paths h2,html:not(.static) .page .e-paths .e-all{color:var(--on-inverse)!important}
 html:not(.static) .page .e-paths .e-kick::before{border-color:var(--on-inverse)}
-html:not(.static) .e-paths .e-pcard{box-shadow:var(--sh) var(--sh) 0 var(--accent);border-color:var(--brand-navy)}
+
 html:not(.static) .page .e92 .e-chip{display:grid;place-items:center;width:48px;height:48px;border:var(--bw) solid var(--brand-navy);background:var(--accent);color:var(--on-accent);margin-bottom:var(--s-1)}
 html:not(.static) .page .e92 .e-chip.cy{background:var(--accent-2);color:var(--on-accent-2)}
 html:not(.static) .page .e92 .e-chip svg{width:26px;height:26px}
@@ -147,9 +141,8 @@ html.rv-on:not(.static) .rv:not(.rv-in){opacity:0;transform:translateY(16px)}
 
 /* ---------------------------------------------------------------- 8c. hover lift: translate + a bigger hard shadow (hover devices only) */
 @media (hover:hover){
-  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
-  html:not(.static) :is(.e92 .e-card:has(a),a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
-  html:not(.static) .e92 :is(.e-pcard,.e-stat.inv):hover{box-shadow:7px 7px 0 var(--accent)}
+  html:not(.static) :is(a.card,a.dz-card[href],a.qa,a.qa-wide):not(.hov):not(.ck){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
+  html:not(.static) :is(a.card,a.dz-card[href],a.qa,a.qa-wide):not(.hov):not(.ck):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
   html:not(.static) .page .e92 .e-btn:hover,html:not(.static) .page .hcol .hc-stat:hover{translate:-2px -2px;box-shadow:6px 6px 0 var(--accent)}
   html:not(.static) .page .e92 .e-btn.or:hover{box-shadow:6px 6px 0 var(--on-inverse)}
   html:not(.static) .page .e92 .e-btn.ghost:hover{box-shadow:4px 4px 0 var(--accent)}

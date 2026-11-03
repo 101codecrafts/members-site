@@ -45,15 +45,15 @@
   /* ---------- card ---------- */
   function card(e, sv, rem) {
     const o = org(e.org), on = sv.has(e.id), r = !!rem[e.id], full = e.capacity && e.going >= e.capacity;
-    return `<article class="fcard ev-c${e.host101 ? " host101" : ""}" id="${esc(e.id)}" data-id="${esc(e.id)}">
+    return `<article class="fcard ev-c ck${e.host101 ? " host101" : ""}" id="${esc(e.id)}" data-id="${esc(e.id)}">
       <div class="fc-meta"><span class="obadge" style="--ob:${o.bg};--of:${o.fg}" title="${esc(o.name)}">${esc(o.short)}</span><span class="fbadge">${esc(cap(e.type))}</span>${e.host101 ? '<span class="fbadge h101">Hosted by 101</span>' : ""}<span class="ev-price ${e.price ? "paid" : ""}">${price(e)}</span><button type="button" class="isave" data-save aria-pressed="${on}" aria-label="${on ? "Saved" : "Save"}" title="${on ? "Saved" : "Save"}">${ico("heart")}</button></div>
-      <h3>${esc(e.title)}</h3>
+      <h3 class="ck-title">${esc(e.title)}</h3>
       <div class="org">${esc(o.name)}</div>
       <dl class="facts"><div><dt>${ico("calendar")}<span class="sr-only">When</span></dt><dd><time datetime="${esc(e.start)}">${when(e)}</time></dd></div>
         <div><dt>${ico("flag")}<span class="sr-only">Where</span></dt><dd>${esc(e.venue)}${isOnline(e) ? "" : ` · <a href="${mapsUrl(e)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(e.venue)} in Google Maps (new tab)">Map ↗</a>`}</dd></div></dl>
       <p class="elig">${esc(e.desc)}</p>
       <div class="going"><button type="button" class="chip" data-going aria-pressed="${e.me}">${ico("check")}<span>${e.me ? "You're going" : "I'm going"}</span></button><span><b data-gn>${e.going.toLocaleString("en-US")}</b> going${e.capacity ? ` · ${Math.max(0, e.capacity - e.going)} seats left` : ""}</span></div>
-      <div class="fc-act">${e.host101 ? `<button type="button" class="btn or sm" data-rsvp ${full ? "disabled" : ""}>${full ? "Full — waitlist soon" : "RSVP on 101"}</button>` : `<a class="btn or sm" href="${go(e.id)}" target="_blank" rel="noopener noreferrer" aria-label="RSVP for ${esc(e.title)} on the organiser's site (opens in a new tab)">RSVP on source ↗</a>`}
+      <div class="fc-act ck-foot">${e.host101 ? `<button type="button" class="btn or sm" data-rsvp ${full ? "disabled" : ""}>${full ? "Full — waitlist soon" : "RSVP on 101"}</button>` : `<a class="btn or sm" href="${go(e.id)}" target="_blank" rel="noopener noreferrer" aria-label="RSVP for ${esc(e.title)} on the organiser's site (opens in a new tab)">RSVP on source ↗</a>`}
         <button type="button" class="btn sm" data-ics>${ico("calendar")}Add to calendar</button>
         <button type="button" class="btn sm" data-remind aria-pressed="${r}">${ico("bell")}<span>${r ? "Reminder set" : "Remind me"}</span></button></div>
     </article>`;
@@ -166,7 +166,7 @@
     $("#org-ev").innerHTML = hosted.map(e => `<option value="${esc(e.id)}">${esc(e.title)}</option>`).join("");
     const drawOrg = async () => { const id = $("#org-ev").value; const e = all.find(x => x.id === id); if (!e) return; const list = await F.attendees(id);
       const inN = list.filter(a => a.checkedIn).length;
-      $("#org-stats").innerHTML = `<div class="kpi"><b>${list.length}</b><small>RSVPs (preview)</small></div><div class="kpi"><b>${inN}</b><small>Checked in</small></div><div class="kpi"><b>${e.capacity ? Math.max(0, e.capacity - e.going) : "—"}</b><small>Seats left</small></div>`;
+      $("#org-stats").innerHTML = `<div class="kpi ck-skin"><b>${list.length}</b><small>RSVPs (preview)</small></div><div class="kpi ck-skin"><b>${inN}</b><small>Checked in</small></div><div class="kpi ck-skin"><b>${e.capacity ? Math.max(0, e.capacity - e.going) : "—"}</b><small>Seats left</small></div>`;
       $("#org-tb tbody").innerHTML = list.map(a => `<tr><td>${esc(a.name)}</td><td>${esc(a.level || "")}</td><td><code>${esc(a.code)}</code></td><td>${a.checkedIn ? '<span class="ok-t">✓ In</span>' : "—"}</td></tr>`).join(""); };
     $("#org-ev").onchange = drawOrg;
     $("#org-check").onsubmit = e => { e.preventDefault(); const code = $("#org-code").value; const t = F.checkIn(code); $("#org-msg").textContent = t ? `✓ Checked in: ${t.name} (${t.code})` : "No ticket with that code for this browser's preview data."; $("#org-code").value = ""; drawOrg(); drawTickets(); };

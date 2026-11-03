@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Card system · 101 Codecrafts</title>
+<meta name="description" content="Living style guide for the 101 Codecrafts brutalist card system: anatomy, variants and states in light and dark.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://101codecrafts.github.io/members-site/cards.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="101 Codecrafts">
+<meta property="og:title" content="Card system · 101 Codecrafts"><meta property="og:description" content="Living style guide for the 101 Codecrafts brutalist card system: anatomy, variants and states in light and dark.">
+<meta property="og:url" content="https://101codecrafts.github.io/members-site/cards.html"><meta property="og:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
+<meta name="theme-color" content="#0B1236">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
+<style>
+/* style-guide page only: layout + the frozen demo states (real hover/press/focus come from css/cards.css) */
+.cg{display:grid;gap:var(--s-8,32px);padding-bottom:var(--s-12,48px)}
+.cg section{display:grid;gap:var(--s-4,16px)}
+.cg h2{font:400 var(--step-2)/1.1 var(--disp);text-transform:uppercase;margin:0}
+.cg .note{max-width:72ch;color:var(--text-muted);font-size:var(--step--1)}
+.cg .lbl{font:700 var(--step--2)/1.2 var(--cond,var(--body));letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin:0 0 var(--s-2,8px)}
+.cg .cell{display:flex;flex-direction:column;min-width:0}
+.cg .row3{display:grid;gap:var(--gap-card,16px);grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));align-items:start}
+.cg code{font-size:.9em;background:var(--surface-3);padding:0 4px}
+.cg .anat{display:grid;gap:var(--s-4,16px);grid-template-columns:minmax(0,320px) minmax(0,1fr);align-items:start}
+@media (max-width:700px){.cg .anat{grid-template-columns:minmax(0,1fr)}}
+.cg .anat ol{margin:0;padding-left:20px;display:grid;gap:6px;font-size:var(--step--1)}
+.cg .media-ph{position:absolute;inset:0;display:grid;place-items:center;font:400 var(--step-1) var(--disp);color:var(--on-inverse);background:repeating-linear-gradient(45deg,var(--fill-inverse) 0 12px,#1A2560 12px 24px)}
+.cg .media-ph.or{color:var(--on-accent);background:repeating-linear-gradient(45deg,var(--accent) 0 12px,#ffa53d 12px 24px)}
+.cg .media-ph.cy{color:var(--on-accent-2);background:repeating-linear-gradient(45deg,var(--accent-2) 0 12px,#7af0f7 12px 24px)}
+.cg .badge{display:inline-block;padding:2px 8px;border:2px solid var(--ck-line);background:var(--accent);color:var(--on-accent);font:700 var(--step--2)/1.3 var(--body);letter-spacing:.04em;text-transform:uppercase}
+.cg .ic{display:grid;place-items:center;width:44px;height:44px;flex:none;background:var(--accent-2);color:var(--on-accent-2);border:2px solid var(--ck-line);font:400 var(--step-0) var(--disp)}
+html:not(.static) .cg .ck.demo-hover{translate:-3px -3px;box-shadow:var(--ck-sh-up) var(--ck-sh-up) 0 var(--ck-sh-c)}
+html:not(.static) .cg .ck.demo-press{translate:var(--ck-sh) var(--ck-sh);box-shadow:0 0 0 var(--ck-sh-c)}
+html:not(.static) .cg .ck.demo-focus{outline:3px solid var(--ck-focus);outline-offset:4px;box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--ck-sh-c),0 0 0 4px var(--ck-focus-2)}
+/* the dark preview: the dark role values from css/theme.css, scoped to a panel so both themes show on one page */
+.cg-dark{--text:#EEF1F8;--text-muted:#AEB8CE;--bg:#0A0D17;--surface-1:#121828;--surface-2:#192034;--surface-3:#222B42;--border-subtle:#283149;--border-strong:#4A557A;
+  --fill-inverse:#151E4C;--on-inverse:#fff;--accent-text:#FFAD5C;--shadow-ink:#02040A;--focus:#5FE3F0;--link:#7CC4FF;
+  --ck-line:#61709A;--ck-sh-c:#02040A;--ck-bg:#121828;--ck-ink:#EEF1F8;--ck-mut:#AEB8CE;--ck-focus:#5FE3F0;--ck-focus-2:#0A0D17;
+  background:var(--bg);color:var(--text);padding:var(--s-6,24px);border:2px solid var(--ck-line)}
+.cg-dark .lbl,.cg-dark .note{color:var(--text-muted)}
+.cg-dark .ck.ck--error{--ck-line:#FF8A8A}
+</style>
+<link rel="stylesheet" href="css/bundle-app.css">
+<link rel="stylesheet" href="css/bundle-theme.css">
+</head>
+<body class="flow" data-page="cards">
+<a class="skip" href="#main">Skip to content</a>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 1.5 11.5h3V21h5.5v-6h4v6H19.5v-9.5h3z"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="i-learning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2 7 12 2l10 5-10 5z"/><path d="M4 9v9l8 4 8-4V9"/><path d="M4 13l8 4 8-4"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2 5a1 1 0 0 1 1-1h6l2 3h10a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 4h18l1 5H2z"/><path d="M4 9v11h16V9"/><path d="M9 14h6"/><path d="M2 9c0 2 1.5 3 3.3 3S8.7 11 8.7 9c0 2 1.5 3 3.3 3s3.3-1 3.3-3c0 2 1.5 3 3.3 3S22 11 22 9"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><rect x="7" y="13" width="3" height="3" fill="currentColor" stroke="none"/><rect x="14" y="13" width="3" height="3" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.2 2 1.5 5.9 1.5 10.8c0 2.7 1.4 5.1 3.7 6.7L4 22l5-2.6c1 .2 2 .3 3 .3 5.8 0 10.5-3.9 10.5-8.8S17.8 2 12 2z"/><circle cx="7.5" cy="11" r="1.4" fill="#0B1236"/><circle cx="12" cy="11" r="1.4" fill="#0B1236"/><circle cx="16.5" cy="11" r="1.4" fill="#0B1236"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7.5"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="13 5 20 12 13 19"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="12" y1="10" x2="12.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/></symbol>
+<symbol id="i-plusc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M12 6.5v11M6.5 12h11" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path fill="currentColor" d="M5 1h9.5L20 6.5V21a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"/><path d="M14 1v6h6" fill="#cfd5da"/><path d="M7 12h10M7 15.5h10M7 19h6" stroke="#1a1f25" stroke-width="1.8"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="9" height="9" rx="1.5"/><rect x="13" y="2" width="9" height="9" rx="1.5"/><rect x="2" y="13" width="9" height="9" rx="1.5"/><rect x="13" y="13" width="9" height="9" rx="1.5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.8l3.1 6.6 7.1.9-5.2 4.9 1.3 7.1L12 17.8l-6.3 3.5L7 14.2 1.8 9.3l7.1-.9z"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><rect x="10.3" y="10" width="3.4" height="9" rx=".6" fill="currentColor"/><circle cx="12" cy="6" r="2" fill="currentColor"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 7.5l1.4 2.9 3.1.4-2.3 2.1.6 3.1L12 14.5 9.2 16l.6-3.1-2.3-2.1 3.1-.4z" fill="currentColor" stroke-width="1"/></symbol>
+<symbol id="i-shieldc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="currentColor"/><polyline points="8.5 12 11 14.5 15.5 9.5" stroke="#fc8c0c"/></symbol>
+<symbol id="i-bars" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="13" width="4.5" height="8"/><rect x="9.75" y="8" width="4.5" height="13"/><rect x="16.5" y="3" width="4.5" height="18"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="14" width="3.5" height="7"/><rect x="8.2" y="11" width="3.5" height="10"/><rect x="13.4" y="8" width="3.5" height="13"/><rect x="18.6" y="4" width="3" height="17"/><path d="M3 11 9 6l4 3 8-6" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M17.5 19H7a5 5 0 0 1-.6-9.96A7 7 0 0 1 19.6 10.5 4.25 4.25 0 0 1 17.5 19z"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><line x1="3.5" y1="6" x2="4.5" y2="6"/><line x1="3.5" y1="12" x2="4.5" y2="12"/><line x1="3.5" y1="18" x2="4.5" y2="18"/></symbol>
+<symbol id="i-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5a3 3 0 0 0-5.6-1.4A3 3 0 0 0 3.5 7a3.5 3.5 0 0 0 .3 5.8A3.5 3.5 0 0 0 7 18.5a3 3 0 0 0 5 1.5z"/><path d="M12 4.5a3 3 0 0 1 5.6-1.4A3 3 0 0 1 20.5 7a3.5 3.5 0 0 1-.3 5.8 3.5 3.5 0 0 1-3.2 5.7 3 3 0 0 1-5 1.5z"/><path d="M12 4.5V20M8 9h2M14 9h2M7.5 14h2.5M14 14h2.5"/></symbol>
+<symbol id="i-network" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="3"/><path d="M6.5 17c0-3 2.5-5 5.5-5s5.5 2 5.5 5z"/><circle cx="5" cy="9" r="2.2"/><circle cx="19" cy="9" r="2.2"/><path d="M1 17c0-2.2 1.8-4 4-4 .8 0 1.5.2 2 .5-1 1-1.6 2.2-1.7 3.5zM23 17c0-2.2-1.8-4-4-4-.8 0-1.5.2-2 .5 1 1 1.6 2.2 1.7 3.5z"/></symbol>
+<symbol id="i-people" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6.5" r="3.6"/><path d="M5.5 20c0-4 2.9-7 6.5-7s6.5 3 6.5 7z"/><circle cx="4.8" cy="8.5" r="2.6"/><circle cx="19.2" cy="8.5" r="2.6"/><path d="M0 18.5c0-3 1.9-5 4.5-5 .9 0 1.7.2 2.3.6C5.2 15.6 4.3 17.4 4.2 18.5zM24 18.5c0-3-1.9-5-4.5-5-.9 0-1.7.2-2.3.6 1.6 1.5 2.5 3.3 2.6 4.4z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24" fill="currentColor"><path d="M1 4c3.5-.6 7 0 10 1.8V21c-3-1.6-6.5-2.2-10-1.6z"/><path d="M23 4c-3.5-.6-7 0-10 1.8V21c3-1.6 6.5-2.2 10-1.6z"/></symbol>
+<symbol id="i-cap" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 0.5 8.5 12 14l11.5-5.5z"/><path d="M5 11.5v4.5c0 1.8 3.1 3.5 7 3.5s7-1.7 7-3.5v-4.5L12 15z"/><rect x="21.2" y="9" width="1.4" height="7"/></symbol>
+<symbol id="i-codebox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="2.5" y="3" width="19" height="18" rx="2"/><line x1="2.5" y1="7.5" x2="21.5" y2="7.5"/><polyline points="9 11 6.5 14 9 17"/><polyline points="15 11 17.5 14 15 17"/><line x1="13" y1="10.5" x2="11" y2="17.5"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path fill="currentColor" d="M13.6 1h-3.2l-.5 2.8a8.5 8.5 0 0 0-2.2 1.3L5 4.1 3.4 6.9l2.2 1.8a8.6 8.6 0 0 0 0 2.6l-2.2 1.8L5 15.9l2.7-1a8.5 8.5 0 0 0 2.2 1.3l.5 2.8h3.2l.5-2.8a8.5 8.5 0 0 0 2.2-1.3l2.7 1 1.6-2.8-2.2-1.8a8.6 8.6 0 0 0 0-2.6l2.2-1.8L19 4.1l-2.7 1a8.5 8.5 0 0 0-2.2-1.3z" transform="translate(0 2)"/><circle cx="12" cy="12" r="3.3" fill="#0B1236"/></symbol>
+<symbol id="i-userplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+<symbol id="i-comment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 4.5v15l12-7.5z" fill="currentColor"/></symbol>
+<symbol id="i-yt" viewBox="0 0 24 24"><rect x="1" y="4.5" width="22" height="15" rx="4" fill="currentColor"/><path d="M10 9v6l5-3z" fill="#0B1236"/></symbol>
+<symbol id="i-ig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor"/></symbol>
+<symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16.5 2h-3.4v13.4a3 3 0 1 1-3-3V9a6.4 6.4 0 1 0 6.4 6.4V8.6a7.6 7.6 0 0 0 4.5 1.5V6.7a4.5 4.5 0 0 1-4.5-4.7z"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M17.8 2.5h3.3l-7.2 8.2 8.5 10.8h-6.6l-5.2-6.6-5.9 6.6H1.4l7.7-8.8L1 2.5h6.8l4.7 6 5.3-6zm-1.2 17h1.8L6.6 4.3H4.7z"/></symbol>
+<symbol id="i-in" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="3" fill="currentColor"/><path d="M6 10h2.6v8H6zM7.3 5.6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM10.3 10h2.5v1.1c.4-.7 1.3-1.3 2.6-1.3 2.7 0 3.1 1.7 3.1 4V18h-2.6v-3.7c0-.9 0-2-1.3-2s-1.6 1-1.6 2V18h-2.7z" fill="#0B1236"/></symbol>
+<symbol id="i-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.5C.6 9.1-.3 13.6.1 18.1a19.8 19.8 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14 14 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.7 19.7 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.7zM8 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" fill="currentColor"/><path d="M8 7V4.5A1.5 1.5 0 0 1 9.5 3h5A1.5 1.5 0 0 1 16 4.5V7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 13h20" stroke="#0B1236" stroke-width="1.6"/><rect x="10.5" y="11.5" width="3" height="3" fill="#0B1236"/></symbol>
+<symbol id="i-teacher" viewBox="0 0 24 24" fill="currentColor"><rect x="9" y="3" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="9" r="3"/><path d="M1 21v-3.5C1 15 3 13.5 6 13.5h6V16H9v5z"/></symbol>
+<symbol id="i-openbook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12v7a6 6 0 0 1-12 0z"/><path d="M6 4H2v2a4 4 0 0 0 4 4M18 4h4v2a4 4 0 0 1-4 4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10.5" y="14" width="3" height="4"/><rect x="7" y="18" width="10" height="3"/></symbol>
+<symbol id="i-badge" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path fill="#fc8c0c" d="M12 7l1.5 3 3.2.4-2.4 2.2.6 3.2L12 14.3l-2.9 1.5.6-3.2-2.4-2.2 3.2-.4z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></symbol>
+<symbol id="i-xmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 22V3"/><path d="M4 4h13l-2.5 4.5L17 13H4" fill="currentColor"/></symbol>
+<symbol id="i-cash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1.5" y="5" width="21" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9v6M19 9v6"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9h4l10-5v16L7 15H3z"/><path d="M7 15l1.5 6h3L10 15" /><rect x="19" y="10" width="3" height="4" rx="1"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="4" y="3" width="16" height="19" rx="2"/><rect x="8.5" y="1.5" width="7" height="4" rx="1" fill="currentColor"/><polyline points="8 13 11 16 16 10"/></symbol>
+<symbol id="i-report" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></symbol>
+<symbol id="i-toolbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2" y="8" width="20" height="13" rx="1.5"/><path d="M8 8V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3"/><path d="M2 13h20M9 11.5v3M15 11.5v3"/></symbol>
+<symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 2 21 6 17 10"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><polyline points="7 22 3 18 7 14"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
+<symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8z"/></symbol>
+<symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1.9 2 1.2 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></symbol>
+<symbol id="i-tg" viewBox="0 0 24 24"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.4 1.8 12c-1-.3-1-1 .2-1.5l18.5-7.1c.9-.3 1.6.2 1.4.9z"/></symbol>
+<symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 0 0-3.3 20.5c.5.1.7-.2.7-.5v-1.8c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.2-1.5-1.2-1.5-1-.7.1-.7.1-.7 1 .1 1.6 1.1 1.6 1.1.9 1.6 2.5 1.1 3.1.9.1-.7.4-1.1.7-1.4-2.3-.3-4.8-1.2-4.8-5.2 0-1.1.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.8 0 0 .9-.3 2.9 1.1a10 10 0 0 1 5.2 0c2-1.4 2.9-1.1 2.9-1.1.6 1.4.2 2.5.1 2.8.7.7 1.1 1.7 1.1 2.8 0 4-2.5 4.9-4.8 5.2.4.3.7 1 .7 2v2.9c0 .3.2.6.7.5A10.5 10.5 0 0 0 12 1.5z"/></symbol>
+<symbol id="i-grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="11" width="16" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+<symbol id="i-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16"/><path d="M9 4v16"/><path d="m15.5 9.5-2.5 2.5 2.5 2.5" stroke-linecap="square"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M14 4H4v16h10"/><path d="M10 12h11M17 8l4 4-4 4"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="1.5"/><path d="M10.5 18.5h3" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="topbar"><a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101 Codecrafts home" width="82" height="41"><b>Codecrafts</b></a><span class="sp"></span><a class="btn or" href="signup.html">Join</a></header>
+<main id="main" class="content"><div class="cg">
+
+<header><p class="kicker">Design system</p><h1 class="page-h" style="font:400 var(--step-4) var(--disp)">CARD SYSTEM</h1>
+<p class="note">One brutalist card for the whole site: a 2px outline, a hard offset shadow, square corners, and the same slots in the same order. Use a card for a summary that leads somewhere else; use a plain list when people scan or compare. Source: <code>css/cards.css</code>.</p></header>
+
+<section aria-labelledby="h-anat"><h2 id="h-anat">Anatomy</h2>
+<div class="anat">
+  <article class="ck ck--media"><div class="ck-media" aria-hidden="true"><span class="media-ph">16:9 MEDIA</span></div>
+    <p class="ck-eyebrow"><span class="badge">Course</span> Beginner</p>
+    <h3 class="ck-title"><a class="ck-link" href="courses.html?path=software-dev">Python Foundations: from your first line to a working app</a></h3>
+    <p class="ck-meta"><span>12 lessons</span><span>Free</span></p>
+    <p class="ck-body">Variables, loops and functions, then a small project you can show. Long descriptions are clamped to three lines so every card in a row lines up, and the full text is on the course page.</p>
+    <div class="ck-foot"><span class="ck-cta" aria-hidden="true">Start learning →</span></div></article>
+  <ol>
+    <li><b>Media</b> <code>.ck-media</code>: fixed ratio 16:9 (or <code>--1x1</code>, <code>--4x3</code>), <code>object-fit:cover</code>, decorative unless it carries meaning.</li>
+    <li><b>Eyebrow</b> <code>.ck-eyebrow</code>: badge or category, one line.</li>
+    <li><b>Title</b> <code>.ck-title</code>: a real heading (h2/h3 to fit the page outline), clamped to 2 lines. It holds the one primary link, <code>.ck-link</code>, stretched over the whole card.</li>
+    <li><b>Meta</b> <code>.ck-meta</code>: source, date, level.</li>
+    <li><b>Body</b> <code>.ck-body</code>: supporting text, clamped to 3 lines.</li>
+    <li><b>Footer</b> <code>.ck-foot</code>: actions, pinned to the bottom. Secondary buttons sit above the stretched link and stay clickable. No links inside links.</li>
+  </ol>
+</div></section>
+
+<section aria-labelledby="h-var"><h2 id="h-var">Variants</h2>
+<ul class="ck-grid">
+  <li><article class="ck"><p class="ck-eyebrow">Default · outlined</p><h3 class="ck-title"><a class="ck-link" href="events.html">Skill-building workshops</a></h3><p class="ck-body">Hands-on bootcamps in programming, AI, security and cloud.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Events →</span></div></article></li>
+  <li><article class="ck ck--inv"><p class="ck-eyebrow">Inverse · navy</p><h3 class="ck-title"><a class="ck-link" href="resources.html">Resource hub</a></h3><p class="ck-body">Guides, tutorials and toolkits, all free, picked by members.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Library →</span></div></article></li>
+  <li><article class="ck ck--accent"><p class="ck-eyebrow">Accent · orange fill</p><h3 class="ck-title"><a class="ck-link" href="signup.html">Join 101 Codecrafts</a></h3><p class="ck-body">Orange is a fill with navy ink, never text on white.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Join →</span></div></article></li>
+  <li><article class="ck ck--stat"><span class="ck-num">120+</span><span class="ck-lbl">Projects shipped (stat, not clickable)</span></article></li>
+  <li><article class="ck ck--media"><div class="ck-media ck-media--1x1" aria-hidden="true"><span class="media-ph or">1:1</span></div><h3 class="ck-title"><a class="ck-link" href="marketplace.html">Media 1:1 · product</a></h3><p class="ck-meta"><b>UGX 45,000</b></p><div class="ck-foot"><button type="button" class="btn sm or" data-demo-add>Add to cart</button></div></article></li>
+  <li><article class="ck ck--media"><div class="ck-media ck-media--4x3" aria-hidden="true"><span class="media-ph cy">4:3</span></div><h3 class="ck-title"><a class="ck-link" href="news.html">Media 4:3 · story</a></h3><p class="ck-body">The secondary button in the card before this one is raised above the stretched link.</p></article></li>
+</ul>
+<p class="lbl">Compact / list row (a list stays a list)</p>
+<ul class="ck-grid" style="--ck-min:320px">
+  <li><article class="ck ck--compact"><span class="ic" aria-hidden="true">#1</span><div class="ck-text"><h3 class="ck-title"><a class="ck-link" href="launchpad.html">StudyBuddy</a></h3><p class="ck-meta">Beta · 12 comments</p></div><button type="button" class="btn sm" aria-pressed="false" data-demo-vote>▲ 48</button></article></li>
+  <li><article class="ck ck--compact"><span class="ic" aria-hidden="true">#2</span><div class="ck-text"><h3 class="ck-title"><a class="ck-link" href="launchpad.html">Boda Route Planner</a></h3><p class="ck-meta">Launched · 7 comments</p></div><button type="button" class="btn sm" aria-pressed="false" data-demo-vote>▲ 31</button></article></li>
+</ul>
+<p class="lbl">Container card: several equal actions, no single destination, so no stretched link and no hover lift</p>
+<div class="row3"><article class="ck"><p class="ck-eyebrow">Hackathon · Intermediate</p><h3 class="ck-title">101 Weekend Hack</h3><p class="ck-meta">Teams of 2–4 · 86 registered</p><div class="ck-foot"><button type="button" class="btn sm or">Register solo</button><button type="button" class="btn sm ink">Register a team</button></div></article></div>
+</section>
+
+<section aria-labelledby="h-states"><h2 id="h-states">States</h2>
+<p class="note">Hover lifts the card and grows the hard shadow (mouse and trackpad only). Pressing pushes it into its shadow. Keyboard focus draws a thick ring round the whole card, offset and two-coloured so it shows on any background. Frozen copies below; the real ones work on every card above.</p>
+<div class="row3" id="state-row">
+  <div class="cell"><p class="lbl">Rest</p><article class="ck"><h3 class="ck-title"><a class="ck-link" href="courses.html">Rest</a></h3><p class="ck-body">2px outline + 4px hard shadow.</p></article></div>
+  <div class="cell"><p class="lbl">Hover (pointer devices)</p><article class="ck demo-hover"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Hover</a></h3><p class="ck-body">Moves 3px up-left, shadow grows to 7px.</p></article></div>
+  <div class="cell"><p class="lbl">Pressed</p><article class="ck demo-press"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Pressed</a></h3><p class="ck-body">Pushed into its shadow.</p></article></div>
+  <div class="cell"><p class="lbl">Focus-visible</p><article class="ck demo-focus"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Focus</a></h3><p class="ck-body">3px ring, 4px offset, inner gap ring.</p></article></div>
+  <div class="cell"><p class="lbl">Selected</p><article class="ck is-selected"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Selected</a></h3><p class="ck-body">Accent bar + a written "Selected" mark, not colour alone.</p></article></div>
+  <div class="cell"><p class="lbl">Disabled</p><article class="ck is-disabled"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1" aria-disabled="true">Disabled</a></h3><p class="ck-body">Dashed outline, no shadow, not clickable.</p></article></div>
+  <div class="cell"><p class="lbl">Loading skeleton</p><article class="ck ck--skeleton" aria-busy="true" aria-label="Loading"><div class="ck-media ck-sk"></div><span class="ck-sk t"></span><span class="ck-sk m"></span><span class="ck-sk b"></span><span class="ck-sk f"></span></article></div>
+  <div class="cell"><p class="lbl">Empty</p><article class="ck ck--empty"><span class="ck-ic" aria-hidden="true">0</span><h3 class="ck-title">No saved courses yet</h3><p class="ck-body">Save a course and it shows up here.</p><div class="ck-foot"><a class="btn sm" href="courses.html">Browse courses</a></div></article></div>
+  <div class="cell"><p class="lbl">Error</p><article class="ck ck--error" role="alert"><p class="ck-eyebrow"><span class="ck-ic" aria-hidden="true">!</span>Couldn't load</p><h3 class="ck-title">News did not load</h3><p class="ck-body">Check your connection and try again.</p><div class="ck-foot"><button type="button" class="btn sm" data-demo-retry>Try again</button></div></article></div>
+</div></section>
+
+<section aria-labelledby="h-dark"><h2 id="h-dark">Dark theme</h2>
+<div class="cg-dark"><p class="note">Same cards on the dark roles. The outline is #61709A: at least 3:1 against the page, the card and the navy fill (WCAG 1.4.11).</p>
+<div class="row3">
+  <div class="cell"><p class="lbl">Default</p><article class="ck"><p class="ck-eyebrow">Course</p><h3 class="ck-title"><a class="ck-link" href="courses.html">Data &amp; AI basics</a></h3><p class="ck-body">Turn raw data into answers.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Start →</span></div></article></div>
+  <div class="cell"><p class="lbl">Inverse</p><article class="ck ck--inv"><h3 class="ck-title"><a class="ck-link" href="resources.html">Library</a></h3><p class="ck-body">Free guides and toolkits.</p></article></div>
+  <div class="cell"><p class="lbl">Accent</p><article class="ck ck--accent"><h3 class="ck-title"><a class="ck-link" href="signup.html">Join</a></h3><p class="ck-body">Navy ink on orange.</p></article></div>
+  <div class="cell"><p class="lbl">Hover</p><article class="ck demo-hover"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Hover</a></h3><p class="ck-body">Lift + bigger shadow.</p></article></div>
+  <div class="cell"><p class="lbl">Focus-visible</p><article class="ck demo-focus"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Focus</a></h3><p class="ck-body">Cyan ring, page-colour gap.</p></article></div>
+  <div class="cell"><p class="lbl">Selected</p><article class="ck is-selected"><h3 class="ck-title"><a class="ck-link" href="courses.html" tabindex="-1">Selected</a></h3><p class="ck-body">Accent bar + mark.</p></article></div>
+  <div class="cell"><p class="lbl">Disabled</p><article class="ck is-disabled"><h3 class="ck-title">Disabled</h3><p class="ck-body">Dashed, flat.</p></article></div>
+  <div class="cell"><p class="lbl">Skeleton</p><article class="ck ck--skeleton" aria-busy="true" aria-label="Loading"><span class="ck-sk t"></span><span class="ck-sk m"></span><span class="ck-sk b"></span><span class="ck-sk f"></span></article></div>
+  <div class="cell"><p class="lbl">Error</p><article class="ck ck--error"><p class="ck-eyebrow"><span class="ck-ic" aria-hidden="true">!</span>Error</p><h3 class="ck-title">Couldn't load</h3><p class="ck-body">Try again.</p></article></div>
+</div></div></section>
+
+<section aria-labelledby="h-grid"><h2 id="h-grid">Grid: equal heights, actions pinned</h2>
+<p class="note"><code>.ck-grid</code> is a list (screen readers announce how many cards there are). Every card in a row is as tall as the tallest, and footers line up because <code>.ck-foot</code> is pushed to the bottom.</p>
+<ul class="ck-grid" id="eq-grid">
+  <li><article class="ck"><h3 class="ck-title"><a class="ck-link" href="sessions.html">Short</a></h3><p class="ck-body">One line.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Open →</span></div></article></li>
+  <li><article class="ck"><h3 class="ck-title"><a class="ck-link" href="groups.html">A much longer card title that wraps onto a second line and then is clamped</a></h3><p class="ck-body">A longer description that runs over several lines, so it is clamped at three lines and the card keeps its rhythm with the others in the same row however much text an editor adds here.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Open →</span></div></article></li>
+  <li><article class="ck"><h3 class="ck-title"><a class="ck-link" href="projects.html">Medium</a></h3><p class="ck-body">Two short lines of supporting text for this card.</p><div class="ck-foot"><span class="ck-cta" aria-hidden="true">Open →</span></div></article></li>
+</ul></section>
+
+<section aria-labelledby="h-not"><h2 id="h-not">When not to use a card</h2>
+<p class="note">Homogeneous items that people scan or compare (prices, deadlines, names) read faster as a list or table with fixed columns. Settings, forms and filters are panels, not cards: they never lift or take a stretched link.</p>
+<ul class="fw-list" style="list-style:none;padding:0;margin:0;border:2px solid var(--ck-line)">
+  <li style="padding:12px 16px;border-bottom:1px solid var(--border-subtle)"><a href="opportunities.html">Scholarships closing this week</a> · 3 open</li>
+  <li style="padding:12px 16px;border-bottom:1px solid var(--border-subtle)"><a href="events.html">Meetups this month</a> · 5 in Kampala</li>
+  <li style="padding:12px 16px"><a href="news.html">Today's tech news</a> · updated hourly</li>
+</ul></section>
+
+</div></main>
+<footer class="flow-foot">
+  <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
+  <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
+  <div class="socials" data-socials><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg><use href="#i-gh"/></svg></a></div>
+</footer>
+<script src="js/data.js" defer></script>
+<script src="js/site-stats.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/auth.js" defer></script>
+<script src="js/share.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" integrity="sha384-xb96EMJeax+NLXMC88ZBa1xAeAW+kn+horHh/zFlbMLG2UPWhMJJSlv7fi57hS+Q" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js" integrity="sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu" crossorigin="anonymous" defer></script>
+<script src="js/shell.js" defer></script>
+<script src="js/ui.js" defer></script>
+<script src="js/motion.js" defer></script>
+<script src="js/era.js" defer></script>
+<script src="js/ads.js" defer></script>
+<script>/* style guide demo controls only */document.addEventListener("click",function(e){var v=e.target.closest("[data-demo-vote]");if(v){v.setAttribute("aria-pressed",v.getAttribute("aria-pressed")!=="true")}var a=e.target.closest("[data-demo-add]");if(a){a.textContent="Added ✓"}var r=e.target.closest("[data-demo-retry]");if(r){r.textContent="Retrying…"}});</script>
+</body></html>

@@ -11,7 +11,6 @@ body:is([data-page=news],[data-page=opportunities],[data-page=announcements],[da
 .ftabs.sm .ftab{padding:0 12px;font-size:var(--step--2)}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .fcard{display:flex;flex-direction:column;gap:8px;background:#fff;color:var(--ink);border:2px solid var(--ink);padding:14px;box-shadow:var(--shadow-brutal-sm);min-width:0;transition:transform .15s,box-shadow .15s}
-.fcard:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow-brutal-accent,4px 4px 0 var(--color-orange))}
 .fcard h3{font:700 var(--step-0)/1.3 var(--body)}
 .fcard h3 a{color:inherit;text-decoration:none}
 .fcard h3 a:hover{text-decoration:underline}
@@ -48,9 +47,8 @@ body:is([data-page=news],[data-page=opportunities],[data-page=announcements],[da
 .closing{background:var(--ink);color:#fff;border:2px solid var(--ink);padding:14px;box-shadow:var(--shadow-brutal-sm)}
 .closing h2{font:400 var(--step-1) var(--disp);display:flex;align-items:center;gap:8px;color:var(--color-orange);margin-bottom:10px}
 .cw-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);gap:12px;overflow-x:auto;padding-bottom:4px}
-.cw{display:grid;gap:4px;background:#111A45;border:2px solid #26306A;padding:10px 12px;color:#fff;text-decoration:none}
-.cw:hover{border-color:var(--color-orange)}
-.cw b{font:700 var(--step--1)/1.3 var(--body)}.cw small{color:#c9d3e4;font-size:var(--step--2)}
+.cw{display:grid;gap:4px;padding:10px 12px}
+.cw .ck-title{font:700 var(--step--1)/1.3 var(--body)}.cw small{color:#c9d3e4;font-size:var(--step--2)}
 .cw .fcd{margin:0;justify-self:start}
 .ofilters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:12px;align-items:end}
 .of-tg{flex-wrap:nowrap}
@@ -141,7 +139,6 @@ body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:
 .org-stats .kpi b{font-size:var(--step-2)}
 .ok-t{color:var(--color-success);font-weight:700}
 /* lite: no hover motion */
-.lite .fcard,.lite .fcard:hover{transition:none;transform:none}
 @media (max-width:1100px){.ofilters{grid-template-columns:1fr 1fr}.ofilters .csearch{grid-column:1/-1}.ef-row{grid-template-columns:repeat(3,minmax(0,1fr))}.top-links{display:none}}
 @media (max-width:760px){
   .fgrid{grid-template-columns:1fr}.ofilters,.ef-row,.org-top,.sub-form{grid-template-columns:1fr}
