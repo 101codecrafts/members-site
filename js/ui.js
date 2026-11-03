@@ -99,19 +99,30 @@
       <label>${ico("chat")}<select id="cc-lang" aria-label="Language"><option value="en">English</option><option value="lg">Luganda</option><option value="sw">Kiswahili</option><option value="fr">Français</option></select></label>
       <button type="button" id="cc-theme" aria-pressed="${html.dataset.theme === "dark"}" aria-label="Toggle dark theme">◐</button>`;
     document.body.appendChild(bar);
+    const tg = bar.querySelector(".cc-tb-toggle");
     /* shell pages: dock the settings toggle in the top bar (a fixed corner button covers card content); the open panel drops below the bar */
     const tbar = document.querySelector(".shell .topbar");
     if (tbar && !html.classList.contains("static")) {
       const pn = document.createElement("div"); pn.className = "cc-tb-panel";
       [...bar.children].filter(c => !c.classList.contains("cc-tb-toggle")).forEach(c => pn.appendChild(c));
-      bar.appendChild(pn); bar.classList.add("docked"); tbar.insertBefore(bar, tbar.querySelector(".acct"));
+      bar.appendChild(pn);
+      /* phones: the top bar is full (menu, logo, search, bell, account), so the settings row lives in the drawer footer */
+      const sfoot = document.querySelector(".sbar .sb-foot"), phone = matchMedia("(max-width:760px)");
+      const place = () => {
+        const drawer = phone.matches && !!sfoot;
+        bar.classList.toggle("docked", !drawer); bar.classList.toggle("in-drawer", drawer); bar.classList.toggle("open", drawer);
+        tg.setAttribute("aria-expanded", drawer);
+        if (drawer) { if (bar.parentElement !== sfoot) sfoot.insertBefore(bar, sfoot.firstChild); }
+        else if (bar.parentElement !== tbar) tbar.insertBefore(bar, tbar.querySelector(".acct"));
+      };
+      place(); (phone.addEventListener ? phone.addEventListener.bind(phone, "change") : phone.addListener.bind(phone))(place);
     } else if (!html.classList.contains("static")) {
       /* pages without the shell top bar: on phones the toolbar sits in the page footer instead of floating over cards */
       const foot = [...document.querySelectorAll("footer")].pop(), phone = matchMedia("(max-width:760px)");
       const place = () => { const on = phone.matches && !!foot; bar.classList.toggle("in-foot", on); if (on) { if (bar.parentElement !== foot) foot.appendChild(bar); } else if (bar.parentElement !== document.body) document.body.appendChild(bar); };
       place(); (phone.addEventListener ? phone.addEventListener.bind(phone, "change") : phone.addListener.bind(phone))(place);
     }
-    const tg = bar.querySelector(".cc-tb-toggle"); tg.onclick = () => { const o = bar.classList.toggle("open"); tg.setAttribute("aria-expanded", o); const pn = bar.querySelector(".cc-tb-panel"); if (o && pn && tbar) pn.style.top = Math.max(8, tbar.getBoundingClientRect().bottom + 6) + "px"; };
+    tg.onclick = () => { const o = bar.classList.toggle("open"); tg.setAttribute("aria-expanded", o); const pn = bar.querySelector(".cc-tb-panel"); if (o && pn && tbar) pn.style.top = Math.max(8, tbar.getBoundingClientRect().bottom + 6) + "px"; };
     $("#cc-lite").onclick = e => { const on = !html.classList.contains("lite"); html.classList.toggle("lite", on); localStorage.setItem("lite", on ? "1" : "0"); e.currentTarget.setAttribute("aria-pressed", on); if (!on) location.reload(); };
     const lang = localStorage.getItem("lang") || "en"; $("#cc-lang").value = lang; if (lang !== "en") setLang(lang);
     $("#cc-lang").onchange = e => setLang(e.target.value);

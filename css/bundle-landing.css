@@ -1560,9 +1560,17 @@ html:not(.static) .cc-toolbar.docked .cc-tb-toggle svg{width:20px;height:20px}
 html:not(.static) .cc-toolbar.docked .cc-tb-panel{position:fixed;right:8px;left:auto;top:calc(var(--tb-h) + 8px);z-index:1001;display:flex;flex-wrap:wrap;gap:6px;padding:6px;background:var(--sh-navy);border:1px solid var(--sh-line);box-shadow:4px 4px 0 var(--sh-or)}
 @media (max-width:760px){
   html:not(.static) .tb-btn{height:44px;padding:0 12px}
-  html:not(.static) .cc-toolbar.docked .cc-tb-panel{left:8px}
 }
+/* phones: the settings row sits in the drawer footer above the WhatsApp link (js/ui.js adds .in-drawer) */
+html:not(.static) .cc-toolbar.in-drawer{position:static;display:block;margin:0 0 8px;padding:0;background:transparent;border:0;box-shadow:none;opacity:1;z-index:auto}
+html:not(.static) .cc-toolbar.in-drawer .cc-tb-toggle{display:none!important}
+html:not(.static) .cc-toolbar.in-drawer .cc-tb-panel{display:flex!important;flex-wrap:wrap;gap:6px}
+html:not(.static) .cc-toolbar.in-drawer .cc-tb-panel>*{min-height:44px;background:var(--sh-navy-2);border:1px solid var(--sh-line);color:var(--sh-text)}
+html:not(.static) .cc-toolbar.in-drawer .cc-tb-panel>label{flex:1 1 auto}
 /* integrate3: phones, pages without the shell top bar: the toolbar lives in the footer flow (js/ui.js adds .in-foot) */
 html:not(.static) .cc-toolbar.in-foot{position:static!important;inset:auto!important;z-index:auto;opacity:1;box-shadow:none;margin:var(--s-2,8px) 0 0;flex-wrap:wrap;width:max-content!important;max-width:100%;flex:0 0 auto!important}
 html:not(.static) .cc-toolbar.in-foot:not(.open){padding:2px;border:1px solid rgba(255,255,255,.25)}
 html:not(.static) .cc-toolbar.in-foot .cc-tb-toggle{width:44px;min-width:44px;height:44px}
+/* integrate3: 360-380px phones keep the 44px targets without overflowing the top bar */
+@media (max-width:380px){html:not(.static) .shell .topbar{column-gap:3px;padding-left:6px;padding-right:8px}html:not(.static) .tb-btn{padding:0 9px}}
+html:not(.static) .cc-toolbar.in-drawer select{background:transparent;color:inherit}
