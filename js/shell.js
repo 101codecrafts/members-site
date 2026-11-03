@@ -79,6 +79,10 @@
     $$("[data-sb-toggle]").forEach(b => b.addEventListener("click", () => desk.matches ? setCollapsed(!collapsed()) : closeDrawer()));
     $$("[data-sb-open]").forEach(b => b.addEventListener("click", () => desk.matches ? setCollapsed(!collapsed()) : (drawerOpen() ? closeDrawer() : openDrawer())));
     if (scrim) scrim.addEventListener("click", () => closeDrawer());
+    // swipe toward the anchoring edge dismisses the modal drawer (Material 3); vertical scrolls are left alone
+    let sx = null, sy = 0;
+    sb.addEventListener("touchstart", e => { if (!desk.matches && drawerOpen() && e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });
+    sb.addEventListener("touchend", e => { if (sx === null) return; const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; sx = null; if (dx < -60 && Math.abs(dx) > Math.abs(dy) * 1.5) closeDrawer(); }, { passive: true });
     // tapping a destination in the drawer closes it (Material: selecting a destination dismisses the modal drawer)
     sb.addEventListener("click", e => { const a = e.target.closest("a[href]"); if (a && !desk.matches && drawerOpen() && a.getAttribute("href") !== "#") closeDrawer(false); });
     $$(".sb-nav a, .sb-foot a, [data-sb-toggle]", sb).forEach(a => {

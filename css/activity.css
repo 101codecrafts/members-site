@@ -1,0 +1,41 @@
+/* ==== Recent activity: like / comment / share (js/activity.js). Live dashboard only; existing tokens only. ==== */
+html:not(.static) .app.dz .act.act-live{grid-template-areas:"img b b" "img who who" "q q q" "ago ago ago" "bar bar bar" "gate gate gate" "thr thr thr";grid-template-rows:auto auto 1fr auto auto auto auto}
+html:not(.static) .app.dz .act.act-live .meta{display:none!important}
+html:not(.static) .app.dz .act.act-live .ago{margin-top:var(--s-2)!important}
+.act-bar{grid-area:bar;display:flex;align-items:center;gap:2px;margin:var(--s-2) calc(-1 * var(--s-2)) 0!important;padding-top:var(--s-1);border-top:1px solid var(--hairline)}
+.act-btn{display:inline-flex;align-items:center;gap:6px;min-width:44px;height:36px;padding:0 var(--s-2);background:transparent;border:1px solid transparent;color:var(--ink-muted);
+  font:600 var(--step--1)/1 var(--body);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color var(--motion-fast,120ms) ease,background-color var(--motion-fast,120ms) ease}
+.act-btn svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor}
+.act-btn:hover{color:var(--ink);background:var(--surface-alt)}
+.act-btn:focus-visible{outline:2px solid var(--color-focus,var(--link));outline-offset:1px}
+.act-btn:active svg{transform:scale(.88)}
+.act-like[aria-pressed=true]{color:var(--ink)}
+.act-like[aria-pressed=true] svg{fill:var(--accent);stroke:var(--ink)}
+.act-cmt[aria-expanded=true]{color:var(--ink);background:var(--surface-alt)}
+.act-share{margin-left:auto}
+.act-n{min-width:1ch;font-variant-numeric:tabular-nums}
+.act-gate{grid-area:gate;display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2);margin-top:var(--s-2)!important;padding:var(--s-2) var(--s-3);background:var(--surface-alt);border:var(--border);font:500 var(--step--1)/1.3 var(--body);color:var(--ink)}
+.act-gate[hidden]{display:none!important}
+.act-gate span{flex:1 0 100%}
+.act-gate a{display:inline-flex;align-items:center;height:32px;padding:0 var(--s-3);font:700 var(--step--1)/1 var(--body);text-decoration:none;border:var(--border)}
+.act-gate .act-gate-in{background:var(--surface);color:var(--ink)}
+.act-gate .act-gate-join{background:var(--accent);color:var(--on-accent)}
+.act-thread{grid-area:thr;margin-top:var(--s-2)!important;padding-top:var(--s-2);border-top:1px solid var(--hairline)}
+.act-thread[hidden]{display:none!important}
+.act-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--s-2);max-height:220px;overflow-y:auto;overscroll-behavior:contain}
+.act-c{font:400 var(--step--1)/1.4 var(--body)!important;color:var(--ink);overflow-wrap:anywhere}
+.act-c b{font-weight:700}
+.act-c small{display:block;margin-top:2px;font-size:var(--step--2)!important;line-height:1.3!important;color:var(--ink-muted)!important}
+.act-c.is-pending{opacity:.65}
+.act-c.is-failed small{color:var(--color-danger,#B42318)}
+.act-retry{padding:0;border:0;background:none;color:var(--link);font:inherit;text-decoration:underline;cursor:pointer}
+.act-empty{font:400 var(--step--1)/1.4 var(--body);color:var(--ink-muted)}
+.act-note{margin:var(--s-2) 0 0!important;font:400 var(--step--2)/1.35 var(--body)!important;color:var(--ink-muted)!important}
+.act-form{display:flex;gap:var(--s-2);margin-top:var(--s-2)!important}
+.act-form input{flex:1;min-width:0;height:40px;padding:0 var(--s-3);border:var(--border);background:var(--surface);color:var(--ink);font:400 16px var(--body)}
+.act-form input:focus-visible{outline:2px solid var(--color-focus,var(--link));outline-offset:1px}
+.act-send{flex:none;height:40px;padding:0 var(--s-4);border:var(--border);background:var(--accent);color:var(--on-accent);font:700 var(--step--1)/1 var(--body);cursor:pointer}
+.act-send:focus-visible{outline:2px solid var(--color-focus,var(--link));outline-offset:1px}
+/* an open thread makes its card taller; let siblings keep their own height */
+html:not(.static) .app.dz .dz-grid-activity{align-items:start}
+@media (prefers-reduced-motion:reduce){.act-btn,.act-btn svg{transition:none!important;transform:none!important}}
