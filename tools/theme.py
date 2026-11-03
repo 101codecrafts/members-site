@@ -14,7 +14,7 @@ Hand-tuned exceptions live in css/theme.css (loaded after this file), never here
 import re, colorsys, pathlib
 root = pathlib.Path(__file__).resolve().parent.parent
 ORDER = ['brutal.css', 'app.css', 'type.css', 'dashboard.css', 'landing.css', 'system.css', 'shell.css',
-         'feed.css', 'market.css', 'practice.css', 'pages.css', 'auth.css', 'sessions.css', 'go.css']
+         'feed.css', 'market.css', 'practice.css', 'pages.css', 'auth.css', 'sessions.css', 'go.css', 'activity.css']
 
 # tokens css/theme.css redefines for dark: declarations that only use these need no override
 AUTO = {'--bg', '--line', '--mut', '--blue', '--color-page', '--color-page-landing', '--color-surface', '--color-surface-2', '--color-line',

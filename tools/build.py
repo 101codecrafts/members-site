@@ -136,7 +136,7 @@ def bundle(name, parts):
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
 bundle('bundle-theme.css', ['theme-dark.css', 'theme.css'])   # loaded LAST on every page (see THEME_LINK)
 bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css'])
-bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css'])
 bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
