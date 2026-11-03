@@ -185,3 +185,16 @@ html.static .dash-shell>.sbar,html.static .dash-shell>.sb-scrim,html.static .das
   .sb-scrim,.acct-sk i,.acct-sk b{animation:none!important}
 }
 /* dark theme opt-in: the shell is already dark; keep the top bar navy rather than app.css's grey */
+
+/* integrate3: 44px tap targets in the top bar (density report) + phone settings toggle docked in the top bar so it never covers content */
+html:not(.static) .shell .topbar .ib,html:not(.static) .tb-nav,html:not(.static) .sb-toggle{width:44px;height:44px}
+html:not(.static) .shell .topbar .ib .dot{top:10px;right:10px}
+html:not(.static) .tb-btn,html:not(.static) .acct-btn{min-height:44px;height:44px}
+@media (max-width:760px){
+  html:not(.static) .tb-btn{height:44px;padding:0 12px}
+  html:not(.static) .cc-toolbar.docked{position:static;flex:none;order:0;padding:0;margin:0;background:transparent;border:0;box-shadow:none;opacity:1;z-index:auto}
+  html:not(.static) .cc-toolbar.docked .cc-tb-toggle{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center;background:transparent;color:var(--sh-text);border:1px solid transparent}
+  html:not(.static) .cc-toolbar.docked .cc-tb-toggle:hover{border-color:var(--sh-line);background:var(--sh-navy-2)}
+  html:not(.static) .cc-toolbar.docked .cc-tb-toggle svg{width:20px;height:20px}
+  html:not(.static) .cc-toolbar.docked .cc-tb-panel{position:fixed;left:8px;right:8px;top:calc(var(--tb-h) + 8px);z-index:1001;display:flex;flex-wrap:wrap;gap:6px;padding:6px;background:var(--sh-navy);border:1px solid var(--sh-line);box-shadow:4px 4px 0 var(--sh-or)}
+}

@@ -547,6 +547,9 @@ html:not(.static):not(.has-roles) .role-tabs,html:not(.static):not(.has-roles) .
 .cc-toolbar:not(.open):hover{opacity:1}
 .cc-toolbar:not(.open)>:not(.cc-tb-toggle){display:none!important}
 @media (max-width:760px){.cc-toolbar:not(.open){left:auto;right:10px;bottom:10px}}
+/* integrate3: promo close is a 44px tap target (density report); the bar stays 44px tall */
+html:not(.static) .promo-bar{min-height:44px;padding-top:0;padding-bottom:0}
+html:not(.static) .promo-bar button{width:44px;height:44px}
 
 /* Fluid typography base — scale tokens live in tokens.css (--step-*, --space-fluid-*, --measure-*).
    Live site only: the ?static=1 mockup (html.static) keeps its exact pixel sizes. */
@@ -1502,6 +1505,19 @@ html.static .dash-shell>.sbar,html.static .dash-shell>.sb-scrim,html.static .das
 }
 /* dark theme opt-in: the shell is already dark; keep the top bar navy rather than app.css's grey */
 
+/* integrate3: 44px tap targets in the top bar (density report) + phone settings toggle docked in the top bar so it never covers content */
+html:not(.static) .shell .topbar .ib,html:not(.static) .tb-nav,html:not(.static) .sb-toggle{width:44px;height:44px}
+html:not(.static) .shell .topbar .ib .dot{top:10px;right:10px}
+html:not(.static) .tb-btn,html:not(.static) .acct-btn{min-height:44px;height:44px}
+@media (max-width:760px){
+  html:not(.static) .tb-btn{height:44px;padding:0 12px}
+  html:not(.static) .cc-toolbar.docked{position:static;flex:none;order:0;padding:0;margin:0;background:transparent;border:0;box-shadow:none;opacity:1;z-index:auto}
+  html:not(.static) .cc-toolbar.docked .cc-tb-toggle{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center;background:transparent;color:var(--sh-text);border:1px solid transparent}
+  html:not(.static) .cc-toolbar.docked .cc-tb-toggle:hover{border-color:var(--sh-line);background:var(--sh-navy-2)}
+  html:not(.static) .cc-toolbar.docked .cc-tb-toggle svg{width:20px;height:20px}
+  html:not(.static) .cc-toolbar.docked .cc-tb-panel{position:fixed;left:8px;right:8px;top:calc(var(--tb-h) + 8px);z-index:1001;display:flex;flex-wrap:wrap;gap:6px;padding:6px;background:var(--sh-navy);border:1px solid var(--sh-line);box-shadow:4px 4px 0 var(--sh-or)}
+}
+
 /* ==== Recent activity: like / comment / share (js/activity.js). Live dashboard only; existing tokens only. ==== */
 html:not(.static) .app.dz .act.act-live{grid-template-areas:"img b b" "img who who" "q q q" "ago ago ago" "bar bar bar" "gate gate gate" "thr thr thr";grid-template-rows:auto auto 1fr auto auto auto auto}
 html:not(.static) .app.dz .act.act-live .meta{display:none!important}
@@ -1543,3 +1559,5 @@ html:not(.static) .app.dz .act.act-live .ago{margin-top:var(--s-2)!important}
 /* an open thread makes its card taller; let siblings keep their own height */
 html:not(.static) .app.dz .dz-grid-activity{align-items:start}
 @media (prefers-reduced-motion:reduce){.act-btn,.act-btn svg{transition:none!important;transform:none!important}}
+/* integrate3: 44px tall on touch screens (density report) */
+@media (pointer:coarse){.act-btn{height:44px}}

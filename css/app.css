@@ -394,3 +394,6 @@ html:not(.static):not(.has-roles) .role-tabs,html:not(.static):not(.has-roles) .
 .cc-toolbar:not(.open):hover{opacity:1}
 .cc-toolbar:not(.open)>:not(.cc-tb-toggle){display:none!important}
 @media (max-width:760px){.cc-toolbar:not(.open){left:auto;right:10px;bottom:10px}}
+/* integrate3: promo close is a 44px tap target (density report); the bar stays 44px tall */
+html:not(.static) .promo-bar{min-height:44px;padding-top:0;padding-bottom:0}
+html:not(.static) .promo-bar button{width:44px;height:44px}

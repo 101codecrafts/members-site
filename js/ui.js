@@ -99,7 +99,16 @@
       <label>${ico("chat")}<select id="cc-lang" aria-label="Language"><option value="en">English</option><option value="lg">Luganda</option><option value="sw">Kiswahili</option><option value="fr">Français</option></select></label>
       <button type="button" id="cc-theme" aria-pressed="${html.dataset.theme === "dark"}" aria-label="Toggle dark theme">◐</button>`;
     document.body.appendChild(bar);
-    const tg = bar.querySelector(".cc-tb-toggle"); tg.onclick = () => { const o = bar.classList.toggle("open"); tg.setAttribute("aria-expanded", o); };
+    /* phones: dock the settings toggle in the shell top bar (a fixed button would cover card content); the open panel drops below the bar */
+    const tbar = document.querySelector(".shell .topbar"), phone = matchMedia("(max-width:760px)");
+    const dock = () => {
+      if (!tbar || html.classList.contains("static")) return;
+      const want = phone.matches, on = bar.classList.contains("docked"); if (want === on) return;
+      if (want) { const pn = document.createElement("div"); pn.className = "cc-tb-panel"; [...bar.children].filter(c => !c.classList.contains("cc-tb-toggle")).forEach(c => pn.appendChild(c)); bar.appendChild(pn); bar.classList.add("docked"); tbar.insertBefore(bar, tbar.querySelector(".acct")); }
+      else { const pn = bar.querySelector(".cc-tb-panel"); if (pn) { [...pn.children].forEach(c => bar.appendChild(c)); pn.remove(); } bar.classList.remove("docked"); document.body.appendChild(bar); }
+    };
+    dock(); (phone.addEventListener ? phone.addEventListener.bind(phone, "change") : phone.addListener.bind(phone))(dock);
+    const tg = bar.querySelector(".cc-tb-toggle"); tg.onclick = () => { const o = bar.classList.toggle("open"); tg.setAttribute("aria-expanded", o); const pn = bar.querySelector(".cc-tb-panel"); if (o && pn && tbar) pn.style.top = Math.max(8, tbar.getBoundingClientRect().bottom + 6) + "px"; };
     $("#cc-lite").onclick = e => { const on = !html.classList.contains("lite"); html.classList.toggle("lite", on); localStorage.setItem("lite", on ? "1" : "0"); e.currentTarget.setAttribute("aria-pressed", on); if (!on) location.reload(); };
     const lang = localStorage.getItem("lang") || "en"; $("#cc-lang").value = lang; if (lang !== "en") setLang(lang);
     $("#cc-lang").onchange = e => setLang(e.target.value);

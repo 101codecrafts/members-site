@@ -39,3 +39,5 @@ html:not(.static) .app.dz .act.act-live .ago{margin-top:var(--s-2)!important}
 /* an open thread makes its card taller; let siblings keep their own height */
 html:not(.static) .app.dz .dz-grid-activity{align-items:start}
 @media (prefers-reduced-motion:reduce){.act-btn,.act-btn svg{transition:none!important;transform:none!important}}
+/* integrate3: 44px tall on touch screens (density report) */
+@media (pointer:coarse){.act-btn{height:44px}}
