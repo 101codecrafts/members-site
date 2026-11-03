@@ -7,8 +7,8 @@ import { SYSTEM_PROMPT } from './knowledge.ts';
  * Models are tried in order; a model that is rate-limited, down or returns nothing hands over to the next.
  * Set ASSISTANT_MODELS (comma-separated) to override the list; non-":free" ids are dropped.
  */
-export const DEFAULT_MODELS = ['google/gemma-4-31b-it:free', 'google/gemma-4-26b-a4b-it:free', 'nvidia/nemotron-3.5-lightning:free'];
-export const LIMITS = { maxInput: 600, maxHistory: 8, maxHistoryChars: 6000, maxTokens: 450, connectMs: 15_000, idleMs: 20_000, totalMs: 50_000 };
+export const DEFAULT_MODELS = ['nvidia/nemotron-3.5-super-vl:free', 'thinkingmachines/inkling-small:free', 'google/gemma-4-31b-it:free', 'google/gemma-4-26b-a4b-it:free', 'nvidia/nemotron-3.5-lightning:free'];
+export const LIMITS = { maxInput: 600, maxHistory: 8, maxHistoryChars: 6000, maxTokens: 1000, connectMs: 15_000, idleMs: 20_000, totalMs: 50_000 };
 
 export function freeModels(): string[] {
   const env = (process.env.ASSISTANT_MODELS ?? '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -62,7 +62,7 @@ export async function openStream(messages: ReturnType<typeof buildMessages>, sig
       const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST', signal: ctl.signal,
         headers: { 'content-type': 'application/json', authorization: `Bearer ${key}`, 'HTTP-Referer': process.env.APP_URL ?? 'https://101codecrafts.org', 'X-Title': '101 Codecrafts 101 AI' },
-        body: JSON.stringify({ model, messages, stream: true, max_tokens: LIMITS.maxTokens, temperature: 0.3, reasoning: { exclude: true } }),
+        body: JSON.stringify({ model, messages, stream: true, max_tokens: LIMITS.maxTokens, temperature: 0.3, reasoning: { effort: 'low', exclude: true } }),
       });
       if (!res.ok || !res.body) { attempts.push({ model, status: res.status }); clearTimeout(timer); signal.removeEventListener('abort', onAbort); try { await res.body?.cancel(); } catch { /* ignore */ } continue; }
       const reader = res.body.getReader();

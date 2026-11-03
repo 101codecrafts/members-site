@@ -39,7 +39,7 @@ export const POST = route(async ({ req, ip, log }) => {
   if (!opened) return NextResponse.json({ error: { code: 'busy', message: BUSY } }, { status: 503, headers: { 'retry-after': '120', 'x-assistant-attempts': tried } });
   return new Response(opened.stream, {
     status: 200,
-    headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store', 'x-accel-buffering': 'no', 'x-assistant-model': opened.model },
+    headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store', 'x-accel-buffering': 'no', 'x-assistant-model': opened.model, 'x-assistant-attempts': tried },
   });
 });
 export const OPTIONS = preflight;
