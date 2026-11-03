@@ -682,8 +682,8 @@ html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{transition:
 [data-theme=dark] :is(.comm,.words-tile) :is(.disp,.eyebrow,p,span,b){color:var(--on-accent)!important}
 [data-theme=dark] .comm .btn-nv{background:var(--fill-inverse);color:var(--on-inverse)!important}
 /* accent KPI tiles and section headers: their small print stays navy */
-[data-theme=dark] :is(.kpi.or,.kpi.cy) :is(i,small,span,b){color:var(--on-accent)}
-[data-theme=dark] .mk-sec-h :is(.mk-more,h2,small,span){color:var(--on-accent)}
+[data-theme=dark] :is(.kpi.or,.kpi.cy) :is(i,small,span,b){color:var(--on-accent)!important}
+[data-theme=dark] :is(.mk-deals,.mk-made) .mk-sec-h :is(.mk-more,h2,small,span){color:var(--on-accent)}
 /* inline navy ink (style="color:var(--ink)") and the grey quick-access tile */
 [data-theme=dark] [style*="color:var(--ink)"]{color:var(--text)!important}
 [data-theme=dark] [style*="background:#ebeced"] *{color:var(--text)!important}
@@ -692,3 +692,6 @@ html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{transition:
 html:not(.static):not([data-theme=dark]) .cm-content .ͼf{color:#B33000}               /* CM string-2 #e40 was 3.8:1 */
 html:not(.static):not([data-theme=dark]) .stage.s-Building{background:#146C9F}            /* white text 3.8 -> 5.7:1 */
 html:not(.static):not([data-theme=dark]) .stage.s-Idea{background:#56636E}                /* white text 4.4 -> 6.1:1 */
+[data-theme=dark] .qa[style*="background:#05e7f2"]{background:var(--accent-2)!important}
+[data-theme=dark] .qa[style*="background:#05e7f2"] *{color:var(--on-accent-2)!important}
+[data-theme=dark] [style*="background:#191e24"] *{color:var(--on-inverse)!important}
