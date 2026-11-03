@@ -108,29 +108,46 @@
       alert: { borderRadius: "0", border: "2px solid " + NAVY }
     }
   };
+  /* After sign-in/sign-up. Absolute URLs so the Google round trip (FAPI -> #/sso-callback -> here) never resolves them
+     against a Clerk path. A Google account with no user yet is transferred from SignIn to SignUp, so both
+     components carry both targets. Hash routing keeps the SSO callback on the same static page (signin.html#/sso-callback):
+     the static host has no /signin/sso-callback path. */
+  const abs = p => new URL(p, location.href).href;
   function mountAuthUi(clerk) {
     const page = document.body && document.body.dataset.page;
     const form = page === "signin" ? document.getElementById("si") : page === "signup" ? document.getElementById("su") : null;
     if (!form) return;
+    // already signed in: leave the auth page once (replace, so Back does not return here)
     if (clerk.user) { location.replace(page === "signup" ? "onboarding.html" : "dashboard.html"); return; }
     const host = document.createElement("div"); host.id = "clerk-" + page; form.replaceWith(host);
-    const opts = { signInUrl: "signin.html", signUpUrl: "signup.html", forceRedirectUrl: page === "signup" ? "onboarding.html" : "dashboard.html", appearance: APPEARANCE };
+    const opts = { routing: "hash", signInUrl: abs("signin.html"), signUpUrl: abs("signup.html"),
+      signInForceRedirectUrl: abs("dashboard.html"), signUpForceRedirectUrl: abs("onboarding.html"),
+      appearance: APPEARANCE };
     page === "signin" ? clerk.mountSignIn(host, opts) : clerk.mountSignUp(host, opts);
   }
-  function loadClerk() {
+  /* ClerkJS 6 (Core 3) + the separate @clerk/ui bundle, both from the instance's Frontend API.
+     Clerk Protect needs ClerkJS >= 6.39: instances created on/after 27 Oct 2026 have "Require Device Intelligence checks"
+     on, which blocks every browser sign-up (incl. a first Google sign-in) when Device Intelligence can't run
+     ("This action was detected as suspicious and has been blocked"). It also needs *.protect.clerk.com in the CSP. */
+  function addScript(src, attrs) {
     return new Promise((res, rej) => {
-      const s = document.createElement("script");
-      s.src = CFG.clerkFrontendApi + "/npm/@clerk/clerk-js@5/dist/clerk.browser.js";
-      s.async = true; s.crossOrigin = "anonymous";
-      s.setAttribute("data-clerk-publishable-key", CFG.clerkPublishableKey);
-      s.onload = () => res(window.Clerk); s.onerror = rej; document.head.appendChild(s);
+      const s = document.createElement("script"); s.src = src; s.async = true; s.crossOrigin = "anonymous";
+      Object.entries(attrs || {}).forEach(([k, v]) => s.setAttribute(k, v));
+      s.onload = res; s.onerror = rej; document.head.appendChild(s);
     });
+  }
+  function loadClerk() {
+    return Promise.all([
+      addScript(CFG.clerkFrontendApi + "/npm/@clerk/ui@1/dist/ui.browser.js"),
+      addScript(CFG.clerkFrontendApi + "/npm/@clerk/clerk-js@6/dist/clerk.browser.js", { "data-clerk-publishable-key": CFG.clerkPublishableKey })
+    ]).then(() => window.Clerk);
   }
   // guest classes first, account chip stays a skeleton; then the real session (or the guest state if Clerk can't load within 6 s)
   const start = () => { paint(null, false);
     const fallback = setTimeout(() => { if (!AUTH.ready) paint(null, true); }, 6000);
     loadClerk().then(async Clerk => {
-      await Clerk.load(); AUTH.clerk = Clerk; clearTimeout(fallback); paint(Clerk.user || null, true); mountAuthUi(Clerk);
+      await Clerk.load({ ui: { ClerkUI: window.__internal_ClerkUICtor }, signInUrl: abs("signin.html"), signUpUrl: abs("signup.html"),
+        signInFallbackRedirectUrl: abs("dashboard.html"), signUpFallbackRedirectUrl: abs("onboarding.html") }); AUTH.clerk = Clerk; clearTimeout(fallback); paint(Clerk.user || null, true); mountAuthUi(Clerk);
       Clerk.addListener(({ user }) => { if ((user && user.id) !== (AUTH.user && AUTH.user.id)) paint(user || null, true); });
     }).catch(() => { clearTimeout(fallback); if (!AUTH.ready) paint(null, true); }); };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();
