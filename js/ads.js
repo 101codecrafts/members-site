@@ -70,6 +70,16 @@
     if (p.end) setInterval(() => { const s = b.querySelector(".promo-cd"); if (s) s.textContent = left(); }, 60000);
   }
 
+  /* landing hero launch tile: live countdown while the offer runs, a members tile once it has ended */
+  function promoTile(p) {
+    const t = $(".hero-badge"); if (!t || q.has("static")) return;
+    const cd = $("[data-promo-cd]", t);
+    if (!p.active) { const k = $(".hb-k", t), v = $(".hb-v", t), s = $(".hb-s", t); if (k) k.textContent = "Members"; if (v) v.textContent = "10K+"; if (s) s.textContent = "Learners, builders and mentors across Uganda and beyond."; if (cd) cd.textContent = "Join the community"; return; }
+    if (!p.end || !cd) return;
+    const tick = () => { const ms = Math.max(0, p.end - Date.now()), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5); cd.textContent = `Ends in ${d}d ${h}h`; };
+    tick(); setInterval(tick, 60000);
+  }
+
   /* ---------------- who is looking ---------------- */
   function viewer() {
     let u = window.CC_USER; if (!u) { try { u = JSON.parse(localStorage.getItem("cc_user") || "null"); } catch (e) { u = null; } }
@@ -137,7 +147,7 @@
   }
 
   function init() {
-    const p = promo();
+    const p = promo(); promoTile(p);
     if (p.active && !PREVIEW) { promoBanner(p); return; }        // launch month: no AdSense at all
     const v = VIEW = viewer(); if (!adsAllowed(v)) return;
     let n = 0;

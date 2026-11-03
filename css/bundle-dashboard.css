@@ -1128,7 +1128,7 @@ html:not(.static) body .page>.feat .ar{color:var(--accent)!important}
   html:not(.static) body .page>:is(h1,h2,.disp){margin-top:calc(-1 * var(--s-2))!important}
   html:not(.static) body .page>.disp+.disp{margin-top:calc(-1 * var(--s-3))!important}
   html:not(.static) body .page>p{line-height:1.5!important}
-  html:not(.static) body .page>img.heavy-hero{width:100%!important;height:auto!important;border:var(--border);box-shadow:var(--shadow)}
+  html:not(.static) body .page>img.heavy-hero{width:100%!important;height:auto!important;border:var(--border);box-shadow:var(--shadow);aspect-ratio:770/668;object-fit:cover;object-position:100% 35%}
   html:not(.static) body .page>.comm a{width:auto!important;height:auto!important;min-height:44px;padding:0 var(--s-4)!important;align-self:flex-start;white-space:nowrap;display:inline-flex!important;align-items:center;gap:var(--s-2)}
   html:not(.static) body .page>.comm p{line-height:1.5!important}
   html:not(.static) body .page>b+span{margin-top:calc(-1 * var(--s-3))!important}
@@ -1170,7 +1170,11 @@ html:not(.static) body .page>.feat .ar{color:var(--accent)!important}
   html:not(.static) body .page>.feat{grid-column:span 3}
   html:not(.static) body .page>.feat:not(:has(~ .feat)):nth-of-type(odd){grid-column:1/-1}
   html:not(.static) body .page>[class*="btn-"]{grid-column:span 3}
-  html:not(.static) body .page>img.heavy-hero{max-height:440px;object-fit:cover}
+  html:not(.static) body .page>img.heavy-hero{max-height:440px;object-fit:cover;content:url(../assets/img/landing-hero-photo-crop.webp);object-position:50% 58%}
+  /* word tile + launch tile side by side under the photo, equal height */
+  html:not(.static) body .page>.words-tile,html:not(.static) body .page>.hero-badge{grid-column:span 3;margin-top:0!important}
+  html:not(.static) body .page>.words-tile{flex-direction:column!important;align-items:flex-start!important}
+  html:not(.static) body .page>.words-tile svg{margin-top:auto}
   html:not(.static) body .tit-cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))!important}
   html:not(.static) body .page>.tcard{padding:var(--s-4)!important}
   html:not(.static) body .page>.tcard img{position:static!important;width:44px!important;height:44px!important}
