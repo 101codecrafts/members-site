@@ -18,8 +18,17 @@ CHART = ("https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js", "s
 def attrs(s):
     return dict(re.findall(r'(\w+)="([^"]*)"', s)) | {k: True for k in re.findall(r'\b(\w+)\b(?!=)', re.sub(r'\w+="[^"]*"', '', s))}
 
-ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": SITE + "/", "logo": SITE + "/assets/icons/icon-512.png",
-          "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}
+# Social links: ONE config, js/site-social.js (the JSON between /*JSON*/ and /*END*/). Only entries with a real https url are used.
+SOCIAL = json.loads(re.search(r'/\*JSON\*/(.*?)/\*END\*/', (root / 'js/site-social.js').read_text(), re.S).group(1))
+SOCIAL_LIVE = [x for x in SOCIAL if re.match(r'^https://\S+$', x.get('url', ''))]
+SOCIAL_SOON = [x for x in SOCIAL if x.get('todo') and x not in SOCIAL_LIVE]   # planned: "Coming soon" placeholders, never in sameAs
+def soc_icon(x):   # footer icon: a link when the url is real, else a non-link "Coming soon" placeholder
+    if x in SOCIAL_LIVE: return f'<a href="{html.escape(x["url"])}" target="_blank" rel="noopener noreferrer" aria-label="{html.escape(x["name"])}"><svg aria-hidden="true"><use href="#i-{x["icon"]}"/></svg></a>'
+    return f'<span class="soc-soon" role="link" aria-disabled="true" aria-label="{html.escape(x["label"])}: coming soon" title="{html.escape(x["label"])}: coming soon"><svg aria-hidden="true"><use href="#i-{x["icon"]}"/></svg></span>'
+TEAM = json.loads((root / 'src/data/team.json').read_text())['leaders']   # about.html leaders (bio slots: TODO founder)
+
+ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "@id": SITE + "/#org", "name": "101 Codecrafts", "url": SITE + "/", "logo": SITE + "/assets/icons/icon-512.png",
+          "slogan": "Start at 101. Craft your way up.", "sameAs": [x['url'] for x in SOCIAL_LIVE]}
 
 EARLY = '''<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>'''
 
@@ -29,6 +38,7 @@ def head(a, page):
     og = a.get('og', 'assets/og/og-default.png')
     ld = [ORG_LD]
     if a.get('jsonld'): ld += json.loads((root / 'src/jsonld' / a['jsonld']).read_text())
+    if a.get('orgfull'): ld = [ORG_FULL] + ld[1:]   # about page: the full Organization (founders, place, contact)
     noindex = '<meta name="robots" content="noindex">\n' if a.get('noindex') else ''
     return f'''<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -49,7 +59,7 @@ def head(a, page):
 <script type="application/ld+json">{json.dumps(ld if len(ld) > 1 else ld[0])}</script>'''
 
 def scripts(charts=False):
-    tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
+    tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
     tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>']
@@ -74,9 +84,11 @@ NAV = {
            "System", ("Reports", "report", "admin.html#moderation"), ("Audit Log", "list", "admin.html#audit"), ("Settings", "gear", "admin.html#settings")],
 }
 
-# TODO(founder): paste the real WhatsApp community invite (https://chat.whatsapp.com/<code>) here, then re-run tools/build.py.
-# While it is empty the sidebar shows no WhatsApp link at all (an invite URL without a code only opens a dead page).
-WA_INVITE = ""
+# The WhatsApp community invite (same url as the "whatsapp" entry in js/site-social.js). Sidebar link on every app page.
+# If it is ever emptied, the sidebar shows no WhatsApp link at all (an invite URL without a code only opens a dead page).
+WA_INVITE = "https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh"
+assert any(x['url'] == WA_INVITE for x in SOCIAL), 'WA_INVITE and js/site-social.js disagree'
+
 def wa_foot():
     if not re.match(r'^https://chat\.whatsapp\.com/[A-Za-z0-9]{10,}$', WA_INVITE): return '<!-- WhatsApp community link hidden until WA_INVITE is set in tools/build.py -->'
     return f'<div class="sb-foot"><a class="sb-wa" href="{WA_INVITE}" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>'
@@ -133,8 +145,36 @@ FOOTER = '''<footer class="flow-foot">
   <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
   <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
   <nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
-  <div class="socials" data-socials><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg><use href="#i-gh"/></svg></a></div>
+  <div class="socials" data-socials>''' + ''.join(soc_icon(x) for x in SOCIAL_LIVE + SOCIAL_SOON) + '''</div>
 </footer>'''
+
+# about.html blocks, from the two data files above
+ORG_FULL = ORG_LD | {"description": "A tech learning and collaboration community based in Kampala, Uganda: coding, AI, data, cybersecurity, cloud and DevOps, projects, hackathons, mentorship and careers, for beginners through professionals.",
+    "email": "privacy@101codecrafts.org", "address": {"@type": "PostalAddress", "addressLocality": "Kampala", "addressCountry": "UG"},
+    "foundingLocation": {"@type": "Place", "name": "Kampala, Uganda"}, "areaServed": "UG",
+    "founder": [{"@type": "Person", "name": p["name"], "jobTitle": p["role"]} | ({"sameAs": ["https://github.com/" + p["github"]]} if p.get("github") else {}) for p in TEAM]}
+
+def team_html():
+    out = []
+    for p in TEAM:
+        n, r, ph = html.escape(p['name']), html.escape(p['role']), p['photo']
+        bio = f'<p class="ab-lead-bio">{html.escape(p["bio"])}</p>' if p.get('bio') else ''
+        gh = (f'<a class="ab-lead-gh" href="https://github.com/{html.escape(p["github"])}" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg>'
+              f'<span>@{html.escape(p["github"])}</span><span class="sr-only"> on GitHub (opens in a new tab)</span></a>') if p.get('github') else ''
+        out.append(f'<li><article class="ab-lead"><div class="ab-lead-photo"><img src="{ph}.webp" srcset="{ph}.webp 480w, {ph}@2x.webp 960w" sizes="(min-width: 1200px) 340px, (min-width: 600px) 30vw, 120px" width="480" height="480" alt="Photo of {n}" loading="lazy" decoding="async"></div>'
+                   f'<div class="ab-lead-txt"><h3 class="ab-lead-name">{n}</h3><p class="ab-lead-role">{r}</p>{bio}{gh}</div></article></li>')
+    return '<ul class="ab-leads">' + ''.join(out) + '</ul>'
+
+def social_list_html():
+    hint = {'wa': 'Join the community chat'}
+    items = ''.join(f'<li><a class="ab-soc" href="{html.escape(x["url"])}" target="_blank" rel="noopener noreferrer"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-{x["icon"]}"/></svg></span>'
+                    f'<span class="ab-soc-txt"><b>{html.escape(x["label"])}</b><small>{html.escape(x.get("handle") or hint.get(x["icon"], ""))}</small></span><span class="sr-only"> (opens in a new tab)</span></a></li>' for x in SOCIAL_LIVE)
+    soon = ''.join(f'<li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-{x["icon"]}"/></svg></span>'
+                   f'<span class="ab-soc-txt"><b>{html.escape(x["label"])}</b><small>Coming soon</small></span></span></li>' for x in SOCIAL_SOON)
+    return '<ul class="ab-socials" aria-label="101 Codecrafts online">' + items + soon + '</ul>'
+
+def wa_button():
+    return f'<a class="btn ab-btn ab-btn-wa" href="{WA_INVITE}" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg>Join the WhatsApp community<span class="sr-only"> (opens in a new tab)</span></a>' if WA_INVITE else ''
 
 # CSS bundles (fewer render-blocking requests; sources stay in css/*.css)
 def bundle(name, parts):
@@ -176,6 +216,7 @@ for f in (root / 'src').glob('*.html'):
     s = s.replace('</head>', THEME_LINK + '\n</head>', 1) if THEME_LINK not in s else s
     charts = 'data-charts' in s
     s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts)).replace('{{FOOTER}}', FOOTER)
+    if '{{TEAM}}' in s or '{{SOCIAL_LIST}}' in s or '{{WA_BUTTON}}' in s: s = s.replace('{{TEAM}}', team_html()).replace('{{SOCIAL_LIST}}', social_list_html()).replace('{{WA_BUTTON}}', wa_button())
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
     s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1)), name), s)

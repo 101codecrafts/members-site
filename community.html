@@ -17,11 +17,12 @@
 <link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://101codecrafts.github.io/members-site/#org", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", "https://github.com/101codecrafts", "https://github.com/101codecrafts-ug"]}</script>
 <link rel="stylesheet" href="css/bundle-app.css">
+<link rel="stylesheet" href="css/about.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
 </head>
-<body class="flow" data-page="community">
+<body class="flow cm-page" data-page="community">
 <a class="skip" href="#main">Skip to content</a>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
 <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 1.5 11.5h3V21h5.5v-6h4v6H19.5v-9.5h3z"/></symbol>
@@ -98,8 +99,9 @@
 <header class="topbar"><a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101 Codecrafts home" width="82" height="41"><b>Codecrafts</b></a><span class="sp"></span><a class="btn or" href="signup.html">Join</a></header>
 <main id="main" class="content"><article class="prose">
 
-<p class="kicker">Community</p><h1 class="page-h" style="font:400 var(--step-4) var(--disp)">MORE THAN A COMMUNITY</h1>
-<p>We're building a community of learners, creators and problem-solvers. Whether you're just starting or leveling up, 101 Codecrafts gives you the tools, the support and the people to reach your goals. Joining is free.</p>
+<p class="kicker">Community</p><h1 class="page-h" style="font:400 var(--step-4) var(--disp)">LEARN. BUILD. COLLABORATE. GROW.</h1>
+<p><b>Start at 101. Craft your way up.</b> 101 Codecrafts is a community of learners, builders and mentors based in Kampala, Uganda, from Primary to professional. Whether you're writing your first line of code or levelling up at work, you'll find people to learn with and things to build together. Joining is free.</p>
+<div class="cm-wa"><p><b>Join the WhatsApp community</b>Say hello, ask questions and hear about sessions, events and opportunities first.</p><a class="btn ab-btn ab-btn-wa" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg>Join the WhatsApp community<span class="sr-only"> (opens in a new tab)</span></a></div>
 
 <h2>Where members meet</h2>
 <ul class="about-grid ck-grid">
@@ -113,20 +115,20 @@
 
 <h2>Stay in the loop</h2>
 <p>Daily <a href="news.html">tech news</a>, fresh <a href="opportunities.html">opportunities</a> and <a href="announcements.html">announcements</a> from the 101 team.</p>
-<!-- TODO(founder): add the WhatsApp community invite here (and in tools/build.py WA_INVITE) once a real https://chat.whatsapp.com/<code> link exists. -->
-<p>Follow our open code on GitHub: <a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer">github.com/101codecrafts</a>.</p>
+<p>Chat with members in our <a href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer">WhatsApp community</a>, and follow our open code on GitHub: <a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer">github.com/101codecrafts</a>.</p>
 
 <h2>Community rules</h2>
-<p>Be respectful, keep it safe for younger members and never share anyone's personal data. The full rules are in our <a href="terms.html">terms</a>.</p>
+<p>Be respectful, keep it safe for younger members and never share anyone's personal data. Members under 18 need a parent or guardian's consent. The full rules are in our <a href="terms.html">terms</a>, and you can read who runs 101 on the <a href="about.html">about page</a>.</p>
 <div class="about-cta"><a class="btn or" href="signup.html">Join the community</a><a class="btn" href="about.html">About 101 Codecrafts</a></div>
 </article></main>
 <footer class="flow-foot">
   <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
   <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
   <nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
-  <div class="socials" data-socials><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg><use href="#i-gh"/></svg></a></div>
+  <div class="socials" data-socials><a href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer" aria-label="Join the 101 Codecrafts WhatsApp community"><svg aria-hidden="true"><use href="#i-wa"/></svg></a><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg aria-hidden="true"><use href="#i-gh"/></svg></a><a href="https://github.com/101codecrafts-ug" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts team account on GitHub (101codecrafts-ug)"><svg aria-hidden="true"><use href="#i-gh"/></svg></a><span class="soc-soon" role="link" aria-disabled="true" aria-label="YouTube: coming soon" title="YouTube: coming soon"><svg aria-hidden="true"><use href="#i-yt"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="TikTok: coming soon" title="TikTok: coming soon"><svg aria-hidden="true"><use href="#i-tt"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Instagram: coming soon" title="Instagram: coming soon"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Facebook: coming soon" title="Facebook: coming soon"><svg aria-hidden="true"><use href="#i-fb"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="X: coming soon" title="X: coming soon"><svg aria-hidden="true"><use href="#i-x"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="LinkedIn: coming soon" title="LinkedIn: coming soon"><svg aria-hidden="true"><use href="#i-in"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Telegram: coming soon" title="Telegram: coming soon"><svg aria-hidden="true"><use href="#i-tg"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Discord: coming soon" title="Discord: coming soon"><svg aria-hidden="true"><use href="#i-discord"/></svg></span></div>
 </footer>
 <script src="js/data.js" defer></script>
+<script src="js/site-social.js" defer></script>
 <script src="js/site-stats.js" defer></script>
 <script src="js/api.js" defer></script>
 <script src="js/auth.js" defer></script>

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>About · 101 Codecrafts</title>
-<meta name="description" content="101 Codecrafts is a tech community in Kampala, Uganda: free learning paths, workshops, projects, study groups and career support for anyone growing in IT.">
+<title>About 101 Codecrafts · Tech community in Kampala, Uganda</title>
+<meta name="description" content="101 Codecrafts is a tech learning and collaboration community in Kampala, Uganda: coding, AI, data, cybersecurity and cloud, projects, hackathons, mentorship and careers, from Primary to professional.">
 <link rel="canonical" href="https://101codecrafts.github.io/members-site/about.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="101 Codecrafts">
-<meta property="og:title" content="About · 101 Codecrafts"><meta property="og:description" content="101 Codecrafts is a tech community in Kampala, Uganda: free learning paths, workshops, projects, study groups and career support for anyone growing in IT.">
+<meta property="og:title" content="About 101 Codecrafts · Tech community in Kampala, Uganda"><meta property="og:description" content="101 Codecrafts is a tech learning and collaboration community in Kampala, Uganda: coding, AI, data, cybersecurity and cloud, projects, hackathons, mentorship and careers, from Primary to professional.">
 <meta property="og:url" content="https://101codecrafts.github.io/members-site/about.html"><meta property="og:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="theme-color" content="#0B1236">
@@ -17,11 +17,12 @@
 <link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://101codecrafts.github.io/members-site/#org", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", "https://github.com/101codecrafts", "https://github.com/101codecrafts-ug"], "description": "A tech learning and collaboration community based in Kampala, Uganda: coding, AI, data, cybersecurity, cloud and DevOps, projects, hackathons, mentorship and careers, for beginners through professionals.", "email": "privacy@101codecrafts.org", "address": {"@type": "PostalAddress", "addressLocality": "Kampala", "addressCountry": "UG"}, "foundingLocation": {"@type": "Place", "name": "Kampala, Uganda"}, "areaServed": "UG", "founder": [{"@type": "Person", "name": "Businge Daglous", "jobTitle": "Founder"}, {"@type": "Person", "name": "Ngabirano Octavious", "jobTitle": "Co-founder", "sameAs": ["https://github.com/octavious2"]}, {"@type": "Person", "name": "Mwesigwa Allan", "jobTitle": "Co-founder"}]}</script>
 <link rel="stylesheet" href="css/bundle-app.css">
+<link rel="stylesheet" href="css/about.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
 </head>
-<body class="flow" data-page="about">
+<body class="flow ab-page" data-page="about">
 <a class="skip" href="#main">Skip to content</a>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
 <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 1.5 11.5h3V21h5.5v-6h4v6H19.5v-9.5h3z"/></symbol>
@@ -96,43 +97,159 @@
 </svg>
 
 <header class="topbar"><a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101 Codecrafts home" width="82" height="41"><b>Codecrafts</b></a><span class="sp"></span><a class="btn or" href="signup.html">Join</a></header>
-<main id="main" class="content"><article class="prose">
+<main id="main" class="ab">
 
-<p class="kicker">About</p><h1 class="page-h" style="font:400 var(--step-4) var(--disp)">ABOUT 101 CODECRAFTS</h1>
-<p><b>Start at 101. Craft your way up.</b> 101 Codecrafts is a tech community based in Kampala, Uganda, for anyone growing in IT: future programmers, computer scientists, data analysts, ethical hackers and software engineers. Every skill level is welcome. You learn by building, alongside people who are learning too.</p>
+<!-- 1. HERO -->
+<section class="ab-hero" aria-labelledby="ab-h1">
+  <div class="ab-wrap ab-hero-in">
+    <div class="ab-hero-copy">
+      <p class="kicker">About 101 Codecrafts</p>
+      <h1 id="ab-h1" class="ab-h1">Start at 101. <span>Craft your way up.</span></h1>
+      <p class="ab-lede">101 Codecrafts is a tech learning and collaboration community based in Kampala, Uganda.<br class="ab-br"> Coding, AI, data, cybersecurity and cloud, for beginners through professionals.</p>
+      <div class="ab-cta"><a class="btn or ab-btn" href="signup.html">Join 101 free</a><a class="btn ab-btn" href="community.html">Meet the community</a></div>
+    </div>
+    <div class="ab-hero-tile" aria-hidden="true">
+      <span class="ab-101">101</span>
+      <ul><li>Learn.</li><li>Build.</li><li>Collaborate.</li><li>Grow.</li></ul>
+    </div>
+  </div>
+</section>
 
-<h2>Our mission</h2>
-<p>Make the first steps into tech free, practical and less lonely. We point you to the best free courses, give you real projects to show for them, and connect you with peers and mentors who help you keep going.</p>
+<!-- 2. STORY -->
+<section class="ab-sec" aria-labelledby="ab-story">
+  <div class="ab-wrap ab-story">
+    <div class="ab-head"><p class="kicker">Our story</p><h2 id="ab-story" class="ab-h2">Why “101”?</h2></div>
+    <div class="ab-story-body">
+      <p>In school, “101” is the first course in a subject: the place everyone starts. 101 Codecrafts is built around that idea. Nobody arrives knowing everything. You start with the basics and craft your way up, one project at a time.</p>
+      <p>Learning tech on your own can be confusing and lonely: scattered tutorials, no one to ask, nobody to build with. We started 101 Codecrafts in Kampala to put learning, building and people in one place: clear paths to follow, real projects to show for them, and peers and mentors who help you keep going.</p>
+    </div>
+  </div>
+</section>
 
-<h2>What 101 offers</h2>
-<ul class="about-grid ck-grid">
-<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="sessions.html">Expert-led learning</a></h3><p class="ck-body">Live sessions, webinars and Q&amp;A with people who work in tech.</p><span class="ck-cta ck-foot" aria-hidden="true">Live sessions →</span></article></li>
-<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="events.html">Skill-building workshops</a></h3><p class="ck-body">Hands-on workshops and bootcamps: programming, AI, security, cloud.</p><span class="ck-cta ck-foot" aria-hidden="true">Events →</span></article></li>
-<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="projects.html">Collaborative projects</a></h3><p class="ck-body">Team up on coding challenges, open source and real-world builds.</p><span class="ck-cta ck-foot" aria-hidden="true">Projects →</span></article></li>
-<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="opportunities.html">Career development</a></h3><p class="ck-body">Internships, jobs, scholarships and other openings in one list.</p><span class="ck-cta ck-foot" aria-hidden="true">Opportunities →</span></article></li>
-<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="resources.html">Tech resource hub</a></h3><p class="ck-body">A curated library of tools, guides and references.</p><span class="ck-cta ck-foot" aria-hidden="true">Library →</span></article></li>
-<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="groups.html">Peer study groups</a></h3><p class="ck-body">Small groups that learn the same topic together.</p><span class="ck-cta ck-foot" aria-hidden="true">Study groups →</span></article></li>
-<li><article class="about-card ck"><h3 class="ck-title"><a class="ck-link" href="courses.html">Certification support</a></h3><p class="ck-body">101 courses plus free courses from Coursera, edX, freeCodeCamp, Google, Microsoft Learn, Cisco NetAcad and more.</p><span class="ck-cta ck-foot" aria-hidden="true">Courses →</span></article></li>
-</ul>
+<!-- 3. MISSION + VALUES -->
+<section class="ab-sec ab-alt" aria-labelledby="ab-mission">
+  <div class="ab-wrap">
+    <div class="ab-head"><p class="kicker">Mission &amp; values</p><h2 id="ab-mission" class="ab-h2">Learn. Build. Collaborate. Grow.</h2>
+      <p class="ab-sub">Our mission: make the first steps into tech practical, affordable and less lonely, and keep members growing long after the first step.</p></div>
+    <ul class="ab-values">
+      <li><article class="ck ab-val"><span class="ab-val-n" aria-hidden="true">01</span><h3 class="ab-val-t">Learn</h3><p class="ck-body">Clear paths and the best free courses, at your own level.</p></article></li>
+      <li><article class="ck ab-val"><span class="ab-val-n" aria-hidden="true">02</span><h3 class="ab-val-t">Build</h3><p class="ck-body">Turn what you learn into projects you can show.</p></article></li>
+      <li><article class="ck ab-val"><span class="ab-val-n" aria-hidden="true">03</span><h3 class="ab-val-t">Collaborate</h3><p class="ck-body">Learn with peers in study groups, teams and hackathons.</p></article></li>
+      <li><article class="ck ab-val"><span class="ab-val-n" aria-hidden="true">04</span><h3 class="ab-val-t">Grow</h3><p class="ck-body">Mentors, opportunities and certificates for your career.</p></article></li>
+    </ul>
+  </div>
+</section>
 
-<h2>How to join</h2>
-<ol class="about-steps">
-<li><span><b>Create your free account.</b> It takes a minute on the <a href="signup.html">sign-up page</a>.</span></li>
-<li><span><b>Pick a learning path.</b> Start with one of the <a href="index.html#paths">popular learning paths</a> or browse <a href="courses.html">all courses</a>.</span></li>
-<li><span><b>Find your people.</b> Join a <a href="groups.html">study group</a>, come to an <a href="events.html">event</a>, or read how the <a href="community.html">community</a> works.</span></li>
-</ol>
-<div class="about-cta"><a class="btn or" href="signup.html">Join 101 Codecrafts</a><a class="btn" href="community.html">Meet the community</a></div>
+<!-- 4. WHAT 101 OFFERS (7 cards: 4 + 3 centred at >=1024px, featured first card at 600-1023px, one column below) -->
+<section class="ab-sec" aria-labelledby="ab-offers">
+  <div class="ab-wrap">
+    <div class="ab-head"><p class="kicker">What 101 offers</p><h2 id="ab-offers" class="ab-h2">Everything in one place</h2>
+      <p class="ab-sub">Coding, AI, data, cybersecurity, cloud and DevOps, plus projects, hackathons, mentorship and careers.</p></div>
+    <ul class="ab-offers">
+      <li><article class="ck ab-offer"><h3 class="ck-title"><a class="ck-link" href="sessions.html">Expert-led learning</a></h3><p class="ck-body">Live sessions, webinars and Q&amp;A with people who work in tech.</p><span class="ck-cta ck-foot" aria-hidden="true">Live sessions <svg><use href="#i-arrow"/></svg></span></article></li>
+      <li><article class="ck ab-offer"><h3 class="ck-title"><a class="ck-link" href="events.html">Skill-building workshops</a></h3><p class="ck-body">Hands-on workshops and bootcamps: programming, AI, security, cloud.</p><span class="ck-cta ck-foot" aria-hidden="true">Events <svg><use href="#i-arrow"/></svg></span></article></li>
+      <li><article class="ck ab-offer"><h3 class="ck-title"><a class="ck-link" href="projects.html">Collaborative projects</a></h3><p class="ck-body">Team up on coding challenges, open source and real-world builds.</p><span class="ck-cta ck-foot" aria-hidden="true">Projects <svg><use href="#i-arrow"/></svg></span></article></li>
+      <li><article class="ck ab-offer"><h3 class="ck-title"><a class="ck-link" href="opportunities.html">Career development</a></h3><p class="ck-body">Internships, jobs, scholarships and other openings in one list.</p><span class="ck-cta ck-foot" aria-hidden="true">Opportunities <svg><use href="#i-arrow"/></svg></span></article></li>
+      <li><article class="ck ab-offer"><h3 class="ck-title"><a class="ck-link" href="resources.html">Tech resource hub</a></h3><p class="ck-body">A curated library of tools, guides and references.</p><span class="ck-cta ck-foot" aria-hidden="true">Library <svg><use href="#i-arrow"/></svg></span></article></li>
+      <li><article class="ck ab-offer"><h3 class="ck-title"><a class="ck-link" href="groups.html">Peer study groups</a></h3><p class="ck-body">Small groups that learn the same topic together.</p><span class="ck-cta ck-foot" aria-hidden="true">Study groups <svg><use href="#i-arrow"/></svg></span></article></li>
+      <li><article class="ck ab-offer"><h3 class="ck-title"><a class="ck-link" href="courses.html">Certification support</a></h3><p class="ck-body">101 courses plus free courses from Coursera, edX, freeCodeCamp, Google and more.</p><span class="ck-cta ck-foot" aria-hidden="true">Courses <svg><use href="#i-arrow"/></svg></span></article></li>
+    </ul>
+  </div>
+</section>
 
-<h2>Find us</h2>
-<p>Our code and open projects live on GitHub: <a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer">github.com/101codecrafts</a>. Questions about your data go to <a href="mailto:privacy@101codecrafts.org">privacy@101codecrafts.org</a> (see the <a href="privacy.html">privacy policy</a>).</p>
-</article></main>
+<!-- 5. LEADERS (rendered by tools/build.py from src/data/team.json; bios are TODO(founder) slots there) -->
+<section class="ab-sec ab-alt" aria-labelledby="ab-leaders">
+  <div class="ab-wrap">
+    <div class="ab-head"><p class="kicker">Meet the leaders</p><h2 id="ab-leaders" class="ab-h2">The people behind 101</h2></div>
+    <ul class="ab-leads"><li><article class="ab-lead"><div class="ab-lead-photo"><img src="assets/img/team/businge-daglous.webp" srcset="assets/img/team/businge-daglous.webp 480w, assets/img/team/businge-daglous@2x.webp 960w" sizes="(min-width: 1200px) 340px, (min-width: 600px) 30vw, 120px" width="480" height="480" alt="Photo of Businge Daglous" loading="lazy" decoding="async"></div><div class="ab-lead-txt"><h3 class="ab-lead-name">Businge Daglous</h3><p class="ab-lead-role">Founder</p></div></article></li><li><article class="ab-lead"><div class="ab-lead-photo"><img src="assets/img/team/ngabirano-octavious.webp" srcset="assets/img/team/ngabirano-octavious.webp 480w, assets/img/team/ngabirano-octavious@2x.webp 960w" sizes="(min-width: 1200px) 340px, (min-width: 600px) 30vw, 120px" width="480" height="480" alt="Photo of Ngabirano Octavious" loading="lazy" decoding="async"></div><div class="ab-lead-txt"><h3 class="ab-lead-name">Ngabirano Octavious</h3><p class="ab-lead-role">Co-founder</p><a class="ab-lead-gh" href="https://github.com/octavious2" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-gh"/></svg><span>@octavious2</span><span class="sr-only"> on GitHub (opens in a new tab)</span></a></div></article></li><li><article class="ab-lead"><div class="ab-lead-photo"><img src="assets/img/team/mwesigwa-allan.webp" srcset="assets/img/team/mwesigwa-allan.webp 480w, assets/img/team/mwesigwa-allan@2x.webp 960w" sizes="(min-width: 1200px) 340px, (min-width: 600px) 30vw, 120px" width="480" height="480" alt="Photo of Mwesigwa Allan" loading="lazy" decoding="async"></div><div class="ab-lead-txt"><h3 class="ab-lead-name">Mwesigwa Allan</h3><p class="ab-lead-role">Co-founder</p></div></article></li></ul>
+  </div>
+</section>
+
+<!-- 6. WHO IT'S FOR -->
+<section class="ab-sec" aria-labelledby="ab-who">
+  <div class="ab-wrap">
+    <div class="ab-head"><p class="kicker">Who it’s for</p><h2 id="ab-who" class="ab-h2">Every level, from first click to first job</h2>
+      <p class="ab-sub">You don’t need any experience to join. Pick your level and start there.</p></div>
+    <ol class="ab-levels">
+      <li><b>Primary</b><span>First steps in computing, in teacher-led groups.</span></li>
+      <li><b>O-Level</b><span>ICT basics and your first lines of code.</span></li>
+      <li><b>A-Level</b><span>Programming, security and projects beyond the syllabus.</span></li>
+      <li><b>University</b><span>Projects, hackathons and a portfolio for internships.</span></li>
+      <li><b>Professional</b><span>Upskill in AI, data, cloud and DevOps, and mentor others.</span></li>
+    </ol>
+    <aside class="ab-safe" aria-labelledby="ab-safe-h">
+      <svg class="ab-safe-ic" aria-hidden="true"><use href="#i-shieldc"/></svg>
+      <div>
+        <h3 id="ab-safe-h">Safe for younger members</h3>
+        <p>Members under 18 need a parent or guardian’s consent. Until it is given, messaging and payments stay locked. Groups for Primary, O-Level and A-Level learners are teacher-led and moderated, and nobody may contact an under-18 member privately outside those groups.</p>
+        <p class="ab-safe-links"><a href="privacy.html">Privacy policy: children</a><a href="terms.html">Community rules</a></p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- 7. STATS (values come from js/site-stats.js; its TODO(founder) flags stay as they are; the HTML numbers are the no-JS fallback) -->
+<section class="ab-sec ab-alt" aria-labelledby="ab-stats">
+  <div class="ab-wrap">
+    <div class="ab-head"><p class="kicker">101 in numbers</p><h2 id="ab-stats" class="ab-h2">A growing community</h2></div>
+    <ul class="ab-stats">
+      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="members">10,000+</b><span class="ck-lbl">Active members</span></div></li>
+      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="resources">50+</b><span class="ck-lbl">Learning resources</span></div></li>
+      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="workshops">100+</b><span class="ck-lbl">Online workshops</span></div></li>
+      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="hackathons">500+</b><span class="ck-lbl">Projects &amp; hackathons</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8. FIND US (socials rendered by tools/build.py from js/site-social.js: only entries with a url) -->
+<section class="ab-sec" aria-labelledby="ab-find">
+  <div class="ab-wrap">
+    <div class="ab-head"><p class="kicker">Find us</p><h2 id="ab-find" class="ab-h2">Say hello</h2></div>
+    <div class="ab-find">
+      <ul class="ab-socials" aria-label="101 Codecrafts online"><li><a class="ab-soc" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-wa"/></svg></span><span class="ab-soc-txt"><b>WhatsApp community</b><small>Join the community chat</small></span><span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="ab-soc" href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-gh"/></svg></span><span class="ab-soc-txt"><b>GitHub</b><small>@101codecrafts</small></span><span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="ab-soc" href="https://github.com/101codecrafts-ug" target="_blank" rel="noopener noreferrer"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-gh"/></svg></span><span class="ab-soc-txt"><b>GitHub (team account)</b><small>@101codecrafts-ug</small></span><span class="sr-only"> (opens in a new tab)</span></a></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-yt"/></svg></span><span class="ab-soc-txt"><b>YouTube</b><small>Coming soon</small></span></span></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-tt"/></svg></span><span class="ab-soc-txt"><b>TikTok</b><small>Coming soon</small></span></span></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><span class="ab-soc-txt"><b>Instagram</b><small>Coming soon</small></span></span></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-fb"/></svg></span><span class="ab-soc-txt"><b>Facebook</b><small>Coming soon</small></span></span></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-x"/></svg></span><span class="ab-soc-txt"><b>X</b><small>Coming soon</small></span></span></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-in"/></svg></span><span class="ab-soc-txt"><b>LinkedIn</b><small>Coming soon</small></span></span></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-tg"/></svg></span><span class="ab-soc-txt"><b>Telegram</b><small>Coming soon</small></span></span></li><li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-discord"/></svg></span><span class="ab-soc-txt"><b>Discord</b><small>Coming soon</small></span></span></li></ul>
+      <address class="ab-contact">
+        <h3>Contact</h3>
+        <p><svg aria-hidden="true"><use href="#i-msg"/></svg><a href="mailto:privacy@101codecrafts.org">privacy@101codecrafts.org</a></p>
+        <p><svg aria-hidden="true"><use href="#i-flag"/></svg><span>Kampala, Uganda</span></p>
+        <p class="ab-contact-note">Questions about your data: see the <a href="privacy.html">privacy policy</a>.</p>
+      </address>
+    </div>
+  </div>
+</section>
+
+<!-- 9. FAQ -->
+<section class="ab-sec ab-alt" aria-labelledby="ab-faq">
+  <div class="ab-wrap ab-faq-wrap">
+    <div class="ab-head"><p class="kicker">FAQ</p><h2 id="ab-faq" class="ab-h2">Questions people ask</h2></div>
+    <div class="ab-faq">
+      <details><summary>Is 101 Codecrafts free?</summary><div><p>Joining is free. During the launch month everything on 101 is free, with no ads. After that there is a free tier with ads, and 101 Pro if you want it ad-free. Some tutor-led courses and sessions have a price in Uganda Shillings, always shown before you pay.</p></div></details>
+      <details><summary>Where is 101 based?</summary><div><p>In Kampala, Uganda. Courses, the library, news and opportunities are online, so you can learn from anywhere, and members also meet in study groups and at <a href="events.html">events and meetups</a>.</p></div></details>
+      <details><summary>Who can join?</summary><div><p>Anyone learning or working in tech, from Primary and O-Level to A-Level, university and professionals. No experience needed. <a href="signup.html">Create a free account</a> to start.</p></div></details>
+      <details><summary>How do I become a tutor?</summary><div><p>Create a free account, choose “Tutor” when you set up your profile, and pick the levels you teach. The 101 team verifies tutors before they can publish paid courses or sessions, and every course is reviewed before it goes live.</p></div></details>
+      <details><summary>I’m under 18. Can I join?</summary><div><p>Yes, with a parent or guardian’s consent. When you sign up we ask for a guardian’s details and send them a consent request. Until they agree, messaging and payments stay locked. Read more in the <a href="privacy.html">privacy policy</a>.</p></div></details>
+      <details><summary>How do I get a certificate?</summary><div><p>Finish a 101 course (video lessons, notes and quizzes) to earn a 101 certificate. Each one has a code that anyone can check on the <a href="verify.html">verify page</a>. Free partner courses, such as freeCodeCamp or Coursera, give their own certificates; the <a href="courses.html">courses page</a> shows which ones are free.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- 10. FINAL CTA -->
+<section class="ab-final" aria-labelledby="ab-final-h">
+  <div class="ab-wrap ab-final-in">
+    <h2 id="ab-final-h" class="ab-h2">Your 101 starts today.</h2>
+    <p>Create a free account, pick a path and meet people who are learning too.</p>
+    <div class="ab-cta"><a class="btn or ab-btn" href="signup.html">Join 101 free</a><a class="btn ab-btn ab-btn-wa" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg>Join the WhatsApp community<span class="sr-only"> (opens in a new tab)</span></a></div>
+  </div>
+</section>
+
+</main>
 <footer class="flow-foot">
   <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
   <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
   <nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
-  <div class="socials" data-socials><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg><use href="#i-gh"/></svg></a></div>
+  <div class="socials" data-socials><a href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer" aria-label="Join the 101 Codecrafts WhatsApp community"><svg aria-hidden="true"><use href="#i-wa"/></svg></a><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg aria-hidden="true"><use href="#i-gh"/></svg></a><a href="https://github.com/101codecrafts-ug" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts team account on GitHub (101codecrafts-ug)"><svg aria-hidden="true"><use href="#i-gh"/></svg></a><span class="soc-soon" role="link" aria-disabled="true" aria-label="YouTube: coming soon" title="YouTube: coming soon"><svg aria-hidden="true"><use href="#i-yt"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="TikTok: coming soon" title="TikTok: coming soon"><svg aria-hidden="true"><use href="#i-tt"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Instagram: coming soon" title="Instagram: coming soon"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Facebook: coming soon" title="Facebook: coming soon"><svg aria-hidden="true"><use href="#i-fb"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="X: coming soon" title="X: coming soon"><svg aria-hidden="true"><use href="#i-x"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="LinkedIn: coming soon" title="LinkedIn: coming soon"><svg aria-hidden="true"><use href="#i-in"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Telegram: coming soon" title="Telegram: coming soon"><svg aria-hidden="true"><use href="#i-tg"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Discord: coming soon" title="Discord: coming soon"><svg aria-hidden="true"><use href="#i-discord"/></svg></span></div>
 </footer>
 <script src="js/data.js" defer></script>
+<script src="js/site-social.js" defer></script>
 <script src="js/site-stats.js" defer></script>
 <script src="js/api.js" defer></script>
 <script src="js/auth.js" defer></script>

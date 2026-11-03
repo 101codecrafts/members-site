@@ -1,0 +1,8 @@
+{
+  "_readme": "101 Codecrafts leaders shown on about.html (Meet the leaders) and in the about page Organization JSON-LD (founder). tools/build.py renders this file. TODO(founder): write a short bio (one or two sentences, max ~160 characters) in each empty \"bio\"; an empty bio is simply not shown. Add a \"github\" handle only when it is real.",
+  "leaders": [
+    { "name": "Businge Daglous",     "role": "Founder",    "photo": "assets/img/team/businge-daglous",     "github": "",           "bio": "" },
+    { "name": "Ngabirano Octavious", "role": "Co-founder", "photo": "assets/img/team/ngabirano-octavious", "github": "octavious2", "bio": "" },
+    { "name": "Mwesigwa Allan",      "role": "Co-founder", "photo": "assets/img/team/mwesigwa-allan",      "github": "",           "bio": "" }
+  ]
+}

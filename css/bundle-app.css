@@ -549,6 +549,14 @@ html:not(.static) .promo-bar{min-height:44px;padding-top:0;padding-bottom:0}
 html:not(.static) .promo-bar button{width:44px;height:44px}
 /* integrate3: flow-page footer social row sizes to its icons (height:100% from .socials.live made it as tall as the footer, so the GitHub mark hung below the band) */
 html:not(.static) .flow-foot .socials.live{height:auto;align-self:center}
+/* round5 about: flow-page footer social icons are 44px targets (24px glyph centred), now that WhatsApp + GitHub links show */
+html:not(.static) .flow-foot .socials{gap:4px;height:auto;align-self:center;margin-right:64px} /* clears the fixed View settings button (bottom-right) */
+html:not(.static) .flow-foot .socials a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px}
+html:not(.static) .flow-foot .socials a svg{width:24px!important;height:24px!important;fill:currentColor}
+/* planned networks: non-link "Coming soon" placeholders (js/site-social.js todo:true): dashed outline, dimmed, no hover, no pointer */
+html:not(.static) .socials .soc-soon{position:static;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;box-sizing:border-box;border:2px dashed currentColor;opacity:.75;cursor:not-allowed;pointer-events:auto;color:inherit;translate:none!important;box-shadow:none!important}
+html:not(.static) .socials .soc-soon svg{width:20px!important;height:20px!important}
+html:not(.static) .flow-foot .socials{flex-wrap:wrap}
 /* links-fix: courses.html?path= / ?skill= active filter chip (orange fill, navy ink, hard shadow) */
 .cf-topic{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:12px}
 .cf-topic[hidden]{display:none}
