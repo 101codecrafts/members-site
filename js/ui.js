@@ -181,8 +181,13 @@
   async function socials() {
     const rows = $$("[data-socials]"); if (!rows.length) return;
     const list = await API.fetchSocialLinks();
-    if (!list) {   // no backend: show only the networks that have a real URL in the bundled data (never dead '#' icons)
-      const known = ((D && D.social) || []).filter(l => l.url).map(l => ({ ...l, active: true }));
+    if (!list || (!STATIC && !list.some(l => l.active && l.url))) {   // no backend list: show only networks with a real URL (never dead '#' icons)
+      // live site: the ONE social config, js/site-social.js (CC_SOCIAL); ?static keeps the old bundled data so the mockup stays as drawn
+      const cfg = !STATIC && window.CC_SOCIAL && window.CC_SOCIAL.shown ? window.CC_SOCIAL.shown() : null;
+      const known = cfg || ((D && D.social) || []).filter(l => l.url).map(l => ({ ...l, active: true }));
+      if (cfg) { rows.forEach(r => { r.classList.add("live"); r.innerHTML = cfg.map(l => /^https:\/\/\S+$/.test(l.url || "")
+        ? `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(l.name || "101 Codecrafts on " + l.label)}">${ico(l.icon)}</a>`
+        : `<span class="soc-soon" role="link" aria-disabled="true" aria-label="${esc(l.label)}: coming soon" title="${esc(l.label)}: coming soon">${ico(l.icon)}</span>`).join(""); }); return; }
       if (known.length) { rows.forEach(r => { r.classList.add("live"); r.innerHTML = socialRow(known); }); }
       return;
     }
