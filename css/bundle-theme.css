@@ -677,3 +677,18 @@ html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{transition:
 [data-theme=dark] .cm-content .ͼg{color:#8DB8FF} [data-theme=dark] .cm-content .ͼi{color:#6FE0B8}
 [data-theme=dark] .cm-content .ͼm{color:#C9A27A} [data-theme=dark] .cm-content .ͼ5{color:#B9C2D6}
 [data-theme=dark] .cm-content .ͼc,[data-theme=dark] .cm-content .ͼh,[data-theme=dark] .cm-content .ͼj,[data-theme=dark] .cm-content .ͼk,[data-theme=dark] .cm-content .ͼl{color:#C8D3FF}
+/* landing: text set in --nv that sits on the orange community slab / words tile keeps navy ink */
+:root[data-theme=dark] :is(.comm,.words-tile,.btn-or){--nv:var(--on-accent)}
+[data-theme=dark] :is(.comm,.words-tile) :is(.disp,.eyebrow,p,span,b){color:var(--on-accent)!important}
+[data-theme=dark] .comm .btn-nv{background:var(--fill-inverse);color:var(--on-inverse)!important}
+/* accent KPI tiles and section headers: their small print stays navy */
+[data-theme=dark] :is(.kpi.or,.kpi.cy) :is(i,small,span,b){color:var(--on-accent)}
+[data-theme=dark] .mk-sec-h :is(.mk-more,h2,small,span){color:var(--on-accent)}
+/* inline navy ink (style="color:var(--ink)") and the grey quick-access tile */
+[data-theme=dark] [style*="color:var(--ink)"]{color:var(--text)!important}
+[data-theme=dark] [style*="background:#ebeced"] *{color:var(--text)!important}
+
+/* ---------------------------------------------------------------- light: tightened contrast (live site only; ?static=1 untouched) */
+html:not(.static):not([data-theme=dark]) .cm-content .ͼf{color:#B33000}               /* CM string-2 #e40 was 3.8:1 */
+html:not(.static):not([data-theme=dark]) .stage.s-Building{background:#146C9F}            /* white text 3.8 -> 5.7:1 */
+html:not(.static):not([data-theme=dark]) .stage.s-Idea{background:#56636E}                /* white text 4.4 -> 6.1:1 */
