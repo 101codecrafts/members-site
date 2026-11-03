@@ -36,7 +36,7 @@
     // no fake notification dots / badges; real unread count fills them in below
     $$(".dot, .sbar nav .badge, .side .nav .badge").forEach(e => { e.hidden = true; e.style.display = "none"; });
     // fake community stat on the dashboard (was a hard-coded 10K+)
-    $$(".stat.s1 b[data-count]").forEach(b => { b.removeAttribute("data-count"); b.textContent = "—"; });
+    $$(".stat.s1 b[data-count]").forEach(b => { b.removeAttribute("data-count"); const t = b.closest(".stat"); if (t) t.hidden = true; }); // no real number yet: hide the tile, never show a dash
     document.documentElement.classList.remove("has-roles");
     if (user) { unread(); roles(); }
     AUTH.user = user; AUTH.ready = true; listeners.forEach(f => { try { f(user); } catch (e) {} });

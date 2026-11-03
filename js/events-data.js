@@ -15,7 +15,7 @@
       gdg: { name: "Google Developer Groups", short: "GDG", bg: "#1a73e8", fg: "#fff" },
       microsoft: { name: "Microsoft", short: "MS", bg: "#0067b8", fg: "#fff" },
       openai: { name: "OpenAI", short: "OAI", bg: "#0B1236", fg: "#fff" },
-      anthropic: { name: "Anthropic", short: "ANT", bg: "#c15f3c", fg: "#fff" },
+      anthropic: { name: "Anthropic", short: "ANT", bg: "#a24a2b", fg: "#fff" },
       huggingface: { name: "Hugging Face", short: "HF", bg: "#ffd21e", fg: "#0B1236" },
       alibaba: { name: "Alibaba Cloud", short: "ALI", bg: "#c94300", fg: "#fff" },
       aws: { name: "AWS Community", short: "AWS", bg: "#232f3e", fg: "#fff" },

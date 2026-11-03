@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + landing.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + landing.css + system.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -875,3 +875,337 @@ html:not(.static) .page>:nth-child(56){grid-column:2/14;grid-row:26;margin-top:v
 html:not(.static) .page>:nth-child(57){grid-column:1/-1;grid-row:27;margin-top:var(--space-fluid-xl)!important}
 }
 /* <<< desktop fluid grid */
+
+/* =====================================================================================
+   101 Codecrafts design system — roles, spacing, cards (live site only; ?static=1 untouched)
+   Loaded last in every bundle. Source of truth for: colour roles, the one border width,
+   the one shadow offset, the spacing scale, and the card components.
+   ===================================================================================== */
+:root{
+  /* ---- colour roles (every text/background pair below is ≥4.5:1, see work/ui-pro/system/AUDIT.md) */
+  --navy:#0B1236; --navy-2:#111A45; --navy-3:#1A2560;
+  --surface:#ffffff;            /* cards on the light page */
+  --surface-alt:#F3F5F8;        /* page background */
+  --surface-sunk:#E8ECF2;       /* wells, date blocks, inactive tabs */
+  --surface-inv:var(--navy);    /* primary dark surface: tool cards, rail headers, banners */
+  --ink:#0B1236;                /* primary text on light (17.6:1 on white) */
+  --ink-muted:#4A5578;          /* secondary text on light (7.3:1 white, 6.7:1 page) */
+  --ink-inv:#ffffff;            /* text on navy */
+  --ink-inv-muted:#B9C1DA;      /* secondary text on navy (10.1:1) */
+  --accent:var(--color-orange); /* orange: CTA fills, chips, accent bars — never text on white */
+  --on-accent:var(--navy);      /* text on orange (7.7:1) */
+  --accent-ink:#B45309;         /* orange as TEXT on white/page (5.0:1 / 4.6:1) */
+  --accent-2:var(--color-cyan); /* cyan: secondary accent, on navy or as chip fill */
+  --on-accent-2:var(--navy);    /* text on cyan (11.8:1) */
+  --accent-2-ink:#00758A;       /* cyan as TEXT on white (5.4:1) */
+  --link:#146c9f;               /* links on light (5.7:1) */
+  --hairline:#D5DBE5;           /* separators inside a card (decorative only) */
+  --border-c:var(--navy);
+  /* ---- one border, one shadow */
+  --bw:2px; --border:var(--bw) solid var(--border-c);
+  --sh:4px; --shadow:var(--sh) var(--sh) 0 var(--navy); --shadow-accent:var(--sh) var(--sh) 0 var(--accent);
+  --radius:0;
+  /* ---- spacing: 4/8 scale mapped onto the fluid tokens (px at 360 → 1536) */
+  --s-1:var(--space-fluid-3xs); /* 4  */
+  --s-2:var(--space-fluid-2xs); /* 8  */
+  --s-3:var(--space-fluid-xs);  /* 12 */
+  --s-4:var(--space-fluid-s);   /* 16 */
+  --s-6:var(--space-fluid-m);   /* 24 */
+  --s-8:var(--space-fluid-l);   /* 32 */
+  --s-12:var(--space-fluid-xl); /* 48 */
+  --s-16:var(--space-fluid-2xl);/* 64 */
+  --pad-card:var(--s-4);        /* inside every card */
+  --gap-card:var(--s-4);        /* between cards in a grid */
+  --gap-stack:var(--s-2);       /* between lines inside a card */
+  --gap-section:var(--s-8);     /* between page sections */
+  --page-pad:var(--s-4);
+  --rail-w:clamp(300px,24vw,380px);
+}
+@media (min-width:761px){:root{--page-pad:var(--s-6);--pad-card:var(--s-4)}}
+
+/* ============================== DASHBOARD (composed by js/dash-layout.js) ============================== */
+html:not(.static) body .app.dz{display:flex!important;flex-direction:column;gap:var(--gap-section)!important;padding:var(--page-pad) var(--page-pad) var(--s-16)!important;max-width:1720px;background:var(--surface-alt)}
+html:not(.static) body .app.dz>*{grid-column:auto;grid-row:auto;margin:0!important;align-self:auto;justify-self:auto}
+html:not(.static) body .app.dz>:is(.rule,.sec-ic,i.abs,.panel,.vrule,.toprule,.tb-ic,.me-av,.me-name,.me-role,.role-switch,.copy){display:none!important}
+html:not(.static) body .app.dz>.search{margin-bottom:calc(var(--s-4) - var(--gap-section))!important}
+html:not(.static) .app.dz .dz-main{display:flex;flex-direction:column;gap:var(--gap-section);min-width:0}
+html:not(.static) .app.dz .dz-main>*,html:not(.static) .app.dz .dz-rail>*{position:relative!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;margin:0!important}
+
+/* ---- hero: content height, slogan becomes the accent footer */
+html:not(.static) .app.dz .dz-top{display:grid;gap:var(--gap-card);grid-template-columns:minmax(0,1fr)}
+html:not(.static) .app.dz .hero{--hp:var(--s-6);min-height:0!important;padding:var(--hp)!important;gap:var(--s-3)!important;border:var(--border);box-shadow:var(--shadow);background:var(--accent);color:var(--on-accent);overflow:hidden}
+html:not(.static) .app.dz .hero .kick{color:var(--navy)!important}
+html:not(.static) .app.dz .hero p{max-width:52ch;color:var(--navy)!important}
+html:not(.static) .app.dz .hero br{display:none}
+html:not(.static) .app.dz .hero .cta{margin-top:var(--s-1)}
+html:not(.static) .app.dz .dz-slogan{position:relative!important;display:flex!important;align-items:center;gap:var(--s-3);width:auto!important;height:auto!important;margin:var(--s-2) calc(-1 * var(--hp)) calc(-1 * var(--hp))!important;padding:var(--s-3) var(--hp)!important;background:var(--navy)!important;border-top:var(--border);z-index:1}
+html:not(.static) .app.dz .dz-slogan::before{content:"";flex:none;width:var(--s-6);height:4px;background:var(--accent-2)}
+html:not(.static) .app.dz .dz-slogan .t{position:static!important;font-family:var(--disp)!important;font-weight:400!important;font-size:var(--step--1)!important;line-height:1.2!important;letter-spacing:.06em!important;text-transform:uppercase;color:var(--accent-2)!important}
+html:not(.static) .app.dz .dz-slogan .t br{display:none}
+html:not(.static) .app.dz .dz-slogan i{display:none!important}
+html:not(.static) .app.dz .hero-photo{display:none!important}
+
+/* ---- stat tiles: compact row; a tile without a real number is hidden */
+html:not(.static) .app.dz .stat[hidden]{display:none!important}
+html:not(.static) .app.dz .dz-stats{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:var(--s-3)}
+html:not(.static) .app.dz .dz-stat{height:auto!important;width:auto!important;display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:var(--s-2);row-gap:var(--s-1);align-items:center;align-content:start;min-height:0!important;padding:var(--s-3)!important;background:var(--surface)!important;color:var(--ink)!important;border:var(--border);box-shadow:var(--shadow);clip-path:none!important}
+html:not(.static) .app.dz .dz-stat>*{position:static!important;left:auto!important;top:auto!important}
+html:not(.static) .app.dz .dz-stat svg{width:20px!important;height:20px!important;color:var(--navy)!important}
+html:not(.static) .app.dz .dz-stat b{font-family:var(--disp)!important;font-weight:400!important;font-size:var(--step-2)!important;line-height:1!important;color:var(--ink)!important}
+html:not(.static) .app.dz .dz-stat small{grid-column:1/-1;font-size:var(--step--2)!important;line-height:1.3!important;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted)!important}
+html:not(.static) .app.dz .dz-stat.s1{border-top:6px solid var(--accent)}html:not(.static) .app.dz .dz-stat.s2{border-top:6px solid var(--accent-2)}html:not(.static) .app.dz .dz-stat.s3{border-top:6px solid var(--navy)}
+
+/* ---- section: rule, title + one-line sub, View all on the same baseline */
+html:not(.static) .app.dz .dz-sec{display:flex;flex-direction:column;gap:var(--s-4);border-top:var(--border);padding-top:var(--s-4)!important}
+html:not(.static) .app.dz .dz-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4)}
+html:not(.static) .app.dz .dz-head-t{display:flex;flex-direction:column;gap:var(--s-1);min-width:0}
+html:not(.static) .app.dz .dz-head .sec-h{position:static!important;font-family:var(--disp)!important;font-weight:400!important;font-size:var(--step-2)!important;line-height:1.1!important;letter-spacing:.01em!important;color:var(--ink)}
+html:not(.static) .app.dz .dz-head .sec-sub{position:static!important;font-size:var(--step--1)!important;line-height:1.4!important;color:var(--ink-muted)!important;margin:0!important}
+html:not(.static) .app.dz .dz-head .viewall{position:static!important;flex:none;display:inline-flex;align-items:center;gap:var(--s-1);min-height:44px;font-size:var(--step--1)!important;font-weight:700;color:var(--link)!important;white-space:nowrap}
+html:not(.static) .app.dz .dz-head .viewall svg{position:static!important;width:16px;height:16px}
+
+/* ---- card base: one border, one shadow, content-driven height, equal height per grid row */
+html:not(.static) .app.dz .dz-grid{display:grid;gap:var(--gap-card);grid-template-columns:minmax(0,1fr);align-items:stretch}
+html:not(.static) .app.dz .dz-card{position:relative!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;min-height:0!important;padding:var(--pad-card)!important;border:var(--border)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important;overflow:visible}
+html:not(.static) .app.dz .dz-card>*{position:static!important;left:auto!important;top:auto!important;right:auto!important;width:auto;height:auto;translate:none!important;margin:0}
+html:not(.static) .app.dz .dz-card :is(h3,h4,h5,p,q,small,span,b){white-space:normal!important}
+html:not(.static) .app.dz .dz-card br{display:none}
+
+/* tool card (navy surface): icon / title / one-line description / tag + arrow pinned to the bottom row */
+html:not(.static) .app.dz .tool.dz-card{display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto 1fr auto;grid-template-areas:"ib ib" "t t" "p p" "tag go";row-gap:var(--gap-stack);column-gap:var(--s-2);background:var(--surface-inv)!important;color:var(--ink-inv)}
+html:not(.static) .app.dz .tool .ib{grid-area:ib;width:40px!important;height:40px!important;border-radius:0!important}
+html:not(.static) .app.dz .tool .ib svg{width:22px;height:22px}
+html:not(.static) .app.dz .tool h3{grid-area:t;margin-top:var(--s-1)!important;font-size:var(--step-0)!important;font-weight:700!important;line-height:1.25!important;color:var(--ink-inv)}
+html:not(.static) .app.dz .tool p{grid-area:p;font-size:var(--step--1)!important;line-height:1.4!important;color:var(--ink-inv-muted)!important}
+html:not(.static) .app.dz .tool .tag{grid-area:tag;max-width:100%;justify-self:start;align-self:center;margin-top:var(--s-2)!important;padding:2px var(--s-2)!important;height:auto!important;font-size:var(--step--2)!important;line-height:1.4!important;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-inv)!important;background:transparent!important;border:1px solid var(--ink-inv-muted)!important;border-radius:0!important}
+html:not(.static) .app.dz .tool .go{grid-area:go;align-self:center;margin-top:var(--s-2)!important;width:20px!important;height:20px!important;color:var(--accent)!important}
+
+/* path card (light surface, colour carried by an accent edge + icon chip, not a full fill) */
+html:not(.static) .app.dz .lp.dz-card{display:flex!important;flex-direction:column;gap:var(--gap-stack);background:var(--surface)!important;color:var(--ink)!important;border-left-width:6px!important}
+html:not(.static) .app.dz .lp.o{border-left-color:var(--accent)!important}html:not(.static) .app.dz .lp.c{border-left-color:var(--accent-2)!important}html:not(.static) .app.dz .lp.d{border-left-color:var(--navy)!important}
+html:not(.static) .app.dz .lp .ib{width:36px!important;height:36px!important;border-radius:0!important;background:var(--navy)!important;color:var(--accent-2)!important}
+html:not(.static) .app.dz .lp.o .ib{color:var(--accent)!important}
+html:not(.static) .app.dz .lp .ib svg{width:20px!important;height:20px!important}
+html:not(.static) .app.dz .lp h4{font-size:var(--step-0)!important;font-weight:700!important;line-height:1.25!important;color:var(--ink)!important}
+html:not(.static) .app.dz .lp small{margin-top:auto!important;font-size:var(--step--2)!important;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-muted)!important}
+
+/* activity card */
+html:not(.static) .app.dz .act.dz-card{display:grid!important;grid-template-columns:40px minmax(0,1fr) auto;grid-template-rows:auto auto 1fr auto;grid-template-areas:"img b b" "img who who" "q q q" "ago ago meta";column-gap:var(--s-3);row-gap:var(--s-1);background:var(--surface)!important;color:var(--ink)}
+html:not(.static) .app.dz .act img{grid-area:img;width:40px!important;height:40px!important;border-radius:50%;border:var(--border)}
+html:not(.static) .app.dz .act b{grid-area:b;align-self:end;font-size:var(--step--1)!important;font-weight:700!important;color:var(--ink)}
+html:not(.static) .app.dz .act .who{grid-area:who;font-size:var(--step--2)!important;color:var(--ink-muted)!important}
+html:not(.static) .app.dz .act q{grid-area:q;margin-top:var(--s-2)!important;font-size:var(--step--1)!important;line-height:1.45!important;color:var(--ink)!important}
+html:not(.static) .app.dz .act .ago{grid-area:ago;align-self:end;margin-top:var(--s-3)!important;font-size:var(--step--2)!important;color:var(--ink-muted)!important}
+html:not(.static) .app.dz .act .meta{grid-area:meta;align-self:end;display:flex!important;gap:var(--s-2);align-items:center;font-size:var(--step--2)!important;color:var(--ink)!important}
+html:not(.static) .app.dz .act .meta svg{width:14px;height:14px;margin:0!important}
+
+/* study banner (navy CTA card) */
+html:not(.static) .app.dz .study.dz-card{display:grid!important;grid-template-columns:48px minmax(0,1fr);grid-template-areas:"ic b" "ic s" "ic a";column-gap:var(--s-4);row-gap:var(--s-1);align-content:center;background:var(--surface-inv)!important;color:var(--ink-inv)}
+html:not(.static) .app.dz .study>img{display:none!important}
+html:not(.static) .app.dz .study>svg{grid-area:ic;width:48px!important;height:44px!important;color:var(--accent-2)!important}
+html:not(.static) .app.dz .study>b{grid-area:b;font-size:var(--step-0)!important;font-weight:700!important;line-height:1.25!important}
+html:not(.static) .app.dz .study>span{grid-area:s;font-size:var(--step--1)!important;line-height:1.4!important;color:var(--ink-inv-muted)!important}
+html:not(.static) .app.dz .study>a{grid-area:a;justify-self:start;margin-top:var(--s-2)!important;display:inline-flex!important;align-items:center;gap:var(--s-2);width:auto!important;height:auto!important;min-height:44px;padding:0 var(--s-4)!important;font-size:var(--step--1)!important;font-weight:700!important;background:var(--accent)!important;color:var(--on-accent)!important;border:var(--bw) solid var(--accent)}
+
+/* ---- right rail boxes */
+html:not(.static) .app.dz .dz-rail{display:grid;gap:var(--gap-card);grid-template-columns:minmax(0,1fr);align-content:start;min-width:0}
+html:not(.static) .app.dz .dz-box{display:flex;flex-direction:column;background:var(--surface);border:var(--border);box-shadow:var(--shadow)}
+html:not(.static) .app.dz .dz-box-h{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-3) var(--pad-card);border-bottom:var(--border);background:var(--surface-inv);color:var(--ink-inv)}
+html:not(.static) .app.dz .dz-box-h>*{position:static!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;margin:0!important;background:none!important}
+html:not(.static) .app.dz .dz-box-h svg{flex:none;width:18px!important;height:18px!important;color:var(--accent-2)!important}
+html:not(.static) .app.dz .dz-box-h .qa-h{display:flex;align-items:center;gap:var(--s-2);color:var(--ink-inv)}
+html:not(.static) .app.dz .dz-box-h .qa-h>*{position:static!important}
+html:not(.static) .app.dz .dz-box-h :is(b,.qa-h span){font-family:var(--body);font-size:var(--step-0)!important;font-weight:700!important;line-height:1.2!important;color:var(--ink-inv)!important}
+html:not(.static) .app.dz .dz-box-h .dz-more{margin-left:auto!important;display:inline-flex;align-items:center;min-height:44px;font-size:var(--step--1)!important;font-weight:700!important;color:var(--accent-2)!important;white-space:nowrap}
+html:not(.static) .app.dz .dz-box-b{display:flex;flex-direction:column;padding:var(--s-2) var(--pad-card)}
+html:not(.static) .app.dz .dz-box-b>*{position:relative!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;margin:0!important}
+html:not(.static) .app.dz .dz-box-b>*>*{position:static!important;left:auto!important;top:auto!important;right:auto!important}
+/* quick access: 2×2 tiles, primary action is the only orange one */
+html:not(.static) .app.dz .dz-box-b-quick{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3);padding:var(--pad-card)}
+html:not(.static) .app.dz .dz-box-b-quick .qa{display:flex!important;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:var(--s-2);min-height:88px;padding:var(--s-3)!important;background:var(--surface)!important;color:var(--ink)!important;border:var(--border);box-shadow:none}
+html:not(.static) .app.dz .dz-box-b-quick .qa:first-child{background:var(--accent)!important;color:var(--on-accent)!important}
+html:not(.static) .app.dz .dz-box-b-quick .qa svg{width:24px!important;height:24px!important;color:currentColor!important}
+html:not(.static) .app.dz .dz-box-b-quick .qa span{font-size:var(--step--1)!important;font-weight:700;line-height:1.2!important;text-align:left}
+/* feed + events rows */
+html:not(.static) .app.dz .dz-box-b .feed{display:grid!important;grid-template-columns:36px minmax(0,1fr) auto;column-gap:var(--s-3);row-gap:2px;align-items:start;padding:var(--s-3) 0!important;border-top:1px solid var(--hairline)}
+html:not(.static) .app.dz .dz-box-b .feed:first-child,html:not(.static) .app.dz .dz-box-b .ev:first-child{border-top:0}
+html:not(.static) .app.dz .feed .ci{grid-row:1/3;width:36px!important;height:36px!important;border:var(--border)}
+html:not(.static) .app.dz .feed .ci svg{width:16px;height:16px}
+html:not(.static) .app.dz .feed b{grid-column:2;font-size:var(--step--1)!important;font-weight:700!important;line-height:1.3!important;color:var(--ink)!important}
+html:not(.static) .app.dz .feed small{grid-column:2;font-size:var(--step--2)!important;line-height:1.35!important;color:var(--ink-muted)!important}
+html:not(.static) .app.dz .feed i{grid-column:3;grid-row:1;font-size:var(--step--2)!important;font-style:normal;color:var(--ink-muted)!important;white-space:nowrap}
+html:not(.static) .app.dz .dz-box-b .ev{display:grid!important;grid-template-columns:52px minmax(0,1fr);column-gap:var(--s-3);row-gap:2px;align-items:start;padding:var(--s-3) 0!important;border-top:1px solid var(--hairline)}
+html:not(.static) .app.dz .ev .d{grid-row:1/4;display:flex!important;flex-direction:column;align-items:center;justify-content:center;width:52px!important;height:auto!important;min-height:52px;padding:var(--s-1) 0!important;background:var(--surface-inv)!important;border-radius:0!important}
+html:not(.static) .app.dz .ev .d>*{position:static!important}
+html:not(.static) .app.dz .ev .d small{font-size:var(--step--2)!important;font-weight:700;letter-spacing:.06em;color:var(--accent)!important}
+html:not(.static) .app.dz .ev .d b{font-family:var(--disp)!important;font-weight:400!important;font-size:var(--step-1)!important;line-height:1!important;color:var(--ink-inv)!important}
+html:not(.static) .app.dz .ev .bar{display:none!important}
+html:not(.static) .app.dz .ev h5{grid-column:2;font-size:var(--step--1)!important;font-weight:700!important;line-height:1.3!important;color:var(--ink)!important;white-space:normal!important}
+html:not(.static) .app.dz .ev .tm{grid-column:2;font-size:var(--step--2)!important;color:var(--ink-muted)!important}
+html:not(.static) .app.dz .ev .on{grid-column:2;font-size:var(--step--2)!important;font-weight:700;color:var(--accent-2-ink)!important}
+html:not(.static) .app.dz .dz-rail .brandcard{display:flex!important;flex-wrap:wrap;align-items:center;gap:var(--s-1) var(--s-3);padding:var(--s-3) var(--pad-card)!important;background:var(--surface-inv)!important;border:var(--border);box-shadow:var(--shadow-accent)}
+html:not(.static) .app.dz .dz-rail .brandcard>*{position:static!important;left:auto!important;top:auto!important}
+html:not(.static) .app.dz .dz-rail .brandcard img{width:56px!important;height:auto!important}
+html:not(.static) .app.dz .dz-rail .brandcard small{flex-basis:100%;order:3;color:var(--ink-inv-muted)!important}
+
+/* ---- footer band */
+html:not(.static) body .app.dz>.foot{border:var(--border);background:var(--surface-inv)!important}
+
+/* ---- breakpoints */
+@media (min-width:480px){
+  html:not(.static) .app.dz .dz-grid-tools,html:not(.static) .app.dz .dz-grid-paths{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html:not(.static) .app.dz .dz-grid-tools>.tool:last-child:nth-child(odd){grid-column:1/-1}
+}
+@media (max-width:479px){
+  /* phones: tool cards become dense list rows — icon | title + description + tag | arrow */
+  html:not(.static) .app.dz .tool.dz-card{grid-template-columns:40px minmax(0,1fr) auto;grid-template-rows:auto auto auto;grid-template-areas:"ib t go" "ib p go" "ib tag go";column-gap:var(--s-3);row-gap:2px}
+  html:not(.static) .app.dz .tool h3{margin-top:0!important}
+  html:not(.static) .app.dz .tool .tag,html:not(.static) .app.dz .tool .go{margin-top:var(--s-1)!important}
+  html:not(.static) .app.dz .tool .ib{align-self:start}
+  html:not(.static) .app.dz .dz-grid-paths{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-3)}
+  html:not(.static) .app.dz .lp.dz-card{padding:var(--s-3)!important}
+  html:not(.static) .app.dz .dz-stat{padding:var(--s-2) var(--s-3)!important}
+  html:not(.static) .app.dz .dz-head .sec-sub{display:none}
+}
+@media (min-width:761px){
+  html:not(.static) .app.dz .dz-grid-paths{grid-template-columns:repeat(3,minmax(0,1fr))}
+  html:not(.static) .app.dz .dz-grid-activity{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  html:not(.static) .app.dz .dz-grid-activity>.study{grid-column:1/-1;grid-template-columns:48px minmax(0,1fr) auto;grid-template-areas:"ic b a" "ic s a"}
+  html:not(.static) .app.dz .dz-grid-activity>.study>a{align-self:center;margin-top:0!important}
+  html:not(.static) .app.dz .dz-rail{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html:not(.static) .app.dz .dz-rail>:is(.dz-box-quick,.brandcard){grid-column:1/-1}
+  html:not(.static) .app.dz .dz-box-b-quick{grid-template-columns:repeat(4,minmax(0,1fr))}
+  html:not(.static) .app.dz .dz-head .sec-h{font-size:var(--step-3)!important}
+}
+@media (min-width:1100px){
+  html:not(.static) .app.dz .dz-grid-tools{grid-template-columns:repeat(6,minmax(0,1fr))}
+  html:not(.static) .app.dz .dz-grid-tools>.tool{grid-column:span 2}
+  html:not(.static) .app.dz .dz-grid-tools>.tool:last-child:nth-child(odd){grid-column:span 2}
+  html:not(.static) .app.dz .dz-grid-tools>.tool:nth-child(4):nth-last-child(2),html:not(.static) .app.dz .dz-grid-tools>.tool:nth-child(5):last-child{grid-column:span 3}
+  html:not(.static) body .app.dz{display:grid!important;grid-template-columns:minmax(0,1fr) var(--rail-w);column-gap:var(--s-6)!important;row-gap:var(--s-4)!important;align-items:start}
+  html:not(.static) body .app.dz>.search{grid-column:1;grid-row:1;margin:0!important}
+  html:not(.static) body .app.dz>.dz-main{grid-column:1;grid-row:2}
+  html:not(.static) body .app.dz>.dz-rail{grid-column:2;grid-row:2}
+  html:not(.static) body .app.dz>.foot{grid-column:1/-1;grid-row:3;margin-top:var(--s-8)!important}
+  html:not(.static) .app.dz .dz-rail{grid-template-columns:minmax(0,1fr)}
+  html:not(.static) .app.dz .dz-box-b-quick{grid-template-columns:1fr 1fr}
+  html:not(.static) .app.dz .dz-top{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+  html:not(.static) .app.dz .hero-photo{display:block!important;width:100%!important;height:100%!important;min-height:0;object-fit:cover;border:var(--border);box-shadow:var(--shadow)}
+  html:not(.static) .app.dz .hero{--hp:var(--s-8)}
+  html:not(.static) .app.dz .dz-grid-activity{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* ============================== RESOURCE / NEWS CARDS (site-wide) ============================== */
+/* no real image → a slim labelled band instead of a 16:9 empty slab */
+html:not(.static) .rcard,html:not(.static) .ncard{border:var(--border);box-shadow:var(--shadow);min-height:0;height:100%}
+html:not(.static) .rthumb:is(:has(.thumb-ph),.noimg){aspect-ratio:auto;height:auto;min-height:0;display:flex;align-items:center;gap:var(--s-3);padding:var(--s-3) var(--s-4);background:var(--navy-2);border-bottom:1px solid var(--navy-3)}
+html:not(.static) .rthumb:is(:has(.thumb-ph),.noimg) .badge-t{position:static;order:2}
+html:not(.static) .rthumb .thumb-ph{width:auto;height:auto;background:none;order:1;display:flex}
+html:not(.static) .rthumb .thumb-ph svg{width:24px;height:24px}
+html:not(.static) .rthumb .thumb-ph.news{display:none}
+html:not(.static) .rthumb:is(:has(.thumb-ph),.noimg)::before{content:"";order:1;width:24px;height:4px;background:var(--accent-2)}
+html:not(.static) .rbody{padding:var(--s-4);gap:var(--s-2)}
+html:not(.static) .rbody .src{color:var(--ink-inv-muted)}
+html:not(.static) .rbody p{color:var(--ink-inv-muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+html:not(.static) :is(.rcard,.ncard) .tags span{border-color:var(--ink-inv-muted);background:transparent;color:var(--ink-inv)}
+html:not(.static) .rgrid{gap:var(--gap-card)}
+
+/* ============================== LANDING (index) — flat canvas composed with CSS only ============================== */
+/* decorative 28px slivers and any tile without a number never render as empty slabs */
+html:not(.static) .page>.tile:not(:has(b)){display:none!important}
+html:not(.static) body .page p br{display:none!important}
+/* stat tiles: one navy surface, numbers carry the accent */
+html:not(.static) body .page>.tile:has(b){background:var(--surface-inv)!important;color:var(--ink-inv)!important;border:var(--border);box-shadow:var(--shadow)}
+html:not(.static) body .page>.tile:has(b) svg{color:var(--accent-2)!important}
+html:not(.static) body .page>.tile:has(b) b{color:var(--accent)!important}
+html:not(.static) body .page>.tile:has(b) small{color:var(--ink-inv)!important;letter-spacing:.06em}
+/* feature + path + testimonial cards: one border, one shadow, readable leading */
+html:not(.static) body .page>:is(.feat,.path,.tcard){border:var(--border)!important;box-shadow:var(--shadow);border-radius:0!important}
+html:not(.static) body .page>:is(.feat,.tcard) :is(p,q){line-height:1.45!important}
+html:not(.static) body .page>:is(.feat,.path) h3 br{display:none}
+html:not(.static) body .page>.path{background:var(--surface)!important}
+html:not(.static) body .page>.path .ar,html:not(.static) body .page>.feat .ar{color:var(--accent-ink)!important}
+html:not(.static) body .page>.feat .ar{color:var(--accent)!important}
+
+@media (max-width:1023px){
+  html:not(.static) body .page{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--s-3);row-gap:var(--s-3);padding:0 var(--page-pad) var(--s-12)!important;align-items:stretch}
+  html:not(.static) body .page>*{grid-column:1/-1;margin:0!important;max-width:none!important;width:auto!important;min-width:0}
+  html:not(.static) body .page>:is(.hdr,.lfoot,.band,.cta,.comm,.lhero,.tit){margin-inline:calc(-1 * var(--page-pad))!important}
+  html:not(.static) body .page>.hdr{margin-bottom:var(--s-4)!important}
+  /* section rhythm: 32px before every section, 12px inside it */
+  html:not(.static) body .page>.eyebrow{margin-top:var(--s-8)!important}
+  html:not(.static) body .page>.hdr+*,html:not(.static) body .page>.hdr~.lhero+.eyebrow{margin-top:0!important}
+  html:not(.static) body .page>:is(h1,h2,.disp){margin-top:calc(-1 * var(--s-2))!important}
+  html:not(.static) body .page>.disp+.disp{margin-top:calc(-1 * var(--s-3))!important}
+  html:not(.static) body .page>p{line-height:1.5!important}
+  html:not(.static) body .page>img.heavy-hero{width:100%!important;height:auto!important;border:var(--border);box-shadow:var(--shadow)}
+  html:not(.static) body .page>.comm a{width:auto!important;height:auto!important;min-height:44px;padding:0 var(--s-4)!important;align-self:flex-start;white-space:nowrap;display:inline-flex!important;align-items:center;gap:var(--s-2)}
+  html:not(.static) body .page>.comm p{line-height:1.5!important}
+  html:not(.static) body .page>b+span{margin-top:calc(-1 * var(--s-3))!important}
+  html:not(.static) body .page>.comm{margin-top:var(--s-8)!important;padding:var(--s-6) var(--page-pad)!important}
+  html:not(.static) body .page>.comm+.tile{margin-top:var(--s-1)!important}
+  html:not(.static) body .page>.cta{margin-top:var(--s-8)!important}
+  /* hero word tile → a compact accent strip */
+  html:not(.static) body .page>.words-tile{height:auto!important;display:flex!important;align-items:center;justify-content:space-between;gap:var(--s-3);padding:var(--s-3) var(--s-4)!important;border:var(--border);box-shadow:var(--shadow)}
+  html:not(.static) body .page>.words-tile>*{position:static!important}
+  html:not(.static) body .page>.words-tile .disp{white-space:normal!important;font-size:var(--step-0)!important;line-height:1.25!important;letter-spacing:.04em!important;margin:0!important}
+  html:not(.static) body .page>.words-tile svg{flex:none}
+  /* stat tiles 2×2 */
+  html:not(.static) body .page>.tile:has(b){grid-column:span 1;min-height:0!important;height:auto!important;padding:var(--s-3)!important;display:flex!important;flex-direction:column;gap:var(--s-1)}
+  html:not(.static) body .page>.tile:has(b) svg{width:24px!important;height:24px!important}
+  html:not(.static) body .page>.tile:has(b) b{font-family:var(--disp)!important;font-size:var(--step-3)!important;line-height:1!important;margin-top:var(--s-2)}
+  html:not(.static) body .page>.tile:has(b) small{font-size:var(--step--2)!important;line-height:1.3!important}
+  /* features: dense list rows — icon | title + description | arrow */
+  html:not(.static) body .page>.feat{display:grid!important;grid-template-columns:44px minmax(0,1fr) auto;grid-template-areas:"ib h ar" "ib p ar";column-gap:var(--s-3);row-gap:var(--s-1);align-items:start;align-content:start;min-height:0!important;padding:var(--s-4)!important}
+  html:not(.static) body .page>.feat .ib{grid-area:ib;position:static!important;width:44px!important;height:44px!important}
+  html:not(.static) body .page>.feat .ib svg{width:26px!important;height:26px!important}
+  html:not(.static) body .page>.feat h3{grid-area:h;white-space:normal!important;font-size:var(--step-0)!important;line-height:1.2!important}
+  html:not(.static) body .page>.feat p{grid-area:p;font-size:var(--step--1)!important;color:var(--ink-inv-muted)!important}
+  html:not(.static) body .page>.feat .ar{grid-area:ar;align-self:center;width:18px!important;height:18px!important}
+  /* paths 2-up: icon, title, arrow on the bottom edge */
+  html:not(.static) body .page>.path{grid-column:span 1;display:flex!important;flex-direction:column;gap:var(--s-2);min-height:0!important;padding:var(--s-3)!important}
+  html:not(.static) body .page>.path .ib{position:static!important;width:36px!important;height:36px!important}
+  html:not(.static) body .page>.path h3{font-size:var(--step--1)!important;font-weight:700!important;line-height:1.25!important;white-space:normal!important;color:var(--ink)!important}
+  html:not(.static) body .page>.path .ar{margin-top:auto!important;width:18px!important;height:18px!important}
+  /* testimonials */
+  html:not(.static) body .page>.tcard{min-height:0!important;padding:var(--s-4) var(--s-4) var(--s-4) calc(51px + 2 * var(--s-4))!important;display:flex!important;flex-direction:column;gap:var(--s-1);background:var(--surface-inv)!important}
+  html:not(.static) body .page>.tcard img{left:var(--s-4)!important;top:var(--s-4)!important}
+  html:not(.static) body .page>.tcard small{color:var(--ink-inv-muted)!important}
+  html:not(.static) body .page>.tcard p{width:auto!important;margin-top:var(--s-1)!important;font-size:var(--step--1)!important;color:var(--ink-inv)!important}
+}
+@media (min-width:600px) and (max-width:1023px){
+  html:not(.static) body .page{grid-template-columns:repeat(6,minmax(0,1fr))}
+  html:not(.static) body .page>.tile:has(b){grid-column:span 3}
+  html:not(.static) body .page>.path,html:not(.static) body .page>.tcard{grid-column:span 2}
+  html:not(.static) body .page>.feat{grid-column:span 3}
+  html:not(.static) body .page>.feat:not(:has(~ .feat)):nth-of-type(odd){grid-column:1/-1}
+  html:not(.static) body .page>[class*="btn-"]{grid-column:span 3}
+  html:not(.static) body .page>img.heavy-hero{max-height:440px;object-fit:cover}
+  html:not(.static) body .tit-cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))!important}
+  html:not(.static) body .page>.tcard{padding:var(--s-4)!important}
+  html:not(.static) body .page>.tcard img{position:static!important;width:44px!important;height:44px!important}
+}
+
+/* ============================== CONTRAST FIXES (site-wide roles) ============================== */
+/* level chips: colour stays on the border + dot; the label is ink (≥4.5:1) */
+html:not(.static) .lvl{color:var(--ink)!important}
+/* count badges on orange carry navy text (7.7:1), never white (2.4:1) */
+html:not(.static) .sbar nav a .badge,html:not(.static) .side .nav .badge{color:var(--on-accent)!important}
+/* links inside navy headers use the cyan accent (11.8:1) */
+html:not(.static) .app.dz .dz-box-h a.dz-more[href]{color:var(--accent-2)!important}
+/* KPI deltas on coloured tiles: navy on orange/cyan, light green on navy */
+html:not(.static) .kpi:is(.or,.cy) i{color:var(--navy)!important}
+html:not(.static) .kpi.ink i{color:#6EE7A8!important}
+/* muted text that sits on navy */
+html:not(.static) :is(.card.dark,.kpi.ink,.social-preview,.tool,.study) :is(.muted,small.muted){color:var(--ink-inv-muted)!important}
+
+/* ============================== COURSES / MARKETPLACE media cards ============================== */
+html:not(.static) .ccard{border:var(--border);box-shadow:var(--shadow)}
+html:not(.static) .cbody{padding:var(--s-4);gap:var(--s-2)}
+html:not(.static) .cbody p{color:var(--ink-muted)}
+@media (max-width:760px){
+  /* phones: covers are a band, not a 16:9 slab, so a list of courses scans */
+  html:not(.static) .cthumb{aspect-ratio:21/9}
+  html:not(.static) .exp .grow{flex:1 1 calc(100% - 48px)}
+  html:not(.static) .exp .cdx{margin-left:46px}
+}
