@@ -106,7 +106,7 @@ export async function openStream(messages: ReturnType<typeof buildMessages>, sig
         async cancel() { clearTimeout(timer); signal.removeEventListener('abort', onAbort); ctl.abort(); try { await reader.cancel(); } catch { /* ignore */ } },
       });
       return { stream, model };
-    } catch (e) {
+    } catch {
       attempts.push({ model, status: ctl.signal.aborted ? 'timeout' : 'network' });
       clearTimeout(timer); signal.removeEventListener('abort', onAbort);
     }
