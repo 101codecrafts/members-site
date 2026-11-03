@@ -12,7 +12,7 @@
   /* ---------------- cards ---------------- */
   const TYPE_CLR = { Course: "or", Book: "cy", Video: "or", Article: "cy", Repo: "ink" };
   function resourceCard(r) {
-    const thumb = r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async" class="heavy">` : `<div class="thumb-ph">${ico({ Course: "cap", Book: "openbook", Video: "yt", Article: "doc", Repo: "code" }[r.type] || "doc")}</div>`;
+    const thumb = r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async" class="heavy" onerror="this.parentNode.classList.add('noimg');this.remove()">` : `<div class="thumb-ph">${ico({ Course: "cap", Book: "openbook", Video: "yt", Article: "doc", Repo: "code" }[r.type] || "doc")}</div>`;
     return `<a class="rcard hov" href="${API.goHref(r.id)}" target="_blank" rel="noopener noreferrer" data-id="${esc(r.id)}" data-type="${esc(r.type)}" data-path="${esc(r.path || "")}">
       <div class="rthumb">${thumb}<span class="badge-t ${TYPE_CLR[r.type] || "or"}">${esc(r.type)}</span></div>
       <div class="rbody"><h3>${esc(r.title)}</h3>
@@ -23,7 +23,7 @@
   }
   function newsCard(n, big) {
     const host = (() => { try { return new URL(n.url).hostname; } catch (e) { return ""; } })();
-    const img = n.image ? `<img src="${esc(n.image)}" alt="" loading="lazy" decoding="async" class="heavy">` : `<div class="thumb-ph news">${esc(n.cat)}</div>`;
+    const img = n.image ? `<img src="${esc(n.image)}" alt="" loading="lazy" decoding="async" class="heavy" onerror="this.parentNode.classList.add('noimg');this.remove()">` : `<div class="thumb-ph news">${esc(n.cat)}</div>`;
     return `<a class="ncard hov ${big ? "big" : ""}" href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer" data-cat="${esc(n.cat)}">
       <div class="rthumb">${img}<span class="badge-t ${n.cat === "Africa Tech" ? "cy" : "or"}">${esc(n.cat)}</span></div>
       <div class="rbody"><div class="src"><img src="https://icons.duckduckgo.com/ip3/${esc(host)}.ico" alt="" width="14" height="14" loading="lazy" onerror="this.style.display='none'"> ${esc(n.source)} · ${esc(n.ago)} ago</div>
