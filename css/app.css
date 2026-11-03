@@ -329,7 +329,7 @@ ol.list{list-style:none}
 .free-tier small{color:var(--mut);font-size:var(--step--2)}
 .ccard .tags span{background:#fff;border:1px solid var(--line);color:var(--ink)}
 .howto{border-top:2px dashed var(--line);padding-top:8px;margin-top:auto}
-.howto summary{cursor:pointer;font:700 var(--step-0) var(--body);min-height:36px;display:flex;align-items:center;color:var(--color-link)}
+.howto summary{cursor:pointer;font:700 var(--step-0) var(--body);min-height:44px;display:flex;align-items:center;color:var(--color-link)}
 .howto ol{padding-left:20px;display:grid;gap:4px;font-size:var(--step--2);margin:6px 0}
 .keynote{font-size:var(--step--2);color:var(--color-danger)!important;font-weight:600}
 .playground .pg-out{white-space:pre-wrap;background:var(--ink);color:#e8edf1;border:2px solid var(--ink);padding:12px 14px;margin-top:12px;font:500 var(--step--1)/1.5 ui-monospace,Consolas,monospace;max-height:320px;overflow:auto}

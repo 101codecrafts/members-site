@@ -6,12 +6,12 @@ body.solo{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-directio
 .solo-logo{display:inline-flex;align-items:center;gap:12px;color:#fff;text-decoration:none}
 .solo-logo img{width:64px;height:32px;display:block}
 .solo-logo b{font:400 var(--step-1)/1 var(--disp2);letter-spacing:.5px}
-.solo-top nav{display:flex;gap:18px}.solo-top nav a{color:#fff;font:700 var(--step--1) var(--body);text-decoration:none;border-bottom:2px solid transparent}
+.solo-top nav{display:flex;gap:18px}.solo-top nav a{display:inline-flex;align-items:center;min-height:44px;color:#fff;font:700 var(--step--1) var(--body);text-decoration:none;border-bottom:2px solid transparent}
 .solo-top nav a:hover,.solo-top nav a:focus-visible{border-color:var(--cy)}
 .solo-main{flex:1;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;padding:clamp(24px,6vw,72px) clamp(16px,4vw,40px);background:
   linear-gradient(var(--color-line) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,var(--color-line) 1px,transparent 1px) 0 0/32px 32px,var(--color-page)}
 .solo-foot{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;padding:14px clamp(16px,4vw,40px);background:#fff;border-top:2px solid var(--ink);font:500 var(--step--1) var(--body);color:var(--color-muted)}
-.solo-foot nav{display:flex;gap:16px}.solo-foot a{color:var(--ink);font-weight:700}
+.solo-foot nav{display:flex;gap:16px}.solo-foot a{display:inline-flex;align-items:center;min-height:44px;color:var(--ink);font-weight:700}
 
 /* the card every standalone page uses */
 .slab{min-width:0;width:min(100%,640px);background:#fff;border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);position:relative}

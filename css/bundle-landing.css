@@ -482,7 +482,7 @@ ol.list{list-style:none}
 .free-tier small{color:var(--mut);font-size:var(--step--2)}
 .ccard .tags span{background:#fff;border:1px solid var(--line);color:var(--ink)}
 .howto{border-top:2px dashed var(--line);padding-top:8px;margin-top:auto}
-.howto summary{cursor:pointer;font:700 var(--step-0) var(--body);min-height:36px;display:flex;align-items:center;color:var(--color-link)}
+.howto summary{cursor:pointer;font:700 var(--step-0) var(--body);min-height:44px;display:flex;align-items:center;color:var(--color-link)}
 .howto ol{padding-left:20px;display:grid;gap:4px;font-size:var(--step--2);margin:6px 0}
 .keynote{font-size:var(--step--2);color:var(--color-danger)!important;font-weight:600}
 .playground .pg-out{white-space:pre-wrap;background:var(--ink);color:#e8edf1;border:2px solid var(--ink);padding:12px 14px;margin-top:12px;font:500 var(--step--1)/1.5 ui-monospace,Consolas,monospace;max-height:320px;overflow:auto}
@@ -1574,7 +1574,7 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
 .tb-search input::placeholder{color:var(--sh-mut);opacity:1}
 .tb-search kbd{flex:none;min-width:22px;height:22px;display:grid;place-items:center;border:1px solid var(--sh-line);font:600 12px var(--body);color:var(--sh-mut)}
 .shell .topbar .top-links{display:flex;gap:18px;margin-left:8px}
-.shell .topbar .top-links a{font:600 14px var(--cond);color:#D9DEF0;letter-spacing:.3px;padding:6px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.shell .topbar .top-links a{display:inline-flex;align-items:center;min-height:44px;font:600 14px var(--cond);color:#D9DEF0;letter-spacing:.3px;padding:0;border-bottom:2px solid transparent;white-space:nowrap}
 .shell .topbar .top-links a:hover{color:#fff;border-bottom-color:var(--sh-or)}
 .shell .topbar .sp{flex:1 1 0}
 .shell .topbar .ib{width:40px;height:40px;display:grid;place-items:center;position:relative;color:var(--sh-text);background:transparent;border:1px solid transparent;flex:none;cursor:pointer}

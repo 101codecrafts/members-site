@@ -112,7 +112,7 @@
     var id = new URLSearchParams(location.search).get("id");
     const emptyPage = (h, msg) => '<div class="page-h"><div><div class="kicker">Live session</div><h1>' + h + '</h1><p>' + msg + '</p></div></div>' +
       '<div class="empty-state"><p>Join a live class, open the shared whiteboard or add a session to your calendar from your schedule.</p><a class="btn or" href="sessions.html">See all sessions</a></div>';
-    if (!id) { root.innerHTML = emptyPage("No session selected", "Open a session from your schedule to see its room."); return; }
+    if (!id) { root.innerHTML = emptyPage("NO SESSION SELECTED", "Open a session from your schedule to see its room."); return; }
     A.get(id).then(function (r) {
       var s = r.session, p = A.PROVIDERS[s.provider] || { label: s.provider, embed: false };
       $("#ses-title").textContent = s.title;
@@ -158,7 +158,7 @@
       }
       loadAttendance();
       if (r.stub) toast($("#ses-stub"), "Preview mode: using local demo data until /api/v1/sessions is live.");
-    }, function (err) { root.innerHTML = emptyPage("Couldn't load this session", esc(err.message || "Check your connection and try again.")); });
+    }, function (err) { root.innerHTML = emptyPage("SESSION UNAVAILABLE", esc(err.message || "Check your connection and try again.")); });
   }
 
   function boot() { initApps(); initList(); initSession(); }
