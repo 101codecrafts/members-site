@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + system.css + shell.css + touch.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + system.css + shell.css + touch.css + era.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -1324,3 +1324,174 @@ html:not(.static) .page>p .mc-cta{display:flex;width:max-content;max-width:100%;
 html:not(.static) .app.dz .dz-box-b-quick .qa-wide{grid-column:1/-1;display:flex;align-items:center;gap:var(--s-2);min-height:48px;padding:var(--s-2) var(--s-3);border:var(--border);background:var(--surface);color:var(--text);font:700 var(--step--1)/1.2 var(--body);text-decoration:none;box-shadow:var(--shadow-accent)}
 html:not(.static) .app.dz .dz-box-b-quick .qa-wide svg{width:22px;height:22px;flex:none}
 html:not(.static) .app.dz .dz-box-b-quick .qa-wide span{flex:1}
+
+/* =====================================================================================
+   era92 polish layer (ui/era92-polish). Layout, motion and detail techniques borrowed from
+   era92elevate.org, translated into the 101 brutalist system: hard 2px borders, hard offset
+   shadows, square corners, 101 brand colours only (navy, orange as a FILL, cyan, neutrals).
+   Paints with theme ROLES only (css/theme.css), so dark mode needs no extra mapping.
+   Every rule is live-only: html:not(.static). ?static=1 stays pixel-identical.
+   ===================================================================================== */
+
+/* ---------------------------------------------------------------- shared: sections */
+html.static .page>.e92,html.static .page>.hcol,html.static .ft-tag{display:none!important}
+html:not(.static) .page>.e92{position:relative!important;margin-inline:0!important;max-width:100%!important;width:auto!important;padding-block:var(--space-fluid-xl);color:var(--text)}
+html:not(.static) body .page>[data-legacy]{display:none!important}
+html:not(.static) .e92 .e-in{padding-inline:var(--page-pad);box-sizing:border-box}
+/* below 1024 the landing is a padded grid (css/system.css): sections bleed to the edges like the other bands */
+@media (max-width:1023px){html:not(.static) body .page>.e92{margin-inline:calc(-1 * var(--page-pad))!important;max-width:none!important;padding-block:var(--space-fluid-l)}
+  html:not(.static) body .page>.e-paths{margin-top:var(--s-8)!important}}
+@media (min-width:1024px){html:not(.static) .e92 .e-in{padding-inline:max(var(--space-fluid-l),calc((100% - 12 * 84px - 11 * var(--space-fluid-m)) / 2))}}
+html:not(.static) .page .e92 .e-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--s-3) var(--s-6);margin-bottom:var(--space-fluid-m)}
+html:not(.static) .page .e92 .e-kick{display:flex;align-items:center;gap:var(--s-2);margin:0 0 var(--s-2);font-size:var(--step--1)!important;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text)!important;max-width:none}
+html:not(.static) .page .e92 .e-kick::before{content:"";flex:none;width:14px;height:8px;background:var(--accent);border:var(--bw) solid var(--border-strong)}
+html:not(.static) .page .e92 h2{margin:0;font-family:var(--disp);font-weight:400;font-size:var(--step-4)!important;line-height:1.05;text-transform:uppercase;letter-spacing:.01em;text-wrap:balance;color:var(--text)!important;white-space:normal;transform:none}
+html:not(.static) .page .e92 h3{margin:0;font-size:var(--step-1)!important;font-weight:700;line-height:1.2;color:inherit}
+html:not(.static) .page .e92 p{margin:0;color:var(--text-muted);font-size:var(--step-0)!important;line-height:1.5}
+html:not(.static) .page .e92 .e-all{display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);text-decoration:none;border-bottom:3px solid var(--accent)}
+html:not(.static) .page .e92 .e-all svg,html:not(.static) .page .e92 .e-more svg,html:not(.static) .page .e92 .e-btn svg{width:18px;height:18px;flex:none}
+html:not(.static) .e92 .e-grid{display:grid;gap:var(--gap-card);grid-template-columns:minmax(0,1fr)}
+@media (min-width:600px){html:not(.static) .e92 .e-grid-3,html:not(.static) .e92 .e-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px){html:not(.static) .e92 .e-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}html:not(.static) .e92 .e-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+html:not(.static) .e92 .e-card{position:relative;display:flex;flex-direction:column;gap:var(--s-2);padding:var(--pad-card);background:var(--surface-1);color:var(--text);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh) var(--sh) 0 var(--shadow-ink);border-radius:0;min-width:0}
+html:not(.static) .page .e92 .e-more{display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;margin-top:auto;font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);text-decoration:none}
+/* stretched link: the whole card is the target */
+html:not(.static) .e92 .e-pcard .e-more::after,html:not(.static) .e92 .e-stretch::after{content:"";position:absolute;inset:0}
+html:not(.static) .e92 .e-stretch{color:inherit;text-decoration:none}
+html:not(.static) .e92 :is(.e-more,.e-stretch):focus-visible{outline:none}
+html:not(.static) .e92 :is(.e-more,.e-stretch):focus-visible::after{outline:3px solid var(--focus);outline-offset:3px}
+/* buttons */
+html:not(.static) .page .e92 .e-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);min-height:48px;padding:0 var(--s-6);font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;background:var(--fill-inverse);color:var(--on-inverse);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh) var(--sh) 0 var(--accent);transition:translate .15s,box-shadow .15s}
+html:not(.static) .page .e92 .e-btn.or{background:var(--accent);color:var(--on-accent);border-color:var(--brand-navy);box-shadow:var(--sh) var(--sh) 0 var(--on-inverse)}
+html:not(.static) .page .e92 .e-btn.ghost{background:transparent;color:var(--on-inverse);border-color:var(--on-inverse);box-shadow:none}
+
+/* ---------------------------------------------------------------- 1. hero collage */
+html:not(.static) .page>.hcol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;width:auto!important}
+html:not(.static) .page>.hcol>*{position:relative}
+html:not(.static) .hcol .hc-photo{display:none;overflow:hidden}
+html:not(.static) .hcol .hc-photo img{position:absolute;left:-40%;top:-2%;width:185%;max-width:none;height:auto}
+html:not(.static) .page .hcol .hc-chip{margin:0;padding:var(--s-3);background:var(--surface-1);color:var(--text);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh) var(--sh) 0 var(--shadow-ink);display:flex;flex-direction:column;gap:var(--s-2)}
+html:not(.static) .page .hcol blockquote{margin:0;font-size:var(--step--1)!important;font-weight:700;line-height:1.35;color:var(--text)}
+html:not(.static) .page .hcol figcaption{display:flex;align-items:center;gap:var(--s-2);font-size:var(--step--2)!important;font-weight:600;color:var(--text-muted)}
+html:not(.static) .page .hcol .hc-av{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent-2);color:var(--on-accent-2);border:var(--bw) solid var(--brand-navy);font-size:12px!important;font-weight:700}
+html:not(.static) .page .hcol .hc-stat{display:flex;flex-direction:column;justify-content:flex-end;gap:var(--s-1);padding:var(--s-3);background:var(--accent);color:var(--on-accent);border:var(--bw) solid var(--brand-navy);box-shadow:var(--sh) var(--sh) 0 var(--shadow-ink);text-decoration:none;pointer-events:auto}
+html:not(.static) .page .hcol .hc-stat b{font-family:var(--disp);font-weight:400;font-size:var(--step-6)!important;line-height:.9}
+html:not(.static) .page .hcol .hc-stat span{font-size:var(--step--1)!important;font-weight:700;line-height:1.25;text-transform:uppercase;letter-spacing:.04em}
+@media (min-width:1024px){
+  html:not(.static) .page>.hcol{display:block!important;position:relative!important}
+  html:not(.static) .page>.hcol>*{position:absolute!important}
+  html:not(.static) .page .hcol .hc-chip{left:calc(var(--space-fluid-m) * -.6);top:var(--space-fluid-m);width:min(250px,48%);transform:rotate(-1.5deg)}
+  html:not(.static) .page .hcol .hc-stat{right:calc(var(--space-fluid-m) * -.6);top:calc(var(--space-fluid-s) * -1);width:min(170px,32%)}
+  html:not(.static) .hcol .hc-photo{display:block;right:calc(var(--space-fluid-m) * -.6);bottom:var(--space-fluid-m);width:34%;aspect-ratio:1/1;border:var(--bw) solid var(--brand-navy);box-shadow:var(--sh) var(--sh) 0 var(--accent);background:var(--surface-3)}
+}
+
+/* ---------------------------------------------------------------- 2. popular learning paths (notched navy band) */
+html:not(.static) .page>.e-paths{background:var(--fill-inverse);color:var(--on-inverse);clip-path:polygon(clamp(40px,6vw,72px) 0,100% 0,100% 100%,0 100%,0 clamp(40px,6vw,72px))}
+html:not(.static) .page>.e-paths::before{content:"";position:absolute;left:0;top:0;width:clamp(40px,6vw,72px);height:clamp(40px,6vw,72px);background:linear-gradient(135deg,transparent 50%,var(--accent) 50%,var(--accent) calc(50% + 10px),transparent calc(50% + 10px))}
+html:not(.static) .page .e-paths .e-kick,html:not(.static) .page .e-paths h2,html:not(.static) .page .e-paths .e-all{color:var(--on-inverse)!important}
+html:not(.static) .page .e-paths .e-kick::before{border-color:var(--on-inverse)}
+html:not(.static) .e-paths .e-pcard{box-shadow:var(--sh) var(--sh) 0 var(--accent);border-color:var(--brand-navy)}
+html:not(.static) .page .e92 .e-chip{display:grid;place-items:center;width:48px;height:48px;border:var(--bw) solid var(--brand-navy);background:var(--accent);color:var(--on-accent);margin-bottom:var(--s-1)}
+html:not(.static) .page .e92 .e-chip.cy{background:var(--accent-2);color:var(--on-accent-2)}
+html:not(.static) .page .e92 .e-chip svg{width:26px;height:26px}
+
+/* ---------------------------------------------------------------- 3. impact stats */
+html:not(.static) .e92 .e-stat{align-items:flex-start;gap:var(--s-1)}
+html:not(.static) .page .e92 .e-avs{display:flex;margin-bottom:var(--s-3)}
+html:not(.static) .page .e92 .e-avs i{display:grid;place-items:center;width:32px;height:32px;margin-left:-8px;border-radius:50%;font-style:normal;font-size:12px!important;font-weight:700;letter-spacing:.02em;border:var(--bw) solid var(--surface-1);background:var(--accent);color:var(--on-accent)}
+html:not(.static) .page .e92 .e-avs i:first-child{margin-left:0}
+html:not(.static) .page .e92 .e-avs i:nth-child(2){background:var(--accent-2);color:var(--on-accent-2)}
+html:not(.static) .page .e92 .e-avs i:nth-child(3){background:var(--brand-navy);color:#fff}
+html:not(.static) .page .e92 .e-avs i:nth-child(4){background:var(--surface-3);color:var(--text)}
+html:not(.static) .page .e92 .e-stat b{font-family:var(--disp);font-weight:400;font-size:var(--step-5)!important;line-height:1;font-variant-numeric:tabular-nums;color:var(--text)}
+html:not(.static) .page .e92 .e-stat .e-lbl{font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+html:not(.static) .e92 .e-stat.inv{background:var(--fill-inverse);color:var(--on-inverse);box-shadow:var(--sh) var(--sh) 0 var(--accent)}
+html:not(.static) .page .e92 .e-stat.inv b{color:var(--accent)}
+html:not(.static) .page .e92 .e-stat.inv .e-lbl{color:var(--on-inverse)}
+html:not(.static) .page .e92 .e-stat.inv .e-avs i{border-color:var(--fill-inverse)}
+html:not(.static) .page .e92 .e-stat.inv .e-avs i:nth-child(3){background:var(--surface-1);color:var(--text)}
+
+/* ---------------------------------------------------------------- 4. free-course wordmark marquee */
+html:not(.static) .page>.e-marq{padding-block:var(--space-fluid-l)}
+html:not(.static) .e-marq .e-marquee{overflow:hidden;border-block:var(--bw) solid var(--border-strong);background:var(--surface-1);padding-block:var(--s-3)}
+html:not(.static) .e-marq .e-track{display:flex;width:max-content;animation:e-marq 38s linear infinite}
+html:not(.static) .e-marq .e-marquee:is(:hover,:focus-within) .e-track{animation-play-state:paused}
+html:not(.static) .e-marq .e-set{display:flex;gap:var(--s-4);margin:0;padding:0 var(--s-4) 0 0;list-style:none}
+html:not(.static) .page .e-marq .e-tag{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--s-4);white-space:nowrap;font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--text);background:var(--surface-1);border:var(--bw) solid var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
+html:not(.static) .page .e-marq .e-tag.or{background:var(--accent);color:var(--on-accent);border-color:var(--brand-navy)}
+html:not(.static) .page .e-marq .e-tag.cy{background:var(--accent-2);color:var(--on-accent-2);border-color:var(--brand-navy)}
+html:not(.static) .page .e-marq .e-tag.inv{background:var(--fill-inverse);color:var(--on-inverse)}
+html:not(.static) .page .e-marq .e-tag:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+@keyframes e-marq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){
+  html:not(.static) .e-marq .e-track{animation:none;width:auto}
+  html:not(.static) .e-marq .e-set{flex-wrap:wrap;padding-left:16px}
+  html:not(.static) .e-marq .e-set[aria-hidden]{display:none}
+}
+html.lite .e-marq .e-track{animation:none!important;width:auto!important}
+html.lite .e-marq .e-set{flex-wrap:wrap;padding-left:16px!important}
+html.lite .e-marq .e-set[aria-hidden]{display:none!important}
+
+/* ---------------------------------------------------------------- 5. skills strip (stacked tags over a photo, one hand-placed tilt) */
+html:not(.static) .e92 .e-split{display:grid;gap:var(--space-fluid-l);grid-template-columns:minmax(0,1fr);align-items:center}
+@media (min-width:768px){html:not(.static) .e92 .e-split{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}}
+html:not(.static) .e92 .e-copy{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-4)}
+html:not(.static) .e92 .e-shot{position:relative;border:var(--bw) solid var(--border-strong);box-shadow:6px 6px 0 var(--shadow-ink);background:var(--surface-3);overflow:hidden}
+html:not(.static) .e92 .e-shot{aspect-ratio:16/10}
+html:not(.static) .page>.e92 .e-shot img{position:absolute;left:-5%;top:0;display:block;width:140%!important;max-width:none!important;height:auto!important}
+@media (max-width:599px){html:not(.static) .e92 .e-shot{aspect-ratio:1/1}html:not(.static) .page>.e92 .e-shot img{width:160%!important}}
+html:not(.static) .e92 .e-stack{position:absolute;left:var(--s-4);bottom:var(--s-4);display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:0;padding:0;list-style:none}
+html:not(.static) .page .e92 .e-stack li{padding:6px var(--s-3);font-size:var(--step--1)!important;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1.3;background:var(--surface-1);color:var(--text);border:var(--bw) solid var(--brand-navy);box-shadow:3px 3px 0 var(--brand-navy)}
+html:not(.static) .page .e92 .e-stack li.or{background:var(--accent);color:var(--on-accent)}
+html:not(.static) .page .e92 .e-stack li.cy{background:var(--accent-2);color:var(--on-accent-2)}
+html:not(.static) .page .e92 .e-stack li.inv{background:var(--brand-navy);color:#fff}
+html:not(.static) .page .e92 .e-stack li:nth-child(3){transform:rotate(-4deg);transform-origin:0 50%;margin-block:4px}
+
+/* ---------------------------------------------------------------- 6. latest updates */
+html:not(.static) .page .e92 .e-date{align-self:flex-start;padding:4px var(--s-2);background:var(--surface-3);color:var(--text);border:var(--bw) solid var(--border-strong);font-size:var(--step--2)!important;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+@media (min-width:600px){html:not(.static) .e92 .e-ncard{min-height:180px}}
+
+/* ---------------------------------------------------------------- 7. final CTA (bookends the hero) */
+html:not(.static) .e92 .e-fbox{display:grid;grid-template-columns:minmax(0,1fr);border:var(--bw) solid var(--border-strong);box-shadow:6px 6px 0 var(--accent);background:var(--fill-inverse);color:var(--on-inverse)}
+@media (min-width:768px){html:not(.static) .e92 .e-fbox{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+html:not(.static) .page>.e92 .e-fbox img{display:block;width:100%!important;height:100%!important;min-height:220px;max-height:440px;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%;border-bottom:var(--bw) solid var(--border-strong)}
+@media (min-width:768px){html:not(.static) .page>.e92 .e-fbox img{border-bottom:0;border-right:var(--bw) solid var(--border-strong)}}
+html:not(.static) .e92 .e-fcopy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:var(--s-4);padding:var(--space-fluid-l)}
+html:not(.static) .page .e92 .e-fcopy .e-kick,html:not(.static) .page .e92 .e-fcopy h2{color:var(--on-inverse)!important}
+html:not(.static) .page .e92 .e-fcopy .e-kick::before{border-color:var(--on-inverse)}
+html:not(.static) .page .e92 .e-fcopy h2{font-size:var(--step-5)!important}
+html:not(.static) .page .e92 .e-fcopy p{color:var(--ink-inv-muted,#B9C1DA)}
+html:not(.static) .e92 .e-row{display:flex;flex-wrap:wrap;gap:var(--s-4);margin-top:var(--s-2)}
+
+/* ---------------------------------------------------------------- 8a. current page in the nav: a brand underline bar */
+html:not(.static) .shell .topbar .top-links a[aria-current=page]{color:#fff;border-bottom:3px solid var(--sh-or,var(--accent))}
+html:not(.static) .hdr nav a[aria-current=page]{color:#fff}
+
+/* ---------------------------------------------------------------- 8b. scroll reveal (once; js/era.js adds .rv-on only with motion allowed) */
+html.rv-on:not(.static) .rv{transition:opacity .5s ease var(--rv-d,0ms),transform .5s cubic-bezier(.2,.8,.2,1) var(--rv-d,0ms)}
+html.rv-on:not(.static) .rv:not(.rv-in){opacity:0;transform:translateY(16px)}
+@media (prefers-reduced-motion:reduce){html.rv-on .rv{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* ---------------------------------------------------------------- 8c. hover lift: translate + a bigger hard shadow (hover devices only) */
+@media (hover:hover){
+  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov){transition:translate .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
+  html:not(.static) :is(.e92 .e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.rcard:has(a),.ncard:has(a)):not(.hov):hover{translate:-3px -3px;box-shadow:7px 7px 0 var(--shadow-ink)}
+  html:not(.static) .e92 :is(.e-pcard,.e-stat.inv):hover{box-shadow:7px 7px 0 var(--accent)}
+  html:not(.static) .page .e92 .e-btn:hover,html:not(.static) .page .hcol .hc-stat:hover{translate:-2px -2px;box-shadow:6px 6px 0 var(--accent)}
+  html:not(.static) .page .e92 .e-btn.or:hover{box-shadow:6px 6px 0 var(--on-inverse)}
+  html:not(.static) .page .e92 .e-btn.ghost:hover{box-shadow:4px 4px 0 var(--accent)}
+  html:not(.static) .page .hcol .hc-stat:hover{box-shadow:7px 7px 0 var(--shadow-ink)}
+  html:not(.static) .page .e-marq .e-tag:hover{translate:-2px -2px;box-shadow:5px 5px 0 var(--shadow-ink)}
+}
+@media (prefers-reduced-motion:reduce){html:not(.static) :is(.e-card,a.card,a.rcard,a.ncard,a.tool,a.lp,a.dz-card,a.qa,a.qa-wide,.e-btn,.e-tag){transition:none!important}}
+
+/* ---------------------------------------------------------------- 8d. stronger footer: big tagline + circular outlined social buttons */
+html:not(.static) .ft-tag{flex:1 0 100%;margin:0 0 var(--s-2);font-family:var(--disp);font-weight:400;font-size:var(--step-4)!important;line-height:1.05;letter-spacing:.01em;text-transform:uppercase;color:#fff;text-wrap:balance;max-width:none!important;position:static!important}
+html:not(.static) .ft-tag b{font-weight:400;color:var(--accent)}
+html:not(.static) .page>.lfoot{flex-wrap:wrap!important;row-gap:var(--s-4)!important}
+html:not(.static) .page .lfoot .ft-tag{font-size:var(--step-5)!important}
+html:not(.static) :is(.flow-foot,.lfoot) .socials{display:flex!important;flex-wrap:wrap;gap:var(--s-3)!important;height:auto!important;align-items:center}
+html:not(.static) .page .lfoot .socials a,html:not(.static) :is(.flow-foot,.lfoot) .socials a{position:static!important;display:grid!important;place-items:center;width:44px!important;height:44px!important;border:var(--bw) solid currentColor;border-radius:50%;color:#fff;transition:background .15s,color .15s,translate .15s}
+html:not(.static) :is(.flow-foot,.lfoot) .socials a svg{width:18px!important;height:18px!important}
+@media (hover:hover){html:not(.static) :is(.flow-foot,.lfoot) .socials a:hover{background:var(--accent);color:var(--brand-navy);border-color:var(--accent);translate:0 -2px}}
+html:not(.static) :is(.flow-foot,.lfoot) .socials a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}

@@ -52,7 +52,7 @@ def scripts(charts=False):
     tags = ['<script src="js/data.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
-    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/ads.js" defer></script>']
+    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>']
     return '\n'.join(tags)
 
 # Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
@@ -94,7 +94,7 @@ def sidebar(a):
 </div>
 <div class="sb-scrim" data-sb-scrim hidden></div>'''
 
-def topbar(a):
+def topbar(a, page=''):
     """Navy top bar. The account area is a skeleton until js/auth.js resolves the session: no hard-coded names."""
     roles = ''.join(f'<a role="menuitem" href="{h}">{r}</a>' for r, h in [("Learner", "dashboard.html"), ("Tutor", "tutor.html"), ("Admin", "admin.html")])
     name = a.get('name', 'Guest')  # default display name (ui/pages); the live account chip is filled by js/auth.js
@@ -102,7 +102,7 @@ def topbar(a):
   <button type="button" class="tb-nav" data-sb-open aria-controls="sbar" aria-expanded="false" aria-label="Open menu"><svg class="ic-menu" aria-hidden="true"><use href="#i-menu"/></svg><svg class="ic-panel" aria-hidden="true"><use href="#i-panel"/></svg></button>
   <a class="tb-brand" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="50" height="28"><b>101 Codecrafts</b><span class="sr-only">home</span></a>
   <label class="tb-search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Search</span><input type="search" placeholder="Search courses, projects, people…"><kbd aria-hidden="true">/</kbd></label>
-  <nav class="top-links" aria-label="Quick links"><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a></nav>
+  <nav class="top-links" aria-label="Quick links">{''.join(f'<a href="{h}"{" aria-current=page" if h == page else ""}>{t}</a>' for t, h in [("News", "news.html"), ("Opportunities", "opportunities.html"), ("Events", "events.html")])}</nav>
   <span class="sp"></span>
   <button type="button" class="ib tb-search-btn" data-search aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
   <a class="ib tb-bell" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
@@ -123,6 +123,7 @@ def topbar(a):
 </header>'''
 
 FOOTER = '''<footer class="flow-foot">
+  <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
   <span>© 2025 101 Codecrafts. All rights reserved.</span>
   <nav aria-label="Footer"><a href="index.html">Home</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
   <div class="socials" data-socials><a href="#" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a><a href="#" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a><a href="#" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a><a href="#" aria-label="X"><svg><use href="#i-x"/></svg></a><a href="#" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a><a href="#" aria-label="Discord"><svg><use href="#i-discord"/></svg></a></div>
@@ -135,9 +136,9 @@ def bundle(name, parts):
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
 bundle('bundle-theme.css', ['theme-dark.css', 'theme.css'])   # loaded LAST on every page (see THEME_LINK)
-bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css'])
-bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css'])
-bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css'])
+bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
     'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',
@@ -170,7 +171,7 @@ for f in (root / 'src').glob('*.html'):
     s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts)).replace('{{FOOTER}}', FOOTER)
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
-    s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1))), s)
+    s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1)), name), s)
     if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')

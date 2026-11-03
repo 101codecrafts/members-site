@@ -124,8 +124,31 @@ out=[B,'@media (min-width:1024px){',
  f'html:not(.static) .tit-head h2{{font-size:var(--step-4)!important}}',
  f'html:not(.static) .tit-cards{{grid-template-columns:repeat(3,minmax(0,1fr))!important}}',
 ]
+# ---- era92 polish (ui/era92-polish): the map above is keyed by the ORIGINAL child numbers; new children shift it.
+#  inserted: .hcol after the launch tile (old 19), section.e-paths after the old path cards (old 48), four sections
+#  (.e-stats .e-marq .e-skills .e-news) after the testimonials (old 55). The old FIND YOUR PATH block (old 38-48) and the
+#  old CTA bar (old 56) carry data-legacy and are hidden in the live site (the new sections replace them); ?static=1 keeps them.
+#  Rows: the hidden path rows 17-21 are reused (e-paths = 17), every old row >= 22 moves up by 4.
+def newn(o): return o if o < 20 else o + 1 if o < 49 else o + 2 if o <= 55 else o + 6
+def newrow(r):
+    if r in ('auto', '1/-1'): return r
+    return '/'.join(str(int(x) - 4) if int(x) >= 22 else x for x in r.split('/'))
+HIDE = set(range(38, 49)) | {56, 57, 58}   # 57/58 (tit, footer) are placed by class below
 for n,(col,row,extra) in sorted(place.items()):
-    out.append(f'{P}>:nth-child({n}){{grid-column:{col};grid-row:{row};{extra}}}')
+    if n in HIDE: continue
+    out.append(f'{P}>:nth-child({newn(n)}){{grid-column:{col};grid-row:{newrow(row)};{extra}}}')
+out+=[
+ f'{P}>[data-legacy]{{display:none!important}}',
+ f'{P}>.hcol{{grid-column:{c(7,12)};grid-row:2/7;align-self:stretch;margin-top:var(--space-fluid-l)!important;z-index:2;pointer-events:none}}',
+ f'{P}>.e-paths{{grid-column:{FULL};grid-row:17;margin-top:var(--space-fluid-xl)!important}}',
+ f'{P}>.e-stats{{grid-column:{FULL};grid-row:22}}',
+ f'{P}>.e-marq{{grid-column:{FULL};grid-row:23}}',
+ f'{P}>.e-skills{{grid-column:{FULL};grid-row:24}}',
+ f'{P}>.e-news{{grid-column:{FULL};grid-row:25}}',
+ f'{P}>.tit{{grid-column:{FULL};grid-row:26;margin-top:var(--space-fluid-xl)!important}}',
+ f'{P}>.e-final{{grid-column:{FULL};grid-row:27}}',
+ f'{P}>.lfoot{{grid-column:{FULL};grid-row:28}}',
+]
 out+=[
  # photo: fills its grid area without driving the row heights (height 0 + min-height of the area minus its top inset), crop without the mockup's white bleed
  f'{P}>img.heavy-hero{{width:100%!important;height:0!important;min-height:calc(100% - var(--space-fluid-l));box-sizing:border-box;object-fit:cover;object-position:50% 58%;content:url(../assets/img/landing-hero-photo-crop.webp);border:var(--border);box-shadow:var(--shadow)}}',
