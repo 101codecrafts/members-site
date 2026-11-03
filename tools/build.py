@@ -62,7 +62,7 @@ def scripts(charts=False):
     tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
-    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>']
+    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>', '<script src="js/ai.js" defer></script>']   # ai.js: 101 AI floating assistant loader (round 7)
     return '\n'.join(tags)
 
 # Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
