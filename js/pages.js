@@ -37,8 +37,14 @@
       const P = D.providers, ACC = ["Free", "Free audit", "Free trial", "Free until", "Financial aid"];
       const st = { q: "", cat: "", prov: "", acc: "", level: "" };
       const prov = k => P[k] || { name: "Other", short: "↗", bg: "#0B1236", fg: "#fff" };
-      const fmtDate = iso => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-      const left = iso => { const ms = Date.parse(iso) - Date.now(); if (ms <= 0) return "Offer ended"; const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `${d}d ${h}h ${m}m left`; };
+      /* offer end dates are stored in EAT (+03:00); show them on the Kampala calendar so the day never shifts */
+      const fmtDate = (iso, year) => { try { return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: year ? "numeric" : undefined, timeZone: "Africa/Kampala" }); } catch (e) { return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: year ? "numeric" : undefined }); } };
+      const parts = iso => { const ms = Date.parse(iso) - Date.now(); return ms <= 0 ? null : { d: Math.floor(ms / 864e5), h: Math.floor(ms % 864e5 / 36e5), m: Math.floor(ms % 36e5 / 6e4) }; };
+      const pl = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+      /* visual: "13d 06h 15m" (tabular, fixed width) · spoken: "13 days 6 hours left" (minutes only in the last day) */
+      const cdVis = t => t ? `${t.d}d ${String(t.h).padStart(2, "0")}h ${String(t.m).padStart(2, "0")}m` : "Ended";
+      const cdSay = t => !t ? "Offer ended" : (t.d ? `${pl(t.d, "day")} ${pl(t.h, "hour")} left` : `${pl(t.h, "hour")} ${pl(t.m, "minute")} left`);
+      const URGENT = 7 * 864e5;
       const accLabel = x => x.access === "Free until" && x.free_until ? `Free until ${fmtDate(x.free_until)}` : x.access;
       const accCls = a => ({ "Free": "a-free", "Free audit": "a-audit", "Free trial": "a-trial", "Free until": "a-until", "Financial aid": "a-aid" }[a] || "a-free");
       const stars = r => `<span class="rating" aria-label="Rated ${r} out of 5">${ico("star")}<b>${r.toFixed(1)}</b></span>`;
@@ -49,21 +55,24 @@
           <div class="row">${levelBadge(c.level)}${stars(c.rating)}<small>(${c.reviews})</small></div>
           <div class="meta"><span>${esc(c.category)}</span><span>${c.lessons} lessons</span></div>
           <span class="open ck-foot" aria-hidden="true">Start learning →</span></div></article>`;
-      const extCard = x => { const p = prov(x.provider);
+      /* external course card = the card system's fixed anatomy: media (16:9, access badge) → title (the one stretched link)
+         → provider → short description (3 lines) → level / certificate badges → optional end date → action pinned to the bottom */
+      const extCard = x => { const p = prov(x.provider), until = x.free_until && Date.parse(x.free_until) > Date.now();
         return `<article class="ccard ext ck ck--flush" data-id="${esc(x.id)}">
         ${cover(x.cover || `assets/img/courses/${x.provider}.svg`, p.name, p.bg)}<span class="acc ${accCls(x.access)}">${esc(accLabel(x))}</span></div>
-        <a class="btn or cbtn" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(x.title)} on ${esc(p.name)} (opens in a new tab)">Open on ${esc(p.name)} ↗</a>
-        <div class="cbody"><h3 class="ck-title">${esc(x.title)}</h3>
+        <div class="cbody"><h3 class="ck-title"><a class="ck-link" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer">${esc(x.title)}<span class="sr-only"> on ${esc(p.name)} (opens in a new tab)</span></a></h3>
           <div class="prov"><span class="pmark" style="background:${p.bg};color:${p.fg}" aria-hidden="true">${esc(p.short)}</span><span>${esc(p.name)}</span></div>
-          <p class="ck-body">${esc(x.desc || "")}</p>
-          <div class="row">${levelBadge(x.level)}${x.certFree ? `<span class="cert">${ico("check")}Certificate free</span>` : ""}${x.aid && x.access !== "Financial aid" ? `<span class="aidc">Financial aid</span>` : ""}</div>
-          ${x.free_until ? `<div class="cdm"><b data-until="${esc(x.free_until)}">${left(x.free_until)}</b>${x.free_until_status === "TODO-CONFIRM" ? `<small>Date to be confirmed</small>` : ""}</div>` : ""}
+          ${x.desc ? `<p class="ck-body">${esc(x.desc)}</p>` : ""}
+          <div class="row cbadges">${levelBadge(x.level)}${x.certFree ? `<span class="cert">${ico("check")}Certificate free</span>` : ""}${x.aid && x.access !== "Financial aid" ? `<span class="aidc">Financial aid</span>` : ""}</div>
+          ${until ? `<p class="cdm">Free until <b class="nw">${esc(fmtDate(x.free_until, true))}</b>${x.free_until_status === "TODO-CONFIRM" ? ` <span class="nw">· <abbr title="Date to be confirmed">TBC</abbr></span>` : ""}</p>` : ""}
+          <span class="ck-foot cgo" aria-hidden="true">Open on ${esc(p.name)} ↗</span>
         </div></article>`; };
       window.CC_UI.extCourseCard = extCard;
       /* filters */
       $("#cf-cat").innerHTML = `<option value="">All categories</option>` + D.categories.map(c => `<option>${esc(c)}</option>`).join("");
       $("#cf-prov").innerHTML = `<option value="">All providers</option><option value="101">101 Codecrafts</option>` + Object.entries(P).map(([k, p]) => `<option value="${k}">${esc(p.name)}</option>`).join("");
       $("#cf-acc").innerHTML = `<option value="">Any access</option>` + ACC.map(a => `<option>${a}</option>`).join("");
+      ["#cf-q", "#cf-cat", "#cf-prov", "#cf-acc"].forEach(s => { $(s).autocomplete = "off"; $(s).value = ""; });
       const hit = (s) => !st.q || s.toLowerCase().includes(st.q);
       /* ?path=<slug> (landing "Popular learning paths") and ?skill=<slug> (landing skills strip): a topic filter = categories
          plus a keyword test on title/description. When it matches nothing, every card shows and the chip says so. */
@@ -107,27 +116,58 @@
         let [a, b] = run(true), none = false;
         if (st.topic && !a.length && !b.length) { [a, b] = run(false); none = true; }
         if (tKind) paintChip(none);
-        $("#g101").innerHTML = a.map(card101).join("") || `<p class="muted empty">No 101 courses match these filters.</p>`;
-        $("#gfree").innerHTML = b.map(extCard).join("") || `<p class="muted empty">No free courses match these filters.</p>`;
-        $("#n101").textContent = a.length + " of " + c101.length; $("#nfree").textContent = b.length + " of " + ext.length;
+        const why = st.topic && !none ? ` for ${esc(st.topic.label)}` : " for these filters";
+        const empty = (what, total) => `<div class="cempty"><p><b>No ${what}${why} yet.</b> ${total} ${what} in total.</p><button type="button" class="btn" data-reset>Show all ${what}</button></div>`;
+        $("#g101").innerHTML = a.map(card101).join("") || empty("101 courses", c101.length);
+        $("#gfree").innerHTML = b.map(extCard).join("") || empty("free courses", ext.length);
+        /* "7 courses" when nothing filters the list, "Showing 3 of 7" when something does */
+        const count = (n, total) => n === total ? pl(total, "course") : `Showing ${n} of ${total}`;
+        $("#n101").textContent = count(a.length, c101.length); $("#nfree").textContent = count(b.length, ext.length);
+        $$("#n101,#nfree").forEach(el => el.classList.toggle("is-filtered", !/course/.test(el.textContent)));
       };
+      /* "Show all": clears every filter (search, selects, level chips, ?path/?skill) */
+      const resetAll = () => {
+        Object.assign(st, { q: "", cat: "", prov: "", acc: "", level: "" }); ["#cf-q", "#cf-cat", "#cf-prov", "#cf-acc"].forEach(s => { $(s).value = ""; });
+        $$("[data-lv]").forEach(x => x.setAttribute("aria-pressed", x.dataset.lv === ""));
+        if (tKind) { const x = $(".tchip-x", chip); if (x) return x.click(); }
+        draw();
+      };
+      $("#main").addEventListener("click", e => { if (e.target.closest("[data-reset]")) { resetAll(); const h = $("#h101"); if (h) h.closest("section").scrollIntoView({ block: "start" }); } });
       const on = (sel, k) => $(sel).addEventListener(sel === "#cf-q" ? "input" : "change", e => { st[k] = k === "q" ? e.target.value.trim().toLowerCase() : e.target.value; draw(); });
       on("#cf-q", "q"); on("#cf-cat", "cat"); on("#cf-prov", "prov"); on("#cf-acc", "acc");
       if (q.get("q")) { $("#cf-q").value = q.get("q"); st.q = q.get("q").toLowerCase(); }
-      /* expiring soon: limited-time free offers ending within 60 days, soonest first (not affected by filters) */
+      /* expiring soon: limited-time free offers ending within 60 days, soonest first (not affected by filters).
+         Card: provider badge (eyebrow) → title (2 lines, the one stretched link) → "Free until 16 Nov 2026 · TBC" → countdown block.
+         Under 7 days the card says "Ends soon" in words as well as turning orange. Ended offers remove themselves. */
+      const expCard = x => { const p = prov(x.provider), t = parts(x.free_until), urgent = Date.parse(x.free_until) - Date.now() < URGENT;
+        return `<li class="xp-li"><article class="ck ck--inv xp${urgent ? " is-urgent" : ""}" data-exp="${esc(x.free_until)}">
+          <div class="ck-eyebrow xp-eye"><span class="pmark" style="background:${p.bg};color:${p.fg}" aria-hidden="true">${esc(p.short)}</span><span class="xp-prov">${esc(p.name)}</span><span class="xp-flag"${urgent ? "" : " hidden"}>Ends soon</span></div>
+          <h4 class="ck-title xp-title"><a class="ck-link" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer">${esc(x.title)}<span class="sr-only"> on ${esc(p.name)} (opens in a new tab)</span></a></h4>
+          <p class="ck-meta xp-meta">Free until <span class="nw">${esc(fmtDate(x.free_until, true))}</span>${x.free_until_status === "TODO-CONFIRM" ? ` <span class="nw">· <abbr title="Date to be confirmed">TBC</abbr></span>` : ""}</p>
+          <p class="xp-cd"><span class="xp-lbl" aria-hidden="true">Time left</span><span class="xp-num" aria-hidden="true">${cdVis(t)}</span><span class="sr-only">${cdSay(t)}</span></p>
+          <span class="ck-foot xp-go" aria-hidden="true">Open on ${esc(p.name)} ↗</span>
+        </article></li>`; };
       const soon = ext.filter(x => x.free_until && Date.parse(x.free_until) > Date.now() && Date.parse(x.free_until) - Date.now() < 60 * 864e5).sort((x, y) => Date.parse(x.free_until) - Date.parse(y.free_until));
-      if (soon.length) { $("#expiring").hidden = false;
-        $("#exp-row").innerHTML = soon.map(x => { const p = prov(x.provider); return `<a class="exp hov" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(x.title)} on ${esc(p.name)}, free until ${fmtDate(x.free_until)} (opens in a new tab)">
-          <span class="pmark" style="background:${p.bg};color:${p.fg}" aria-hidden="true">${esc(p.short)}</span><span class="grow"><b>${esc(x.title)}</b><small>${esc(p.name)} · free until ${fmtDate(x.free_until)}${x.free_until_status === "TODO-CONFIRM" ? " (TBC)" : ""}</small></span>
-          <span class="cdx" data-until="${esc(x.free_until)}">${left(x.free_until)}</span></a>`; }).join(""); }
-      setInterval(() => $$("[data-until]").forEach(el => el.textContent = left(el.dataset.until)), 30000);
+      const expBox = $("#expiring"), expRow = $("#exp-row");
+      if (soon.length) { expBox.hidden = false; expRow.innerHTML = soon.map(expCard).join(""); expRow.dataset.n = soon.length; }
+      /* one update a minute, on the minute; nothing ticks under ?static=1 or reduced motion (the first paint stays) */
+      const tick = () => {
+        $$("[data-exp]", expRow).forEach(card => { const iso = card.dataset.exp, t = parts(iso);
+          if (!t) { card.closest("li").remove(); return; }
+          const urgent = Date.parse(iso) - Date.now() < URGENT; card.classList.toggle("is-urgent", urgent); $(".xp-flag", card).hidden = !urgent;
+          $(".xp-num", card).textContent = cdVis(t); $(".sr-only", $(".xp-cd", card)).textContent = cdSay(t); });
+        const n = expRow.children.length; expRow.dataset.n = n; if (!n) expBox.hidden = true;
+      };
+      const calm = STATIC || matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (soon.length && !calm) setTimeout(() => { tick(); setInterval(tick, 6e4); }, 6e4 - Date.now() % 6e4 + 50);
       levelChips(l => { st.level = l; draw(); }); draw();
       /* tutor/admin: add an external course by link → preview → submit for review */
       const f = $("#xc-edit"); let draft = null;
       f.provider.innerHTML = Object.entries(P).map(([k, p]) => `<option value="${k}">${esc(p.name)}</option>`).join("") + `<option value="other">Other</option>`;
       f.level.innerHTML = D.levels.map(l => `<option>${l}</option>`).join(""); f.category.innerHTML = D.categories.map(c => `<option>${esc(c)}</option>`).join(""); f.access.innerHTML = ACC.map(a => `<option>${a}</option>`).join("");
-      const sync = () => { Object.assign(draft, { title: f.title.value, provider: f.provider.value, level: f.level.value, category: f.category.value, access: f.access.value, desc: f.desc.value, certFree: f.certFree.checked, free_until: f.free_until.value ? f.free_until.value + "T23:59:00+03:00" : "", free_until_status: f.free_until.value ? "TODO-CONFIRM" : "" }); $("#xc-card").innerHTML = extCard(draft); };
-      $("#xc-form").onsubmit = async e => { e.preventDefault(); const url = $("#xc-url").value.trim(); let u; try { u = new URL(url); } catch (err) { $("#xc-msg").textContent = "That doesn't look like a full link (https://…)."; return; }
+      const sync = () => { Object.assign(draft, { title: f.title.value, provider: f.provider.value, level: f.level.value, category: f.category.value, access: f.access.value, desc: f.desc.value, certFree: f.certFree.checked, free_until: f.free_until.value ? f.free_until.value + "T23:59:00+03:00" : "", free_until_status: f.free_until.value ? "TODO-CONFIRM" : "" }); $("#xc-card").innerHTML = extCard(draft); $("#xc-card").inert = true; };
+      $("#xc-form").onsubmit = async e => { e.preventDefault(); const url = $("#xc-url").value.trim(); let u; try { u = new URL(url); } catch (err) { $("#xc-urlmsg").textContent = "That doesn't look like a full link (https://…)."; return; }
+        $("#xc-urlmsg").textContent = "";
         draft = { ...(await API.unfurlExternalCourse(u.href)), url: u.href, id: "x-draft-" + Date.now().toString(36) };
         ["title", "provider", "level", "category", "access", "desc"].forEach(k => { if (draft[k] != null) f[k].value = draft[k]; }); f.certFree.checked = !!draft.certFree;
         $("#xc-out").hidden = false; $("#xc-msg").textContent = ""; sync(); };
