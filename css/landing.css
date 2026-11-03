@@ -255,8 +255,8 @@ html:not(.static) .page>.cta>a{grid-column:3;grid-row:1/3;width:auto!important;h
 html:not(.static) .page>.lfoot{padding:var(--space-fluid-m) max(var(--space-fluid-l),calc((100% - 12 * 84px - 11 * var(--space-fluid-m)) / 2))!important;align-items:center;column-gap:var(--space-fluid-m)!important}
 html:not(.static) .page>.lfoot,html:not(.static) .page>.lfoot a,html:not(.static) .page>.lfoot span{font-size:var(--step--1)!important}
 html:not(.static) .page>.lfoot .socials{width:auto!important;margin-left:auto}
-html:not(.static) .page>.feat:nth-child(n+27){padding-left:var(--space-fluid-s)!important}
-html:not(.static) .page>.feat:nth-child(n+27) .ib{position:static!important;margin-bottom:var(--space-fluid-2xs)}
+html:not(.static) .page>.feat:nth-child(n+28){padding-left:var(--space-fluid-s)!important}
+html:not(.static) .page>.feat:nth-child(n+28) .ib{position:static!important;margin-bottom:var(--space-fluid-2xs)}
 html:not(.static) .page .feat h3{overflow-wrap:normal;hyphens:manual}
 html:not(.static) .page .comm .about-p{line-height:1.5!important}
 html:not(.static) .page .comm p br{display:none!important}
