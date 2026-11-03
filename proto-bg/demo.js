@@ -1,0 +1,1 @@
+var g = document.getElementById("g"); for (var i = 1; i <= 24; i++) { var k = document.createElement("article"); k.className = "k"; k.innerHTML = "<h3>Card " + i + "</h3><p>Body text sits on an opaque card; the background never sits under text inside cards.</p>"; g.appendChild(k); }

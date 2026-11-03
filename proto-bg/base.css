@@ -1,0 +1,21 @@
+/* layer + page-wrapper transparency (shared by all prototypes) */
+#ccbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:strict;background-color:var(--color-page)}
+html:has(#main.page) #ccbg{background-color:var(--color-page-landing)}
+html:has(.app.dz) #ccbg{background-color:var(--surface-alt)}
+html.bg-on:not(.static) body,html.bg-on:not(.static) body.flow,html.bg-on:not(.static) body .page,html.bg-on:not(.static) body .app.dz{background:transparent!important}
+#ccbg canvas{position:absolute;inset:0;width:100%;height:100%}
+.ccbg-grid{position:absolute;inset:0;
+ background:
+  radial-gradient(120% 22% at 50% 100%,var(--bgl-glow),transparent 70%),
+  linear-gradient(90deg,var(--bgl-major) 1px,transparent 1px) 0 0/216px 216px,
+  linear-gradient(var(--bgl-major) 1px,transparent 1px) 0 0/216px 216px,
+  linear-gradient(90deg,var(--bgl-grid) 1px,transparent 1px) 0 0/54px 54px,
+  linear-gradient(var(--bgl-grid) 1px,transparent 1px) 0 0/54px 54px}
+#ccbg{--bgl-grid:rgba(11,18,54,.05);--bgl-major:rgba(11,18,54,.085);--bgl-glow:rgba(0,122,153,.06)}
+[data-theme=dark] #ccbg{--bgl-grid:rgba(150,205,255,.065);--bgl-major:rgba(150,205,255,.11);--bgl-glow:rgba(5,230,242,.10)}
+.ccbg-x{position:absolute;width:13px;height:13px;margin:-6px 0 0 -6px;background:linear-gradient(currentColor,currentColor) 50%/100% 1px no-repeat,linear-gradient(currentColor,currentColor) 50%/1px 100% no-repeat}
+.ccbg-gl{position:absolute;left:0;top:0;width:100%;height:200%;will-change:transform;animation:ccbg-up var(--d,180s) linear infinite}
+.ccbg-gl span{position:absolute;font-family:"CC Mono",monospace;line-height:1;white-space:pre}
+@keyframes ccbg-up{to{transform:translate3d(0,-50%,0)}}
+html.bg-paused .ccbg-gl{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.ccbg-gl{animation:none}}
