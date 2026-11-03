@@ -23,9 +23,7 @@ body.solo{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-directio
 .slab p{margin:0 0 12px;max-width:52ch}
 .slab .lead{font-size:var(--step-1);color:var(--color-muted)}
 .slab-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
-.slab-actions .btn{min-height:48px;padding:0 22px;font-size:var(--step-0);text-transform:uppercase;letter-spacing:.5px;box-shadow:4px 4px 0 var(--ink)}
-.slab-actions .btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
-.slab-actions .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.slab-actions .btn{min-height:48px;padding:0 22px;font-size:var(--step-0)}   /* = .btn.lg (one button system: round5 audit) */
 
 /* 404 */
 .slab.wide{width:min(100%,780px)}
@@ -44,4 +42,4 @@ body.solo{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-directio
 .soon-list li{display:flex;gap:10px;align-items:flex-start}
 .soon-list li::before{content:"";flex:none;width:10px;height:10px;margin-top:.5em;background:var(--or);border:2px solid var(--ink)}
 
-@media (prefers-reduced-motion:reduce){.slab-actions .btn,.slab-actions .btn:hover{transition:none;transform:none}}
+

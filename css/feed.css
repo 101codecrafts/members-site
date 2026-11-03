@@ -38,7 +38,7 @@ body:is([data-page=news],[data-page=opportunities],[data-page=announcements],[da
 .facts dd{margin:0;color:var(--ink)}
 .facts a{color:var(--color-link);font-weight:700}
 .elig{font-size:var(--step--1);color:#26324a}
-.atag{display:inline-block;font:600 var(--step--2) var(--body);border:1px solid var(--ink);padding:1px 6px;background:#f1f4f6;color:var(--ink);margin:0 4px 4px 0}
+.atag{display:inline-block;font:700 var(--step--2) var(--body);border:2px solid var(--ink);padding:2px 8px;background:#f1f4f6;color:var(--ink);margin:0 4px 4px 0}
 .fcd{display:inline-flex;align-items:center;gap:5px;font:700 var(--step--2) var(--body);padding:2px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);margin-left:auto}
 .fcd svg{width:13px;height:13px}
 .fcd.hot{background:var(--color-danger);color:#fff;border-color:var(--color-danger)}
@@ -65,6 +65,16 @@ body:is([data-page=news],[data-page=opportunities],[data-page=announcements],[da
 .ann-banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--color-orange);color:var(--ink);border:2px solid var(--ink);padding:10px 14px;box-shadow:var(--shadow-brutal-sm)}
 .ann-banner p{flex:1;min-width:220px;font-size:var(--step-0)}.ann-banner p span{font-weight:500}
 .ab-ic svg{width:24px;height:24px}
+/* round5 audit: the pinned banner has one fixed height at >=1024px and its space is reserved by .ann-slot (src pages) before
+   js/feed.js fills it -> no layout shift; html.ann-off (EARLY script: the member hid a pin) releases the reservation */
+:root{--ann-h:72px}
+.ann-slot{display:none}
+@media (min-width:1024px){
+  html:not(.static):not(.ann-off) .ann-slot{display:block;height:var(--ann-h)}
+  html:not(.static) .ann-banner{box-sizing:border-box;height:var(--ann-h);flex-wrap:nowrap;overflow:hidden;padding-block:0}
+  html:not(.static) .ann-banner p{min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.35}
+  html:not(.static) .ann-banner .btn{flex:none}
+}
 body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:none;border-width:0 0 2px}
 .bell-btn{position:relative;display:inline-grid;place-items:center;width:44px;height:44px;border:0;background:transparent;color:var(--ink);cursor:pointer}
 .bell-btn svg{width:22px;height:22px}
@@ -148,7 +158,7 @@ body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:
   .page-h .row{width:100%}
 }
 @media (max-width:400px){.ftab{padding:0 10px;font-size:var(--step--2)}.fc-act .btn{flex:1 1 auto}}
-.isave{display:inline-grid;place-items:center;width:40px;height:40px;margin:-6px -6px -6px auto;border:2px solid transparent;background:transparent;color:var(--ink);cursor:pointer}
+.isave{display:inline-grid;place-items:center;width:44px;height:44px;margin:-8px -8px -8px auto;border:2px solid transparent;background:transparent;color:var(--ink);cursor:pointer}
 .fcd+.isave{margin-left:4px}
 .isave svg{width:20px;height:20px}
 .isave:hover{border-color:var(--ink)}

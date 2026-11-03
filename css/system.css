@@ -99,7 +99,7 @@ html:not(.static) .app.dz .tool .ib{grid-area:ib;width:40px!important;height:40p
 html:not(.static) .app.dz .tool .ib svg{width:22px;height:22px}
 html:not(.static) .app.dz .tool h3{grid-area:t;margin-top:var(--s-1)!important;font-size:var(--step-0)!important;font-weight:700!important;line-height:1.25!important;color:var(--ink-inv)}
 html:not(.static) .app.dz .tool p{grid-area:p;font-size:var(--step--1)!important;line-height:1.4!important;color:var(--ink-inv-muted)!important}
-html:not(.static) .app.dz .tool .tag{grid-area:tag;max-width:100%;justify-self:start;align-self:center;margin-top:var(--s-2)!important;padding:2px var(--s-2)!important;height:auto!important;font-size:var(--step--2)!important;line-height:1.4!important;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-inv)!important;background:transparent!important;border:1px solid var(--ink-inv-muted)!important;border-radius:0!important}
+html:not(.static) .app.dz .tool .tag{grid-area:tag;max-width:100%;justify-self:start;align-self:center;margin-top:var(--s-2)!important;padding:2px var(--s-2)!important;height:auto!important;font-size:var(--step--2)!important;line-height:1.4!important;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-inv)!important;background:transparent!important;border:var(--bw) solid var(--ink-inv-muted)!important;border-radius:0!important}
 html:not(.static) .app.dz .tool .go{grid-area:go;align-self:center;margin-top:var(--s-2)!important;width:20px!important;height:20px!important;color:var(--accent)!important}
 
 /* path card (light surface, colour carried by an accent edge + icon chip, not a full fill) */
@@ -456,3 +456,42 @@ html:not(.static) .page>.tit{margin-top:var(--s-8)!important}
 
 /* integrate3: the IDE toolbar wraps only when its pane is too narrow for one row (problem@1024: the right pane is 380px and "Debug with 101 AI" spilled 2px off-screen) */
 html:not(.static) .ed-bar{flex-wrap:wrap;row-gap:var(--s-1)}
+
+/* ---------------------------------------------------------------- round5 audit (ui/consistency): shared components
+   one empty state: every list / grid that comes back empty shows the same dashed panel (card-system --empty look) */
+html:not(.static) :is(.empty-state,.mk-empty),html:not(.static) body:not([data-page=courses]) p.muted.empty{grid-column:1/-1;display:grid;gap:var(--s-3);justify-items:start;align-content:start;margin:0;padding:var(--s-6) var(--pad-card);border:var(--bw) dashed var(--border-strong);background:var(--surface-2);color:var(--text-muted);text-align:left;box-shadow:none;max-width:none}
+html:not(.static) .mk-empty h3{margin:0}
+html:not(.static) :is(.empty-state,.mk-empty) p{margin:0;max-width:60ch}
+/* form fields: one height (44px) for every single-line control; textareas keep their rows */
+html:not(.static) .field>:is(input:not([type=checkbox],[type=radio],[type=range]),select){box-sizing:border-box;height:var(--tap);min-height:var(--tap)}
+html:not(.static) .field>input[type=file]{padding-block:0;line-height:calc(var(--tap) - 2 * var(--bw))}
+html:not(.static) :is(.mk-sort select,.pi-qty input,.qty input,input[type=number]):not(.field>*){min-height:var(--tap)}
+/* every native control uses the site fonts (buttons/inputs without a font rule rendered in Arial 13.3px) */
+:where(html:not(.static)) :where(button,input,select,textarea){font-family:inherit}
+/* "view all" / "see all" links: 44px tall targets */
+html:not(.static) :is(.viewall,.mk-more){display:inline-flex;align-items:center;min-height:var(--tap)}
+/* flow pages (legal, style guide): the reading column is centred on wide screens like every other page's container */
+html:not(.static) body.flow>main.content>.prose{width:100%;margin-inline:auto}
+html:not(.static) body.flow .prose>h1.page-h{font:400 var(--step-4)/1.05 var(--disp);margin:0 0 var(--s-2)}
+/* dashboard >=1100px: "Today in tech" moves up into the right rail under Upcoming events, so the rail no longer ends ~800px
+   above the main column (empty column beside paths/activity); "From the library" spans the full width below; the footer ends the page */
+@media (min-width:1100px){
+  html:not(.static) body .app.dz>.below{display:contents!important}
+  html:not(.static) body .app.dz>.dz-main{grid-row:2/span 2}
+  html:not(.static) body .app.dz>.below>.fwidget{grid-column:2;grid-row:3;align-self:start;min-width:0}
+  html:not(.static) body .app.dz>.below>.below-col:not(.fwidget){grid-column:1/-1;grid-row:4;min-width:0}
+  html:not(.static) body .app.dz>.foot{grid-row:5}
+}
+html:not(.static) body .app.dz:has(>.foot:last-child){padding-bottom:0!important}
+/* half-empty grids: fixed-count grids get a column count that divides their items (9 resources -> 3 x 3, 6 company sets -> 2 x 3, 6 404 links -> 2 x 3) */
+@media (min-width:1024px){html:not(.static) body[data-page=resources] #res-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  html:not(.static) body[data-page=interview] .agrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:600px){html:not(.static) .e404-links{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* layout shift (CLS) at >=1024: space for content that scripts insert above the fold is reserved before first paint */
+html:not(.static) .shell>.main>.content{min-height:calc(100dvh - var(--tb-h,60px))}   /* the footer starts below the fold, so filling the lists never pushes it */
+html:not(.static) .ef-region:empty{min-height:var(--tap)}                                /* events: region chips are rendered by js/events.js */
+@media (min-width:1024px){html:not(.static) .closing{min-height:240px}}                  /* opportunities: "Closing this week" strip (shown by default, js/feed.js hides it when empty) */
+/* one page-header pattern: the title block shrinks before the actions wrap, so the header never re-flows when the web fonts swap in (learn@1440 CLS 0.31) */
+@media (min-width:1280px){html:not(.static) .page-h>div:first-child{flex:1 1 20rem;min-width:0}html:not(.static) .page-h>:is(.row,nav.filters,.ses-actions){flex:0 1 auto}}
+/* lists that scripts fill: an empty list holds the fold, so the sections below it are never pushed down in view (events@1440 CLS) */
+html:not(.static) :is(#ev-list,#opp-grid,#news-grid,#res-grid,#learn-grid,#sets,#ann-list,#kpis):empty{min-height:70vh}

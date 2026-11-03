@@ -122,7 +122,7 @@ html:not(.static) .page .e92 .e-date{align-self:flex-start;padding:4px var(--s-2
 html:not(.static) .e92 .e-fbox{display:grid;grid-template-columns:minmax(0,1fr);border:var(--bw) solid var(--border-strong);box-shadow:6px 6px 0 var(--accent);background:var(--fill-inverse);color:var(--on-inverse)}
 @media (min-width:768px){html:not(.static) .e92 .e-fbox{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 html:not(.static) .page>.e92 .e-fbox img{display:block;width:100%!important;height:100%!important;min-height:220px;max-height:440px;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%;border-bottom:var(--bw) solid var(--border-strong)}
-@media (min-width:768px){html:not(.static) .page>.e92 .e-fbox img{border-bottom:0;border-right:var(--bw) solid var(--border-strong)}}
+@media (min-width:768px){html:not(.static) .page>.e92 .e-fbox img{border-bottom:0;border-right:var(--bw) solid var(--border-strong);max-height:none;aspect-ratio:auto}}
 html:not(.static) .e92 .e-fcopy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:var(--s-4);padding:var(--space-fluid-l)}
 html:not(.static) .page .e92 .e-fcopy .e-kick,html:not(.static) .page .e92 .e-fcopy h2{color:var(--on-inverse)!important}
 html:not(.static) .page .e92 .e-fcopy .e-kick::before{border-color:var(--on-inverse)}

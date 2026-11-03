@@ -184,7 +184,7 @@ body.flow{background:var(--color-page);color:var(--ink);font:500 var(--step-0)/1
 .role-tabs{display:flex;border:2px solid var(--ink)}
 .role-tabs a{min-height:40px;display:grid;place-items:center;padding:0 12px;font:700 var(--step--2) var(--body)}
 .role-tabs a[aria-current=page]{background:var(--ink);color:var(--or)}
-.content{padding:20px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.content{padding:20px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-content:start}
 .page-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .page-h h1{font:400 var(--step-4)/1 var(--disp);letter-spacing:.2px}
 .page-h p{color:var(--mut);margin-top:6px}
@@ -211,6 +211,7 @@ body.flow{background:var(--color-page);color:var(--ink);font:500 var(--step-0)/1
 .btn.ok{background:var(--color-success);color:#fff;border-color:var(--color-success)}
 .btn.no{background:#fff;color:var(--color-danger);border-color:var(--color-danger)}
 .btn svg{width:16px;height:16px}
+.btn.lg{min-height:48px;padding:0 22px;font-size:var(--step-0)}
 table.t{width:100%;border-collapse:collapse;font-size:var(--step--1)}
 .t th{text-align:left;font:700 var(--step--2) var(--cond);letter-spacing:.8px;text-transform:uppercase;color:var(--mut);padding:8px;border-bottom:2px solid var(--ink)}
 .t td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
@@ -218,7 +219,7 @@ table.t{width:100%;border-collapse:collapse;font-size:var(--step--1)}
 .tbl-wrap{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
 /* form fields in narrow grid columns (admin 1024px): native date/time inputs have a ~240px intrinsic width; let them shrink */
 .field{min-width:0}.field>:is(input,select,textarea){min-width:0;max-width:100%;box-sizing:border-box}
-.pill{display:inline-block;padding:2px 8px;font:700 var(--step--2) var(--body);border:1.5px solid currentColor;text-transform:capitalize}
+.pill{display:inline-block;padding:2px 8px;font:700 var(--step--2) var(--body);border:2px solid currentColor;text-transform:capitalize}
 .pill.active,.pill.verified,.pill.paid,.pill.Published{color:var(--color-success)}
 .pill.pending,.pill.Pending,.pill.Draft{color:var(--color-orange-text)}
 .pill.suspended,.pill.refunded{color:var(--color-danger)}
@@ -253,7 +254,7 @@ table.t{width:100%;border-collapse:collapse;font-size:var(--step--1)}
 .thumb-ph{width:100%;height:100%;display:grid;place-items:center;background:repeating-linear-gradient(45deg,#16212b 0 10px,#1b2630 10px 20px);color:var(--cy)}
 .thumb-ph svg{width:44px;height:44px}
 .thumb-ph.news{font:400 var(--step-2) var(--disp);color:var(--or)}
-.badge-t{position:absolute;left:10px;top:10px;font:700 var(--step--2) var(--body);padding:3px 8px;color:var(--ink);background:var(--or);border:2px solid var(--ink)}
+.badge-t{position:absolute;left:10px;top:10px;font:700 var(--step--2) var(--body);padding:2px 8px;color:var(--ink);background:var(--or);border:2px solid var(--ink)}
 .badge-t.cy{background:var(--cy)}.badge-t.ink{background:#fff}
 .rbody{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
 .rbody h3{font:600 var(--step-0)/1.3 var(--body)}
@@ -321,7 +322,7 @@ ol.list{list-style:none}
 .lvl{display:inline-flex;align-items:center;gap:5px;font:700 var(--step--2) var(--body);padding:2px 8px;border:2px solid var(--lv);color:var(--lv);background:#fff}
 .lvl::before{content:"";width:7px;height:7px;background:var(--lv)}
 .rbody .lvl{align-self:flex-start;background:#fff}
-.tagx{font:600 var(--step--2) var(--body);border:1px solid var(--line);background:#f1f4f6;padding:2px 8px}
+.tagx{font:700 var(--step--2) var(--body);border:2px solid var(--line);background:#f1f4f6;padding:2px 8px}
 .avs{display:inline-flex}
 .avs i{font:700 var(--step--2) var(--body);font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--or);color:var(--ink);border:2px solid #fff;margin-left:-6px}
 .avs i:first-child{margin-left:0}.avs i:nth-child(2n){background:var(--cy)}.avs i:nth-child(3n){background:var(--ink);color:#fff}
@@ -396,7 +397,7 @@ ol.list{list-style:none}
 .region-h h2{font:400 var(--step-3)/1.05 var(--disp);margin:8px 0 4px}
 .region-h p{font-size:var(--step-0);max-width:720px}
 .region-h small{font:700 var(--step--2) var(--cond);letter-spacing:.8px;text-transform:uppercase}
-.region-tag{display:inline-block;font:700 var(--step--2) var(--cond);letter-spacing:1.2px;padding:3px 8px;background:var(--or);color:var(--ink)}
+.region-tag{display:inline-block;font:700 var(--step--2) var(--cond);letter-spacing:1.2px;padding:2px 8px;background:var(--or);color:var(--ink)}
 .region-tag.cy{background:var(--ink);color:var(--cy)}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding:20px}
 .ccard{display:flex;flex-direction:column;background:#fff;color:var(--ink);border:2px solid var(--ink);min-width:0;transition:transform .2s,box-shadow .2s}
@@ -989,7 +990,7 @@ html:not(.static) .app.dz .tool .ib{grid-area:ib;width:40px!important;height:40p
 html:not(.static) .app.dz .tool .ib svg{width:22px;height:22px}
 html:not(.static) .app.dz .tool h3{grid-area:t;margin-top:var(--s-1)!important;font-size:var(--step-0)!important;font-weight:700!important;line-height:1.25!important;color:var(--ink-inv)}
 html:not(.static) .app.dz .tool p{grid-area:p;font-size:var(--step--1)!important;line-height:1.4!important;color:var(--ink-inv-muted)!important}
-html:not(.static) .app.dz .tool .tag{grid-area:tag;max-width:100%;justify-self:start;align-self:center;margin-top:var(--s-2)!important;padding:2px var(--s-2)!important;height:auto!important;font-size:var(--step--2)!important;line-height:1.4!important;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-inv)!important;background:transparent!important;border:1px solid var(--ink-inv-muted)!important;border-radius:0!important}
+html:not(.static) .app.dz .tool .tag{grid-area:tag;max-width:100%;justify-self:start;align-self:center;margin-top:var(--s-2)!important;padding:2px var(--s-2)!important;height:auto!important;font-size:var(--step--2)!important;line-height:1.4!important;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-inv)!important;background:transparent!important;border:var(--bw) solid var(--ink-inv-muted)!important;border-radius:0!important}
 html:not(.static) .app.dz .tool .go{grid-area:go;align-self:center;margin-top:var(--s-2)!important;width:20px!important;height:20px!important;color:var(--accent)!important}
 
 /* path card (light surface, colour carried by an accent edge + icon chip, not a full fill) */
@@ -1347,13 +1348,52 @@ html:not(.static) .page>.tit{margin-top:var(--s-8)!important}
 /* integrate3: the IDE toolbar wraps only when its pane is too narrow for one row (problem@1024: the right pane is 380px and "Debug with 101 AI" spilled 2px off-screen) */
 html:not(.static) .ed-bar{flex-wrap:wrap;row-gap:var(--s-1)}
 
+/* ---------------------------------------------------------------- round5 audit (ui/consistency): shared components
+   one empty state: every list / grid that comes back empty shows the same dashed panel (card-system --empty look) */
+html:not(.static) :is(.empty-state,.mk-empty),html:not(.static) body:not([data-page=courses]) p.muted.empty{grid-column:1/-1;display:grid;gap:var(--s-3);justify-items:start;align-content:start;margin:0;padding:var(--s-6) var(--pad-card);border:var(--bw) dashed var(--border-strong);background:var(--surface-2);color:var(--text-muted);text-align:left;box-shadow:none;max-width:none}
+html:not(.static) .mk-empty h3{margin:0}
+html:not(.static) :is(.empty-state,.mk-empty) p{margin:0;max-width:60ch}
+/* form fields: one height (44px) for every single-line control; textareas keep their rows */
+html:not(.static) .field>:is(input:not([type=checkbox],[type=radio],[type=range]),select){box-sizing:border-box;height:var(--tap);min-height:var(--tap)}
+html:not(.static) .field>input[type=file]{padding-block:0;line-height:calc(var(--tap) - 2 * var(--bw))}
+html:not(.static) :is(.mk-sort select,.pi-qty input,.qty input,input[type=number]):not(.field>*){min-height:var(--tap)}
+/* every native control uses the site fonts (buttons/inputs without a font rule rendered in Arial 13.3px) */
+:where(html:not(.static)) :where(button,input,select,textarea){font-family:inherit}
+/* "view all" / "see all" links: 44px tall targets */
+html:not(.static) :is(.viewall,.mk-more){display:inline-flex;align-items:center;min-height:var(--tap)}
+/* flow pages (legal, style guide): the reading column is centred on wide screens like every other page's container */
+html:not(.static) body.flow>main.content>.prose{width:100%;margin-inline:auto}
+html:not(.static) body.flow .prose>h1.page-h{font:400 var(--step-4)/1.05 var(--disp);margin:0 0 var(--s-2)}
+/* dashboard >=1100px: "Today in tech" moves up into the right rail under Upcoming events, so the rail no longer ends ~800px
+   above the main column (empty column beside paths/activity); "From the library" spans the full width below; the footer ends the page */
+@media (min-width:1100px){
+  html:not(.static) body .app.dz>.below{display:contents!important}
+  html:not(.static) body .app.dz>.dz-main{grid-row:2/span 2}
+  html:not(.static) body .app.dz>.below>.fwidget{grid-column:2;grid-row:3;align-self:start;min-width:0}
+  html:not(.static) body .app.dz>.below>.below-col:not(.fwidget){grid-column:1/-1;grid-row:4;min-width:0}
+  html:not(.static) body .app.dz>.foot{grid-row:5}
+}
+html:not(.static) body .app.dz:has(>.foot:last-child){padding-bottom:0!important}
+/* half-empty grids: fixed-count grids get a column count that divides their items (9 resources -> 3 x 3, 6 company sets -> 2 x 3, 6 404 links -> 2 x 3) */
+@media (min-width:1024px){html:not(.static) body[data-page=resources] #res-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  html:not(.static) body[data-page=interview] .agrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:600px){html:not(.static) .e404-links{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* layout shift (CLS) at >=1024: space for content that scripts insert above the fold is reserved before first paint */
+html:not(.static) .shell>.main>.content{min-height:calc(100dvh - var(--tb-h,60px))}   /* the footer starts below the fold, so filling the lists never pushes it */
+html:not(.static) .ef-region:empty{min-height:var(--tap)}                                /* events: region chips are rendered by js/events.js */
+@media (min-width:1024px){html:not(.static) .closing{min-height:240px}}                  /* opportunities: "Closing this week" strip (shown by default, js/feed.js hides it when empty) */
+/* one page-header pattern: the title block shrinks before the actions wrap, so the header never re-flows when the web fonts swap in (learn@1440 CLS 0.31) */
+@media (min-width:1280px){html:not(.static) .page-h>div:first-child{flex:1 1 20rem;min-width:0}html:not(.static) .page-h>:is(.row,nav.filters,.ses-actions){flex:0 1 auto}}
+/* lists that scripts fill: an empty list holds the fold, so the sections below it are never pushed down in view (events@1440 CLS) */
+html:not(.static) :is(#ev-list,#opp-grid,#news-grid,#res-grid,#learn-grid,#sets,#ann-list,#kpis):empty{min-height:70vh}
+
 /* ==== 101 Codecrafts app shell (2026-11): navy L-frame (sidebar + top bar), collapsible rail, mobile drawer ====
    Markup: tools/build.py sidebar()/topbar(). Behaviour: js/shell.js. Loaded last in every CSS bundle so it wins over
    the older .sbar/.topbar rules in app.css without editing them. Page content (.content and its cards) is not styled here. */
 :root{
   --sh-navy:#0B1236; --sh-navy-2:#111A45; --sh-navy-3:#18214F; --sh-line:#26306A;
   --sh-text:#E9ECF7; --sh-mut:#A9B1D6; --sh-or:var(--or,#fc8c0c); --sh-cy:var(--cy,#05e6f2);
-  --sb-w:256px; --sb-rail:72px; --sb-item:36px; --sb-pad:8px; --tb-h:60px; --sb-cur:var(--sb-w);
+  --sb-w:256px; --sb-rail:72px; --sb-item:44px; --sb-pad:8px; --tb-h:60px; --sb-cur:var(--sb-w);
   --sh-ease:cubic-bezier(.2,0,0,1); --sh-dur:200ms;
 }
 
@@ -1404,7 +1444,7 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
   html.sb-collapsed .sb-sec{align-items:center;gap:2px}
   html.sb-collapsed .sb-sec+.sb-sec{margin-top:8px;padding-top:8px}
   html.sb-collapsed .sb-h{display:none}
-  html.sb-collapsed .shell .sb-nav a,html.sb-collapsed .sb-wa{grid-template-columns:20px;justify-content:center;padding:0;width:40px;height:40px;min-height:40px}
+  html.sb-collapsed .shell .sb-nav a,html.sb-collapsed .sb-wa{grid-template-columns:20px;justify-content:center;padding:0;width:44px;height:44px;min-height:44px}
   html.sb-collapsed .shell .sb-nav a span,html.sb-collapsed .sb-wa span{display:none}
   html.sb-collapsed .sb-foot{padding:10px 16px;display:flex;justify-content:center}
   html.sb-collapsed .sb-toggle svg{transform:scaleX(-1)}
@@ -1426,7 +1466,7 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
   html.sb-ready .shell .sbar{transition:transform var(--sh-dur) var(--sh-ease),visibility 0s linear var(--sh-dur)}
   html.sb-open .shell .sbar{transform:none;visibility:visible;box-shadow:8px 0 0 rgba(11,18,54,.25)}
   html.sb-ready.sb-open .shell .sbar{transition:transform var(--sh-dur) var(--sh-ease),visibility 0s}
-  :root{--sb-item:42px;--sb-pad:8px}
+  :root{--sb-item:44px;--sb-pad:8px}
   .sb-head{padding:0 6px 0 12px}
   .sb-logo img{width:50px;height:28px}
   .sb-toggle .ic{display:none}
@@ -1566,7 +1606,7 @@ html:not(.static) .app.dz .act.act-live{grid-template-areas:"img b b" "img who w
 html:not(.static) .app.dz .act.act-live .meta{display:none!important}
 html:not(.static) .app.dz .act.act-live .ago{margin-top:var(--s-2)!important}
 .act-bar{grid-area:bar;display:flex;align-items:center;gap:2px;margin:var(--s-2) calc(-1 * var(--s-2)) 0!important;padding-top:var(--s-1);border-top:1px solid var(--hairline)}
-.act-btn{display:inline-flex;align-items:center;gap:6px;min-width:44px;height:36px;padding:0 var(--s-2);background:transparent;border:1px solid transparent;color:var(--ink-muted);
+.act-btn{display:inline-flex;align-items:center;gap:6px;min-width:44px;height:44px;padding:0 var(--s-2);background:transparent;border:1px solid transparent;color:var(--ink-muted);
   font:600 var(--step--1)/1 var(--body);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color var(--motion-fast,120ms) ease,background-color var(--motion-fast,120ms) ease}
 .act-btn svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor}
 .act-btn:hover{color:var(--ink);background:var(--surface-alt)}
@@ -1812,7 +1852,7 @@ html:not(.static) .page .e92 .e-date{align-self:flex-start;padding:4px var(--s-2
 html:not(.static) .e92 .e-fbox{display:grid;grid-template-columns:minmax(0,1fr);border:var(--bw) solid var(--border-strong);box-shadow:6px 6px 0 var(--accent);background:var(--fill-inverse);color:var(--on-inverse)}
 @media (min-width:768px){html:not(.static) .e92 .e-fbox{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 html:not(.static) .page>.e92 .e-fbox img{display:block;width:100%!important;height:100%!important;min-height:220px;max-height:440px;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%;border-bottom:var(--bw) solid var(--border-strong)}
-@media (min-width:768px){html:not(.static) .page>.e92 .e-fbox img{border-bottom:0;border-right:var(--bw) solid var(--border-strong)}}
+@media (min-width:768px){html:not(.static) .page>.e92 .e-fbox img{border-bottom:0;border-right:var(--bw) solid var(--border-strong);max-height:none;aspect-ratio:auto}}
 html:not(.static) .e92 .e-fcopy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:var(--s-4);padding:var(--space-fluid-l)}
 html:not(.static) .page .e92 .e-fcopy .e-kick,html:not(.static) .page .e92 .e-fcopy h2{color:var(--on-inverse)!important}
 html:not(.static) .page .e92 .e-fcopy .e-kick::before{border-color:var(--on-inverse)}

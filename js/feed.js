@@ -94,8 +94,9 @@
       const b = document.createElement("div"); b.className = "ann-banner"; b.setAttribute("role", "region"); b.setAttribute("aria-label", "Pinned announcement");
       b.innerHTML = `<span class="ab-ic">${ico("megaphone")}</span><p><b>${esc(pin.title)}</b> <span>${esc(pin.body)}</span></p>${pin.link ? `<a class="btn sm ink" href="${esc(pin.link)}">Open</a>` : ""}<a class="btn sm" href="announcements.html">All announcements</a><button type="button" class="btn sm" aria-label="Hide pinned announcement">✕</button>`;
       b.querySelector("button").onclick = () => { localStorage.setItem("cc_ann_hide", pin.id); F.markRead([pin.id]); b.remove(); };
-      const host = $(".content") || $("#main"); page === "dashboard" ? $("#main").parentNode.insertBefore(b, $("#main")) : host.insertBefore(b, host.firstChild);
-    }
+      const slot = $("[data-ann-slot]"), host = $(".content") || $("#main");   // the slot reserves the banner's height before first paint (no layout shift)
+      if (slot) slot.replaceWith(b); else page === "dashboard" ? $("#main").parentNode.insertBefore(b, $("#main")) : host.insertBefore(b, host.firstChild);
+    } else { const slot = $("[data-ann-slot]"); if (slot) slot.remove(); }
     /* bell */
     let bell = document.documentElement.classList.contains("static") && page === "dashboard" ? null : $(".topbar .ib[aria-label=Notifications]"); // ?static=1 dashboard keeps its mockup bell (the shell top bar is hidden there)
     if (!bell && page === "dashboard") { bell = document.createElement("button"); bell.className = "dash-bell"; $("#main").appendChild(bell); }
@@ -139,7 +140,7 @@
       let all = await F.fetchNews(); let tab = "all", onlySaved = false;
       const grid = $("#news-grid");
       const draw = () => { const sv = F.saved("news"); const r = all.filter(n => (tab === "all" || n.tab === tab) && (!onlySaved || sv.has(n.id)));
-        grid.innerHTML = r.map(n => newsCard(n, sv)).join("") || `<p class="muted">${onlySaved ? "Nothing saved yet — tap Save on a story." : "No stories in this tab yet today."}</p>`;
+        grid.innerHTML = r.map(n => newsCard(n, sv)).join("") || `<p class="muted empty">${onlySaved ? "Nothing saved yet — tap Save on a story." : "No stories in this tab yet today."}</p>`;
         $("#news-count").textContent = `${r.length} ${r.length === 1 ? "story" : "stories"}`; $("#news-saved-n").textContent = sv.size; };
       tablist($("#news-tabs"), TABS, "all", k => { tab = k; grid.setAttribute("aria-labelledby", "tab-" + k); draw(); });
       $("#news-saved").onclick = e => { onlySaved = !onlySaved; e.currentTarget.setAttribute("aria-pressed", onlySaved); draw(); };
@@ -162,7 +163,7 @@
           (!st.where || (st.where === "remote" ? o.remote : st.where === "uganda" ? /uganda|kampala/i.test(o.location) : /africa|uganda|kampala|lagos|nairobi|east africa/i.test(o.location))) &&
           (!st.soon || left(o.deadline).d >= 0 && left(o.deadline).d < 7) && (!st.saved || sv.has(o.id)) &&
           (!st.q || (o.title + o.org + o.eligibility + o.location).toLowerCase().includes(st.q)));
-        grid.innerHTML = r.map(o => oppCard(o, sv, rem)).join("") || `<p class="muted">Nothing matches — try fewer filters.</p>`;
+        grid.innerHTML = r.map(o => oppCard(o, sv, rem)).join("") || `<p class="muted empty">Nothing matches — try fewer filters.</p>`;
         $("#opp-count").textContent = r.length + (r.length === 1 ? " opportunity" : " opportunities"); };
       $("#of-type").onchange = e => { st.type = e.target.value; draw(); };
       $("#of-level").onchange = e => { st.level = e.target.value; draw(); };

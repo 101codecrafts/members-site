@@ -1,7 +1,7 @@
 /* 101 Marketplace (marketplace, product-item, cart, checkout, orders, seller, rfq). Brutalist: 2px navy borders, hard shadows,
    orange/cyan as fills with navy text (never orange text on white: use --color-orange-text). Loaded after the app bundle. */
 .mk .content{gap:18px}
-.ib-sq{display:inline-grid;place-items:center;min-width:40px;min-height:40px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:700 var(--step-0) var(--body);cursor:pointer;padding:0 8px}
+.ib-sq{display:inline-grid;place-items:center;min-width:44px;min-height:44px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:700 var(--step-0) var(--body);cursor:pointer;padding:0 8px}
 .ib-sq svg{width:18px;height:18px}
 .ib-sq[aria-pressed=true],.ib-sq.cur{background:var(--ink);color:#fff}
 .ib-sq:disabled{opacity:.45;cursor:not-allowed}
@@ -45,7 +45,7 @@
 .mk-cart svg{width:18px;height:18px}
 .mk-cart i{font-style:normal;background:var(--ink);color:#fff;min-width:22px;height:22px;display:grid;place-items:center;font-size:var(--step--2);padding:0 5px}
 .mk-catstrip{display:flex;gap:4px;overflow-x:auto;padding:6px 10px;scrollbar-width:thin}
-.mk-catstrip a{white-space:nowrap;font:700 var(--step--2) var(--body);min-height:36px;display:inline-flex;align-items:center;padding:0 10px;border:2px solid transparent}
+.mk-catstrip a{white-space:nowrap;font:700 var(--step--2) var(--body);min-height:44px;display:inline-flex;align-items:center;padding:0 10px;border:2px solid transparent}
 .mk-catstrip a:hover{border-color:var(--ink)}
 
 /* ---------- hero carousel ---------- */
@@ -59,7 +59,8 @@
 .mk-slide p{font:500 var(--step-0) var(--body);margin-bottom:14px}
 .mk-hero-ctl{position:absolute;left:36px;bottom:14px;display:flex;gap:6px;align-items:center}
 .mk-dots{display:flex;gap:6px}
-.mk-dots button{width:28px;height:28px;border:2px solid var(--ink);background:#fff;cursor:pointer;padding:0}
+.mk-dots button{position:relative;width:28px;height:28px;border:2px solid var(--ink);background:#fff;cursor:pointer;padding:0}
+.mk-dots button::after{content:"";position:absolute;inset:-10px}   /* 28px dot, 48px hit area */
 .mk-dots button[aria-pressed=true]{background:var(--or)}
 
 /* ---------- section rows ---------- */
@@ -67,7 +68,7 @@
 .mk-sec-h{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-bottom:2px solid var(--ink)}
 .mk-sec-h h2{font:400 var(--step-2) var(--disp)}
 .mk-sec-h p{color:var(--color-muted);font-size:var(--step-0);flex:1;min-width:200px}
-.mk-more{font:800 var(--step--1) var(--body);color:var(--color-link);text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+.mk-more{display:inline-flex;align-items:center;min-height:44px;font:800 var(--step--1) var(--body);color:var(--color-link);text-decoration:underline;text-underline-offset:3px;margin-left:auto}
 .mk-deals .mk-sec-h{background:var(--or)}
 .mk-deals .mk-more{color:var(--ink)}
 .mk-made .mk-sec-h{background:var(--cy)}
@@ -100,7 +101,7 @@
 .mk-pr s{font:600 var(--step--2) var(--body);color:var(--color-muted)}
 .mk-pr small{font:600 var(--step--2) var(--body);color:var(--color-muted);width:100%}
 .mk-tags{display:flex;gap:5px;flex-wrap:wrap}
-.mk-tag{display:inline-block;font:700 var(--step--2) var(--body);padding:2px 6px;border:1.5px solid var(--ink);background:#fff;color:var(--ink)}
+.mk-tag{display:inline-block;font:700 var(--step--2) var(--body);padding:2px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink)}
 .mk-tag.st-member{background:#d9fbfd}.mk-tag.st-business{background:#fff1dd}
 .mk-seller-l{font:600 var(--step--2) var(--body);color:var(--color-muted)}
 .mk-desc{font-size:var(--step-0);color:var(--color-muted)}

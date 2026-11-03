@@ -105,7 +105,7 @@ html:not(.static) .page .t-cy{color:var(--color-cyan-text)!important}
   html:not(.static) .hdr .tg{display:none}
   html:not(.static) .hdr .hsearch{order:3;width:44px!important;height:44px!important;display:flex!important;align-items:center;justify-content:center}
   html:not(.static) .hdr .hsearch svg{width:19px;height:19px}
-  html:not(.static) .hdr .login,html:not(.static) .hdr .join{order:4;width:auto!important;height:36px!important;min-height:36px;padding:0 12px;font-size:13px!important;letter-spacing:.4px;white-space:nowrap;border-radius:2px;margin-block:4px}
+  html:not(.static) .hdr .login,html:not(.static) .hdr .join{order:4;width:auto!important;height:44px!important;min-height:44px;padding:0 12px;font-size:13px!important;letter-spacing:.4px;white-space:nowrap;border-radius:2px;margin-block:4px}
   html:not(.static) .hdr .login{border-width:1.5px}
   html:not(.static) .hdr .join{order:5;gap:6px;color:var(--nv)!important}
   html:not(.static) .hdr .join .jx{display:none}
@@ -378,3 +378,4 @@ html:not(.static) .page>.hero-badge{padding:var(--space-fluid-s)!important;min-h
 html:not(.static) .page>.hero-badge .hb-s{display:none!important}
 }
 /* <<< desktop fluid grid */
+html:not(.static) body .page:has(>.lfoot){padding-bottom:0!important}   /* round5 audit: no strip of page background under the footer (was 48px at 412) */
