@@ -6,6 +6,7 @@ s=re.sub(re.escape(B)+r'.*?'+re.escape(E)+'\n?','',s,flags=re.S)
 P='html:not(.static) .page'
 def c(a,b): return f'{a+1}/{b+2}'          # content cols a..b (1-based) -> grid lines (track 1 = gutter)
 FULL='1/-1'
+HT='align-self:stretch;margin-top:calc(var(--space-fluid-m) - var(--space-fluid-s))!important;margin-bottom:var(--space-fluid-l)!important'
 place={ # nth : (cols, rows, extra)
  1:(FULL,'1',''),
  2:(FULL,'2/10','display:block!important;position:relative!important;height:auto!important;z-index:0;align-self:stretch'),
@@ -14,9 +15,12 @@ place={ # nth : (cols, rows, extra)
  7:(c(1,6),'6','margin-top:var(--space-fluid-s)!important'),
  8:(c(1,3),'7','justify-self:stretch;margin-top:var(--space-fluid-s)!important'),
  9:(c(4,6),'7','justify-self:stretch;margin-top:var(--space-fluid-s)!important'),
- 17:(c(7,10),'2/10','width:100%!important;height:100%!important;object-fit:cover;align-self:stretch;margin-block:var(--space-fluid-l)!important'),
- 18:(c(11,12),'2/6','width:auto!important;height:auto!important;margin-top:var(--space-fluid-l)!important;padding:var(--space-fluid-m) var(--space-fluid-s)!important;container-type:normal!important'),
- 19:(c(11,12),'6/10','width:100%!important;height:100%!important;object-fit:contain;background:#021f3e;padding:var(--space-fluid-m);box-sizing:border-box;align-self:stretch;margin-block:var(--space-fluid-s) var(--space-fluid-l)!important;display:block!important'),
+ # hero bento (right half, cols 7-12): photo across the top (rows of eyebrow..paragraph), the word tile and the
+ # launch tile side by side under it (rows of buttons..avatars). Shared outer edges, one gap (--space-fluid-m) both ways:
+ # the tiles' margin-top tops the row-gap (s) up to m. Photo top = hero top inset (l), tiles bottom = hero bottom inset (l).
+ 17:(c(7,12),'2/7','align-self:stretch;margin-top:var(--space-fluid-l)!important'),
+ 18:(c(7,9),'7/10',HT),
+ 19:(c(10,12),'7/10',HT),
  20:(c(1,8),'10','margin-top:var(--space-fluid-2xl)!important'),
  21:(c(1,9),'11',''),
  22:(c(9,12),'11','justify-self:end;align-self:center'),
@@ -120,5 +124,15 @@ out=[B,'@media (min-width:1024px){',
 ]
 for n,(col,row,extra) in sorted(place.items()):
     out.append(f'{P}>:nth-child({n}){{grid-column:{col};grid-row:{row};{extra}}}')
+out+=[
+ # photo: fills its grid area without driving the row heights (height 0 + min-height of the area minus its top inset), crop without the mockup's white bleed
+ f'{P}>img.heavy-hero{{width:100%!important;height:0!important;min-height:calc(100% - var(--space-fluid-l));box-sizing:border-box;object-fit:cover;object-position:50% 58%;content:url(../assets/img/landing-hero-photo-crop.webp);border:var(--border);box-shadow:var(--shadow)}}',
+ f'{P}>.words-tile{{width:auto!important;height:auto!important;min-height:0;padding:var(--space-fluid-s)!important;display:flex!important;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:var(--space-fluid-s);border:var(--border);box-shadow:var(--shadow);container-type:normal!important;overflow:visible!important}}',
+ f'{P}>.words-tile .disp{{font-size:var(--step-1)!important;line-height:1.2!important;margin:0!important;align-self:flex-start}}',
+ f'{P}>.words-tile svg{{margin:0!important;flex:none}}',
+ f'{P}>.hero-badge{{padding:var(--space-fluid-s)!important;min-height:0}}',
+ # the hero row stays as tall as the copy beside it: the tile keeps the offer and the countdown, the sub-line shows below 1024px
+ f'{P}>.hero-badge .hb-s{{display:none!important}}',
+]
 out+=['}',E]
 s=s.rstrip('\n')+'\n'+'\n'.join(out)+'\n'; p.write_text(s); print('ok',len(out))
