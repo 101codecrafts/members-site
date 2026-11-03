@@ -180,4 +180,3 @@ html.static .dash-shell>.sbar,html.static .dash-shell>.sb-scrim,html.static .das
   .sb-scrim,.acct-sk i,.acct-sk b{animation:none!important}
 }
 /* dark theme opt-in: the shell is already dark; keep the top bar navy rather than app.css's grey */
-[data-theme=dark] .shell .topbar{background:var(--sh-navy);border-color:var(--sh-line)}

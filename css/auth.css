@@ -65,5 +65,3 @@ body.auth-page{margin:0;background:#fff;color:var(--ink);font:500 var(--step-0)/
   .auth-main{align-items:flex-start;padding:24px 20px 40px}
   .auth-panel{max-width:520px}
 }
-[data-theme=dark] body.auth-page,[data-theme=dark] .auth-main{background:#0b1117;color:#e8edf1}
-[data-theme=dark] .auth-h{color:#e8edf1}

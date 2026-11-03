@@ -188,7 +188,6 @@ body.ws .content{padding:0;gap:0}
 .qbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 
 /* ---------- dark theme ---------- */
-[data-theme=dark] .acard,[data-theme=dark] .ct:not(.live),[data-theme=dark] .co:not([aria-pressed=true]),[data-theme=dark] .qopt,[data-theme=dark] .pane,[data-theme=dark] .ttree button,[data-theme=dark] .ed-ta{background:#121b23;color:#e8edf1;border-color:#2b3a47}
 
 /* ---------- responsive 360–1440 ---------- */
 @media (max-width:1280px){.art-wrap{grid-template-columns:210px minmax(0,1fr)}.art-toc{display:none}}

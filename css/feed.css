@@ -142,9 +142,6 @@ body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:
 .ok-t{color:var(--color-success);font-weight:700}
 /* lite: no hover motion */
 .lite .fcard,.lite .fcard:hover{transition:none;transform:none}
-[data-theme=dark] .fcard,[data-theme=dark] .fw-list,[data-theme=dark] .ftabs,[data-theme=dark] .ftab:not([aria-selected=true]),[data-theme=dark] .cal-d,[data-theme=dark] .bell-pop{background:#121b23;color:#e8edf1;border-color:#2b3a47}
-[data-theme=dark] .fcard h3,[data-theme=dark] .facts dd,[data-theme=dark] .fw-list a{color:#e8edf1}
-[data-theme=dark] .sum,[data-theme=dark] .elig,[data-theme=dark] .org{color:#c9d3db}
 @media (max-width:1100px){.ofilters{grid-template-columns:1fr 1fr}.ofilters .csearch{grid-column:1/-1}.ef-row{grid-template-columns:repeat(3,minmax(0,1fr))}.top-links{display:none}}
 @media (max-width:760px){
   .fgrid{grid-template-columns:1fr}.ofilters,.ef-row,.org-top,.sub-form{grid-template-columns:1fr}

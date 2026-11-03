@@ -288,11 +288,6 @@ table.t{width:100%;border-collapse:collapse;font-size:var(--step--1)}
 .prose ul{padding-left:20px}
 .prose a{text-decoration:underline}
 /* dark theme (opt-in; the default is the mockup look) */
-[data-theme=dark] body.flow{background:#0b1117;color:#e8edf1}
-[data-theme=dark] .card,[data-theme=dark] .kpi:not(.or):not(.cy):not(.ink),[data-theme=dark] .li,[data-theme=dark] .topbar{background:#121b23;color:#e8edf1;border-color:#2b3a47}
-[data-theme=dark] .t td{border-color:#2b3a47}
-[data-theme=dark] .app,[data-theme=dark] .page{filter:invert(.92) hue-rotate(180deg)}
-[data-theme=dark] .app img,[data-theme=dark] .page img{filter:invert(1) hue-rotate(180deg)}
 /* responsive */
 @media (max-width:1100px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:760px){
@@ -448,8 +443,6 @@ ol.list{list-style:none}
 .cdx{font:400 var(--step-0) var(--disp);color:var(--or);white-space:nowrap}
 .add-out{grid-template-columns:minmax(0,1.3fr) minmax(250px,1fr);margin-top:16px;align-items:start}
 #xc-card{max-width:320px}
-[data-theme=dark] .region,[data-theme=dark] .ccard{background:#121b23;color:#e8edf1;border-color:#2b3a47}
-[data-theme=dark] .cbody p,[data-theme=dark] .cbody .row small{color:#b9c6d0}
 @media (max-width:1100px){.cfilters{grid-template-columns:1fr 1fr}.csearch{grid-column:1/-1}}
 @media (max-width:760px){.cfilters{grid-template-columns:1fr}.cgrid{padding:14px;gap:14px}.region-h{padding:14px}.expiring{margin:14px 14px 0}.add-out{grid-template-columns:1fr}.exp-row{grid-auto-flow:row;grid-auto-columns:auto}.exp{flex-wrap:wrap}.cdx{margin-left:36px}}
 /* ---------- ads (js/ads.js) + launch promo bar ---------- */
@@ -470,7 +463,6 @@ ol.list{list-style:none}
 .tit .ad-banner{margin-top:16px}
 .below.has-ad-side{grid-template-columns:1fr 1fr 300px}
 .lite .ad-slot,.static .ad-slot{display:none!important}
-[data-theme=dark] .ad-infeed,[data-theme=dark] .ad-box{background:#121b23;border-color:#2b3a47}
 .promo-bar{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding:6px 12px;min-height:40px;font:600 var(--step--1) var(--body);position:relative;z-index:70}
 .promo-bar p{margin:0;text-align:center}.promo-bar b{color:var(--or)}
 .promo-cd{color:var(--cy);font-weight:700;margin-left:6px;white-space:nowrap}
@@ -496,7 +488,6 @@ ol.list{list-style:none}
 .howto ol{padding-left:20px;display:grid;gap:4px;font-size:var(--step--2);margin:6px 0}
 .keynote{font-size:var(--step--2);color:var(--color-danger)!important;font-weight:600}
 .playground .pg-out{white-space:pre-wrap;background:var(--ink);color:#e8edf1;border:2px solid var(--ink);padding:12px 14px;margin-top:12px;font:500 var(--step--1)/1.5 ui-monospace,Consolas,monospace;max-height:320px;overflow:auto}
-[data-theme=dark] .sec-note{background:#2a1f10;color:#e8edf1}
 @media (max-width:760px){.ai-filters{grid-template-columns:1fr}}
 
 /* ---------- site search overlay, demo-data note, form states (js/ui.js, js/pages.js) ---------- */
@@ -1455,4 +1446,3 @@ html.static .dash-shell>.sbar,html.static .dash-shell>.sb-scrim,html.static .das
   .sb-scrim,.acct-sk i,.acct-sk b{animation:none!important}
 }
 /* dark theme opt-in: the shell is already dark; keep the top bar navy rather than app.css's grey */
-[data-theme=dark] .shell .topbar{background:var(--sh-navy);border-color:var(--sh-line)}

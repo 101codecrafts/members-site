@@ -294,7 +294,6 @@
 .rfq-o p{font-size:var(--step-0);margin-bottom:6px}
 
 /* ---------- dark theme ---------- */
-[data-theme=dark] .mk-top,[data-theme=dark] .mk-sec,[data-theme=dark] .mk-card,[data-theme=dark] .mk-toolbar,[data-theme=dark] .mk-filters-wrap,[data-theme=dark] .co-opt,[data-theme=dark] .mk-megapanel{background:#121b23;color:#e8edf1;border-color:#2b3a47}
 
 /* ---------- Lite / static ---------- */
 .lite .mk-card:hover{transform:none;box-shadow:none}

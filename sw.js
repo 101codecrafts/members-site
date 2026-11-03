@@ -3,7 +3,7 @@
    API and cross-origin requests are never cached here (except CDN libraries pinned by version). Small cache for mobile data. */
 const VERSION = "cc-v7";
 const SHELL = ["./", "index.html", "dashboard.html", "offline.html", "404.html", "courses.html", "resources.html", "news.html", "course.html",
-  "css/bundle-app.css", "css/bundle-dashboard.css", "css/bundle-landing.css", "css/dashboard.fit.css", "css/landing.fit.css",
+  "css/bundle-app.css", "css/bundle-dashboard.css", "css/bundle-landing.css", "css/bundle-theme.css", "css/dashboard.fit.css", "css/landing.fit.css",
   "js/data.js", "js/api.js", "js/shell.js", "js/dash-layout.js", "js/ui.js", "js/motion.js", "js/pages.js",
   "assets/fonts/archivo-black-400.woff2", "assets/fonts/russo-one-400.woff2", "assets/fonts/barlow-400.woff2", "assets/fonts/barlow-500.woff2", "assets/fonts/barlow-600.woff2", "assets/fonts/barlow-700.woff2",
   "assets/img/logo-101-sidebar.webp", "assets/img/logo-101-header.webp", "assets/icons/icon-192.png", "manifest.webmanifest"];

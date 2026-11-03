@@ -103,7 +103,18 @@
     $("#cc-lite").onclick = e => { const on = !html.classList.contains("lite"); html.classList.toggle("lite", on); localStorage.setItem("lite", on ? "1" : "0"); e.currentTarget.setAttribute("aria-pressed", on); if (!on) location.reload(); };
     const lang = localStorage.getItem("lang") || "en"; $("#cc-lang").value = lang; if (lang !== "en") setLang(lang);
     $("#cc-lang").onchange = e => setLang(e.target.value);
-    $("#cc-theme").onclick = e => { const d = html.dataset.theme === "dark" ? "" : "dark"; if (d) html.dataset.theme = d; else delete html.dataset.theme; localStorage.setItem("theme", d); e.currentTarget.setAttribute("aria-pressed", !!d); };
+    /* theme: an explicit choice is stored ("dark"/"light"); with none stored the page follows the system setting live */
+    const applyTheme = (dark, anim) => {
+      if (html.classList.contains("static")) return;
+      if (anim) { html.classList.add("theme-anim"); setTimeout(() => html.classList.remove("theme-anim"), 250); }
+      if (dark) html.dataset.theme = "dark"; else delete html.dataset.theme;
+      html.style.colorScheme = dark ? "dark" : "light";
+      const b = $("#cc-theme"); if (b) b.setAttribute("aria-pressed", dark);
+    };
+    $("#cc-theme").onclick = () => { const dark = html.dataset.theme !== "dark"; localStorage.setItem("theme", dark ? "dark" : "light"); applyTheme(dark, true); };
+    const mq = matchMedia("(prefers-color-scheme: dark)");
+    (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(e => { const t = localStorage.getItem("theme"); if (t !== "dark" && t !== "light") applyTheme(e.matches, true); });
+    window.addEventListener("storage", e => { if (e.key === "theme") applyTheme(e.newValue === "dark" || (e.newValue !== "light" && mq.matches)); });
   }
   function cookieBanner() {
     if (localStorage.getItem("cookies")) return;

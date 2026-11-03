@@ -21,7 +21,7 @@ def attrs(s):
 ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "name": "101 Codecrafts", "url": SITE + "/", "logo": SITE + "/assets/icons/icon-512.png",
           "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://github.com/101codecrafts"]}
 
-EARLY = '''<script>/* early: lite/data-saver + theme before first paint */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(localStorage.theme==="dark")d.dataset.theme="dark";if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>'''
+EARLY = '''<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");}}catch(e){}})(document.documentElement)</script>'''
 
 def head(a, page):
     t = a.get('title', '101 Codecrafts'); d = a.get('desc', '101 Codecrafts: learn, build and collaborate in tech.'); p = a.get('path', page)
@@ -133,6 +133,8 @@ def bundle(name, parts):
     out = '/* GENERATED bundle: ' + ' + '.join(parts) + ' — edit the sources, then run tools/build.py */\n'
     out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
     (root / 'css' / name).write_text(out)
+import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
+bundle('bundle-theme.css', ['theme-dark.css', 'theme.css'])   # loaded LAST on every page (see THEME_LINK)
 bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css'])
 bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css'])
 bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css'])
@@ -160,8 +162,10 @@ def rootabs(s):
     s = re.sub(r'(\s(?:href|src|action|poster)=")([^"]*)"', lambda m: m.group(1) + _abs1(m.group(2)) + '"', s)
     return re.sub(r'(\ssrcset=")([^"]*)"', lambda m: m.group(1) + ', '.join(' '.join([_abs1(x.split()[0])] + x.split()[1:]) for x in m.group(2).split(',') if x.strip()) + '"', s)
 
+THEME_LINK = '<link rel="stylesheet" href="css/bundle-theme.css">'
 for f in (root / 'src').glob('*.html'):
     s = css_links(f.read_text()); name = f.name
+    s = s.replace('</head>', THEME_LINK + '\n</head>', 1) if THEME_LINK not in s else s
     charts = 'data-charts' in s
     s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts)).replace('{{FOOTER}}', FOOTER)
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)

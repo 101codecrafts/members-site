@@ -1,0 +1,109 @@
+/* =====================================================================================
+   101 Codecrafts — theme layer (light + dark). Loaded LAST on every page, after the
+   generated css/theme-dark.css (tools/theme.py maps every component colour onto the roles
+   below). Light values equal the existing palette, so light mode renders exactly as before;
+   ?static=1 never gets data-theme=dark (see the early script in tools/build.py).
+   Rules: components paint with ROLES, never raw #fff/#000. Orange is a fill, never text on
+   light (use --accent-text). Dark surfaces are lifted navy-black, not pure black; elevation
+   = a lighter surface step + a crisp border; brutal offset shadows go deeper than the page.
+   ===================================================================================== */
+:root{
+  color-scheme:light;
+  /* brand primitives */
+  --brand-navy:#0B1236; --brand-orange:#fc8c0c; --brand-cyan:#05e6f2;
+  /* roles (light) */
+  --text:#0B1236;            /* primary text            17.6:1 on white */
+  --text-muted:#4A5578;      /* secondary text           7.3:1 on white */
+  --surface-1:#ffffff;       /* cards */
+  --surface-2:#F3F5F8;       /* raised wells, inputs, hovers */
+  --surface-3:#E8ECF2;       /* chips, inactive tabs, date blocks */
+  --border-subtle:#D5DBE5;   /* hairlines, dividers (decorative) */
+  --border-strong:#0B1236;   /* the brutal 2px outline */
+  --fill-inverse:#0B1236;    /* navy blocks: banners, tool cards, buttons */
+  --on-inverse:#ffffff;
+  --accent:#fc8c0c; --on-accent:#0B1236;
+  --accent-text:#B45309;     /* orange as text: 5.0:1 on white (= --accent-ink) */
+  --accent-2:#05e6f2; --on-accent-2:#0B1236;
+  --accent-2-text:#00758A;
+  --shadow-ink:#0B1236;      /* colour of the hard offset shadow */
+  --focus:#00b9e6;
+}
+/* ---------------------------------------------------------------- dark roles */
+:root[data-theme=dark]{
+  color-scheme:dark;
+  --text:#EEF1F8;            /* 16.1:1 on --bg, 15.0:1 on --surface-1 */
+  --text-muted:#AEB8CE;      /*  9.0:1 on --bg,  8.1:1 on --surface-1, 6.4:1 on --surface-3 */
+  --bg:#0A0D17;              /* page: navy-black, never #000 */
+  --surface-1:#121828;       /* cards (elevation 1) */
+  --surface-2:#192034;       /* inputs, wells, hover (elevation 2) */
+  --surface-3:#222B42;       /* chips, inactive tabs (elevation 3) */
+  --border-subtle:#283149;   /* hairlines */
+  --border-strong:#4A557A;   /* brutal outline: 3:1+ against every surface */
+  --fill-inverse:#151E4C;    /* brand navy lifted so blocks read on the dark page */
+  --on-inverse:#ffffff;
+  --accent:#fc8c0c; --on-accent:#0B1236;
+  --accent-text:#FFAD5C;     /* orange as text on dark: 9.5:1 on --surface-1 */
+  --accent-2-text:#5FE3F0;
+  --shadow-ink:#02040A;
+  --focus:#5FE3F0;
+
+  /* the older token names, re-pointed so every component already using them flips */
+  --color-page:var(--bg); --color-page-landing:var(--bg); --color-surface:var(--surface-2); --color-surface-2:var(--surface-3);
+  --color-line:var(--border-subtle); --color-muted:var(--text-muted); --color-link:#7CC4FF;
+  --color-orange-text:var(--accent-text); --color-orange-text-large:var(--accent-text); --color-cyan-text:var(--accent-2-text);
+  --color-focus:var(--focus);
+  --nv:var(--text);          /* landing navy text flips; its navy fills are re-pointed by tools/theme.py */
+  --line:var(--border-subtle); --mut:var(--text-muted); --blue:#7CC4FF;
+  --surface:var(--surface-1); --surface-alt:var(--bg); --surface-sunk:var(--surface-3); --surface-inv:var(--fill-inverse);
+  --ink-muted:var(--text-muted); --accent-ink:var(--accent-text); --accent-2-ink:var(--accent-2-text); --link:#7CC4FF;
+  --hairline:var(--border-subtle); --border-c:var(--border-strong);
+  --shadow:var(--sh,4px) var(--sh,4px) 0 var(--shadow-ink);
+  --shadow-brutal:6px 6px 0 var(--shadow-ink); --shadow-brutal-sm:3px 3px 0 var(--shadow-ink);
+  --border-brutal:2px solid var(--border-strong); --border-thin:1px solid var(--border-subtle);
+  --sh-line:#232C55;
+}
+:root[data-theme=dark] body{background:var(--bg);color:var(--text)}
+
+/* no theme transition on first paint; a short fade only when the user flips the toggle */
+html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{transition:background-color .2s,color .2s,border-color .2s!important}
+
+/* ---------------------------------------------------------------- dark: hand-tuned exceptions */
+/* images, photos, logos and video keep their own colours (the old invert filter is gone) */
+[data-theme=dark] img,[data-theme=dark] video,[data-theme=dark] picture{filter:none}
+/* SVG/PNG marks drawn in navy on transparent get a light chip so they stay visible */
+[data-theme=dark] img[src*="logo"]:not([src*="white"]):not([src*="light"]):not(.no-chip){background:transparent}
+/* form controls: role surfaces + readable placeholders */
+[data-theme=dark] :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background-color:var(--surface-2);color:var(--text);border-color:var(--border-strong)}
+[data-theme=dark] ::placeholder{color:var(--text-muted);opacity:1}
+[data-theme=dark] select option{background:var(--surface-2);color:var(--text)}
+/* tables */
+[data-theme=dark] :is(th,td){border-color:var(--border-subtle)}
+/* code blocks stay dark-on-dark but lifted */
+[data-theme=dark] :is(pre,code,kbd):not([class*="cm-"]){border-color:var(--border-subtle)}
+/* scrollbars follow the theme */
+[data-theme=dark]{scrollbar-color:#3A4466 var(--bg)}
+
+/* inline-styled legacy markup (absolute-positioned mockup pages): navy text without its own fill flips, fills get roles */
+[data-theme=dark] [style*="color:#0B1236"]:not([style*="background"]),[data-theme=dark] [style*="color:#1"]:not([style*="background"]){color:var(--text)!important}
+[data-theme=dark] [style*="background:var(--nv)"],[data-theme=dark] [style*="background:#0B1236"],[data-theme=dark] [style*="background:#191e24"]{background:var(--fill-inverse)!important;color:var(--on-inverse)!important}
+[data-theme=dark] [style*="background:#ebeced"],[data-theme=dark] [style*="background:#f7f8f9"]{background:var(--surface-3)!important;color:var(--text)!important}
+[data-theme=dark] [style*="background:var(--or)"],[data-theme=dark] [style*="background:#0"][style*="color:#0B1236"]{color:var(--on-accent)!important}
+/* code editor (CodeMirror 6): a dark editor surface with readable default ink */
+[data-theme=dark] .cm-editor{background:var(--surface-1)!important;color:var(--text)}
+[data-theme=dark] .cm-editor .cm-gutters{background:var(--surface-2)!important;color:var(--text-muted)!important;border-color:var(--border-subtle)!important}
+[data-theme=dark] .cm-editor .cm-activeLine,[data-theme=dark] .cm-editor .cm-activeLineGutter{background:rgba(255,255,255,.05)!important}
+[data-theme=dark] .cm-editor .cm-cursor{border-left-color:var(--text)!important}
+[data-theme=dark] .cm-editor .cm-selectionBackground,[data-theme=dark] .cm-editor ::selection{background:#2C3A66!important}
+/* CM default highlight colours, lifted for dark (keyword, string, number, comment, def, type, meta) */
+
+/* landing defines its navy on body, so flip it there too */
+:root[data-theme=dark] body[data-page="landing"]{--nv:var(--text)}
+/* text on accent fills keeps the navy on-accent ink, whatever colour class it also carries */
+[data-theme=dark] :is(.badge-t.or,.badge-t.cy,.comm,.comm *,.btn-or,.hdr .join,.jl){color:var(--on-accent)}
+[data-theme=dark] :is(.obadge,.stage,.badge-t.ink,.fbadge.t-dev,.fbadge[class*="ty-"]:not(.ty-competition):not(.ty-fellowship):not(.ty-grant):not(.ty-hackathon):not(.ty-scholarship)){color:var(--text)}
+/* CodeMirror default highlight classes, re-inked for the dark editor (>=4.5:1 on --surface-1) */
+[data-theme=dark] .cm-content :is(.ͼb){color:#D7A6FF} [data-theme=dark] .cm-content .ͼd{color:#7EE2B0}
+[data-theme=dark] .cm-content .ͼe{color:#FF9C9C} [data-theme=dark] .cm-content .ͼf{color:#FFAD5C}
+[data-theme=dark] .cm-content .ͼg{color:#8DB8FF} [data-theme=dark] .cm-content .ͼi{color:#6FE0B8}
+[data-theme=dark] .cm-content .ͼm{color:#C9A27A} [data-theme=dark] .cm-content .ͼ5{color:#B9C2D6}
+[data-theme=dark] .cm-content .ͼc,[data-theme=dark] .cm-content .ͼh,[data-theme=dark] .cm-content .ͼj,[data-theme=dark] .cm-content .ͼk,[data-theme=dark] .cm-content .ͼl{color:#C8D3FF}
