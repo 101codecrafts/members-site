@@ -713,3 +713,7 @@ html[data-theme=dark]:not(.static) .app.dz .dz-box-b-quick .qa:not(:first-child)
 html[data-theme=dark]:not(.static) .ahead .atopic{color:var(--on-accent)!important}
 /* integrate3: landing JOIN COMMUNITY pill keeps navy ink on orange in dark (landing.css forces color:var(--nv), which flips light) */
 html[data-theme=dark]:not(.static) .hdr .join,html[data-theme=dark]:not(.static) .hdr .join *{color:var(--on-accent)!important}
+/* integrate3: Quick Access "Create Project" plus icon (symbol draws a white plus on currentColor) - give the disc the accent in dark so the plus stays visible */
+html[data-theme=dark]:not(.static) .app .qa svg:has(use[href="#i-plusc"]),html[data-theme=dark]:not(.static) .app.dz .dz-box-b-quick .qa:not(:first-child) svg:has(use[href="#i-plusc"]),html[data-theme=dark]:not(.static) .app.dz .dz-box-b-quick .qa:not(:first-child) use[href="#i-plusc"]{color:var(--accent)!important}
+/* integrate3: the drawer scrim stays a translucent dim in dark (the generated mapping made it an opaque navy fill that hid the page) */
+[data-theme=dark] .sb-scrim{background:rgba(2,4,14,.66);color:inherit}

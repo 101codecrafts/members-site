@@ -186,15 +186,20 @@ html.static .dash-shell>.sbar,html.static .dash-shell>.sb-scrim,html.static .das
 }
 /* dark theme opt-in: the shell is already dark; keep the top bar navy rather than app.css's grey */
 
-/* integrate3: 44px tap targets in the top bar (density report) + phone settings toggle docked in the top bar so it never covers content */
+/* integrate3: 44px tap targets in the top bar (density report) + the settings toggle docked in the shell top bar (js/ui.js) so it never covers content */
 html:not(.static) .shell .topbar .ib,html:not(.static) .tb-nav,html:not(.static) .sb-toggle{width:44px;height:44px}
 html:not(.static) .shell .topbar .ib .dot{top:10px;right:10px}
 html:not(.static) .tb-btn,html:not(.static) .acct-btn{min-height:44px;height:44px}
+html:not(.static) .cc-toolbar.docked{position:static;flex:none;padding:0;margin:0;background:transparent;border:0;box-shadow:none;opacity:1;z-index:auto}
+html:not(.static) .cc-toolbar.docked .cc-tb-toggle{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center;background:transparent;color:var(--sh-text);border:1px solid transparent}
+html:not(.static) .cc-toolbar.docked .cc-tb-toggle:hover,html:not(.static) .cc-toolbar.docked.open .cc-tb-toggle{border-color:var(--sh-line);background:var(--sh-navy-2)}
+html:not(.static) .cc-toolbar.docked .cc-tb-toggle svg{width:20px;height:20px}
+html:not(.static) .cc-toolbar.docked .cc-tb-panel{position:fixed;right:8px;left:auto;top:calc(var(--tb-h) + 8px);z-index:1001;display:flex;flex-wrap:wrap;gap:6px;padding:6px;background:var(--sh-navy);border:1px solid var(--sh-line);box-shadow:4px 4px 0 var(--sh-or)}
 @media (max-width:760px){
   html:not(.static) .tb-btn{height:44px;padding:0 12px}
-  html:not(.static) .cc-toolbar.docked{position:static;flex:none;order:0;padding:0;margin:0;background:transparent;border:0;box-shadow:none;opacity:1;z-index:auto}
-  html:not(.static) .cc-toolbar.docked .cc-tb-toggle{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center;background:transparent;color:var(--sh-text);border:1px solid transparent}
-  html:not(.static) .cc-toolbar.docked .cc-tb-toggle:hover{border-color:var(--sh-line);background:var(--sh-navy-2)}
-  html:not(.static) .cc-toolbar.docked .cc-tb-toggle svg{width:20px;height:20px}
-  html:not(.static) .cc-toolbar.docked .cc-tb-panel{position:fixed;left:8px;right:8px;top:calc(var(--tb-h) + 8px);z-index:1001;display:flex;flex-wrap:wrap;gap:6px;padding:6px;background:var(--sh-navy);border:1px solid var(--sh-line);box-shadow:4px 4px 0 var(--sh-or)}
+  html:not(.static) .cc-toolbar.docked .cc-tb-panel{left:8px}
 }
+/* integrate3: phones, pages without the shell top bar: the toolbar lives in the footer flow (js/ui.js adds .in-foot) */
+html:not(.static) .cc-toolbar.in-foot{position:static!important;inset:auto!important;z-index:auto;opacity:1;box-shadow:none;margin:var(--s-2,8px) 0 0;flex-wrap:wrap;width:max-content!important;max-width:100%;flex:0 0 auto!important}
+html:not(.static) .cc-toolbar.in-foot:not(.open){padding:2px;border:1px solid rgba(255,255,255,.25)}
+html:not(.static) .cc-toolbar.in-foot .cc-tb-toggle{width:44px;min-width:44px;height:44px}

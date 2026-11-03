@@ -397,3 +397,5 @@ html:not(.static):not(.has-roles) .role-tabs,html:not(.static):not(.has-roles) .
 /* integrate3: promo close is a 44px tap target (density report); the bar stays 44px tall */
 html:not(.static) .promo-bar{min-height:44px;padding-top:0;padding-bottom:0}
 html:not(.static) .promo-bar button{width:44px;height:44px}
+/* integrate3: flow-page footer social row sizes to its icons (height:100% from .socials.live made it as tall as the footer, so the GitHub mark hung below the band) */
+html:not(.static) .flow-foot .socials.live{height:auto;align-self:center}
