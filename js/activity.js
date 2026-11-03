@@ -156,9 +156,8 @@
     shareB.addEventListener("click", async function () {
       var url = location.origin + location.pathname + "#" + card.id;
       var text = (($("q", card) || {}).textContent || "").trim();
-      if (navigator.share && matchMedia("(pointer:coarse)").matches) { try { await navigator.share({ title: who + " on 101 Codecrafts", text: text, url: url }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
-      try { await navigator.clipboard.writeText(url); toast("Link copied"); }
-      catch (e) { var t = document.createElement("textarea"); t.value = url; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0"; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); toast("Link copied"); } catch (x) { toast(url); } t.remove(); }
+      if (window.CC_SHARE) { await window.CC_SHARE.share({ title: who + " on 101 Codecrafts", text: text, url: url }); return; }
+      try { await navigator.clipboard.writeText(url); toast("Link copied"); } catch (e) { toast(url); }
     });
 
     paint();

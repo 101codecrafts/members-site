@@ -1,0 +1,83 @@
+/* 101 Member Card generator (card.html). Colours are theme roles only (css/system.css + css/theme.css), so dark mode
+   needs no generated overrides; sizes are fluid type steps; every control is >= 44px. */
+.cd-page{display:flex;flex-direction:column;gap:var(--gap-section,24px);padding-bottom:var(--s-12,48px)}
+.cd-head p{max-width:60ch}
+.cd-private{display:flex;align-items:center;gap:var(--s-2);margin-top:var(--s-3)!important;padding:var(--s-2) var(--s-3);width:fit-content;max-width:100%;
+  background:var(--surface-3);color:var(--text)!important;font:600 var(--step--1)/1.35 var(--body);border-left:4px solid var(--accent-2)}
+.cd-private svg{width:18px;height:18px;flex:none}
+
+.cd-grid{display:grid;gap:var(--gap-card,16px);grid-template-columns:minmax(0,1fr);grid-template-areas:"prev" "steps" "acts";align-items:start}
+.cd-side{display:contents}
+.cd-prev{grid-area:prev}.cd-steps{grid-area:steps}.cd-acts{grid-area:acts}
+@media (min-width:1024px){
+  .cd-grid{grid-template-columns:minmax(0,1fr) minmax(340px,.9fr);grid-template-areas:"steps side"}
+  .cd-side{display:flex;flex-direction:column;gap:var(--gap-card,16px);grid-area:side;position:sticky;top:calc(var(--tb-h,60px) + var(--s-4))}
+}
+.cd-steps{display:flex;flex-direction:column;gap:var(--gap-card,16px);margin:0}
+.cd-step,.cd-prev,.cd-acts{display:flex;flex-direction:column;gap:var(--s-3);padding:var(--pad-card,16px)}
+.cd-step h2,.cd-prev h2{display:flex;align-items:center;gap:var(--s-3);margin:0;font:400 var(--step-1)/1.15 var(--disp);letter-spacing:.01em;color:var(--text)}
+.cd-step h2 label{cursor:pointer}
+.cd-n{display:inline-grid;place-items:center;min-width:2.4em;height:2.4em;padding:0 .3em;background:var(--fill-inverse);color:var(--accent-2);font:400 var(--step--1)/1 var(--disp)}
+.cd-hint{margin:0;color:var(--text-muted);font:500 var(--step--1)/1.4 var(--body)}
+.cd-row{display:flex;justify-content:space-between;gap:var(--s-3);flex-wrap:wrap}
+.cd-count{font-variant-numeric:tabular-nums;font-weight:700;color:var(--text)}
+
+/* step 01: photo pickers + drop zone */
+.cd-drop{display:flex;flex-direction:column;gap:var(--s-3);padding:var(--s-4);border:2px dashed var(--border-strong);background:var(--surface-2)}
+.cd-drop.is-over,.cd-stage.is-over{outline:3px solid var(--accent-2);outline-offset:3px;background:var(--surface-3)}
+.cd-pick{display:flex;flex-wrap:wrap;gap:var(--s-3)}
+.cd-file{position:relative;min-height:48px;cursor:pointer;flex:1 1 180px}
+.cd-file svg{width:20px;height:20px;flex:none}
+.cd-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.cd-file:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+@media (pointer:coarse){.cd-dnd{display:none}}
+
+/* step 02: name */
+.cd-text{width:100%;min-height:48px;padding:var(--s-2) var(--s-3);border:var(--bw,2px) solid var(--border-strong);background:var(--surface-1);color:var(--text);font:600 var(--step-0)/1.35 var(--body);border-radius:0}
+textarea.cd-text{min-height:96px;resize:vertical;font-weight:500}
+.cd-text:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+
+/* step 03/04: chips + format cards (radio inputs stay real for keyboard + screen readers) */
+.cd-fs{border:0;margin:0;padding:0;min-width:0}
+.cd-legend{margin-bottom:var(--s-2);font:700 var(--step--1)/1.3 var(--body);color:var(--text)}
+.cd-legend small{font-weight:500;color:var(--text-muted)}
+.cd-chips{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.cd-chip,.cd-fmt{position:relative;display:inline-flex;cursor:pointer}
+.cd-chip input,.cd-fmt input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.cd-chip span{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--s-4);border:var(--bw,2px) solid var(--border-strong);background:var(--surface-1);color:var(--text);font:700 var(--step--1)/1 var(--body)}
+.cd-chip:hover span{background:var(--surface-2)}
+.cd-chip input:checked+span{background:var(--accent);color:var(--on-accent);border-color:var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
+.cd-chip input:focus-visible+span,.cd-fmt input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
+.cd-formats{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
+.cd-fmt span{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:var(--s-3);align-items:center;width:100%;min-height:64px;padding:var(--s-3);border:var(--bw,2px) solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+.cd-fmt b{font:700 var(--step-0)/1.1 var(--body)}
+.cd-fmt small{grid-column:2;font:500 var(--step--2)/1.3 var(--body);color:var(--text-muted)}
+.cd-fmt input:checked+span{box-shadow:inset 0 0 0 2px var(--accent),4px 4px 0 var(--accent);background:var(--surface-2)}
+.cd-ico{grid-row:1/3;display:block;border:2px solid currentColor}
+.cd-ico.sq{width:22px;height:22px}.cd-ico.st{width:16px;height:28px}
+.cd-fmt input:checked+span .cd-ico{background:var(--accent);border-color:var(--border-strong)}
+
+/* preview */
+.cd-prev-h{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3)}
+.cd-ready{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 var(--s-3);background:var(--surface-3);color:var(--text);font:700 var(--step--1)/1 var(--body);font-variant-numeric:tabular-nums}
+.cd-ready::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--text-muted)}
+.cd-ready.ok{background:var(--accent-2);color:var(--on-accent-2)}
+.cd-ready.ok::before{background:var(--on-accent-2)}
+.cd-stage{display:block;min-width:0;padding:var(--s-3);background:var(--surface-3);border:var(--bw,2px) solid var(--border-strong)}
+.cd-stage canvas{display:block;margin:0 auto;width:auto;height:auto;max-width:100%;max-height:min(62vh,640px);box-shadow:6px 6px 0 var(--shadow-ink);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.cd-stage canvas.is-drag{cursor:grabbing}
+.cd-stage canvas:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+@media (min-width:1024px){.cd-stage canvas{max-height:min(56vh,600px)}}
+.cd-zoom{display:flex;align-items:center;gap:var(--s-2)}
+.cd-zoom input[type=range]{flex:1;min-width:0;height:44px;accent-color:var(--accent)}
+.cd-ib{min-width:44px;padding:0;font-size:var(--step-1)}
+.cd-zoom .btn{min-height:44px}
+
+/* actions */
+.cd-btns{display:flex;flex-wrap:wrap;gap:var(--s-3)}
+.cd-btns .btn{flex:1 1 160px;min-height:48px}
+.cd-btns .btn svg{width:20px;height:20px;flex:none}
+.cd-btns .btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.cd-cap-l{font:700 var(--step--1)/1.3 var(--body);color:var(--text)}
+.cd-status{margin:0;min-height:1.4em;font:600 var(--step--1)/1.4 var(--body);color:var(--text)}
+.cd-restart{background:transparent}

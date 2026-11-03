@@ -278,9 +278,10 @@
     f.addEventListener("change", sum);
     const dist = $("#co-district"); dist.onchange = () => { if (allDigital) return; const up = !["Kampala", "Wakiso", "Mukono", "Entebbe"].includes(dist.value); const r = f.querySelector(`[name=delivery][value=${up ? "courier" : "boda"}]`); if (r) { r.checked = true; sum(); } };
     f.onsubmit = async e => {
-      e.preventDefault(); const msg = $("#co-msg");
-      if (!f.name.value.trim()) { msg.textContent = "Please enter your full name."; f.name.focus(); return; }
-      if (!/^(\+?256|0)7\d{8}$/.test(f.phone.value.replace(/\s/g, ""))) { msg.textContent = "Enter a Ugandan mobile number, e.g. 0772 123 456."; f.phone.focus(); return; }
+      e.preventDefault(); const msg = $("#co-msg"), FE = window.CC_UI.fieldError; FE(f.name, ""); FE(f.phone, ""); msg.textContent = "";
+      if (!f.name.value.trim()) FE(f.name, "Enter your full name, as it should appear on the delivery.");
+      if (!/^(\+?256|0)7\d{8}$/.test(f.phone.value.replace(/\s/g, ""))) FE(f.phone, f.phone.value.trim() ? "That number doesn't look right. Use a Ugandan mobile number, e.g. 0772 123 456." : "Enter your mobile number, e.g. 0772 123 456.");
+      const bad = f.querySelector("[aria-invalid=true]"); if (bad) { msg.textContent = "Check the details marked above."; bad.focus(); return; }
       $("#co-place").disabled = true; msg.textContent = f.pay.value === "Card (Flutterwave)" ? "Opening secure card payment…" : `Check your phone: approve the ${f.pay.value} prompt.`;
       const res = await A.checkout({ lines, delivery: allDigital ? "digital" : f.delivery.value, pickupPoint: f.pickupPoint.value, pay: f.pay.value, phone: f.phone.value, name: f.name.value, district: dist.value });
       location.href = "orders.html?placed=" + encodeURIComponent(res.orderId);

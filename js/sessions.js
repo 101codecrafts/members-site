@@ -93,8 +93,12 @@
         e.preventDefault();
         var msg = $("#ses-form-msg");
         var when = new Date(form.starts_at.value);
-        if (!form.title.value.trim() || isNaN(when.getTime())) return toast(msg, "Add a title and a valid date/time.", true);
-        if (when.getTime() < Date.now() - 6e4) return toast(msg, "Pick a time in the future.", true);
+        var FE = window.CC_UI && window.CC_UI.fieldError || function () {};
+        FE(form.title, ""); FE(form.starts_at, "");
+        if (!form.title.value.trim()) FE(form.title, "Add a title for your session.");
+        if (isNaN(when.getTime())) FE(form.starts_at, "Pick a date and time.");
+        else if (when.getTime() < Date.now() - 6e4) FE(form.starts_at, "Pick a time in the future.");
+        var bad = form.querySelector("[aria-invalid=true]"); if (bad) { bad.focus(); return toast(msg, "Check the details marked above.", true); }
         var input = { title: form.title.value.trim().slice(0, 140), description: form.description.value.trim().slice(0, 2000), starts_at: when.toISOString(), duration_min: Math.min(480, Math.max(15, Number(form.duration_min.value) || 60)), capacity: Math.min(500, Math.max(1, Number(form.capacity.value) || 30)), provider: form.provider.value, whiteboard: form.whiteboard.checked };
         A.create(input).then(function (r) { toast(msg, "Session scheduled."); form.reset(); draw(); if (r.session) setTimeout(function () { location.href = "session.html?id=" + encodeURIComponent(r.session.id); }, 600); }, function (err) { toast(msg, err.message || "Couldn't schedule.", true); });
       });

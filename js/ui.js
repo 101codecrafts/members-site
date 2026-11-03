@@ -259,6 +259,62 @@
     const f = () => html.style.setProperty("--hdr-y", (pg.getBoundingClientRect().top + scrollY) + "px");
     f(); addEventListener("resize", f); if (window.ResizeObserver) new ResizeObserver(f).observe(document.body);
   }
+  /* ---------------- inline form errors (plain words, next to the field, role=alert) ----------------
+     Any constraint failure (submit, checkValidity, reportValidity) fires `invalid`: we cancel the browser bubble and write
+     the message under the field instead. Page scripts add their own checks with CC_UI.fieldError(el, msg). */
+  let errSeq = 0;
+  const labelOf = el => {
+    const l = el.closest("label") || (el.id && document.querySelector(`label[for="${el.id}"]`));
+    let t = l ? [...l.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(" ").trim() : "";
+    if (!t && l) t = (l.querySelector(".lbl, span:not(.sr-only):not(.field-err)") || {}).textContent || l.textContent;
+    t = (t || el.getAttribute("aria-label") || el.placeholder || el.name || "this").replace(/\s*\*\s*$/, "").replace(/\s+/g, " ").trim();
+    return t.replace(/^(Your|your)\s+/, "");
+  };
+  function plainMessage(el) {
+    const v = el.validity, n = labelOf(el), low = n.charAt(0).toLowerCase() + n.slice(1);
+    if (v.valueMissing) {
+      if (el.type === "checkbox") return "Tick this box to continue.";
+      if (el.type === "radio") return "Choose one option.";
+      if (el.type === "file") return "Add a file.";
+      if (el.tagName === "SELECT") return `Choose ${low}.`;
+      return `Enter your ${low}.`;
+    }
+    if (v.typeMismatch) return el.type === "email" ? "That email address doesn't look right. Check for a missing @ or dot." : el.type === "url" ? "That link doesn't look right. It should start with https://" : `That ${low} doesn't look right.`;
+    if (v.badInput) return el.type === "number" ? "Enter a number, using digits only." : `That ${low} doesn't look right.`;
+    if (v.tooShort) return `Use at least ${el.minLength} characters (you have ${el.value.length}).`;
+    if (v.tooLong) return `Use ${el.maxLength} characters or fewer.`;
+    if (v.rangeUnderflow) return el.type === "date" ? `Pick a date on or after ${el.min}.` : `Use ${el.min} or more.`;
+    if (v.rangeOverflow) return el.type === "date" ? `Pick a date on or before ${el.max}.` : `Use ${el.max} or less.`;
+    if (v.stepMismatch) return "Use a whole number.";
+    if (v.patternMismatch) return el.title || `That ${low} doesn't match the format we need.`;
+    if (v.customError) return el.validationMessage;
+    return "Check this field.";
+  }
+  function errFor(el) { const id = el.getAttribute("data-err-id"); return id ? document.getElementById(id) : null; }
+  function fieldError(el, msg) {
+    if (!el) return;
+    let p = errFor(el);
+    if (!msg) { if (p) p.remove(); el.removeAttribute("aria-invalid"); el.removeAttribute("data-err-id");
+      const d = (el.getAttribute("aria-describedby") || "").split(" ").filter(x => x && !/^ferr-/.test(x)).join(" "); d ? el.setAttribute("aria-describedby", d) : el.removeAttribute("aria-describedby"); return; }
+    if (!p) {
+      p = document.createElement("p"); p.className = "field-err"; p.id = "ferr-" + (++errSeq); p.setAttribute("role", "alert");
+      const host = (el.matches(".opts") ? el : el.closest("label.field, .field, label")) || el; host.after(p);
+      el.setAttribute("data-err-id", p.id);
+      el.setAttribute("aria-describedby", ((el.getAttribute("aria-describedby") || "") + " " + p.id).trim());
+    }
+    p.textContent = msg; el.setAttribute("aria-invalid", "true");
+  }
+  function clearErrors(form) { if (form) form.querySelectorAll("[data-err-id]").forEach(el => fieldError(el, "")); }
+  let firstBad = null;
+  document.addEventListener("invalid", e => {
+    const el = e.target; if (!el || !el.form || el.form.hasAttribute("data-native-errors")) return;
+    e.preventDefault(); fieldError(el, plainMessage(el));
+    if (!firstBad) { firstBad = el; setTimeout(() => { try { firstBad.focus({ preventScroll: false }); } catch (x) {} firstBad = null; }, 0); }
+  }, true);
+  const recheck = e => { const el = e.target; if (el && el.getAttribute && el.getAttribute("data-err-id") && el.validity && el.validity.valid) fieldError(el, ""); };
+  document.addEventListener("input", recheck, true); document.addEventListener("change", recheck, true);
+  Object.assign(window.CC_UI, { fieldError, clearErrors, plainMessage });
+
   function ready(fn) { document.readyState !== "loading" ? fn() : document.addEventListener("DOMContentLoaded", fn); }
   ready(() => {
     fixGoLinks();

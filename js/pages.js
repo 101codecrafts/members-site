@@ -228,7 +228,7 @@
     /* ---------------- Profile / verify ---------------- */
     async profile() {
       const handle = (location.pathname.match(/\/u\/([^/]+)/) || [])[1] || q.get("u") || "sarah-n"; const p = await API.fetchProfile(handle);
-      $("#pf").innerHTML = `<div class="page-h"><div class="row"><span class="plogo big">${esc(p.name.split(" ").map(w => w[0]).join(""))}</span><div><div class="kicker">@${esc(p.handle)}</div><h1>${esc(p.name.toUpperCase())}</h1><p>${esc(p.bio)}</p><div class="row">${levelBadge(p.level)}<span class="tagx">${esc(p.role)}</span></div></div></div><a class="btn" data-wa-share="${esc(p.name)} on 101 Codecrafts:" href="#">${ico("wa")}Share profile</a></div>
+      $("#pf").innerHTML = `<div class="page-h"><div class="row"><span class="plogo big">${esc(p.name.split(" ").map(w => w[0]).join(""))}</span><div><div class="kicker">@${esc(p.handle)}</div><h1>${esc(p.name.toUpperCase())}</h1><p>${esc(p.bio)}</p><div class="row">${levelBadge(p.level)}<span class="tagx">${esc(p.role)}</span></div></div></div><div class="row"><a class="btn" data-wa-share="${esc(p.name)} on 101 Codecrafts:" href="#">${ico("wa")}Share profile</a><a class="btn or" href="/card.html">${ico("badge")}Make your member card</a></div></div>
         <div class="grid g2"><div class="card"><div class="sec-title"><h2>BADGES</h2></div><div class="row">${p.badges.map(b => `<span class="badge-t" style="position:static">${esc(b)}</span>`).join("")}</div></div>
         <div class="card"><div class="sec-title"><h2>PROJECTS</h2></div><div class="list">${p.projects.map(x => `<div class="li"><div class="grow"><b>${esc(x.name)}</b><small>${x.kind} · ${x.progress}% done</small></div></div>`).join("")}</div></div></div>`;
     },
@@ -246,9 +246,11 @@
       f.onsubmit = async e => {
         e.preventDefault();
         const id = f.email.value.trim(), pw = f.password.value;
-        f.email.setAttribute("aria-invalid", !id); f.password.setAttribute("aria-invalid", !pw);
-        if (!id || !pw) { say(!id ? "Enter your email or phone number." : "Enter your password.", "err"); (!id ? f.email : f.password).focus(); return; }
-        if (id.includes("@") && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(id)) { f.email.setAttribute("aria-invalid", true); say("That email address doesn't look right.", "err"); f.email.focus(); return; }
+        const FE = window.CC_UI.fieldError; FE(f.email, ""); FE(f.password, ""); say("");
+        if (!id) FE(f.email, "Enter your email or phone number.");
+        else if (id.includes("@") && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(id)) FE(f.email, "That email address doesn't look right. Check for a missing @ or dot.");
+        if (!pw) FE(f.password, "Enter your password.");
+        const bad = f.querySelector("[aria-invalid=true]"); if (bad) { bad.focus(); return; }
         btn.disabled = true; const label = btn.textContent; btn.textContent = "Signing in…"; say("Checking your details…");
         const r = await API.signIn(id, pw);
         btn.disabled = false; btn.textContent = label;
@@ -260,7 +262,7 @@
     async signup() {
       const f = $("#su"); const age = () => { const d = Date.parse(f.dob.value); return d ? (Date.now() - d) / 31557600000 : 99; };
       f.dob.onchange = () => { $("#guardian").hidden = age() >= 18; $$("#guardian input").forEach(i => i.required = age() < 18); };
-      f.onsubmit = async e => { e.preventDefault(); const sm = $("#su-msg"); if (!f.checkValidity()) { const bad = f.querySelector(":invalid"); if (sm) { sm.className = "form-msg err"; sm.textContent = (bad.closest("label") ? bad.closest("label").firstChild.textContent.trim() + ": " : "") + bad.validationMessage; } bad.focus(); return; }
+      f.onsubmit = async e => { e.preventDefault(); const sm = $("#su-msg"); if (!f.checkValidity()) { if (sm) { sm.className = "form-msg err"; sm.textContent = "Some details need fixing. Check the messages under the fields."; } return; } if (sm) sm.textContent = "";
         if (sm) { sm.className = "form-msg info"; sm.textContent = "Accounts open when the 101 backend is live. Continuing to the onboarding preview…"; }
         const data = Object.fromEntries(new FormData(f)); if (age() < 18) await API.requestGuardianConsent({ child: data.email, guardian: data.g_email, phone: data.g_phone });
         await API.signUp(data); sessionStorage.setItem("cc_signup", JSON.stringify({ name: data.name, minor: age() < 18 })); location.href = "onboarding.html"; };
@@ -271,7 +273,14 @@
       pick("[data-role]"); pick("[data-mylevel]"); pick("[data-teach]"); pick("[data-int]");
       const s = JSON.parse(sessionStorage.getItem("cc_signup") || "{}"); if (s.minor) $("#minor-note").hidden = false;
       $("#ob-back").onclick = () => { i--; show(); };
-      $("#ob-next").onclick = async () => { if (i < steps.length - 1) { i++; show(); return; }
+      const FE = window.CC_UI.fieldError;
+      const stepOk = () => { const st = steps[i]; let grp = null, msg = "";
+        if (st.querySelector("[data-mylevel]") && !$("#learner-level").hidden && !$$("[data-mylevel][aria-pressed=true]").length) { grp = $("#learner-level .opts"); msg = "Pick the level that fits you best. You can change it later."; }
+        else if (st.querySelector("[data-teach]") && !$("#tutor-levels").hidden && !$$("[data-teach][aria-pressed=true]").length) { grp = $("#tutor-levels .opts"); msg = "Pick at least one level you teach."; }
+        $$(".opts[data-err-id]", st).forEach(o => { if (o !== grp) FE(o, ""); });
+        if (grp) { FE(grp, msg); (grp.querySelector(".opt") || grp).focus(); return false; } return true; };
+      $$(".opt").forEach(b => b.addEventListener("click", () => { const o = b.closest(".opts"); if (o && o.getAttribute("data-err-id")) FE(o, ""); }));
+      $("#ob-next").onclick = async () => { if (!stepOk()) return; if (i < steps.length - 1) { i++; show(); return; }
         const val = sel => $$(sel + "[aria-pressed=true]").map(b => b.textContent.trim());
         await API.saveOnboarding({ role: val("[data-role]")[0], level: val("[data-mylevel]")[0], teaches: val("[data-teach]"), interests: val("[data-int]") });
         location.href = val("[data-role]")[0] === "Tutor" ? "tutor.html" : "dashboard.html"; };

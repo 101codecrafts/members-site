@@ -49,7 +49,7 @@ def head(a, page):
 <script type="application/ld+json">{json.dumps(ld if len(ld) > 1 else ld[0])}</script>'''
 
 def scripts(charts=False):
-    tags = ['<script src="js/data.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>']
+    tags = ['<script src="js/data.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
     tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/ads.js" defer></script>']
@@ -62,11 +62,11 @@ NAV = {
              "Build", ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"),
              "Community", ("Groups", "people", "groups.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
              "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Announcements", "megaphone", "announcements.html"), ("Library", "folder", "resources.html"),
-             "Your space", ("My Courses", "cap", "courses.html#c101"), ("My Projects", "codebox", "projects.html"), ("My Downloads", "download", "resources.html"), ("My Profile", "user", "profile.html"), ("Settings", "gear", "settings-apps.html")],
+             "Your space", ("My Courses", "cap", "courses.html#c101"), ("My Projects", "codebox", "projects.html"), ("My Downloads", "download", "resources.html"), ("My Profile", "user", "profile.html"), ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
  'tutor': ["Teach", ("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "sessions.html"), ("Earnings & Payouts", "cash", "tutor.html#earnings"),
            "Explore", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
            "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
-           "Your space", ("Messages", "chat", "#"), ("Settings", "gear", "settings-apps.html")],
+           "Your space", ("Messages", "chat", "#"), ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
  'admin': ["Overview", ("Overview", "home", "admin.html"), ("Analytics", "chart", "admin.html#analytics"),
            "People", ("Members", "users", "admin.html#users"), ("Learners", "cap", "admin.html#users"), ("Tutors", "teacher", "admin.html#users"), ("Approvals", "clipboard", "admin.html#approvals"),
            "Content", ("Courses & Paths", "learning", "admin.html#courses"), ("Projects", "code", "#"), ("Tools/Software", "toolbox", "#"), ("Library", "folder", "admin.html#add-resource"), ("Announcements", "megaphone", "admin.html#announcements"), ("Opportunity review", "briefcase", "admin.html#opp-queue"), ("Events", "calendar", "admin.html#events"),
@@ -135,9 +135,9 @@ def bundle(name, parts):
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
 bundle('bundle-theme.css', ['theme-dark.css', 'theme.css'])   # loaded LAST on every page (see THEME_LINK)
-bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css'])
-bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css'])
-bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css'])
+bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
     'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Make your 101 Member Card · 101 Codecrafts" desc="Make a 101 Codecrafts member card with your photo, name and role, then share it on WhatsApp, Instagram, LinkedIn or X. Your photo never leaves your device." path="card.html" og="assets/og/og-card.png"}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/card.css">
+</head>
+<body class="flow" data-role="learner" data-page="card">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Member card"}}
+<div class="main">
+{{TOPBAR role="learner"}}
+<main id="main" class="content cd-page">
+  <div class="page-h cd-head">
+    <div>
+      <div class="kicker">101 Member Card</div>
+      <h1>MAKE YOUR MEMBER CARD</h1>
+      <p>Add your photo, your name and your role. Then download it or share it to WhatsApp, Instagram, LinkedIn or X.</p>
+      <p class="cd-private"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Your photo stays on this device. Nothing is uploaded.</span></p>
+    </div>
+  </div>
+
+  <div class="cd-grid">
+    <form class="cd-steps" id="cd-form" novalidate aria-label="Member card details">
+      <section class="card cd-step" aria-labelledby="cd-s1">
+        <h2 id="cd-s1"><span class="cd-n" aria-hidden="true">01</span>Your photo</h2>
+        <div class="cd-drop" id="cd-drop">
+          <div class="cd-pick">
+            <label class="btn or cd-file"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Choose photo</span>
+              <input type="file" id="cd-photo" class="cd-input" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif,image/*" aria-describedby="cd-photo-hint cd-photo-err"></label>
+            <label class="btn cd-file"><svg aria-hidden="true"><use href="#i-user"/></svg><span>Take a selfie</span>
+              <input type="file" id="cd-selfie" class="cd-input" accept="image/*" capture="user" aria-describedby="cd-photo-hint cd-photo-err"></label>
+          </div>
+          <p class="cd-hint" id="cd-photo-hint"><span class="cd-dnd">Or drag a photo here. </span>JPEG, PNG, WebP or HEIC, up to 10&nbsp;MB.</p>
+        </div>
+        <p class="field-err" id="cd-photo-err" role="alert" hidden></p>
+      </section>
+
+      <section class="card cd-step" aria-labelledby="cd-s2">
+        <h2 id="cd-s2"><span class="cd-n" aria-hidden="true">02</span><label for="cd-name">Your name</label></h2>
+        <input class="cd-text" id="cd-name" name="name" type="text" maxlength="28" autocomplete="name" spellcheck="false" placeholder="e.g. Amina Nakato" aria-describedby="cd-name-hint cd-count">
+        <p class="cd-hint cd-row"><span id="cd-name-hint">Printed exactly as you type it, so mind the capitals.</span><span id="cd-count" class="cd-count">0/28</span></p>
+      </section>
+
+      <section class="card cd-step" aria-labelledby="cd-s3">
+        <h2 id="cd-s3"><span class="cd-n" aria-hidden="true">03</span>Your role</h2>
+        <fieldset class="cd-fs"><legend class="sr-only">Your role</legend>
+          <div class="cd-chips">
+            <label class="cd-chip"><input type="radio" name="role" value="Learner" checked><span>Learner</span></label>
+            <label class="cd-chip"><input type="radio" name="role" value="Tutor"><span>Tutor</span></label>
+            <label class="cd-chip"><input type="radio" name="role" value="Mentor"><span>Mentor</span></label>
+            <label class="cd-chip"><input type="radio" name="role" value="Volunteer"><span>Volunteer</span></label>
+            <label class="cd-chip"><input type="radio" name="role" value="Builder"><span>Builder</span></label>
+            <label class="cd-chip"><input type="radio" name="role" value="Organizer"><span>Organizer</span></label>
+            <label class="cd-chip"><input type="radio" name="role" value="Speaker"><span>Speaker</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="cd-fs"><legend class="cd-legend">Level <small>optional</small></legend>
+          <div class="cd-chips">
+            <label class="cd-chip"><input type="radio" name="level" value="" checked><span>No level</span></label>
+            <label class="cd-chip"><input type="radio" name="level" value="Primary"><span>Primary</span></label>
+            <label class="cd-chip"><input type="radio" name="level" value="O-level"><span>O-level</span></label>
+            <label class="cd-chip"><input type="radio" name="level" value="A-level"><span>A-level</span></label>
+            <label class="cd-chip"><input type="radio" name="level" value="University"><span>University</span></label>
+            <label class="cd-chip"><input type="radio" name="level" value="Professional"><span>Professional</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="card cd-step" aria-labelledby="cd-s4">
+        <h2 id="cd-s4"><span class="cd-n" aria-hidden="true">04</span>Format</h2>
+        <fieldset class="cd-fs"><legend class="sr-only">Format</legend>
+          <div class="cd-formats">
+            <label class="cd-fmt"><input type="radio" name="format" value="square" checked><span><i class="cd-ico sq" aria-hidden="true"></i><b>Square</b><small>1080 × 1080 · posts</small></span></label>
+            <label class="cd-fmt"><input type="radio" name="format" value="story"><span><i class="cd-ico st" aria-hidden="true"></i><b>Story</b><small>1080 × 1920 · status, stories</small></span></label>
+          </div>
+        </fieldset>
+      </section>
+    </form>
+
+    <div class="cd-side">
+      <section class="card cd-prev" aria-labelledby="cd-ph">
+        <div class="cd-prev-h"><h2 id="cd-ph">Preview</h2><span class="cd-ready" id="cd-ready">0/2 ready</span></div>
+        <div class="cd-stage" id="cd-stage">
+          <canvas id="cd-canvas" width="1080" height="1080" tabindex="0" role="application" aria-roledescription="member card preview" aria-describedby="cd-help" aria-label="Card preview. Add a photo to place it here."></canvas>
+        </div>
+        <p class="cd-hint" id="cd-help">Drag to move your photo. Pinch or scroll to zoom. On a keyboard: arrow keys move, + and − zoom, 0 resets.</p>
+        <div class="cd-zoom" role="group" aria-label="Photo zoom">
+          <button type="button" class="btn cd-ib" id="cd-zout" aria-label="Zoom out">−</button>
+          <input type="range" id="cd-zoom" min="100" max="400" step="5" value="100" aria-label="Zoom" aria-valuetext="100%">
+          <button type="button" class="btn cd-ib" id="cd-zin" aria-label="Zoom in">+</button>
+          <button type="button" class="btn" id="cd-center">Reset</button>
+        </div>
+        <p class="sr-only" id="cd-live" aria-live="polite"></p>
+      </section>
+
+      <section class="card cd-acts" aria-labelledby="cd-ah">
+        <h2 id="cd-ah" class="sr-only">Save and share</h2>
+        <div class="cd-btns">
+          <button type="button" class="btn or" id="cd-dl" disabled aria-describedby="cd-need"><svg aria-hidden="true"><use href="#i-download"/></svg>Download PNG</button>
+          <button type="button" class="btn ink" id="cd-share" disabled aria-describedby="cd-need"><svg aria-hidden="true"><use href="#i-share"/></svg>Share</button>
+        </div>
+        <p class="cd-hint" id="cd-need">Add a photo and your name to download.</p>
+        <label class="cd-cap-l" for="cd-cap">Caption</label>
+        <textarea id="cd-cap" rows="3" class="cd-text"></textarea>
+        <div class="cd-btns">
+          <button type="button" class="btn" id="cd-copy">Copy caption</button>
+          <button type="button" class="btn cd-restart" id="cd-restart">Start over</button>
+        </div>
+        <p class="cd-status" id="cd-status" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+  </div>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/card.js" defer></script>
+</body></html>

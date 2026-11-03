@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css + touch.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -1579,3 +1579,86 @@ html:not(.static) .app.dz .dz-grid-activity{align-items:start}
 @media (prefers-reduced-motion:reduce){.act-btn,.act-btn svg{transition:none!important;transform:none!important}}
 /* integrate3: 44px tall on touch screens (density report) */
 @media (pointer:coarse){.act-btn{height:44px}}
+
+/* =====================================================================================
+   101 Codecrafts — touch layer (live site only for anything that paints; ?static=1 untouched)
+   1. touch-action: no double-tap zoom delay on controls; drag/pinch surfaces own their gestures
+   2. safe-area insets (viewport-fit=cover is in every page's viewport meta)
+   3. one pressed state for buttons and tappable cards (both themes; reduced motion = no movement)
+   4. inline form errors (.field-err, written by CC_UI in js/ui.js)
+   5. signature brand motif: brand stripe under the top bar + faint grid field on the landing hero
+   Every value below is 0 / identical on a desktop browser without a notch, so desktop layout is unchanged.
+   ===================================================================================== */
+:root{
+  --safe-t:env(safe-area-inset-top,0px); --safe-r:env(safe-area-inset-right,0px);
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-l:env(safe-area-inset-left,0px);
+  --press:2px;                                   /* the one press distance */
+  --field-err:#B42318;                           /* error text on white / page: 6.1:1 */
+  --grid-line:rgba(11,18,54,.055);               /* hero grid field */
+  --stripe:linear-gradient(90deg,var(--brand-orange,#fc8c0c) 0 34%,var(--brand-cyan,#05e6f2) 34% 67%,#2B3A8C 67% 100%);
+}
+:root[data-theme=dark]{--field-err:#FF9F94; --grid-line:rgba(255,255,255,.045)}
+
+/* ---------------------------------------------------------------- 1. touch-action */
+a,button,input,select,textarea,label,summary,[role=button],[role=tab],[role=menuitem],.btn,.opt{touch-action:manipulation}
+a,button,input,select,textarea,label,summary,[role=button],[role=tab],.btn,.opt{-webkit-tap-highlight-color:transparent}
+/* drag / pinch surfaces: the page script handles every pointer */
+[data-gesture],#gutter,.psplit>.gutter,.cd-stage canvas{touch-action:none}
+/* horizontal chip scrollers: horizontal pan inside, vertical pan still scrolls the page (pan-x alone would trap it) */
+.ftabs,.filters,.lfilters .filters,.mk-catstrip,.mk-mcats,.tabs,.pi-tabs,.ptabs,.exp-row,.cw-row,.mk-row,.tcols,.cd-chips{touch-action:pan-x pan-y}
+
+/* ---------------------------------------------------------------- 2. safe areas */
+html:not(.static) .shell .topbar{border-top:var(--safe-t) solid transparent;height:calc(var(--tb-h) + var(--safe-t));min-height:calc(var(--tb-h) + var(--safe-t));
+  border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
+html:not(.static) body>.promo-bar:first-child{border-top:var(--safe-t) solid transparent;border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
+html:not(.static) body:not(:has(>.promo-bar)) .page>.hdr{border-top:var(--safe-t) solid transparent}
+html:not(.static) .page>.hdr{border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
+@media (max-width:1023.98px){
+  html:not(.static) .shell .sbar{padding:var(--safe-t) 0 var(--safe-b) var(--safe-l)}
+}
+html:not(.static) :is(.flow-foot,.lfoot){border-bottom:var(--safe-b) solid transparent;border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
+html:not(.static) .cc-toolbar{margin:0 var(--safe-r) var(--safe-b) 0}
+html:not(.static) .cc-cookie{margin:0 0 var(--safe-b) var(--safe-l)}
+html:not(.static) #cc-toast{margin-top:var(--safe-t)}
+html:not(.static) .cc-demo{margin:var(--safe-t) 0 0 var(--safe-l)}
+html:not(.static) .cd-bar{padding-bottom:calc(var(--s-3) + var(--safe-b))}
+
+/* ---------------------------------------------------------------- 3. pressed state */
+html:not(.static) :is(button,.btn,[role=button],a[class*="btn"],a.hov,button.hov,a.qa,a.qa-wide,a.feat,a.path,a.tile,a.tcard,a.dz-card,a.card,a.tool,a.lp,.opt,.cd-chip,.tb-btn,.ib):active:not(:disabled):not([aria-disabled=true]){translate:var(--press) var(--press)}
+@media (prefers-reduced-motion:reduce){
+  html:not(.static) :is(button,.btn,[role=button],a[class*="btn"],a.hov,button.hov,a.qa,a.qa-wide,a.feat,a.path,a.tile,a.tcard,a.dz-card,a.card,a.tool,a.lp,.opt,.cd-chip,.tb-btn,.ib):active:not(:disabled):not([aria-disabled=true]){translate:none;opacity:.82}
+}
+
+/* ---------------------------------------------------------------- 4. inline form errors */
+.field-err[hidden]{display:none!important}
+.field-err{margin:4px 0 0;display:flex;gap:6px;align-items:flex-start;font:600 var(--step--1)/1.35 var(--body);color:var(--field-err)}
+.field-err::before{content:"!";flex:none;display:grid;place-items:center;width:1.25em;height:1.25em;margin-top:.05em;border-radius:50%;background:var(--field-err);color:var(--surface-1,#fff);font-size:.8em;font-weight:800}
+.row>.field-err,.opts+.field-err{flex-basis:100%}
+html:not(.static) :is(input,select,textarea)[aria-invalid=true]{border-color:var(--field-err)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--field-err) 22%,transparent)}
+.opts[aria-invalid=true]{outline:2px solid var(--field-err);outline-offset:4px}
+
+/* ---------------------------------------------------------------- 5. brand motif */
+html:not(.static) .shell .topbar::after,html:not(.static) .page>.hdr::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--stripe);pointer-events:none;z-index:2}
+html:not(.static) .shell .topbar::after{bottom:-1px}   /* sits on the bar's own bottom edge, so it reads on navy even above an orange banner */
+/* faint grid-line field behind the landing hero: phones (.page::before, above the fold) and desktop (.lhero::after) */
+@media (max-width:1023.98px){
+  html:not(.static) .page:has(>.lhero)::before{content:"";position:absolute;left:0;right:0;top:0;height:min(900px,140vh);pointer-events:none;
+    background-image:linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),linear-gradient(var(--grid-line) 1px,transparent 1px);background-size:44px 44px;background-position:-1px -1px;
+    -webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent)}
+}
+@media (min-width:1024px){
+  html:not(.static) .page>.lhero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),linear-gradient(var(--grid-line) 1px,transparent 1px);background-size:44px 44px;background-position:-1px -1px;
+    -webkit-mask-image:radial-gradient(120% 90% at 30% 40%,#000 40%,transparent);mask-image:radial-gradient(120% 90% at 30% 40%,#000 40%,transparent)}
+}
+
+/* the member-card CTAs added on the landing hero, dashboard and profile/settings */
+.mc-cta{display:inline-flex;align-items:center;gap:var(--s-2,8px);min-height:44px;margin-top:var(--s-3,12px);padding:0 var(--s-3,12px);border:var(--bw,2px) solid var(--border-strong,#0B1236);background:var(--surface-1,#fff);color:var(--text,#0B1236);font:700 var(--step--1)/1.2 var(--body);text-decoration:none;box-shadow:var(--sh,4px) var(--sh,4px) 0 var(--accent,#fc8c0c)}
+.mc-cta svg{width:20px;height:20px;flex:none}
+.mc-cta:hover{background:var(--surface-2,#F3F5F8)}
+.mc-cta:focus-visible{outline:3px solid var(--focus,#00b9e6);outline-offset:2px}
+html.static .mc-cta{display:none!important}
+html:not(.static) .page>p .mc-cta{display:flex;width:max-content;max-width:100%;margin-top:var(--s-4,16px);font-size:var(--step--1)!important;line-height:1.2!important}
+html:not(.static) .app.dz .dz-box-b-quick .qa-wide{grid-column:1/-1;display:flex;align-items:center;gap:var(--s-2);min-height:48px;padding:var(--s-2) var(--s-3);border:var(--border);background:var(--surface);color:var(--ink);font:700 var(--step--1)/1.2 var(--body);text-decoration:none;box-shadow:var(--shadow-accent)}
+html:not(.static) .app.dz .dz-box-b-quick .qa-wide svg{width:22px;height:22px;flex:none}
+html:not(.static) .app.dz .dz-box-b-quick .qa-wide span{flex:1}

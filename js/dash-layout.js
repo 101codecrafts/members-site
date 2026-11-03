@@ -60,6 +60,8 @@
     });
     var k = body.querySelector(".qa") ? "quick" : body.querySelector(".feed") ? "community" : "events";
     card.classList.add("dz-box-" + k); body.classList.add("dz-box-b-" + k);
+    if (k === "quick") { var mc = document.createElement("a"); mc.className = "qa-wide"; mc.href = "card.html";
+      mc.innerHTML = '<svg aria-hidden="true"><use href="#i-badge"/></svg><span>Make your member card</span><svg aria-hidden="true"><use href="#i-arrow"/></svg>'; body.appendChild(mc); }
     card.appendChild(head); card.appendChild(body); rail.appendChild(card);
     extra.forEach(function (x) { rail.appendChild(x); });
     p.remove();
