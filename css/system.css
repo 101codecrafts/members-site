@@ -443,3 +443,14 @@ html:not(.static) .ed-foot{padding:var(--s-1) var(--s-2)}
 /* ---- resources / library: filter card and result count sit tight on the grid */
 html:not(.static) .rgrid{margin-top:0}
 html:not(.static) :is(.rcard,.ncard,.ccard){height:100%}
+
+/* ---- "Today in tech" / "From the library" live in the page flow, above the footer, on the content grid */
+html:not(.static) .app.dz>.below{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:var(--gap-sec);width:auto!important;max-width:none!important;margin:0!important;padding:0!important;background:none}
+html:not(.static) .app.dz>.below .rgrid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))!important}
+html:not(.static) .app.dz>.below .sec-title{margin-bottom:var(--s-3)}
+@media (min-width:1100px){
+  html:not(.static) body .app.dz>.below{grid-column:1/-1;grid-row:3;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:var(--s-6)}
+  html:not(.static) body .app.dz>.foot{grid-row:4}
+}
+html:not(.static) .page>.tit{margin-top:var(--s-8)!important}
+@media (min-width:1024px){html:not(.static) .page>.tit{margin-top:0!important}}

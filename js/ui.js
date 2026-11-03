@@ -123,6 +123,8 @@
   }
   async function landingExtras() {
     const strip = $("#today-in-tech"); if (!strip) return;
+    /* live site: the strip joins the page flow above the footer (static mockup keeps it below the canvas) */
+    if (!document.documentElement.classList.contains("static")) { const ft = $(".page>.lfoot"); if (ft) ft.before(strip); }
     const news = await API.fetchNews();
     const items = news.slice(0, 10).map(n => `<a href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer"><b>${esc(n.cat)}</b> ${esc(n.title)}</a>`).join("<i>■</i>");
     $(".marquee-track", strip).innerHTML = items + "<i>■</i>" + items;

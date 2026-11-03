@@ -44,6 +44,8 @@ place={ # nth : (cols, rows, extra)
  53:(c(4,6),'22/26',''),54:(c(7,9),'22/26',''),55:(c(10,12),'22/26',''),
  56:(c(1,12),'26','margin-top:var(--space-fluid-xl)!important'),
  57:(FULL,'27','margin-top:var(--space-fluid-xl)!important'),
+ # live: js/ui.js moves #today-in-tech in before the footer, so it takes slot 57 (row 27) and the footer becomes 58 (row 28)
+ 58:(FULL,'28','margin-top:0!important'),
 }
 # avatars + member count share row 8
 for k,n in enumerate(range(10,15)): place[n]=(c(1,6),'8',f'display:block!important;justify-self:start;align-self:center;margin-left:{k*34}px!important;width:clamp(30px,2.2vw + 6px,40px)!important;height:auto!important;aspect-ratio:30/31;margin-top:var(--space-fluid-m)!important;margin-bottom:var(--space-fluid-xl)!important')

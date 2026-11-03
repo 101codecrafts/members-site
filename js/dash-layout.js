@@ -69,4 +69,7 @@
   app.insertBefore(main, foot);
   app.insertBefore(rail, foot);
   app.classList.add("dz");
+  /* "Today in tech" + "From the library" sit in the page flow above the footer (they are parsed after this script) */
+  function pullBelow() { var b = document.getElementById("below-fold"); if (b && foot.parentNode === app) app.insertBefore(b, foot); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pullBelow); else pullBelow();
 })();

@@ -895,6 +895,7 @@ html:not(.static) .page>:nth-child(54){grid-column:8/11;grid-row:22/26;margin-bl
 html:not(.static) .page>:nth-child(55){grid-column:11/14;grid-row:22/26;margin-block:calc(var(--space-fluid-xl) + var(--space-fluid-m)) var(--space-fluid-m)!important;align-self:stretch;height:auto!important}
 html:not(.static) .page>:nth-child(56){grid-column:2/14;grid-row:26;margin-top:var(--space-fluid-xl)!important}
 html:not(.static) .page>:nth-child(57){grid-column:1/-1;grid-row:27;margin-top:var(--space-fluid-xl)!important}
+html:not(.static) .page>:nth-child(58){grid-column:1/-1;grid-row:28;margin-top:0!important}
 html:not(.static) .page>img.heavy-hero{width:100%!important;height:0!important;min-height:calc(100% - var(--space-fluid-l));box-sizing:border-box;object-fit:cover;object-position:50% 58%;content:url(../assets/img/landing-hero-photo-crop.webp);border:var(--border);box-shadow:var(--shadow)}
 html:not(.static) .page>.words-tile{width:auto!important;height:auto!important;min-height:0;padding:var(--space-fluid-s)!important;display:flex!important;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:var(--space-fluid-s);border:var(--border);box-shadow:var(--shadow);container-type:normal!important;overflow:visible!important}
 html:not(.static) .page>.words-tile .disp{font-size:var(--step-1)!important;line-height:1.2!important;margin:0!important;align-self:flex-start}
@@ -1349,6 +1350,17 @@ html:not(.static) .ed-foot{padding:var(--s-1) var(--s-2)}
 /* ---- resources / library: filter card and result count sit tight on the grid */
 html:not(.static) .rgrid{margin-top:0}
 html:not(.static) :is(.rcard,.ncard,.ccard){height:100%}
+
+/* ---- "Today in tech" / "From the library" live in the page flow, above the footer, on the content grid */
+html:not(.static) .app.dz>.below{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:var(--gap-sec);width:auto!important;max-width:none!important;margin:0!important;padding:0!important;background:none}
+html:not(.static) .app.dz>.below .rgrid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))!important}
+html:not(.static) .app.dz>.below .sec-title{margin-bottom:var(--s-3)}
+@media (min-width:1100px){
+  html:not(.static) body .app.dz>.below{grid-column:1/-1;grid-row:3;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:var(--s-6)}
+  html:not(.static) body .app.dz>.foot{grid-row:4}
+}
+html:not(.static) .page>.tit{margin-top:var(--s-8)!important}
+@media (min-width:1024px){html:not(.static) .page>.tit{margin-top:0!important}}
 
 /* ==== 101 Codecrafts app shell (2026-11): navy L-frame (sidebar + top bar), collapsible rail, mobile drawer ====
    Markup: tools/build.py sidebar()/topbar(). Behaviour: js/shell.js. Loaded last in every CSS bundle so it wins over
