@@ -320,3 +320,12 @@ html:not(.static) .page>.hero-badge{padding:var(--space-fluid-s)!important;min-h
 html:not(.static) .page>.hero-badge .hb-s{display:none!important}
 }
 /* <<< desktop fluid grid */
+/* 1024-1279: the one-row header is tight (logo, wordmark, tagline, 5 nav links, search, LOGIN, JOIN COMMUNITY).
+   Never clip the nav: tighter gaps, JOIN pill drops " COMMUNITY" (as on phones), nav never shrinks; only the tagline may wrap to two lines. */
+@media (min-width:1024px) and (max-width:1279px){
+html:not(.static) .page>.hdr{column-gap:var(--s-3)!important}
+html:not(.static) .page>.hdr nav{flex:none!important;gap:var(--space-fluid-s)!important;overflow:visible!important}
+html:not(.static) .page>.hdr nav a{letter-spacing:.3px!important}
+html:not(.static) .page>.hdr .join .jx{display:none!important}
+html:not(.static) .page>.hdr .tg{min-width:0;white-space:normal!important;line-height:1.15!important;text-wrap:balance}
+}
