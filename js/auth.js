@@ -1,7 +1,9 @@
 /* 101 Codecrafts — session state (Clerk) for every page.
    - ?static=1 (mockup screenshots): does nothing, the mockup stays pixel-identical.
    - Signed out: clean guest state (no fake user, no fake notification dots/badges) + Sign in / Join.
-   - Signed in: real name/initials from Clerk, unread count from GET /api/v1/me/notifications.
+   - Signed in: real name/initials from Clerk, unread count from GET /api/v1/me (unread_notifications).
+   Unread count contract: CC_AUTH.unread is a whole number > 0 only for a signed-in member whose API call succeeded;
+   otherwise null. Every change fires `cc:unread` on document (detail = the count or null). Badges render only on > 0.
    Clerk dev instance; the publishable key is public by design. */
 (function () {
   const CFG = window.CC_CONFIG = Object.assign({
@@ -11,7 +13,7 @@
   }, window.CC_CONFIG || {});
   const STATIC = /[?&]static/.test(location.search) || location.protocol === "file:";
   const listeners = [];
-  const AUTH = window.CC_AUTH = { user: null, ready: false, clerk: null, onChange: f => { listeners.push(f); if (AUTH.ready) f(AUTH.user); },
+  const AUTH = window.CC_AUTH = { user: null, ready: false, clerk: null, unread: null, onChange: f => { listeners.push(f); if (AUTH.ready) f(AUTH.user); },
     signOut: async () => { if (AUTH.clerk) await AUTH.clerk.signOut(); location.href = "index.html"; } };
   if (STATIC) return;
 
@@ -45,24 +47,51 @@
     const img = user && user.hasImage && user.imageUrl ? user.imageUrl : "";
     const detail = { user, name, initials: user ? initials(name) : "", email, image: img };
     if (window.CC_SHELL) window.CC_SHELL.account(detail); else document.addEventListener("cc:shell", () => window.CC_SHELL.account(detail), { once: true });
+    AUTH.user = user; setUnread(null);
     if (user) { unread(); roles(); }
-    AUTH.user = user; AUTH.ready = true; listeners.forEach(f => { try { f(user); } catch (e) {} });
+    AUTH.ready = true; listeners.forEach(f => { try { f(user); } catch (e) {} });
   }
+  function setUnread(n) {
+    n = Number.isInteger(n) && n > 0 ? Math.min(n, 999) : null;
+    AUTH.unread = n;
+    $$(".dot").forEach(e => { e.hidden = !n; e.style.display = n ? "" : "none"; });
+    document.dispatchEvent(new CustomEvent("cc:unread", { detail: n }));
+  }
+  async function authHeaders() {
+    const h = { Accept: "application/json" };
+    try { const t = AUTH.clerk && AUTH.clerk.session && await AUTH.clerk.session.getToken(); if (t) h.Authorization = "Bearer " + t; } catch (e) {}
+    return h;
+  }
+  /* one GET /api/v1/me per signed-in user (shared by the unread badge and the role switcher); null on any failure */
+  let meFor = null, meP = null;
+  function getMe() {
+    const id = AUTH.user && AUTH.user.id;
+    if (meP && meFor === id) return meP;
+    meFor = id;
+    meP = (async () => { const r = await fetch("/api/v1/me", { credentials: "include", headers: await authHeaders() }); if (!r.ok) return null; const j = await r.json(); return (j && (j.data || j)) || null; })().catch(() => null);
+    return meP;
+  }
+  /* real unread count: GET /api/v1/me -> unread_notifications (exact count); falls back to the unread list length.
+     Any error, a non-number, 0, or a user who signed out meanwhile -> no badge. */
   async function unread() {
+    const who = AUTH.user && AUTH.user.id;
     try {
-      const r = await fetch("/api/v1/me/notifications?unread=1", { credentials: "include", headers: { Accept: "application/json" } });
-      if (!r.ok) return; const j = await r.json(); const items = (j && (j.data && (j.data.items || j.data))) || [];
-      const n = Array.isArray(items) ? items.filter(x => !x.read_at).length : 0;
-      if (n) $$(".dot").forEach(e => { e.hidden = false; e.style.display = ""; });
-    } catch (e) { /* offline: stay quiet */ }
+      const h = await authHeaders();
+      let n = null;
+      const me = await getMe();
+      if (me && Number.isInteger(me.unread_notifications)) n = me.unread_notifications;
+      if (n === null) {
+        const r2 = await fetch("/api/v1/me/notifications?unread=1", { credentials: "include", headers: h });
+        if (r2.ok) { const j = await r2.json(); const items = j && j.data && (j.data.items || j.data); if (Array.isArray(items)) n = items.filter(x => x && !x.read_at).length; }
+      }
+      if ((AUTH.user && AUTH.user.id) !== who) return; // session changed while we waited
+      setUnread(n);
+    } catch (e) { setUnread(null); /* offline / API down: stay quiet */ }
   }
   /* Learner / Tutor / Admin switcher: only the roles this member holds (GET /api/v1/me -> roles), and only if more than one */
   async function roles() {
     try {
-      const h = { Accept: "application/json" };
-      try { const t = AUTH.clerk && AUTH.clerk.session && await AUTH.clerk.session.getToken(); if (t) h.Authorization = "Bearer " + t; } catch (e) {}
-      const r = await fetch("/api/v1/me", { credentials: "include", headers: h });
-      if (!r.ok) return; const j = await r.json(); const me = (j && (j.data || j)) || {};
+      const me = await getMe(); if (!me) return;
       const rs = new Set((me.roles || []).map(String));
       const has = { learner: true, tutor: rs.has("tutor"), admin: rs.has("admin") || rs.has("super_admin") };
       const n = Object.values(has).filter(Boolean).length;

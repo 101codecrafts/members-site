@@ -10,9 +10,23 @@
   window.CC_UI = { $, $$, esc, ugx, ico };
 
   /* ---------------- cards ---------------- */
+  /* Resource card media = one fixed 64px band on every card (type icon, provider, type label), so a grid row lines up
+     and nothing is ever an empty slab. A real thumbnail, when one exists or can be derived (YouTube id -> i.ytimg,
+     Open Library ISBN/OLID -> covers), sits as a small poster at the band's trailing edge. It is only shown once it
+     really loaded: YouTube answers a missing size with a 120x90 grey JPEG (no onerror) and Open Library with a 1x1
+     blank, so onload checks naturalWidth too. Failure or no image -> the band alone. ?static=1 keeps the old markup. */
   const TYPE_CLR = { Course: "or", Book: "cy", Video: "or", Article: "cy", Repo: "ink" };
-  function resourceCard(r) {
-    const thumb = r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async" class="heavy" onerror="this.parentNode.classList.add('noimg');this.remove()">` : `<div class="thumb-ph">${ico({ Course: "cap", Book: "openbook", Video: "yt", Article: "doc", Repo: "code" }[r.type] || "doc")}</div>`;
+  const TYPE_ICO = { Course: "cap", Book: "openbook", Video: "play", Article: "doc", Repo: "code" };
+  const ytId = u => { const m = String(u || "").match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/|i\.ytimg\.com\/vi(?:_webp)?\/)([\w-]{11})/); return m ? m[1] : ""; };
+  function thumbOf(r) {
+    const t = r.thumb || "", y = ytId(t) || (!t && ytId(r.url));
+    if (y) return { src: `https://i.ytimg.com/vi/${y}/mqdefault.jpg`, shape: "wide" }; // 320x180, 16:9, every video has it
+    if (/covers\.openlibrary\.org\/b\//.test(t)) return { src: t.replace(/-[SL]\.jpg/, "-M.jpg") + (t.includes("default=") ? "" : (t.includes("?") ? "&" : "?") + "default=false"), shape: "tall" };
+    if (!t) { const m = String(r.url || "").match(/openlibrary\.org\/(?:isbn\/([\dXx-]{10,17})|books\/(OL\d+M))/); if (m) return { src: `https://covers.openlibrary.org/b/${m[1] ? "isbn/" + m[1].replace(/-/g, "") : "olid/" + m[2]}-M.jpg?default=false`, shape: "tall" }; }
+    return t ? { src: t, shape: r.type === "Book" ? "tall" : "wide" } : null;
+  }
+  function legacyResourceCard(r) {
+    const thumb = r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async" class="heavy" onerror="this.parentNode.classList.add('noimg');this.remove()">` : `<div class="thumb-ph">${ico(TYPE_ICO[r.type] === "play" ? "yt" : (TYPE_ICO[r.type] || "doc"))}</div>`;
     return `<a class="rcard hov" href="${API.goHref(r.id)}" target="_blank" rel="noopener noreferrer" data-id="${esc(r.id)}" data-type="${esc(r.type)}" data-path="${esc(r.path || "")}">
       <div class="rthumb">${thumb}<span class="badge-t ${TYPE_CLR[r.type] || "or"}">${esc(r.type)}</span></div>
       <div class="rbody"><h3>${esc(r.title)}</h3>
@@ -21,12 +35,49 @@
         <div class="tags">${(r.tags || []).map(t => `<span>${esc(t)}</span>`).join("")}</div>
         <span class="open">Open on ${esc(r.site)} ↗</span></div></a>`;
   }
+  function resourceCard(r) {
+    if (STATIC) return legacyResourceCard(r);
+    const th = thumbOf(r), clr = TYPE_CLR[r.type] || "or";
+    const poster = th ? `<span class="rm-poster ${th.shape}" aria-hidden="true">${ico(TYPE_ICO[r.type] || "doc", "i rm-pi")}<img class="rm-img heavy" src="${esc(th.src)}" alt="" width="${th.shape === "tall" ? 54 : 96}" height="54" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>` : "";
+    return `<a class="rcard rc2 hov" href="${API.goHref(r.id)}" target="_blank" rel="noopener noreferrer" data-id="${esc(r.id)}" data-type="${esc(r.type)}" data-path="${esc(r.path || "")}">
+      <div class="rmedia t-${clr}${th ? " has-poster" : ""}"><span class="rm-ic" aria-hidden="true">${ico(TYPE_ICO[r.type] || "doc")}</span><span class="rm-meta"><b>${esc(r.site)}</b><small>${esc(r.type)}</small></span>${poster}</div>
+      <div class="rbody"><h3>${esc(r.title)}</h3>
+        <p>${esc(r.desc)}</p>
+        <div class="tags">${(r.tags || []).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+        <span class="open">Open on ${esc(r.site)} ↗</span></div></a>`;
+  }
+  /* poster / hero images: decide once they settle (capture-phase listeners see every <img>, wherever it was rendered) */
+  function settleImg(img, ok) {
+    const real = ok && img.naturalWidth > 120 && img.naturalHeight > 1; // 120x90 = YouTube's grey "missing" frame, 1x1 = Open Library blank
+    if (img.classList.contains("rm-img")) {
+      const p = img.closest(".rm-poster"), band = img.closest(".rmedia");
+      if (real) p.classList.add("ok"); else { p.remove(); if (band) band.classList.remove("has-poster"); }
+    } else if (img.classList.contains("rt-img")) {
+      const t = img.parentNode; if (!real) { t.classList.add("noimg"); img.remove(); }
+    }
+  }
+  if (!STATIC) {
+    document.addEventListener("load", e => { const t = e.target; if (t.tagName === "IMG" && (t.classList.contains("rm-img") || t.classList.contains("rt-img"))) settleImg(t, true); }, true);
+    document.addEventListener("error", e => { const t = e.target; if (t.tagName === "IMG" && (t.classList.contains("rm-img") || t.classList.contains("rt-img"))) settleImg(t, false); }, true);
+  }
   function newsCard(n, big) {
     const host = (() => { try { return new URL(n.url).hostname; } catch (e) { return ""; } })();
-    const img = n.image ? `<img src="${esc(n.image)}" alt="" loading="lazy" decoding="async" class="heavy" onerror="this.parentNode.classList.add('noimg');this.remove()">` : `<div class="thumb-ph news">${esc(n.cat)}</div>`;
-    return `<a class="ncard hov ${big ? "big" : ""}" href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer" data-cat="${esc(n.cat)}">
+    if (STATIC) {
+      const img = n.image ? `<img src="${esc(n.image)}" alt="" loading="lazy" decoding="async" class="heavy" onerror="this.parentNode.classList.add('noimg');this.remove()">` : `<div class="thumb-ph news">${esc(n.cat)}</div>`;
+      return `<a class="ncard hov ${big ? "big" : ""}" href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer" data-cat="${esc(n.cat)}">
       <div class="rthumb">${img}<span class="badge-t ${n.cat === "Africa Tech" ? "cy" : "or"}">${esc(n.cat)}</span></div>
       <div class="rbody"><div class="src"><img src="https://icons.duckduckgo.com/ip3/${esc(host)}.ico" alt="" width="14" height="14" loading="lazy" onerror="this.style.display='none'"> ${esc(n.source)} · ${esc(n.ago)} ago</div>
+      <h3>${esc(n.title)}</h3><p>${esc(n.summary || "")}</p><span class="open">Read on ${esc(n.source)} ↗</span></div></a>`;
+    }
+    /* news keeps a 16:9 photo when it really loads; no photo / failed -> the same compact band (icon, source, category) */
+    const clr = n.cat === "Africa Tech" ? "cy" : "or";
+    const band = `<span class="rm-ic" aria-hidden="true">${ico("megaphone")}</span><span class="rm-meta"><b>${esc(n.source)}</b><small>${esc(n.cat)}</small></span>`;
+    const media = n.image
+      ? `<div class="rthumb rt-hero t-${clr}"><span class="rt-fallback">${band}</span><img class="rt-img heavy" src="${esc(n.image)}" alt="" loading="lazy" decoding="async"><span class="badge-t ${clr}">${esc(n.cat)}</span></div>`
+      : `<div class="rmedia t-${clr}">${band}</div>`;
+    return `<a class="ncard nc2 hov ${big ? "big" : ""}" href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer" data-cat="${esc(n.cat)}">
+      ${media}
+      <div class="rbody"><div class="src">${esc(n.source)} · ${esc(n.ago)} ago</div>
       <h3>${esc(n.title)}</h3><p>${esc(n.summary || "")}</p><span class="open">Read on ${esc(n.source)} ↗</span></div></a>`;
   }
   window.CC_UI.resourceCard = resourceCard; window.CC_UI.newsCard = newsCard;
