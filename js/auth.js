@@ -104,7 +104,7 @@
   /* Clerk theme: brand colours, square corners, site fonts, orange primary with navy text. The page supplies the
      heading and the sign-in/sign-up switch, so Clerk's own header and footer link are hidden (no box inside a box).
      Variable names cover clerk-js v5 (Core 2) and the Core 3 renames; unknown keys are ignored. */
-  const NAVY = "#0B1236", ORANGE = "#fc8c0c", FONT = '"Body", "Barlow", system-ui, sans-serif';
+  const NAVY = "#0B1236", ORANGE = "#fc8c0c", FONT = '"CC Sans", "CC Sans Fallback", system-ui, sans-serif';
   const btn = { borderRadius: "0", minHeight: "48px", fontFamily: FONT, fontWeight: "700", fontSize: "15px", letterSpacing: ".5px", textTransform: "uppercase" };
   const APPEARANCE = {
     layout: { socialButtonsPlacement: "top", socialButtonsVariant: "blockButton", logoPlacement: "none", showOptionalFields: true },

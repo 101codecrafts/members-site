@@ -29,8 +29,12 @@
   var sayT = null; function sayLater(msg) { clearTimeout(sayT); sayT = setTimeout(function () { say(msg); }, 350); }
 
   function setFont(px, kind) {
-    ctx.font = kind === "disp" ? "400 " + px + 'px "Archivo Black", Impact, sans-serif' : kind === "word" ? "400 " + px + 'px "Russo One", sans-serif'
-      : kind === "body6" ? "600 " + px + "px Body, Arial, sans-serif" : "700 " + px + "px Body, Arial, sans-serif";
+    /* round5 type system: Archivo Black (CC Display subset) for headlines, JetBrains Mono (CC Mono) for labels/chips/URL,
+       IBM Plex Sans (CC Sans) for the name and the tagline; Russo One stays only for the "Codecrafts" brand wordmark. */
+    var MONO = '"CC Mono", "CC Mono Fallback", "DejaVu Sans Mono", monospace', SANS = '"CC Sans", "CC Sans Fallback", Arial, sans-serif';
+    ctx.font = kind === "disp" ? "400 " + px + 'px "CC Display", "Archivo Black", Impact, sans-serif' : kind === "word" ? "400 " + px + 'px "Russo One", sans-serif'
+      : kind === "label" ? "700 " + px + "px " + MONO : kind === "label6" ? "600 " + px + "px " + MONO
+      : kind === "body6" ? "600 " + px + "px " + SANS : "700 " + px + "px " + SANS;
   }
   function fit(text, kind, maxW, max, min) {                // largest size (step 2px) whose measured width fits maxW
     for (var px = max; px >= min; px -= 2) { setFont(px, kind); if (ctx.measureText(text).width <= maxW) return px; }
@@ -65,7 +69,7 @@
     var lh = 64, lw = 128;
     if (logo) ctx.drawImage(logo, 72, y, lw, lh);
     setFont(46, "word"); ctx.fillStyle = CY; ctx.textBaseline = "alphabetic"; ctx.fillText("Codecrafts", 72 + lw + 16, y + 48);
-    setFont(24, "body"); ctx.fillStyle = MUTED; tracked("MEMBER CARD", W - 72, y + 44, 4, "right");
+    setFont(24, "label"); ctx.fillStyle = MUTED; tracked("MEMBER CARD", W - 72, y + 44, 4, "right");
   }
   function photo(x, y, s) {
     frame = { x: x, y: y, s: s };
@@ -87,7 +91,7 @@
     ctx.strokeStyle = WHITE; ctx.lineWidth = 6; ctx.strokeRect(x + 3, y + 3, s - 6, s - 6);
   }
   function chip(text, x, y, px, alignRight) {
-    setFont(px, "body"); var w = ctx.measureText(text).width + px * 1.3, h = px * 1.9;
+    setFont(px, "label"); var w = ctx.measureText(text).width + px * 1.3, h = px * 1.9;
     if (alignRight) x -= w;
     ctx.fillStyle = CY; ctx.fillRect(x, y, w, h); ctx.fillStyle = NAVY; ctx.textBaseline = "middle"; ctx.fillText(text, x + px * .65, y + h / 2 + 1); ctx.textBaseline = "alphabetic";
     return h;
@@ -95,8 +99,8 @@
   function footer(W, H, y) {
     ctx.fillStyle = "rgba(255,255,255,.2)"; ctx.fillRect(72, y, W - 144, 2);
     setFont(44, "disp"); ctx.fillStyle = CY; ctx.fillText("#101Codecrafts", 72, y + 72);
-    var ux = fit(SITE_TXT, "body6", W - 144 - ctx.measureText("#101Codecrafts").width - 40, 28, 18);
-    setFont(ux, "body6"); ctx.fillStyle = MUTED; ctx.textAlign = "right"; ctx.fillText(SITE_TXT, W - 72, y + 66); ctx.textAlign = "left";
+    var ux = fit(SITE_TXT, "label6", W - 144 - ctx.measureText("#101Codecrafts").width - 40, 28, 18);
+    setFont(ux, "label6"); ctx.fillStyle = MUTED; ctx.textAlign = "right"; ctx.fillText(SITE_TXT, W - 72, y + 66); ctx.textAlign = "left";
     setFont(26, "body6"); ctx.fillStyle = OR; ctx.fillText("Start at 101. Craft your way up.", 72, y + 124);
   }
   function roleLine() { return (st.role + (st.level ? " · " + st.level : "")).toUpperCase(); }
@@ -117,10 +121,10 @@
       setFont(nm.px, "body"); ctx.fillStyle = st.name ? WHITE : "rgba(255,255,255,.45)";
       nm.lines.forEach(function (l, i) { ctx.fillText(l, cx, ny + nm.px * (.86 + i * 1.08)); });
       ny += nm.px * (nm.lines.length * 1.08) + 26;
-      ny += chip(roleLine(), cx, ny, fit(roleLine(), "body", cw - 40, 28, 18)) + 30;
+      ny += chip(roleLine(), cx, ny, fit(roleLine(), "label", cw - 40, 28, 18)) + 30;
       var sy = Math.max(ny, top + side - 78);                         // member-since sits on the photo's bottom edge
       ctx.fillStyle = OR; ctx.fillRect(cx, sy, 56, 6);
-      setFont(22, "body"); ctx.fillStyle = MUTED; tracked("MEMBER SINCE", cx, sy + 38, 3);
+      setFont(22, "label"); ctx.fillStyle = MUTED; tracked("MEMBER SINCE", cx, sy + 38, 3);
       setFont(40, "disp"); ctx.fillStyle = WHITE; ctx.fillText(monthYear(st.since).toUpperCase(), cx, sy + 80);
       footer(W, H, 884);
     } else {
@@ -133,8 +137,8 @@
       setFont(snm.px, "body"); ctx.fillStyle = st.name ? WHITE : "rgba(255,255,255,.45)";
       snm.lines.forEach(function (l, i) { ctx.fillText(l, 72, nyy + snm.px * (.86 + i * 1.08)); });
       nyy += snm.px * (snm.lines.length * 1.08) + 30;
-      chip(roleLine(), 72, nyy, fit(roleLine(), "body", 600, 32, 20));
-      setFont(fit(since, "body", 330, 26, 16), "body"); ctx.fillStyle = MUTED; ctx.textAlign = "right"; ctx.fillText(since, W - 72, nyy + 40); ctx.textAlign = "left";
+      chip(roleLine(), 72, nyy, fit(roleLine(), "label", 600, 32, 20));
+      setFont(fit(since, "label", 330, 26, 16), "label"); ctx.fillStyle = MUTED; ctx.textAlign = "right"; ctx.fillText(since, W - 72, nyy + 40); ctx.textAlign = "left";
       footer(W, H, 1712);
     }
   }
@@ -271,7 +275,7 @@
       }; im.onerror = function () { res(); }; im.src = "assets/img/logo-101-header@3x.webp";
     });
   }
-  var fonts = document.fonts ? Promise.all([document.fonts.load('400 64px "Archivo Black"'), document.fonts.load('400 46px "Russo One"'), document.fonts.load("700 64px Body"), document.fonts.load("600 28px Body")])
+  var fonts = document.fonts ? Promise.all([document.fonts.load('400 64px "CC Display"'), document.fonts.load('400 46px "Russo One"'), document.fonts.load('700 64px "CC Sans"'), document.fonts.load('600 28px "CC Sans"'), document.fonts.load('700 24px "CC Mono"'), document.fonts.load('600 24px "CC Mono"')])
     .then(function () { return document.fonts.ready; }).catch(function () {}) : Promise.resolve();
   count.textContent = "0/" + NAME_MAX; update();
   Promise.all([fonts, loadLogo()]).then(function () { fontsOk = true; cv.dataset.ready = "1"; draw(); });
