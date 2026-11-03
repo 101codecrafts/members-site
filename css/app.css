@@ -62,7 +62,9 @@ table.t{width:100%;border-collapse:collapse;font-size:var(--step--1)}
 .t th{text-align:left;font:700 var(--step--2) var(--cond);letter-spacing:.8px;text-transform:uppercase;color:var(--mut);padding:8px;border-bottom:2px solid var(--ink)}
 .t td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
 .t td .acts{display:flex;gap:6px;flex-wrap:wrap}
-.tbl-wrap{overflow-x:auto}
+.tbl-wrap{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+/* form fields in narrow grid columns (admin 1024px): native date/time inputs have a ~240px intrinsic width; let them shrink */
+.field{min-width:0}.field>:is(input,select,textarea){min-width:0;max-width:100%;box-sizing:border-box}
 .pill{display:inline-block;padding:2px 8px;font:700 var(--step--2) var(--body);border:1.5px solid currentColor;text-transform:capitalize}
 .pill.active,.pill.verified,.pill.paid,.pill.Published{color:var(--color-success)}
 .pill.pending,.pill.Pending,.pill.Draft{color:var(--color-orange-text)}
