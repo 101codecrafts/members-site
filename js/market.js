@@ -218,7 +218,7 @@
       <div class="row"><a class="btn sm" href="marketplace.html?q=${encodeURIComponent(s.name)}#browse">Visit shop</a><a class="btn sm" href="#p-qa" data-tab="t-qa">Ask a question</a></div>`;
     const tiers = p.tiers || [{ min: 1, max: 9, price: p.price }, { min: 10, max: 49, price: Math.round(p.price * .93 / 500) * 500 }, { min: 50, max: null, price: Math.round(p.price * .87 / 500) * 500 }];
     $("#pi-bulk").innerHTML = `<div class="mini-h">Bulk pricing</div><table class="t pi-tiers"><caption class="sr-only">Price per unit by quantity</caption><thead><tr><th scope="col">Quantity</th><th scope="col">Price / unit</th></tr></thead><tbody>${tiers.map(t => `<tr><td>${t.min}${t.max ? "–" + t.max : "+"}</td><td><b>${ugx(t.price)}</b></td></tr>`).join("")}</tbody></table>
-      ${p.tiers ? "" : `<p class="muted" style="font-size:12px">Indicative. Final bulk price is set by the seller's quote.</p>`}
+      ${p.tiers ? "" : `<p class="muted" style="font-size:var(--step--2)">Indicative. Final bulk price is set by the seller's quote.</p>`}
       <a class="btn sm cy" href="rfq.html?product=${encodeURIComponent(p.id)}">Request a quote</a>`;
     // tabs
     const tabs = $$("[role=tab]"); const selT = (t, focus) => { tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $("#" + x.getAttribute("aria-controls")).hidden = !on; }); if (focus) t.focus(); };

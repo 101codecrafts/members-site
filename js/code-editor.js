@@ -27,7 +27,7 @@
   }
 
   const theme = () => window.CM6.EditorView.theme({
-    "&": { fontSize: "14px", height: "100%", background: "#fff" },
+    "&": { fontSize: "var(--step--1)", height: "100%", background: "#fff" },
     ".cm-scroller": { fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace", lineHeight: "1.55" },
     ".cm-gutters": { background: "#f1f4f6", color: "#3e5d74", borderRight: "2px solid #0B1236" },
     ".cm-activeLine": { background: "rgba(5,230,242,.08)" }, ".cm-activeLineGutter": { background: "rgba(252,140,12,.18)", color: "#0B1236" },

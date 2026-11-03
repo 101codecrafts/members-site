@@ -20,7 +20,7 @@ JS_COLLECT = r"""
 () => {
   const root = document.querySelector('.app, .page');
   const out = [];
-  const path = el => { const p=[]; while (el && el !== root) { const i=[...el.parentElement.children].indexOf(el)+1; p.unshift(`:nth-child(${i})`); el = el.parentElement; } return (root.classList.contains('app')?'.app':'.page')+' > '+p.join(' > '); };
+  const path = el => { const p=[]; while (el && el !== root) { const i=[...el.parentElement.children].indexOf(el)+1; p.unshift(`:nth-child(${i})`); el = el.parentElement; } return 'html.static '+(root.classList.contains('app')?'.app':'.page')+' > '+p.join(' > '); };
   root.querySelectorAll('*').forEach(el => {
     const isIcon = el.tagName.toLowerCase()==='svg' && !el.parentElement.closest('svg');
     if (el.closest('svg') && !isIcon) return;

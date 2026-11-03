@@ -16,13 +16,13 @@
 <h1 class="sr-only">Online IDE</h1>
 <div class="ide">
  <section class="pane pane-l" aria-label="Code editor">
-  <div class="ed-bar"><b style="font:400 16px var(--disp)">101 IDE</b><label for="lang" class="sr-only">Language</label><select id="lang"></select><span class="mock-note" id="ide-from"></span><span class="sp"></span><button class="btn sm" type="button" id="dl"><svg aria-hidden="true"><use href="#i-download"/></svg>Download</button><button class="btn or" type="button" id="run">Run ▶</button></div>
+  <div class="ed-bar"><b style="font:400 var(--step-0) var(--disp)">101 IDE</b><label for="lang" class="sr-only">Language</label><select id="lang"></select><span class="mock-note" id="ide-from"></span><span class="sp"></span><button class="btn sm" type="button" id="dl"><svg aria-hidden="true"><use href="#i-download"/></svg>Download</button><button class="btn or" type="button" id="run">Run ▶</button></div>
   <div id="editor" class="ed-host"></div>
   <div class="ed-foot"><span class="mock-note">Ctrl+Enter to run · Esc then Tab leaves the editor · code autosaves on this device</span></div>
  </section>
  <section class="pane pane-r" aria-label="Input and output">
   <div class="io"><label for="stdin">Input (stdin)</label><textarea id="stdin" spellcheck="false"></textarea></div>
-  <div class="io" style="border-top:2px solid var(--ink)"><div class="res-h" style="padding:0 0 0 12px;border:0;background:#f7f8f9"><span style="font:700 12px var(--cond);letter-spacing:1px;text-transform:uppercase;color:var(--mut)">Output (stdout / stderr)</span><span class="sp"></span><button class="btn sm" type="button" id="clear">Clear</button></div><pre id="stdout" aria-live="polite" tabindex="0" aria-label="Program output"></pre><div class="mock-note" id="ide-stat" style="padding:6px 12px"></div></div>
+  <div class="io" style="border-top:2px solid var(--ink)"><div class="res-h" style="padding:0 0 0 12px;border:0;background:#f7f8f9"><span style="font:700 var(--step--2) var(--cond);letter-spacing:1px;text-transform:uppercase;color:var(--mut)">Output (stdout / stderr)</span><span class="sp"></span><button class="btn sm" type="button" id="clear">Clear</button></div><pre id="stdout" aria-live="polite" tabindex="0" aria-label="Program output"></pre><div class="mock-note" id="ide-stat" style="padding:6px 12px"></div></div>
  </section>
 </div>
 </main>
