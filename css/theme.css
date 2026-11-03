@@ -129,3 +129,7 @@ html:not(.static):not([data-theme=dark]) .stage.s-Idea{background:#56636E}      
 html[data-theme=dark]:not(.static) .kpi:is(.or,.cy) i{color:var(--on-accent)!important}
 /* integrate3: dashboard Quick Access tiles in the dz layout sit on --surface in dark (the cyan inline fill is overridden there), so their ink follows --text */
 html[data-theme=dark]:not(.static) .app.dz .dz-box-b-quick .qa:not(:first-child),html[data-theme=dark]:not(.static) .app.dz .dz-box-b-quick .qa:not(:first-child) *{color:var(--text)!important}
+/* integrate3: article topic chip sits on cyan in both themes (inline color:var(--ink) flips light in dark) */
+html[data-theme=dark]:not(.static) .ahead .atopic{color:var(--on-accent)!important}
+/* integrate3: landing JOIN COMMUNITY pill keeps navy ink on orange in dark (landing.css forces color:var(--nv), which flips light) */
+html[data-theme=dark]:not(.static) .hdr .join,html[data-theme=dark]:not(.static) .hdr .join *{color:var(--on-accent)!important}

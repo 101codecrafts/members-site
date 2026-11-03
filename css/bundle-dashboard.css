@@ -1317,6 +1317,9 @@ html:not(.static) .app.dz>.below .sec-title{margin-bottom:var(--s-3)}
 html:not(.static) .page>.tit{margin-top:var(--s-8)!important}
 @media (min-width:1024px){html:not(.static) .page>.tit{margin-top:0!important}}
 
+/* integrate3: the IDE toolbar wraps only when its pane is too narrow for one row (problem@1024: the right pane is 380px and "Debug with 101 AI" spilled 2px off-screen) */
+html:not(.static) .ed-bar{flex-wrap:wrap;row-gap:var(--s-1)}
+
 /* ==== 101 Codecrafts app shell (2026-11): navy L-frame (sidebar + top bar), collapsible rail, mobile drawer ====
    Markup: tools/build.py sidebar()/topbar(). Behaviour: js/shell.js. Loaded last in every CSS bundle so it wins over
    the older .sbar/.topbar rules in app.css without editing them. Page content (.content and its cards) is not styled here. */
