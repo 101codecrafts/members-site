@@ -932,6 +932,94 @@ html:not(.static) .cbody p{color:var(--ink-muted)}
   html:not(.static) .exp .cdx{margin-left:46px}
 }
 
+/* ============================== DENSITY PASS (ui/density) ==============================
+   One gap per context, aligned edges, no dead space; text never shrinks and every target stays ≥44px.
+   Rhythm (4/8 grid): 4 inside a label group · 8 between lines in a card · 12 between chips/controls ·
+   16 between cards and inside cards · 24 between sections (32 on desktop). Live site only; ?static=1 untouched. */
+:root{--gap-ctl:var(--s-2);--gap-sec:var(--s-6);--tap:44px}
+@media (min-width:761px){:root{--gap-sec:var(--s-8)}}
+
+/* ---- page frame: one section gap, compact header block */
+html:not(.static) .main>.content{gap:var(--gap-sec);row-gap:var(--gap-sec)}
+html:not(.static) .content .grid{gap:var(--gap-card)}
+html:not(.static) .content .card{padding:var(--pad-card)}
+html:not(.static) .sec-title{margin-bottom:var(--s-3);gap:var(--s-3)}
+html:not(.static) .content>.sec-title{margin-bottom:calc(var(--s-3) - var(--gap-sec))}
+html:not(.static) .page-h{gap:var(--s-3) var(--s-4);align-items:flex-end}
+html:not(.static) .page-h p{margin-top:var(--s-1)}
+@media (max-width:760px){html:not(.static) .main>.content{padding:var(--s-4) var(--page-pad) var(--s-16)}}
+
+/* ---- touch targets: compact buttons and chips still ≥44px tall (WCAG 2.5.8 min 24, M3/Apple 44–48) */
+html:not(.static) .btn.sm{min-height:var(--tap);padding:0 var(--s-3)}
+html:not(.static) .chip{min-height:var(--tap);padding:0 var(--s-3);display:inline-flex;align-items:center;justify-content:center;gap:var(--s-1);white-space:nowrap;text-decoration:none}
+html:not(.static) :is(.ed-bar select,.search input,.csearch input,select.inp,.field select){min-height:var(--tap)}
+
+/* ---- chip / filter rows: one aligned row. Desktop wraps on a clean 8px grid; phones scroll sideways with snap
+   (Material 3 chips + Baymard: a cut-off last chip is the swipe cue), never a two-row zigzag. */
+html:not(.static) .filters{gap:var(--gap-ctl);row-gap:var(--gap-ctl)}
+@media (max-width:760px){
+  html:not(.static) :is(.filters:not(:has(.filters)):not(:has(.field)),.ftabs,.lfilters .filters){flex-wrap:nowrap!important;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scroll-padding-inline:0;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;max-width:100%;min-width:0}
+  html:not(.static) :is(.filters:not(:has(.filters)):not(:has(.field)),.ftabs)::-webkit-scrollbar{display:none}
+  html:not(.static) :is(.filters:not(:has(.filters)):not(:has(.field)),.ftabs)>*{flex:none;scroll-snap-align:start}
+  html:not(.static) .page-h>nav.filters{flex:1 1 100%;margin-top:var(--s-1)}
+  html:not(.static) .feed-bar{flex-wrap:nowrap;min-width:0}
+  html:not(.static) .feed-bar>.ftabs{flex:1 1 auto}
+  html:not(.static) .feed-bar>small{flex:none}
+}
+/* section-switch rows (Learn · Practice · IDE · Contests · Interview) read as one segmented bar, not loose boxes */
+html:not(.static) .page-h>nav.filters{display:flex;gap:0;border:var(--border);width:max-content;max-width:100%}
+html:not(.static) .page-h>nav.filters>.chip{border:0;border-right:var(--bw) solid var(--border-c);padding:0 var(--s-4)}
+html:not(.static) .page-h>nav.filters>.chip:last-child{border-right:0}
+
+/* ---- "Today in tech" / opportunities / events list rows: the badge sits on its own line above the headline,
+   so every headline starts on the same edge (badge widths no longer push titles into a zigzag) */
+html:not(.static) .fw-list li{grid-template-columns:minmax(0,1fr);row-gap:var(--s-1);padding:var(--s-3) var(--pad-card)}
+html:not(.static) .fw-list :is(.fbadge,.obadge){grid-row:auto;justify-self:start;align-self:start}
+html:not(.static) .fw-list small{grid-column:1}
+html:not(.static) .fw-h{margin:var(--s-2) 0}
+html:not(.static) .fwidget .ftabs{margin-bottom:var(--s-2)}
+
+/* ---- landing footer: one row on a 24px rhythm, the GitHub mark is a 44px target inside the band (never half out) */
+html:not(.static) .page>.lfoot{height:auto!important;min-height:0!important;overflow:visible!important;display:flex!important;flex-wrap:wrap;align-items:center;gap:var(--s-2) var(--s-4)}
+html:not(.static) .page>.lfoot .socials{display:flex!important;align-items:center;gap:var(--s-1);margin-left:auto;width:auto!important;height:auto!important}
+html:not(.static) .page>.lfoot .socials a{position:static!important;display:inline-flex!important;align-items:center;justify-content:center;width:var(--tap)!important;height:var(--tap)!important;margin:0!important}
+html:not(.static) .page>.lfoot .socials svg{width:22px!important;height:22px!important;flex:none}
+@media (max-width:1023px){
+  html:not(.static) .page>.lfoot{padding:var(--s-6) var(--page-pad)!important}
+  html:not(.static) .page>.lfoot>span{flex:1 1 100%}
+  html:not(.static) .page>.lfoot .socials{margin-left:calc(-1 * (var(--tap) - 22px) / 2)!important;flex:1 1 100%}
+}
+html:not(.static) .tit{padding-block:var(--s-8)!important}
+html:not(.static) .tit-head{margin-bottom:var(--s-3)}
+html:not(.static) .tit-cards{margin-top:var(--s-3)}
+
+/* ---- IDE: one compact toolbar row like VS Code / Replit — title, language, actions; no wrapping, no dead padding */
+html:not(.static) .ed-bar{flex-wrap:nowrap;gap:var(--s-2);padding:var(--s-1) var(--s-2);min-height:calc(var(--tap) + 2 * var(--s-1))}
+html:not(.static) .ed-bar>b{flex:none;white-space:nowrap}
+html:not(.static) .ed-bar select{min-width:0;flex:0 1 200px}
+html:not(.static) .ed-bar .btn{flex:none}
+html:not(.static) .ed-bar .mock-note:empty{display:none}
+@media (max-width:560px){
+  html:not(.static) .ed-bar>b{display:none}
+  html:not(.static) .ed-bar select{flex:1 1 auto}
+}
+html:not(.static) .ed-foot{padding:var(--s-1) var(--s-2)}
+
+/* ---- resources / library: filter card and result count sit tight on the grid */
+html:not(.static) .rgrid{margin-top:0}
+html:not(.static) :is(.rcard,.ncard,.ccard){height:100%}
+
+/* ---- "Today in tech" / "From the library" live in the page flow, above the footer, on the content grid */
+html:not(.static) .app.dz>.below{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:var(--gap-sec);width:auto!important;max-width:none!important;margin:0!important;padding:0!important;background:none}
+html:not(.static) .app.dz>.below .rgrid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))!important}
+html:not(.static) .app.dz>.below .sec-title{margin-bottom:var(--s-3)}
+@media (min-width:1100px){
+  html:not(.static) body .app.dz>.below{grid-column:1/-1;grid-row:3;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:var(--s-6)}
+  html:not(.static) body .app.dz>.foot{grid-row:4}
+}
+html:not(.static) .page>.tit{margin-top:var(--s-8)!important}
+@media (min-width:1024px){html:not(.static) .page>.tit{margin-top:0!important}}
+
 /* ==== 101 Codecrafts app shell (2026-11): navy L-frame (sidebar + top bar), collapsible rail, mobile drawer ====
    Markup: tools/build.py sidebar()/topbar(). Behaviour: js/shell.js. Loaded last in every CSS bundle so it wins over
    the older .sbar/.topbar rules in app.css without editing them. Page content (.content and its cards) is not styled here. */
