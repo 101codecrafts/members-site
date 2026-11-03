@@ -24,12 +24,17 @@ export default {
       { source: '/((?!api/).*)', headers: pageHeaders },
     ];
   },
+  async redirects() {
+    return [{ source: '/ai.html', destination: '/ai-tools.html', permanent: true }];
+  },
   async rewrites() {
     // Friendly public URLs → versioned API (deep-link friendly for native apps).
     return [
       { source: '/go/:id', destination: '/api/v1/go/:id' },
       { source: '/verify/:code', destination: '/api/v1/certificates/verify/:code' },
       { source: '/u/:username', destination: '/api/v1/portfolio/:username' },
+      // session whiteboard iframe target -> branded coming-soon page (static front end)
+      { source: '/whiteboard/:id', destination: '/whiteboard.html' },
       { source: '/', destination: '/index.html' },
     ];
   },
