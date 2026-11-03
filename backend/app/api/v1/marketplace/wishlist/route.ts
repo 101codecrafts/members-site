@@ -1,0 +1,10 @@
+import { route, preflight, query, body, unwrap } from '@/lib/http';
+import { z } from 'zod';
+import { requireUser } from '@/lib/auth';
+import { uuid } from '@/lib/validation';
+export const GET = route(async () => { const s = await requireUser(); return unwrap(await s.db.from('mkt_wishlist').select('product_id, created_at, mkt_products(slug, title, price_ugx, images)')); });
+export const POST = route(async ({ req }) => { const s = await requireUser(); const b = await body(req, z.object({ product_id: uuid }));
+  unwrap(await s.db.from('mkt_wishlist').upsert({ user_id: s.userId, product_id: b.product_id }, { ignoreDuplicates: true }).select()); return { saved: true }; });
+export const DELETE = route(async ({ req }) => { const s = await requireUser(); const b = query(req, z.object({ product_id: uuid }));
+  unwrap(await s.db.from('mkt_wishlist').delete().eq('product_id', b.product_id).select()); return { removed: true }; });
+export const OPTIONS = preflight;

@@ -1,0 +1,10 @@
+import { route, preflight, query, body, unwrap } from '@/lib/http';
+import { z } from 'zod';
+import { requireUser } from '@/lib/auth';
+import { uuid } from '@/lib/validation';
+export const GET = route(async () => { const s = await requireUser(); return unwrap(await s.db.from('opportunity_saves').select('created_at, opportunities(id, type, title, org, deadline_at)')); });
+export const POST = route(async ({ req }) => { const s = await requireUser(); const b = await body(req, z.object({ opportunity_id: uuid }));
+  unwrap(await s.db.from('opportunity_saves').upsert({ user_id: s.userId, opportunity_id: b.opportunity_id }, { ignoreDuplicates: true }).select()); return { saved: true }; });
+export const DELETE = route(async ({ req }) => { const s = await requireUser(); const b = query(req, z.object({ opportunity_id: uuid }));
+  unwrap(await s.db.from('opportunity_saves').delete().eq('opportunity_id', b.opportunity_id).select()); return { removed: true }; });
+export const OPTIONS = preflight;
