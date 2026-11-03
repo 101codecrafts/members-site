@@ -34,7 +34,9 @@ export const POST = route(async ({ req, ip, log }) => {
   const attempts: Array<{ model: string; status: number | string }> = [];
   const opened = await openStream(buildMessages(b.messages), req.signal, attempts);
   log.info('assistant', { attempts: attempts.map((a) => `${a.model}:${redact(String(a.status))}`).join(','), q_len: last.content.length });
-  if (!opened) return NextResponse.json({ error: { code: 'busy', message: BUSY } }, { status: 503, headers: { 'retry-after': '120' } });
+  // x-assistant-attempts: "model:status" per free model tried (statuses only, never the key) for ops debugging.
+  const tried = attempts.map((a) => `${a.model.split('/').pop()}:${redact(String(a.status))}`).join(',').slice(0, 300);
+  if (!opened) return NextResponse.json({ error: { code: 'busy', message: BUSY } }, { status: 503, headers: { 'retry-after': '120', 'x-assistant-attempts': tried } });
   return new Response(opened.stream, {
     status: 200,
     headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store', 'x-accel-buffering': 'no', 'x-assistant-model': opened.model },
