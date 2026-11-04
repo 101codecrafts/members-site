@@ -44,7 +44,7 @@ html:not(.static) .prod .tagx{border-color:transparent!important;background:tran
 /* 6. Buttons: snappy lift with a hold (outBack), a real press into the shadow, and one focus ring everywhere */
 html:not(.static) .btn{transition:transform 140ms cubic-bezier(.34,1.7,.5,1),box-shadow 140ms cubic-bezier(.2,.8,.2,1)}
 html:not(.static) .btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none;transition-duration:60ms}
-html:not(.static) :is(a,button,summary,[tabindex]):focus-visible{outline:3px solid var(--ck-focus,#00758A);outline-offset:2px}
+html:not(.static) :where(main,.content) :where(a,button,summary,[tabindex]):not(.ck-link):focus-visible{outline:3px solid var(--ck-focus,#00758A);outline-offset:2px}
 @media (hover:none){html:not(.static) .btn:hover{transform:none;box-shadow:none}}
 
 /* 7. Links in running text: one underline style */
