@@ -23,7 +23,9 @@
     var ink = dark ? "#EEF1F8" : "#0B1236", sh = dark ? "#000" : "#0B1236";
     var d = 34 * u + 7 * u * ioc(win(p, 0, .18)) - 31 * u * oback(win(p, .18, .42)) + 24 * u * ioc(win(p, .6, .86));   /* half gap */
     var hop = Math.sin(Math.PI * win(p, .6, .86)) * 7 * u;                                                             /* recoil hop */
-    var box = function (x, y, bw, bh, col) { c.fillStyle = sh; c.fillRect(x + 4 * u, y + 4 * u, bw, bh); c.fillStyle = col; c.fillRect(x, y, bw, bh); };
+    var box = function (x, y, bw, bh, col) {   /* flat fill, 3 px navy outline, solid offset shadow */
+      c.fillStyle = sh; c.fillRect(x + 5 * u, y + 5 * u, bw, bh); c.fillStyle = col; c.fillRect(x, y, bw, bh);
+      c.strokeStyle = "#03103A"; c.lineWidth = 2.6 * u; c.lineJoin = "miter"; c.strokeRect(x, y, bw, bh); };
     c.fillStyle = ink; c.fillRect(0, cy - 1.4 * u, cx - d - 26 * u, 2.8 * u); c.fillRect(cx + d + 26 * u, cy - 1.4 * u, w, 2.8 * u);   /* cables */
     var px = cx - d - 26 * u, py = cy - 15 * u - hop;
     c.fillStyle = ink; c.fillRect(px + 26 * u, py + 6 * u, 10 * u, 4 * u); c.fillRect(px + 26 * u, py + 20 * u, 10 * u, 4 * u);       /* prongs */
@@ -60,6 +62,8 @@
 
   var sync = function () { H.classList.toggle("ccl-still", still()); if (off) off.sync(); };
   sync();
+  /* the site's reduced-motion rule (brutal.css) switches every CSS animation off, including the 300 ms reveal: reveal by class too */
+  setTimeout(function () { H.classList.add("ccl-on"); }, Math.max(0, 300 - (W.performance ? performance.now() : 0)));
   if (mq && mq.addEventListener) mq.addEventListener("change", sync);
   W.addEventListener("storage", function (e) { if (!e || e.key === "cc_bg_motion") sync(); });
   D.addEventListener("change", function (e) { if (e.target && e.target.id === "cc-bgm") setTimeout(sync, 0); });
@@ -124,18 +128,21 @@
       b.classList.remove("ccl-busy"); b.removeAttribute("aria-busy"); b.style.removeProperty("--ccl-cur");
     }
   }
-  D.addEventListener("submit", function (e) {   /* bubbles to document after the form's own handler ran its synchronous part */
+  /* Decided one task after the submit, once the form's own handler has run what it can without the network: busy only when
+     something is still pending (the button is disabled, the status line ends in "…", or the submit navigates). */
+  D.addEventListener("submit", function (e) {
     var f = e.target, b = e.submitter || f.querySelector("[type=submit],button:not([type])");
-    if (!b || f.querySelector("[aria-invalid=true],.form-msg.err")) return;
-    var st = f.querySelector(".form-msg,[role=status],[aria-live]");
-    if (!st && e.defaultPrevented) return;
-    busy(b, 1);
-    if (st && b._cclb) {
-      var was = st.textContent;
-      b._cclb.s = new MutationObserver(function () { if (st.textContent !== was) busy(b, 0); });
-      b._cclb.s.observe(st, { childList: true, characterData: true, subtree: true });
-      new MutationObserver(function (m, o) { if (!b.disabled) { busy(b, 0); o.disconnect(); } }).observe(b, { attributes: true, attributeFilter: ["disabled"] });
-    }
+    setTimeout(function () {
+      if (!b || f.querySelector("[aria-invalid=true],.form-msg.err")) return;
+      var st = f.querySelector(".form-msg,[role=status],[aria-live]"), txt = st ? st.textContent.trim() : "";
+      if (!(b.disabled || /(…|\.\.\.)$/.test(txt) || !e.defaultPrevented)) return;
+      busy(b, 1);
+      if (st && b._cclb) {
+        b._cclb.s = new MutationObserver(function () { if (st.textContent.trim() !== txt) busy(b, 0); });
+        b._cclb.s.observe(st, { childList: true, characterData: true, subtree: true });
+        if (b.disabled) new MutationObserver(function (m, o) { if (!b.disabled) { busy(b, 0); o.disconnect(); } }).observe(b, { attributes: true, attributeFilter: ["disabled"] });
+      }
+    }, 0);
   });
   W.addEventListener("pageshow", function () { qsa(".ccl-busy").forEach(function (b) { busy(b, 0); }); });
 
@@ -159,10 +166,13 @@
   };
 
   /* ---- 5. empty states: a small loop above the existing message ---- */
-  var EI = {
-    search: '<rect class="s" x="14" y="51" width="32" height="4" rx="2"/><g class="sw"><circle class="c" cx="26" cy="24" r="8" opacity=".55"/><circle class="k" cx="26" cy="24" r="12"/><path class="k" d="M35 33l10 10"/></g>',
-    cart: '<rect class="s" x="10" y="53" width="40" height="4" rx="2"/><rect class="o hp" x="29" y="25" width="10" height="13"/><path class="k" d="M5 13h7l6 25h25l5-17H15"/><circle class="k" cx="21" cy="46" r="3"/><circle class="k" cx="40" cy="46" r="3"/>',
-    bell: '<g class="bl"><path class="k" d="M30 10v4M17 40c3-3 4-8 4-14a9 9 0 0118 0c0 6 1 11 4 14z"/><circle class="o" cx="30" cy="45" r="3.6"/></g><path class="k z" d="M43 9h7l-7 8h7" stroke-width="2.5"/>'
+  var EI = {   /* Neo-Brutalist: flat fills, 3 px navy outlines, solid offset shadows, square joins */
+    search: '<rect class="n" x="10" y="54" width="40" height="4"/><g class="sw"><g class="s" transform="translate(4 4)"><rect x="8" y="6" width="26" height="26"/><path d="M30 30l6-6 14 14-6 6z"/></g>' +
+      '<path class="o" d="M30 30l6-6 14 14-6 6z"/><rect class="c" x="8" y="6" width="26" height="26"/><rect class="p" x="13" y="11" width="6" height="6"/></g>',
+    cart: '<rect class="n" x="6" y="54" width="48" height="4"/><rect class="o hp" x="26" y="24" width="12" height="13"/><path class="k" d="M3 11h8l3 8"/>' +
+      '<path class="s" d="M17 23h36l-5 18H22z"/><path class="p" d="M14 20h36l-5 18H19z"/><rect class="n" x="18" y="42" width="8" height="8"/><rect class="n" x="38" y="42" width="8" height="8"/>',
+    bell: '<g class="bl"><g class="s" transform="translate(4 4)"><path d="M20 14h20l4 24H16z"/><rect x="11" y="38" width="38" height="7"/></g><rect class="n" x="26" y="7" width="8" height="7"/>' +
+      '<rect class="n" x="25" y="45" width="10" height="8"/><path class="o" d="M20 14h20l4 24H16z"/><rect class="c" x="11" y="38" width="38" height="7"/></g><path class="k z" d="M45 5h9l-9 10h9" stroke-width="3"/>'
   };
   var EMPTY = [["#cart-lines .mk-empty", "cart"], [".ann-list li.muted,.ccl-ann", "bell"], [".empty,.mk-empty,.cempty,.ccs-empty", "search"]];
   var scanEmpty = function () {
