@@ -1,6 +1,7 @@
 /* 101 AI mascot: the 101 logo morphs into a little robot and back, with friendly gestures.
    Dependency-free inline SVG + one requestAnimationFrame loop (SVG transforms/geometry only, no layout).
    const m = AIMascot.mount(el, {size: 56, launcher: true, label: "101 AI assistant", shadow: "#022A78", point: "left"});
+   m.pin() holds the current shape (no launcher cycle or hover morphs) until toLogo()/toRobot(). A resting logo runs no rAF loop.
    m.toRobot() / m.toLogo() -> Promise   m.gesture(name[, opts]) -> Promise   m.setState(s)   m.setMouth(0..1)   m.destroy()
    Gestures: wave hi5 celebrate pump nod shake shrug think point bow blink hop.  States: idle listening thinking talking sleep.
    Still (no tweens, instant swaps) under prefers-reduced-motion or localStorage.cc_bg_motion = off|reduced. Pauses when the tab is hidden. */
@@ -101,7 +102,7 @@
     /* ---- state ---- */
     var u = o.robot ? 1 : 0, mt = null, st = "idle", prevSt = "idle", stT = 9, clock = 0, last = 0, raf = 0, dead = false;
     var frozen = false, gq = [], gNow = null, mouthExt = -1, mouthAt = -9, lag = 0, lagV = 0, prevBy = 0;
-    var nextBlink = 2 + rnd() * 3, nextLook = 5 + rnd() * 4, look = null, nextFriendly = 12 + rnd() * 8, nextCycle = 25, pinned = !!o.robot, busy = false, hovering = false;
+    var nextBlink = 2 + rnd() * 3, nextLook = 5 + rnd() * 4, look = null, nextFriendly = 12 + rnd() * 8, pinned = !!o.robot, busy = false, hovering = false, ct = 0;
     var mq = W.matchMedia ? W.matchMedia("(prefers-reduced-motion: reduce)") : null;
     var still = function () { var m = ""; try { m = W.localStorage.cc_bg_motion || ""; } catch (e) {} return !!(mq && mq.matches) || m === "off" || m === "reduced"; };
     var STILL = still();
@@ -197,13 +198,13 @@
           if (clock > nextFriendly && !o.launcher) { run(FRIENDLY[(rnd() * FRIENDLY.length) | 0]); nextFriendly = clock + 12 + rnd() * 8; }
         }
       }
-      if (o.launcher && !pinned && !busy && clock > nextCycle) { nextCycle = clock + 25; cycle(); }
       var p = pose();
       var vy = (p.hop + p.by + p.cr) - prevBy; prevBy = p.hop + p.by + p.cr;   /* arms drag behind vertical motion (overlap) */
       lagV += (-vy * 6 - lag) * 60 * dt; lagV *= Math.pow(.02, dt); lag += lagV * dt * 10; lag = Math.max(-14, Math.min(14, lag));
       render(p);
-      kick();
+      if (u > 0 || mt || gNow || gq.length || blinkT >= 0) kick(); else last = 0;   /* resting logo: the loop sleeps (no rAF) */
     }
+    function arm() { clearTimeout(ct); if (o.launcher && !dead) ct = setTimeout(function () { if (D.hidden || pinned || busy) arm(); else cycle(); }, 25e3); }
     function kick() { if (!raf && !dead && !STILL && !D.hidden) raf = W.requestAnimationFrame(frame); }
     function paint() { if (STILL) { var p = zero(); base(st, 0, p, mouthExt >= 0 ? mouthExt : -1); if (st === "talking") p.mo = mouthExt >= 0 ? mouthExt : 0; p.ring = st === "listening" ? .25 : 0; p.zz = st === "sleep" ? .4 : 0; p.sy = 0; p.by = st === "sleep" ? 2 : st === "listening" ? -1.5 : 0; p.aL -= 2.2 * sin(-.7); p.aR += 2.2 * sin(-.4); render(p); } else kick(); }
 
@@ -226,7 +227,7 @@
       if (STILL || busy || pinned) return;
       busy = true;
       morph(1).then(function (ok) { return ok && !pinned ? run(FRIENDLY[(rnd() * FRIENDLY.length) | 0]) : 0; })
-        .then(function () { return pinned || hovering ? 0 : morph(0); }).then(function () { busy = false; nextCycle = clock + 25; });
+        .then(function () { return pinned || hovering ? 0 : morph(0); }).then(function () { busy = false; arm(); });
     }
     var enter = function () { hovering = true; if (pinned) return; if (STILL) { u = 1; paint(); } else cycle(); };
     var leave = function () { hovering = false; if (pinned) return; if (STILL) { u = 0; paint(); } else if (!busy) morph(0); };
@@ -237,12 +238,13 @@
     var sto = function (e) { if (!e || e.key === "cc_bg_motion") chg(); };
     D.addEventListener("visibilitychange", vis); W.addEventListener("storage", sto);
     if (mq) mq.addEventListener ? mq.addEventListener("change", chg) : mq.addListener(chg);
-    paint();
+    paint(); arm();
 
     return {
       el: svg,
       toRobot: function () { pinned = true; return morph(1); },
-      toLogo: function () { pinned = false; gq.forEach(function (g) { g.res(false); }); gq = []; if (gNow) { gNow.res(false); gNow = null; } nextCycle = clock + 25; return morph(0); },
+      toLogo: function () { pinned = false; gq.forEach(function (g) { g.res(false); }); gq = []; if (gNow) { gNow.res(false); gNow = null; } arm(); return morph(0); },
+      pin: function () { pinned = true; return this; },   /* hold the current shape: no launcher cycling or hover morphs */
       gesture: run,
       setState: function (s) { if (s !== st && /^(idle|listening|thinking|talking|sleep)$/.test(s)) { prevSt = st; st = s; stT = 0; if (s === "talking") mouthAt = -9; paint(); } return this; },
       setMouth: function (v) { mouthExt = cl(+v || 0); mouthAt = clock; if (STILL) paint(); return this; },
@@ -250,7 +252,7 @@
       refreshMotion: chg,
       _seek: function (uu, n, ms, s, c) { frozen = true; u = uu; gNow = n ? { n: n, t: ms || 0, res: function () {} } : null; if (s) st = prevSt = s; stT = 9; clock = c || 0; blinkT = -1; look = null; lag = 0; render(pose()); },
       destroy: function () {
-        dead = true; if (raf) W.cancelAnimationFrame(raf); D.removeEventListener("visibilitychange", vis); W.removeEventListener("storage", sto);
+        dead = true; clearTimeout(ct); if (raf) W.cancelAnimationFrame(raf); D.removeEventListener("visibilitychange", vis); W.removeEventListener("storage", sto);
         if (mq) mq.removeEventListener ? mq.removeEventListener("change", chg) : mq.removeListener(chg);
         if (o.launcher) { trig.removeEventListener("pointerenter", enter); trig.removeEventListener("focusin", enter); trig.removeEventListener("pointerleave", leave); trig.removeEventListener("focusout", leave); }
         if (mt) mt.res(false); gq.forEach(function (g) { g.res(false); }); if (gNow) gNow.res(false); svg.remove();

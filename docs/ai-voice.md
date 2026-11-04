@@ -2,7 +2,7 @@
 
 Free, dependency-free talk-back and voice input for the 101 AI floating assistant. It uses only the browser's own
 `speechSynthesis` and `SpeechRecognition` / `webkitSpeechRecognition`, so there is no API key and no per-use cost.
-It isn't wired into `js/ai-float.js` yet. The integration steps are at the end of this file.
+Wired into `js/ai-float.js` in round 8: the panel lazy-loads the generated `js/ai-voice.min.js` and `js/ai-voice-ui.min.js` on first open (regenerate them with `sh tools/minify_voice.sh` after editing the readable sources). The original integration notes are kept at the end of this file.
 
 - `js/ai-voice.js` is the engine, `window.AIVoice`. It has no DOM UI.
 - `js/ai-voice-ui.js` holds the drop-in speaker toggle and mic button, `AIVoice.ui`. Load it after the engine.
