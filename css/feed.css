@@ -87,6 +87,9 @@ body:is([data-page=news],[data-page=opportunities],[data-page=announcements],[da
 }
 /* round 10: the news topic tabs are filled by js/feed.js when the feed arrives; hold their 48px row from first paint */
 html:not(.static) .feed-bar>.ftabs:empty{box-sizing:border-box;min-height:48px}
+/* round 10: the news and opportunities feeds are always taller than a screen; their inline loader holds a full screen (like courses),
+   so the note under the grid never slides out of view when the cards replace the loader */
+html:not(.static) :is(#news-grid,#opp-grid)>.ccl-in{min-height:100svh}
 body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:none;border-width:0 0 2px}
 .bell-btn{position:relative;display:inline-grid;place-items:center;width:44px;height:44px;border:0;background:transparent;color:var(--ink);cursor:pointer}
 .bell-btn svg{width:22px;height:22px}
