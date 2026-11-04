@@ -289,13 +289,13 @@ COLLABORATE</h1>
 <section id="below-fold" class="below" aria-label="More for you">
   <div class="below-col fwidget" id="feed-widget">
     <div class="sec-title"><div class="ftabs sm" id="fw-tabs" aria-label="Today in tech, opportunities and events"></div></div>
-    <div id="fw-tit" role="tabpanel" aria-labelledby="tab-tit"><div class="fw-h"><b>TODAY IN TECH</b> <small id="tit-date"></small><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="tit-list"></ol></div>
+    <div id="fw-tit" role="tabpanel" aria-labelledby="tab-tit"><div class="fw-h"><b>TODAY IN TECH</b> <small id="tit-date"></small><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="tit-list"><li class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading today in tech…</span></li></ol></div>
     <div id="fw-dopp" role="tabpanel" aria-labelledby="tab-dopp" hidden><div class="fw-h"><b>OPEN NOW</b> <small>Deadlines in EAT</small><a class="viewall" href="opportunities.html">All opportunities <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dopp-list"></ol></div>
     <div id="fw-dev" role="tabpanel" aria-labelledby="tab-dev" hidden><div class="fw-h"><b>COMING UP</b> <small>Times in EAT</small><a class="viewall" href="events.html">All events <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dev-list"></ol></div>
   </div>
   <div class="below-col">
     <div class="sec-title"><h2>FROM THE LIBRARY</h2><a class="viewall" href="resources.html">Open Library <svg class="i"><use href="#i-arrow"/></svg></a></div>
-    <div id="library-row" class="rgrid"></div>
+    <div id="library-row" class="rgrid"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading the library…</span></div></div>
   </div>
 </section>
 </div></div>
@@ -316,6 +316,7 @@ COLLABORATE</h1>
 <script src="js/ads.js" defer></script>
 <script src="js/bg.js" defer></script>
 <script src="js/ai.js" defer></script>
+<script src="js/loaders.min.js" defer></script>
 <script src="js/feed-data.js" defer></script>
 <script src="js/events-data.js" defer></script>
 <script src="js/feed-api.js" defer></script>

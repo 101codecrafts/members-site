@@ -62,7 +62,7 @@ def scripts(charts=False):
     tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
-    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>', '<script src="js/ai.js" defer></script>']   # ai.js: 101 AI floating assistant loader (round 7)
+    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>', '<script src="js/ai.js" defer></script>', '<script src="js/loaders.min.js" defer></script>']   # loaders: round-9 route/inline/busy/empty loops   # ai.js: 101 AI floating assistant loader (round 7)
     return '\n'.join(tags)
 
 # Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
@@ -182,7 +182,7 @@ def bundle(name, parts):
     out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
-bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css'])   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
+bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css', 'loaders.css'])   # loaders.css: round-9 loaders + state loops   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
 bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
@@ -210,6 +210,13 @@ def rootabs(s):
     s = re.sub(r'(\s(?:href|src|action|poster)=")([^"]*)"', lambda m: m.group(1) + _abs1(m.group(2)) + '"', s)
     return re.sub(r'(\ssrcset=")([^"]*)"', lambda m: m.group(1) + ', '.join(' '.join([_abs1(x.split()[0])] + x.split()[1:]) for x in m.group(2).split(',') if x.strip()) + '"', s)
 
+def loader(a):
+    """Inline content loader (round 9, css/loaders.css + js/loaders.js): holds its space from first paint, shows after 300 ms,
+    and is replaced when the page script fills the container. {{LOADER label="news" [tag="li"] [over]}}"""
+    tag = a.get('tag', 'div'); over = ' ccl-over' if a.get('over') is True else ''
+    return (f'<{tag} class="ccl ccl-in{over}" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span>'
+            f'<span class="ccl-t">Loading {html.escape(a.get("label", "content"))}…</span></{tag}>')
+
 THEME_LINK = '<link rel="stylesheet" href="css/bundle-theme.css">'
 for f in (root / 'src').glob('*.html'):
     s = css_links(f.read_text()); name = f.name
@@ -220,6 +227,7 @@ for f in (root / 'src').glob('*.html'):
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
     s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1)), name), s)
+    s = re.sub(r'\{\{LOADER(.*?)\}\}', lambda m: loader(attrs(m.group(1))), s)
     if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')
