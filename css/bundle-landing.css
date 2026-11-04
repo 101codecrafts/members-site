@@ -2221,3 +2221,71 @@ html:not(.static) .ck-grid.ck-cv>li{content-visibility:auto;contain-intrinsic-si
   html:not(.static) :is(.ck,.ck-skin){border-color:CanvasText!important;box-shadow:none}
   html:not(.static) :is(.ck,.ck-skin):has(.ck-link:focus-visible){outline:3px solid Highlight}
 }
+
+/* =====================================================================================
+   round 10: card motion, site-wide (founder, 5 Nov 2026: "and card animations" + "etc" = every card type).
+   One motion vocabulary for .ck / .ck-skin AND the legacy cards whose layout lives elsewhere (announcements, groups, projects,
+   orders, sessions, KPI/stat tiles, launchpad featured slot, member card). Transform + opacity only for movement (no layout
+   shift); the hard shadow changes size on hover/press (paint only, never layout).
+     reveal   once, on scroll (js/motion.js adds .ck-rv / .ck-rv-go): rise 14px with a quick overshoot, a short hold with
+              no shadow, then the offset shadow SNAPS in. 200ms, 40ms stagger, max 5 steps. Cards already on screen at load
+              never animate, so first paint and LCP are untouched.
+     hover    link cards: up-left 3px while the shadow grows 4 -> 7 (the far edge stays put), outBack overshoot then hold.
+              Non-link tiles (stats, values, KPIs): a smaller 2px nudge, no pointer cursor, no press.
+     press    link cards sink into their shadow (translate +4px, shadow 0), 60ms.
+     focus    keyboard focus on the card's link = the hover lift, plus the existing two-colour ring.
+     accent   pinned / featured / live cards: a 4px accent bar slides in along the top edge on hover/focus.
+   Hover only on (hover:hover) and (pointer:fine): touch never gets a sticky lift. Off under reduced motion, Lite,
+   cc_bg_motion off|reduced (html.ccl-still, set live by js/loaders.js) and ?static=1 (every rule is html:not(.static)).
+   ===================================================================================== */
+:root{--ckm-ease:cubic-bezier(.34,1.7,.5,1);--ckm-dur:180ms;--ckm-press:60ms}
+/* legacy cards join the shared transition (their own border/shadow/padding are untouched) */
+html:not(.static) :is(.ann-card,article.card,.content div.card:not(.dark),.ord,.kpi,.dz-stat,.cd-stage){
+  transition:translate var(--ckm-dur) var(--ckm-ease),box-shadow var(--ckm-dur) var(--ck-ease)}
+html:not(.static) :is(.ck,.ck-skin){transition:translate var(--ckm-dur) var(--ckm-ease),box-shadow var(--ckm-dur) var(--ck-ease)}
+
+@media (hover:hover) and (pointer:fine){
+  /* link cards (ck system) keep their rule above; legacy link cards get the same lift */
+  html:not(.static) :is(.ann-card,article.card,.content div.card:not(.dark),.ord):has(a[href]):hover{translate:-3px -3px;box-shadow:var(--ck-sh-up) var(--ck-sh-up) 0 var(--ck-sh-c)}
+  /* non-link tiles: a small nudge so they feel physical, without promising a click */
+  html:not(.static) :is(.ck,.ck-skin):not(:has(.ck-link,a[href])):not(.ck--skeleton,.ck--empty,.is-disabled,[aria-disabled=true]):hover,
+  html:not(.static) :is(.kpi,.dz-stat,.cd-stage):not(:has(a[href])):hover{translate:-2px -2px;box-shadow:6px 6px 0 var(--ck-sh-c)}
+}
+/* .hov cards that are also in the ck system lifted twice (brutal.css transform + the ck translate): one lift only.
+   .feat-slot (launchpad featured) keeps the .hov transform lift and only gains the accent bar. */
+html.fx:not(.static) :is(.ck,.ck-skin).hov:hover{transform:none}
+/* keyboard focus = hover */
+html:not(.static) :is(.ck,.ck-skin):has(.ck-link:focus-visible){translate:-3px -3px;
+  box-shadow:var(--ck-sh-up) var(--ck-sh-up) 0 var(--ck-sh-c),0 0 0 4px var(--ck-focus-2)}
+html:not(.static) :is(.ann-card,article.card,.content div.card:not(.dark),.ord):has(a[href]:focus-visible){translate:-3px -3px;box-shadow:var(--ck-sh-up) var(--ck-sh-up) 0 var(--ck-sh-c)}
+/* press: legacy link cards sink into the shadow too (the ck rule above covers .ck-link) */
+html:not(.static) :is(.ann-card,article.card,.content div.card:not(.dark),.ord):has(a[href]:active){translate:3px 3px!important;box-shadow:0 0 0 var(--ck-sh-c)!important;transition-duration:var(--ckm-press)}
+html:not(.static) :is(.ck,.ck-skin):has(.ck-link:active){transition-duration:var(--ckm-press)}
+
+/* accent bar on pinned / featured / live cards (scaleX: transform only) */
+html:not(.static) :is(.ann-card.pinned,.ct.live,.ck.is-featured,.feat-slot){position:relative}
+html:not(.static) :is(.ann-card.pinned,.ct.live,.ck.is-featured,.feat-slot)::after{content:"";position:absolute;left:0;right:0;top:0;height:4px;z-index:3;pointer-events:none;
+  background:var(--accent,#fc8c0c);transform:scaleX(0);transform-origin:left center;transition:transform 200ms cubic-bezier(.2,.8,.2,1)}
+html:not(.static) .feat-slot::after{background:var(--brand-navy,#0B1236)}
+@media (hover:hover) and (pointer:fine){html:not(.static) :is(.ann-card.pinned,.ct.live,.ck.is-featured,.feat-slot):hover::after{transform:scaleX(1)}}
+html:not(.static) :is(.ann-card.pinned,.ct.live,.ck.is-featured):has(:focus-visible)::after,html:not(.static) .feat-slot:focus-visible::after{transform:scaleX(1)}
+
+/* reveal (js/motion.js): hidden only once JS has marked the card, so no-JS / failed JS shows everything */
+html:not(.static) .ck-rv:not(.ck-rv-go){opacity:0;translate:0 14px}
+html:not(.static) .ck-rv.ck-rv-go{animation:ckm-rise 200ms cubic-bezier(.2,.8,.2,1) var(--ck-rv-d,0ms) both}
+@keyframes ckm-rise{
+  0%{opacity:0;translate:0 14px;box-shadow:0 0 0 transparent}
+  70%{opacity:1;translate:0 -2px;box-shadow:0 0 0 transparent;animation-timing-function:steps(1,end)}
+  100%{opacity:1;translate:0 0}
+}
+
+/* the motion switches */
+@media (prefers-reduced-motion:reduce){
+  html:not(.static) :is(.ann-card,article.card,.content div.card,.ord,.kpi,.feat-slot,.dz-stat,.cd-stage){transition:none!important;translate:none!important}
+  html:not(.static) :is(.ann-card.pinned,.ct.live,.ck.is-featured,.feat-slot)::after{transition:none}
+  html:not(.static) .ck-rv{opacity:1!important;translate:none!important;animation:none!important}
+}
+html:is(.lite,.ccl-still):not(.static) :is(.ck,.ck-skin,.ann-card,article.card,.content div.card,.ord,.kpi,.feat-slot,.dz-stat,.cd-stage){transition:none!important}
+html:is(.lite,.ccl-still):not(.static) :is(.ann-card.pinned,.ct.live,.ck.is-featured,.feat-slot)::after{transition:none}
+html:is(.lite,.ccl-still):not(.static) .ck-rv{opacity:1!important;translate:none!important;animation:none!important}
+@media print{html .ck-rv{opacity:1!important;translate:none!important;animation:none!important}}

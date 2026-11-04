@@ -9,6 +9,40 @@
   if (STATIC || reduce || lite) { html.classList.add("no-motion"); return; }
   html.classList.add("fx");
 
+  /* ---- round 10: card reveal (css/cards.css .ck-rv): once, on scroll, every card type. Rise + overshoot, hold, the hard
+     shadow snaps in; 200ms, 40ms stagger. Cards on screen when they first appear (at load, or rendered in view later) are
+     left alone, so first paint, LCP and content swaps never wait on it. Off with cc_bg_motion off|reduced. ---- */
+  const CARD = ".ck,.ck-skin,.ann-card,article.card,.content div.card:not(.dark),.ord,.kpi,.dz-stat,.feat-slot,.cd-stage";
+  const cardStill = () => { try { return /^(off|reduced)$/.test(localStorage.cc_bg_motion || ""); } catch (e) { return false; } };
+  if ("IntersectionObserver" in window && !cardStill()) {
+    const seen = new WeakSet();
+    const done = el => { el.classList.remove("ck-rv", "ck-rv-go"); el.style.removeProperty("--ck-rv-d"); };
+    const io = new IntersectionObserver(es => {
+      let k = 0;
+      es.forEach(e => { if (!e.isIntersecting) return; const el = e.target; io.unobserve(el);
+        if (cardStill() || html.classList.contains("lite")) return done(el);
+        el.style.setProperty("--ck-rv-d", Math.min(k++, 5) * 40 + "ms"); el.classList.add("ck-rv-go");
+        el.addEventListener("animationend", () => done(el), { once: true }); setTimeout(() => done(el), 700); });
+    }, { rootMargin: "0px 0px -6% 0px" });
+    const scan = root => {
+      const vh = innerHeight;
+      (root.matches && root.matches(CARD) ? [root] : []).concat([...(root.querySelectorAll ? root.querySelectorAll(CARD) : [])]).forEach(el => {
+        if (seen.has(el)) return; seen.add(el);
+        if (el.parentElement && el.parentElement.closest(".ck,.ck-skin,.ann-card,article.card,.ord")) return;   // nested card: the outer one moves
+        const r = el.getBoundingClientRect(); if (!r.width || (r.top < vh && r.bottom > 0)) return;
+        el.classList.add("ck-rv"); io.observe(el);
+      });
+    };
+    const start = () => {
+      scan(document);
+      let q = []; let t = 0;
+      new MutationObserver(ms => { ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) q.push(n); }));
+        if (!t) t = requestAnimationFrame(() => { t = 0; const nodes = q; q = []; nodes.forEach(n => n.isConnected && scan(n)); }); })
+        .observe(document.body, { childList: true, subtree: true });
+    };
+    document.readyState !== "loading" ? start() : document.addEventListener("DOMContentLoaded", start);
+  }
+
   function ready(fn) { document.readyState !== "loading" ? fn() : document.addEventListener("DOMContentLoaded", fn); }
   ready(async () => {
     try { await document.fonts.ready; } catch (e) {}
@@ -35,7 +69,7 @@
       /* ---- staggered entrances ---- */
       const groups = [".tool", ".lp", ".act", ".feat", ".tile", ".path", ".tcard", ".qa", ".feed", ".ev", ".rcard", ".ncard", ".kpi", ".card"];
       groups.forEach(sel => {
-        const els = [...document.querySelectorAll(sel)]; if (!els.length) return;
+        const els = [...document.querySelectorAll(sel)].filter(el => !el.matches(CARD)); if (!els.length) return;   // cards use the CSS reveal above
         g.from(els, { y: 26, opacity: 0, duration: .6, ease: "power3.out", stagger: .06, clearProps: "transform,opacity",
           scrollTrigger: window.ScrollTrigger ? { trigger: els[0], start: "top 95%", once: true } : undefined });
       });

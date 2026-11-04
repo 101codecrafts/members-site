@@ -182,7 +182,7 @@ def bundle(name, parts):
     out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
-bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css', 'loops.css', 'loaders.css'])   # loops.css: section loop bands (round 9); loaders.css: round-9 loaders + state loops   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
+bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css', 'loops.css', 'loaders.css', 'polish.css'])   # polish.css: round-10 elegance pass (loaded last)   # loops.css: section loop bands (round 9); loaders.css: round-9 loaders + state loops   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
 bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])

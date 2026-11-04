@@ -1,0 +1,60 @@
+/* =====================================================================================
+   round 10 elegance pass (Stage B): restraint on top of the 101 Neo-Brutalist system. Loaded last (bundle-theme.css).
+   Brutalism stays: square corners, 2px navy outlines, hard offset shadows, flat fills, Archivo Black / IBM Plex Sans /
+   JetBrains Mono, the 101 palette. What changes is rhythm, hierarchy and calm: one orange per view, quieter chrome,
+   crisper type, snappy and consistent micro-interactions. No structure, copy or data changes. Every rule is
+   html:not(.static), so ?static=1 stays pixel-exact.
+   ===================================================================================== */
+
+/* 1. Type: balanced headings, no orphans in body copy, readable measure for page intros, tabular figures for numbers */
+html:not(.static) :is(h1,h2,h3,.ck-title){text-wrap:balance}
+html:not(.static) :is(p,li,.ck-body){text-wrap:pretty}
+html:not(.static) .page-h p,html:not(.static) .page-h>div:first-child>p{max-width:68ch}
+html:not(.static) :is(.kpi b,.ck-num,.stat b,.dz-stat b,[data-count],.lp-votes,.vote b,.price,.mk-price){font-variant-numeric:tabular-nums}
+html:not(.static) ::selection{background:var(--brand-cyan,#05e6f2);color:#0B1236}
+
+/* 2. Section intros: one rhythm (eyebrow 8px, title, 8px, lede; 32px before the content) */
+html:not(.static) .page-h{margin-bottom:var(--s-6,32px)}
+html:not(.static) .page-h p{margin-top:var(--s-2,8px)}
+html:not(.static) :is(.page-h,.ab-hero) :is(.eyebrow,.kicker){margin-bottom:var(--s-2,8px)}
+
+/* 3. Quieter chrome. The launch strip's dismiss is a ghost control (the boxed white square competed with the CTA);
+      it keeps its 44px target via padding-free sizing on touch (system.css). */
+html:not(.static) .promo-bar button{border-color:transparent;color:rgba(255,255,255,.82)}
+html:not(.static) .promo-bar button:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.35);color:#fff}
+html:not(.static) .promo-bar button:focus-visible{outline:2px solid var(--brand-cyan,#05e6f2);outline-offset:2px}
+
+/* 4. One orange per view: the pinned announcement banner becomes a calm surface with an orange edge and icon, so the
+      page's own primary (hero, Join, CTA) stays the only orange block. Height and layout are unchanged (CLS budget). */
+html:not(.static) .ann-banner{background:var(--surface-1,#fff);color:var(--text,#0B1236);border:2px solid var(--border-strong,#0B1236);
+  border-left:8px solid var(--color-orange,#fc8c0c);box-shadow:var(--shadow-brutal-sm)}
+html:not(.static) .ann-banner .ab-ic{color:var(--color-orange-text,#B45309)}
+html:not(.static) .ann-banner p span{color:var(--text-muted,#3D4566)}
+html:not(.static) .ann-banner .btn.ink{background:var(--ink,#0B1236);color:#fff}
+html[data-theme=dark]:not(.static) .ann-banner{background:var(--surface-1);border-color:var(--border-strong);border-left-color:var(--color-orange,#fc8c0c)}
+html[data-theme=dark]:not(.static) .ann-banner .ab-ic{color:var(--color-orange,#fc8c0c)}
+html[data-theme=dark]:not(.static) .ann-banner .btn.ink{background:var(--color-orange,#fc8c0c);color:#0B1236;border-color:var(--color-orange,#fc8c0c)}
+
+/* 5. Fewer competing chips: on cards, secondary tags (everything after the first tag in a tag row) go borderless and muted.
+      The first tag (level / audience) keeps its outline, so the hierarchy reads at a glance. */
+html:not(.static) :is(.ck,.ann-card,article.card) :is(.tags,.mk-tags,.ctags,.fc-tags,.aud)>:not(:first-child),
+html:not(.static) .prod .tagx{border-color:transparent!important;background:transparent!important;
+  color:var(--text-muted,#3D4566)!important;padding-inline:4px!important;box-shadow:none!important}
+
+/* 6. Buttons: snappy lift with a hold (outBack), a real press into the shadow, and one focus ring everywhere */
+html:not(.static) .btn{transition:transform 140ms cubic-bezier(.34,1.7,.5,1),box-shadow 140ms cubic-bezier(.2,.8,.2,1)}
+html:not(.static) .btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none;transition-duration:60ms}
+html:not(.static) :is(a,button,summary,[tabindex]):focus-visible{outline:3px solid var(--ck-focus,#00758A);outline-offset:2px}
+@media (hover:none){html:not(.static) .btn:hover{transform:none;box-shadow:none}}
+
+/* 7. Links in running text: one underline style */
+html:not(.static) :is(.prose,.page-h,footer) a:not(.btn):not([class*=ck-]){text-underline-offset:3px;text-decoration-thickness:1px}
+html:not(.static) :is(.prose,.page-h,footer) a:not(.btn):not([class*=ck-]):hover{text-decoration-thickness:2px}
+
+/* 8. Footer: 8px rhythm, calmer link row, aligned social marks */
+html:not(.static) footer nav a{padding-block:var(--s-1,4px)}
+html:not(.static) footer nav{row-gap:var(--s-2,8px)}
+
+/* motion switches */
+@media (prefers-reduced-motion:reduce){html:not(.static) .btn{transition:none}}
+html:is(.lite,.ccl-still):not(.static) .btn{transition:none}
