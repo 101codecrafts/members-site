@@ -182,7 +182,8 @@ def bundle(name, parts):
     out += '\n'.join((root / 'css' / p).read_text().replace('url(../assets', 'url(../assets') for p in parts)
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
-bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css'])   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
+bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css', 'loops.css'])   # loops.css: section loop bands (round 9)
+#   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
 bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css'])
 bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
@@ -210,12 +211,13 @@ def rootabs(s):
     s = re.sub(r'(\s(?:href|src|action|poster)=")([^"]*)"', lambda m: m.group(1) + _abs1(m.group(2)) + '"', s)
     return re.sub(r'(\ssrcset=")([^"]*)"', lambda m: m.group(1) + ', '.join(' '.join([_abs1(x.split()[0])] + x.split()[1:]) for x in m.group(2).split(',') if x.strip()) + '"', s)
 
+LOOPS_TAG = '\n<script src="js/loops.js" defer></script>'   # round 9: section loop bands, only on pages with a data-loop section
 THEME_LINK = '<link rel="stylesheet" href="css/bundle-theme.css">'
 for f in (root / 'src').glob('*.html'):
     s = css_links(f.read_text()); name = f.name
     s = s.replace('</head>', THEME_LINK + '\n</head>', 1) if THEME_LINK not in s else s
     charts = 'data-charts' in s
-    s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts)).replace('{{FOOTER}}', FOOTER)
+    s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts) + (LOOPS_TAG if 'data-loop=' in s else '')).replace('{{FOOTER}}', FOOTER)
     if '{{TEAM}}' in s or '{{SOCIAL_LIST}}' in s or '{{WA_BUTTON}}' in s: s = s.replace('{{TEAM}}', team_html()).replace('{{SOCIAL_LIST}}', social_list_html()).replace('{{WA_BUTTON}}', wa_button())
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
