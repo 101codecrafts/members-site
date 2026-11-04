@@ -1,5 +1,6 @@
 /* Contour terraces (inner-page headers). After Scenario Motion Loops; notes in docs/loops.md */
 CCL.def("contour", function (x, w, h, t, P) {
+  if (w < 760) return;   /* narrow headers stack the copy across the full width: no band there (contrast) */
   var M = CCL, x0 = Math.round(w * .5), cw = w < 700 ? 18 : 26, p = M.ph(t, 12), n = Math.ceil((w - x0) / cw), i, X, H, best = -1, bi = 0, A = new Path2D(), T = new Path2D(), hs = [];
   var hx = x0 + (w - x0) * (.3 + .4 * M.ob(M.win(p, 0, .1)) - .25 * M.ob(M.win(p, .33, .43)) - .15 * M.ob(M.win(p, .66, .76))), hw = Math.max(70, (w - x0) * .22);
   for (i = 0; i < n; i++) {
