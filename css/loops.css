@@ -1,0 +1,17 @@
+/* Section loops (round 9, js/loops.js): a quiet canvas band behind a section's content. Loops after Scenario Motion Loops,
+   drawn Neo-Brutalist (flat fills, 3px navy outlines, hard offset shadows). Nothing here applies until the script mounts a
+   canvas (never in ?static=1). Tokens per section and theme: --lp-1/2/3 flat fills, --lp-ol outline + shadow colour,
+   --lp-a the band's one flat opacity (kept low so text contrast stays at the round-6 levels). */
+.lp-rel{position:relative}
+.lp-on{isolation:isolate}
+[data-loop]>.lp-cv{position:absolute!important;inset:0;width:100%;height:100%;z-index:-1!important;pointer-events:none;display:block;margin:0;opacity:var(--lp-a,.15)}
+[data-loop]>.lp-cv[hidden]{display:none}
+@media print{[data-loop]>.lp-cv{display:none!important}}
+/* navy bands: final CTA box, WhatsApp band, sign-in/up side panel */
+[data-loop=tunnel],[data-loop=truchet],[data-loop=bauhaus]{--lp-1:#2BE0DA;--lp-2:#FFA615;--lp-3:#F7F8FA;--lp-ol:#020A26;--lp-a:.26}
+/* on the page background: stats strip, inner-page headers, 404 */
+[data-loop=halftone],[data-loop=contour],[data-loop=cubes]{--lp-1:#2BE0DA;--lp-2:#FFA615;--lp-3:#FFFFFF;--lp-ol:#0B1236;--lp-a:.2}
+:where([data-theme=dark]) :is([data-loop=halftone],[data-loop=contour],[data-loop=cubes]){--lp-3:#1B2557;--lp-ol:#000616;--lp-a:.2}
+:where([data-theme=dark]) :is([data-loop=tunnel],[data-loop=truchet],[data-loop=bauhaus]){--lp-a:.22}
+/* side panel: the muted legal line sits on the shapes, so the band is quieter there */
+[data-loop=bauhaus]{--lp-a:.17}
