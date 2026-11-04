@@ -153,9 +153,6 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .form-msg.err{background:var(--surface-3);color:#f0b7b2}
 :where([data-theme=dark]) .form-msg.ok{background:var(--bg);color:#b5eed3}
 :where([data-theme=dark]) .form-msg.info{background:#362b1b;color:var(--text)}
-@media (min-width:761px){
-html:where([data-theme=dark]):not(.static) .shell{background:linear-gradient(90deg,var(--fill-inverse) 0 244px,transparent 244px);color:var(--on-inverse)}
-}
 :where([data-theme=dark]) .tchip{border:2px solid var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
 :where([data-theme=dark]) .about-steps li::before{border:2px solid var(--border-strong)}
 /* --- dashboard.css --- */

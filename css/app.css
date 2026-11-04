@@ -377,7 +377,8 @@ html.signed-out .bell-n{display:none}
 
 /* ---- app shell (2026-11): fluid main column beside a full-height sticky sidebar, centred content ---- */
 @media (min-width:761px){
-  html:not(.static) .shell{background:linear-gradient(90deg,var(--ink) 0 244px,transparent 244px)} /* navy runs the full page height even if the page is zoomed out */
+  /* round 10: the old 244px navy .shell band is gone. The sticky sidebar paints its own navy, and tools/theme.py mirrored this rule into
+     theme-dark.css (loaded after shell.css), where it left a dead strip with no site grid whenever the sidebar was a drawer or the 72px rail. */
   html:not(.static) .sbar{height:100vh;height:100dvh;align-self:start}
   html:not(.static) .main{display:flex;flex-direction:column;min-height:100vh;min-width:0}
   html:not(.static) .main>.content{width:100%;max-width:1480px;margin-inline:auto;flex:1 0 auto}
