@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>101 AI mascot demo · 101 Codecrafts</title>
+<meta name="description" content="Internal demo of the 101 AI mascot: logo-to-robot morph, gestures and states.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://101codecrafts.github.io/members-site/mascot.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="101 Codecrafts">
+<meta property="og:title" content="101 AI mascot demo · 101 Codecrafts"><meta property="og:description" content="Internal demo of the 101 AI mascot: logo-to-robot morph, gestures and states.">
+<meta property="og:url" content="https://101codecrafts.github.io/members-site/mascot.html"><meta property="og:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
+<meta name="theme-color" content="#0B1236">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-black-cc.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://101codecrafts.github.io/members-site/#org", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", "https://github.com/101codecrafts", "https://github.com/101codecrafts-ug"]}</script>
+<style>
+.mx{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+.mx h1{margin:0 0 4px}
+.mx-stage{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.mx-box{display:grid;place-items:center;min-height:260px;border:2px solid #03103A;box-shadow:4px 4px 0 #03103A;position:relative}
+.mx-box.navy{background:#0B1236;--aim-sh:#022A78}
+.mx-box.light{background:#F7F5EF;--aim-sh:#03103A;--aim-floor:rgba(3,16,58,.2)}
+.mx-box small{position:absolute;left:8px;top:6px;font:600 12px/1.2 system-ui,sans-serif;color:#8A93B8}
+.mx-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.mx-row b{width:100%;font-size:14px}
+.mx button{font:600 14px/1 system-ui,sans-serif;padding:10px 14px;border:2px solid #03103A;background:#fff;color:#03103A;box-shadow:3px 3px 0 #03103A;cursor:pointer;min-height:44px}
+.mx button[aria-pressed="true"]{background:#FFA615}
+.mx button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #03103A}
+.mx .mx-launch{padding:0;min-height:0;position:relative;display:inline-grid;place-items:center;width:64px;height:64px;border-radius:50%;background:#0B1236;border:2px solid #2BE0DA;box-shadow:3px 3px 0 #03103A}
+.mx .mx-launch:focus-visible{outline:3px solid #FFA615;outline-offset:3px}
+.mx-note{font-size:14px;color:#5A6488}
+@media (max-width:640px){.mx-stage{grid-template-columns:1fr}}
+</style>
+<link rel="stylesheet" href="css/bundle-app.css">
+<link rel="stylesheet" href="css/bundle-theme.css">
+</head>
+<body data-page="mascot">
+<main id="main" class="mx">
+<p class="kicker">Internal · not indexed</p>
+<h1>101 AI mascot</h1>
+<p class="mx-note">js/ai-mascot.js — the 101 logo morphs into the robot and back. Same mascot on a navy and a light surface.</p>
+
+<div class="mx-stage">
+  <div class="mx-box navy" id="mx-a"><small>Navy surface</small></div>
+  <div class="mx-box light" id="mx-b"><small>Light surface</small></div>
+</div>
+
+<div class="mx-row"><b>Morph</b>
+  <button type="button" data-do="toRobot">Logo → robot</button>
+  <button type="button" data-do="toLogo">Robot → logo</button>
+</div>
+<div class="mx-row" id="mx-gest"><b>Gestures</b></div>
+<div class="mx-row" id="mx-state"><b>States</b></div>
+<div class="mx-row"><b>Mouth (lip-sync test, in Talking)</b>
+  <label><input type="range" id="mx-mouth" min="0" max="1" step="0.01" value="0"> level</label>
+</div>
+<div class="mx-row" id="mx-size"><b>Size</b>
+  <button type="button" data-size="56" aria-pressed="false">56 px (launcher)</button>
+  <button type="button" data-size="140" aria-pressed="true">140 px (panel)</button>
+</div>
+
+<div class="mx-row"><b>Launcher behaviour (hover or focus it; it also cycles every ~25 s)</b>
+  <button type="button" class="mx-launch" id="mx-launch" aria-label="Open 101 AI"></button>
+</div>
+<p class="mx-note">Motion follows prefers-reduced-motion and Settings → Background animation (localStorage.cc_bg_motion): Off/Reduced shows a still logo or robot.</p>
+</main>
+<script src="js/ai-mascot.min.js"></script>
+<script src="js/mascot-demo.js"></script>
+</body></html>
