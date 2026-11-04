@@ -1,7 +1,4 @@
-/* Bauhaus shapes (sign-in / sign-up side panel), Neo-Brutalist: a coarse grid of flat quarter discs, half discs, squares
-   and triangles in cyan, orange and white, each with a 3 px navy outline and a hard screen-space shadow. On its own
-   staggered 12 s cycle each turns +90 deg, holds, +90 deg, holds, swings -180 deg back and holds, every turn with an
-   overshoot; the cycle ends where it started, so the loop closes. */
+/* Bauhaus shapes (sign-in / sign-up side panel), Neo-Brutalist: a coarse grid of flat quarter discs, half discs, squares and triangles in cyan, orange and white, each with a 3 px navy outline and a hard screen-space shadow. After Scenario Motion Loops; notes in docs/loops.md */
 CCL.def("bauhaus", function (x, w, h, t, P) {
   var M = CCL, s = Math.max(90, Math.min(150, w / 4)), r = s * .36, nx = Math.ceil(w / s), ny = Math.ceil(h / s), i, j, n, k, a, p, c, L;
   for (j = 0; j < ny; j++) for (i = 0; i < nx; i++) {

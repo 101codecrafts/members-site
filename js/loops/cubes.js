@@ -1,6 +1,4 @@
-/* Isometric cubes (404 page), Neo-Brutalist: a sparse field of flat-shaded cubes (top cyan or orange, left white, right
-   navy) with thick navy outlines on isometric lattice nodes. On staggered 6 s beats a cube springs up (overshoot), holds,
-   drops and bounces once; its hard shadow stays on the floor, so the lift reads. */
+/* Isometric cubes (404 page), Neo-Brutalist: a sparse field of flat-shaded cubes (top cyan or orange, left white, right navy) with thick navy outlines on isometric lattice nodes. After Scenario Motion Loops; notes in docs/loops.md */
 CCL.def("cubes", function (x, w, h, t, P) {
   var M = CCL, s = w < 700 ? 26 : 34, dx = s * .866, N = Math.max(8, Math.min(16, Math.round(w * h / 52000))), C = [], n, i;
   for (n = 0; n < N; n++) {
@@ -13,7 +11,7 @@ CCL.def("cubes", function (x, w, h, t, P) {
   for (i = 0; i < C.length; i++) {
     var cy = C[i][0], cx = C[i][1], L = C[i][2], y = cy - L, f = new Path2D(), top = new Path2D(), lf = new Path2D(), rt = new Path2D();
     f.moveTo(cx, cy - s); f.lineTo(cx + dx, cy - s / 2); f.lineTo(cx + dx, cy + s / 2); f.lineTo(cx, cy + s); f.lineTo(cx - dx, cy + s / 2); f.lineTo(cx - dx, cy - s / 2); f.closePath();
-    x.translate(5, 5); x.fillStyle = P.ol; x.fill(f); x.translate(-5, -5);           /* floor shadow, stays put */
+    x.translate(5, 5); x.fillStyle = P.ol; x.fill(f); x.translate(-5, -5);
     top.moveTo(cx, y - s); top.lineTo(cx + dx, y - s / 2); top.lineTo(cx, y); top.lineTo(cx - dx, y - s / 2); top.closePath();
     lf.moveTo(cx - dx, y - s / 2); lf.lineTo(cx, y); lf.lineTo(cx, y + s); lf.lineTo(cx - dx, y + s / 2); lf.closePath();
     rt.moveTo(cx + dx, y - s / 2); rt.lineTo(cx, y); rt.lineTo(cx, y + s); rt.lineTo(cx + dx, y + s / 2); rt.closePath();

@@ -1,6 +1,4 @@
-/* Truchet arcs (WhatsApp community band), Neo-Brutalist: thick arcs with a navy outline and a hard shadow. Each tile snaps
-   a quarter turn with an overshoot once per 6 s, then holds, staggered across the band; two turns = 180 deg = the same tile,
-   so the 12 s loop closes. About one tile in ten is orange. */
+/* Truchet arcs (WhatsApp community band), Neo-Brutalist: thick arcs with a navy outline and a hard shadow. After Scenario Motion Loops; notes in docs/loops.md */
 CCL.def("truchet", function (x, w, h, t, P) {
   var M = CCL, s = Math.max(44, Math.min(64, h / 2.6)), r = s / 2, nx = Math.ceil(w / s), ny = Math.ceil(h / s), i, j, a, cx, cy, n, D, c, b, ox, oy, q;
   for (q = 0; q < 2; q++) {
@@ -10,7 +8,7 @@ CCL.def("truchet", function (x, w, h, t, P) {
       D = (i / nx) * 2.4 + j * .35;
       a = (Math.floor((t - D) / 6) + (M.rand(n, 1) < .5 ? 1 : 0) + M.ob(M.win(M.ph(t, 6, -D), .55, .7))) * Math.PI / 2;
       cx = i * s + r; cy = j * s + r;
-      for (c = 0; c < 2; c++) {                       /* arcs on two opposite corners, turned by a */
+      for (c = 0; c < 2; c++) {
         b = a + c * Math.PI; ox = cx + Math.SQRT2 * r * Math.cos(b - Math.PI * .75); oy = cy + Math.SQRT2 * r * Math.sin(b - Math.PI * .75);
         p.moveTo(ox + r * Math.cos(b), oy + r * Math.sin(b)); p.arc(ox, oy, r, b, b + Math.PI / 2);
       }

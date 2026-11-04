@@ -1,29 +1,19 @@
-/* 101 section loops (round 9): quiet animated bands behind sections marked data-loop="name".
-   Loops after Scenario's Motion Loops (https://www.scenario.com/explorations/motion-loops): each is draw(ctx,w,h,t,P),
-   a pure function of t whose periods divide 12 s, so it loops with no seam. Code per loop in js/loops/<name>.js,
-   fetched only when its section nears the viewport. Drawn in a Worker on an OffscreenCanvas (this same file; main-thread
-   fallback), <= 20 fps, only while on screen and the tab is visible, DPR <= 1.5, sized by ResizeObserver.
-   Reduced motion, Lite / data saver, cc_bg_motion "reduced" = one still frame; "off" = no canvas; ?static=1 = nothing;
-   print hides it (css). Colours: theme tokens --lp-1/2/3 (flat fills), --lp-ol (outline + hard shadow) on the section;
-   the band's strength is one flat css opacity (--lp-a) on the canvas, so the drawing itself stays fully opaque and flat.
-   Look: Neo-Brutalist (101 brand) - flat fills, 3px navy outlines, hard offset shadows, square corners, snappy moves with holds. */
+/* 101 section loop bands (round 9) after Scenario Motion Loops (scenario.com/explorations/motion-loops). Notes: docs/loops.md */
 (function (W) {
   var TAU = Math.PI * 2, fr = function (x) { return x - Math.floor(x); }, cl = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
-  var M = W.CCL = {                                      /* helpers for the loop files (the Scenario template's M.*, trimmed) */
+  var M = W.CCL = {
     TAU: TAU, fr: fr, cl: cl,
     ph: function (t, p, o) { return fr((t + (o || 0)) / p); },
     win: function (p, a, b) { return cl((p - a) / (b - a)); },
     io: function (k) { return (1 - Math.cos(Math.PI * k)) / 2; },
     ob: function (k) { k -= 1; return 1 + 2.70158 * k * k * k + 1.70158 * k * k; },
     rand: function (i, s) { var x = Math.sin((i * 12.9898 + (s || 0) * 78.233 + .5) * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); },
-    /* Neo-Brutalist block: hard offset shadow (no blur), flat fill, thick square-cornered navy outline. p is a Path2D. */
     bk: function (x, P, p, fill, o) {
       o = o == null ? 4 : o; x.lineJoin = "miter"; x.lineCap = "butt";
       if (o) { x.translate(o, o); x.fillStyle = P.ol; x.fill(p); x.translate(-o, -o); }
       if (fill) { x.fillStyle = fill; x.fill(p); }
       x.lineWidth = 3; x.strokeStyle = P.ol; x.stroke(p);
     },
-    /* the same for a stroked line motif: shadow line, navy outline line, colour line on top */
     bl: function (x, P, p, col, lw) {
       x.lineJoin = "miter"; x.lineCap = "butt"; x.translate(3, 3); x.lineWidth = lw + 4; x.strokeStyle = P.ol; x.stroke(p); x.translate(-3, -3);
       x.stroke(p); x.lineWidth = lw; x.strokeStyle = col; x.stroke(p);
@@ -40,17 +30,17 @@
     x.save(); M.D[s.n](x, s.w, s.h, t % 12, s.P); x.restore();
   }
   function size(s) { s.c.width = Math.round(s.w * s.k); s.c.height = Math.round(s.h * s.k); s.dn = 0; }
-  function kick() {                                     /* draw stills once; run the clock while any band is visible */
+  function kick() {
     var any = 0;
     S.forEach(function (s) { if (!s.x || !M.D[s.n] || G.off) return; if (G.st) { if (!s.dn) { paint(s, s.st); s.dn = 1; } } else if (s.vis) any = 1; });
     if (any && !G.hid) { if (!raf) raf = RAF(tick); } else if (raf) { CAF(raf); raf = 0; }
   }
   function tick(ts) {
-    raf = RAF(tick); if (ts - last < 48) return; last = ts;          /* ~20 fps */
+    raf = RAF(tick); if (ts - last < 48) return; last = ts;
     var t = now(); S.forEach(function (s) { if (s.vis && s.x) paint(s, t); });
   }
   M.on = kick; t0 = performance.now();
-  if (wk) {                                             /* worker side: messages from the page below */
+  if (wk) {
     onmessage = function (e) {
       var m = e.data, s = S[m.id];
       if (m.g) { G = m.g; base = m.base || base; S.forEach(function (s) { s.dn = 0; }); }
@@ -102,7 +92,7 @@
     addEventListener("storage", function (e) { if (e.key == "cc_bg_motion") sync(); });
     (rm.addEventListener ? rm.addEventListener.bind(rm, "change") : rm.addListener.bind(rm))(sync);
   }
-  var go = function () { (W.requestIdleCallback || setTimeout)(init, { timeout: 1500 }); };   /* after load + idle, like bg.js */
+  var go = function () { (W.requestIdleCallback || setTimeout)(init, { timeout: 1500 }); };
   if (d.readyState == "complete") go(); else addEventListener("load", go);
   M.info = function () { return { worker: !!worker, G: G, s: S.map(function (s) { return { n: s.n, near: !!s.near, vis: !!s.vis, mounted: !!s.c, hidden: !!(s.c && s.c.hidden), w: s.w, h: s.h, k: s.k }; }) }; };
 })(self);
