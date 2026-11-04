@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="101 AI voice demo · 101 Codecrafts" desc="Developer demo of 101 AI talk-back and voice input." path="voice.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<style>
+.vd{max-width:760px;margin:0 auto;padding:24px 16px 64px}.vd h1{margin:0 0 6px}.vd .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:14px 0}
+.vd-bar{display:flex;align-items:center;gap:8px;background:#0B1236;color:#fff;padding:6px 6px 6px 14px;border:2px solid #0B1236}.vd-bar b{flex:1;font-family:var(--font-brand-display,"Archivo Black",sans-serif)}
+.vd-form{display:flex;gap:10px;align-items:flex-end;padding:12px;border:2px solid currentColor;margin-top:12px}.vd-form textarea{flex:1;min-height:44px;font:inherit;font-size:16px;padding:10px;border:2px solid currentColor;background:transparent;color:inherit;border-radius:0}
+.vd-out{min-height:72px;padding:12px;border:2px solid currentColor;margin-top:12px;white-space:pre-wrap}
+.vd-face{width:88px;height:88px;background:#0B1236;border:2px solid currentColor;display:grid;place-items:center;position:relative}.vd-face i{position:absolute;top:26px;width:12px;height:12px;background:#05e6f2}.vd-face i:first-child{left:22px}.vd-face i:nth-child(2){right:22px}
+.vd-mouth{position:absolute;bottom:20px;left:24px;width:40px;height:4px;background:#fc8c0c;transform-origin:center;transition:transform 40ms linear}
+.vd-log{font:500 12px/1.5 var(--font-mono,"JetBrains Mono",monospace);max-height:220px;overflow:auto;border:2px dashed currentColor;padding:8px;margin-top:12px}
+.vd select,.vd .btn{min-height:44px}
+</style>
+</head>
+<body class="flow" data-page="voice">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<main id="main" class="vd">
+<p class="kicker">Developer demo · not linked from the site</p>
+<h1>101 AI VOICE</h1>
+<p>Free browser speech: talk-back with the best voice this device has, and voice input where the browser supports it. Nothing here is sent to a paid service.</p>
+<p id="sup" class="muted"></p>
+
+<div class="vd-bar"><b>101 <span style="color:#05e6f2">AI</span></b><span id="spkHead"></span></div>
+<div class="vd-out" id="out" aria-live="polite">Ask a question, or press “Stream sample reply”.</div>
+<form class="vd-form" id="f"><textarea id="q" rows="1" placeholder="Ask 101 AI…" aria-label="Your question"></textarea><span id="micSlot"></span><button class="btn or" type="submit">Send</button></form>
+
+<div class="row"><span id="spkBody"></span>
+<button class="btn" type="button" id="sample">Stream sample reply</button>
+<button class="btn" type="button" id="pause">Pause</button><button class="btn" type="button" id="resume">Resume</button><button class="btn" type="button" id="stop">Stop</button>
+<button class="btn" type="button" id="theme" aria-pressed="false">Dark theme</button></div>
+<div class="row"><label for="vs">Voice</label><select id="vs"></select><div class="vd-face" aria-hidden="true"><i></i><i></i><span class="vd-mouth" id="mouth"></span></div><span id="st" class="muted">idle</span></div>
+<div class="vd-log" id="log" aria-label="Event log"></div>
+</main>
+<script src="js/ai-voice.js"></script>
+<script src="js/ai-voice-ui.js"></script>
+<script>
+(function () {
+  var V = window.AIVoice, $ = function (i) { return document.getElementById(i); }, html = document.documentElement;
+  var SAMPLE = "Hi! I'm **101 AI**, the assistant for 101 Codecrafts. 101 Codecrafts is a free tech community in Kampala where you can learn, build and grow 🚀.\n\n- Join the [WhatsApp community](https://chat.whatsapp.com/abc) to meet other members.\n- Browse free courses at https://101codecrafts.com/courses.html, e.g. Python and web basics.\n\nHere is a tiny example:\n```js\nconsole.log('hello');\n```\nAnything else you'd like to know? I can explain how membership works, what the next event is, or how to share a project with the community for feedback.";
+  function log(t) { var l = $("log"); l.textContent = new Date().toISOString().slice(11, 23) + "  " + t + "\n" + l.textContent.slice(0, 4000); }
+  var s = V.supported(); $("sup").textContent = "Talk-back: " + (s.tts ? "available" : "not available") + " · Voice input: " + (s.stt ? "available" : "not available (type instead)");
+  var h = V.ui.speaker({ head: true }); if (h) $("spkHead").appendChild(h);
+  var b = V.ui.speaker(); if (b) $("spkBody").appendChild(b);
+  var m = V.ui.mic({ input: $("q"), onFinal: function (t) { ask(t); } }); if (m) $("micSlot").appendChild(m);
+  ["start", "end", "state", "error", "interim", "final", "enabled", "stt"].forEach(function (e) { V.on(e, function (a) { log(e + " " + (a === undefined ? "" : JSON.stringify(a))); if (e == "state") $("st").textContent = a; }); });
+  V.on("boundary", function (a) { log("boundary " + a.charIndex + " " + a.word); });
+  V.bindMascot({ setMouth: function (l) { $("mouth").style.transform = "scaleY(" + (1 + l * 5) + ") scaleX(" + (1 - l * .3) + ")"; }, setState: function () {} });
+  function stream(text) {   // same shape as js/ai-float.js: deltas as they arrive, then final
+    V.stop(); var i = 0, out = $("out"); out.textContent = "";
+    (function step() { var n = 3 + (Math.random() * 9 | 0), c = text.slice(i, i + n); i += n; out.textContent += c; V.speak(c); if (i < text.length) setTimeout(step, 25); else V.speak("", { final: true }); })();
+  }
+  function ask(t) { t = (t || "").trim(); if (!t) return; $("q").value = ""; stream("You asked: " + t + ". " + SAMPLE.split("\n\n")[0]); }
+  $("f").addEventListener("submit", function (e) { e.preventDefault(); ask($("q").value); });
+  $("sample").onclick = function () { V.unlock(); stream(SAMPLE); };
+  $("pause").onclick = V.pause; $("resume").onclick = V.resume; $("stop").onclick = function () { V.stop(); };
+  $("theme").onclick = function () { var dk = html.dataset.theme !== "dark"; if (dk) html.dataset.theme = "dark"; else delete html.dataset.theme; this.setAttribute("aria-pressed", dk); };
+  $("theme").setAttribute("aria-pressed", html.dataset.theme === "dark");
+  function fill() { var sel = $("vs"), cur = V.voice(); sel.textContent = ""; V.voices().forEach(function (v) { var o = new Option(v.name + " (" + v.lang + ")", v.name); o.selected = cur && cur.name == v.name; sel.appendChild(o); }); if (!sel.options.length) sel.appendChild(new Option("System default", "")); }
+  fill(); setTimeout(fill, 600); setTimeout(fill, 2500); if (window.speechSynthesis && speechSynthesis.addEventListener) speechSynthesis.addEventListener("voiceschanged", fill);
+  $("vs").onchange = function () { V.setVoice(this.value); };
+})();
+</script>
+</body>
+</html>
