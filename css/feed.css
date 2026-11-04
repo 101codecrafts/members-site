@@ -75,6 +75,16 @@ body:is([data-page=news],[data-page=opportunities],[data-page=announcements],[da
   html:not(.static) .ann-banner p{min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.35}
   html:not(.static) .ann-banner .btn{flex:none}
 }
+/* round 10: reserve below 1024px too. The banner gets one fixed height (text clamped to 2 lines on row 1, the buttons on row 2), and the
+   slot holds exactly that height before first paint, so the late insert moves nothing (this was the news/announcements CLS once the
+   round-9 inline loaders held space under it). */
+@media (max-width:1023.98px){
+  :root{--ann-h-m:128px}
+  html:not(.static):not(.ann-off) .ann-slot{display:block;height:var(--ann-h-m)}
+  html:not(.static) .ann-banner{box-sizing:border-box;height:var(--ann-h-m);overflow:hidden;align-content:center;row-gap:8px;padding-block:8px}
+  html:not(.static) .ann-banner p{flex:1 1 calc(100% - 48px);min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.35}
+  html:not(.static) .ann-banner .btn{flex:none}
+}
 body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:none;border-width:0 0 2px}
 .bell-btn{position:relative;display:inline-grid;place-items:center;width:44px;height:44px;border:0;background:transparent;color:var(--ink);cursor:pointer}
 .bell-btn svg{width:22px;height:22px}
