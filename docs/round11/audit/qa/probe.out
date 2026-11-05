@@ -1,0 +1,200 @@
+anon /v1/admin/analytics {'GET': 401}
+learner /v1/admin/analytics {'GET': 403}
+anon /v1/admin/announcements {'POST': 401}
+learner /v1/admin/announcements {'POST': 403}
+anon /v1/admin/applications/membership {'GET': 401}
+learner /v1/admin/applications/membership {'GET': 403}
+anon /v1/admin/applications/tutor {'GET': 401}
+learner /v1/admin/applications/tutor {'GET': 403}
+anon /v1/admin/audit {'GET': 401}
+learner /v1/admin/audit {'GET': 403}
+anon /v1/admin/email-domains {'GET': 401, 'POST': 401}
+learner /v1/admin/email-domains {'GET': 403, 'POST': 403}
+anon /v1/admin/export {'GET': 401}
+learner /v1/admin/export {'GET': 403}
+anon /v1/admin/external-courses {'GET': 401, 'POST': 401}
+learner /v1/admin/external-courses {'GET': 403, 'POST': 403}
+anon /v1/admin/launch-promo {'PUT': 401}
+learner /v1/admin/launch-promo {'PUT': 403}
+anon /v1/admin/moderation {'GET': 401}
+learner /v1/admin/moderation {'GET': 403}
+anon /v1/admin/news {'POST': 401}
+learner /v1/admin/news {'POST': 403}
+anon /v1/admin/overview {'GET': 401}
+learner /v1/admin/overview {'GET': 403}
+anon /v1/admin/payouts {'GET': 401}
+learner /v1/admin/payouts {'GET': 403}
+anon /v1/admin/refunds {'GET': 401, 'POST': 401}
+learner /v1/admin/refunds {'GET': 403, 'POST': 403}
+anon /v1/admin/security-events {'GET': 401}
+learner /v1/admin/security-events {'GET': 403}
+anon /v1/admin/settings {'GET': 401, 'PUT': 401}
+learner /v1/admin/settings {'GET': 403, 'PUT': 403}
+anon /v1/admin/social {'GET': 401, 'POST': 401}
+learner /v1/admin/social {'GET': 403, 'POST': 403}
+anon /v1/admin/social/reorder {'POST': 401}
+learner /v1/admin/social/reorder {'POST': 403}
+anon /v1/admin/users {'GET': 401}
+learner /v1/admin/users {'GET': 403}
+anon /v1/ai-tools {'GET': 200}
+learner /v1/ai-tools {'GET': 200}
+anon /v1/ai/chat {}
+learner /v1/ai/chat {}
+anon /v1/ai/debug {}
+learner /v1/ai/debug {}
+anon /v1/ai/explain {}
+learner /v1/ai/explain {}
+anon /v1/ai/hint {}
+learner /v1/ai/hint {}
+anon /v1/ai/models {'GET': 200}
+learner /v1/ai/models {'GET': 200}
+anon /v1/ai/quota {'GET': 401}
+learner /v1/ai/quota {'GET': 200}
+anon /v1/announcements {'GET': 200}
+learner /v1/announcements {'GET': 200}
+anon /v1/applications/membership {}
+learner /v1/applications/membership {}
+anon /v1/applications/tutor {}
+learner /v1/applications/tutor {}
+anon /v1/articles {'GET': 200}
+learner /v1/articles {'GET': 200}
+anon /v1/assistant {}
+learner /v1/assistant {}
+anon /v1/auth/email-check {}
+learner /v1/auth/email-check {}
+anon /v1/checkout {}
+learner /v1/checkout {}
+anon /v1/conversations {'GET': 401}
+learner /v1/conversations {'GET': 403}
+anon /v1/courses {'GET': 200}
+learner /v1/courses {'GET': 200}
+anon /v1/enrollments {'GET': 401}
+learner /v1/enrollments {'GET': 403}
+anon /v1/errors {}
+learner /v1/errors {}
+anon /v1/events {'GET': 200}
+learner /v1/events {'GET': 200}
+anon /v1/events/external {'GET': 200}
+learner /v1/events/external {'GET': 200}
+anon /v1/external-courses {'GET': 200}
+learner /v1/external-courses {'GET': 200}
+anon /v1/guardian/verify {'GET': 200}
+learner /v1/guardian/verify {'GET': 200}
+anon /v1/health {'GET': 200}
+learner /v1/health {'GET': 200}
+anon /v1/launchpad {'GET': 200}
+learner /v1/launchpad {'GET': 200}
+anon /v1/leaderboard {'GET': 401}
+learner /v1/leaderboard {'GET': 403}
+anon /v1/marketplace/cart {'GET': 401}
+learner /v1/marketplace/cart {'GET': 200}
+anon /v1/marketplace/categories {'GET': 200}
+learner /v1/marketplace/categories {'GET': 200}
+anon /v1/marketplace/checkout {}
+learner /v1/marketplace/checkout {}
+anon /v1/marketplace/external {'GET': 200}
+learner /v1/marketplace/external {'GET': 200}
+anon /v1/marketplace/orders {'GET': 401}
+learner /v1/marketplace/orders {'GET': 200}
+anon /v1/marketplace/products {'GET': 200}
+learner /v1/marketplace/products {'GET': 200}
+anon /v1/marketplace/questions {}
+learner /v1/marketplace/questions {}
+anon /v1/marketplace/reviews {}
+learner /v1/marketplace/reviews {}
+anon /v1/marketplace/rfqs {'GET': 401}
+learner /v1/marketplace/rfqs {'GET': 200}
+anon /v1/marketplace/shipping {'GET': 200}
+learner /v1/marketplace/shipping {'GET': 200}
+anon /v1/marketplace/stores {'GET': 200}
+learner /v1/marketplace/stores {'GET': 200}
+anon /v1/marketplace/wishlist {'GET': 401}
+learner /v1/marketplace/wishlist {'GET': 200}
+anon /v1/me {'GET': 401}
+learner /v1/me {'GET': 200, 'body': {'profile': {'display_name': 'QA Learner', 'education_level': None, 'date_of_birth': None}, 'roles': [], 'role': 'anon', 'account_status': 'pending', 'tutor_verified': False, 'plan': 'free', 'onboarding': {'user_id': 'user_3LYwquA08oVH0XTPl1bJeb4ckUC', 'email_verified': True, 'intended_role': None, 'interests': [], 'experience_level': None, 'learning_path_id': None, 'goals': None, 'steps_completed': [], 'completed_at': None, 'updated_at': '2026-11-02T18:35:05.523355+00:00'}}}
+anon /v1/me/certificates {'GET': 401}
+learner /v1/me/certificates {'GET': 200}
+anon /v1/me/consents {}
+learner /v1/me/consents {}
+anon /v1/me/delete {}
+learner /v1/me/delete {}
+anon /v1/me/devices {}
+learner /v1/me/devices {}
+anon /v1/me/export {'GET': 401}
+learner /v1/me/export {'GET': 200}
+anon /v1/me/guardian {}
+learner /v1/me/guardian {}
+anon /v1/me/notification-preferences {'GET': 401}
+learner /v1/me/notification-preferences {'GET': 200}
+anon /v1/me/notifications {'GET': 401}
+learner /v1/me/notifications {'GET': 200}
+anon /v1/me/onboarding {}
+learner /v1/me/onboarding {}
+anon /v1/me/payments {'GET': 401}
+learner /v1/me/payments {'GET': 200}
+anon /v1/me/referral {'GET': 401}
+learner /v1/me/referral {'GET': 200}
+anon /v1/me/wallet {'GET': 401}
+learner /v1/me/wallet {'GET': 200}
+anon /v1/meetings {'GET': 401}
+learner /v1/meetings {'GET': 200}
+anon /v1/news {'GET': 200}
+learner /v1/news {'GET': 200}
+anon /v1/newsletter {}
+learner /v1/newsletter {}
+anon /v1/newsletter/confirm {'GET': 200}
+learner /v1/newsletter/confirm {'GET': 200}
+anon /v1/opportunities {'GET': 200}
+learner /v1/opportunities {'GET': 200}
+anon /v1/opportunities/saved {'GET': 401}
+learner /v1/opportunities/saved {'GET': 200}
+anon /v1/payments/return {'GET': 200}
+learner /v1/payments/return {'GET': 200}
+anon /v1/practice/bookmarks {'GET': 401}
+learner /v1/practice/bookmarks {'GET': 200}
+anon /v1/practice/contests {'GET': 200}
+learner /v1/practice/contests {'GET': 200}
+anon /v1/practice/interview-sets {'GET': 200}
+learner /v1/practice/interview-sets {'GET': 200}
+anon /v1/practice/leaderboard {'GET': 200}
+learner /v1/practice/leaderboard {'GET': 200}
+anon /v1/practice/potd {'GET': 200}
+learner /v1/practice/potd {'GET': 200}
+anon /v1/practice/problems {'GET': 200}
+learner /v1/practice/problems {'GET': 200}
+anon /v1/practice/progress {'GET': 401}
+learner /v1/practice/progress {'GET': 200}
+anon /v1/practice/submissions {'GET': 401}
+learner /v1/practice/submissions {'GET': 200}
+anon /v1/practice/topics {'GET': 200}
+learner /v1/practice/topics {'GET': 200}
+anon /v1/recommendations {'GET': 401}
+learner /v1/recommendations {'GET': 403}
+anon /v1/refunds {}
+learner /v1/refunds {}
+anon /v1/resources {'GET': 200}
+learner /v1/resources {'GET': 200}
+anon /v1/resources/unfurl {}
+learner /v1/resources/unfurl {}
+anon /v1/search {'GET': 400}
+learner /v1/search {'GET': 400}
+anon /v1/settings {'GET': 200}
+learner /v1/settings {'GET': 200}
+anon /v1/settings/ads {'GET': 200}
+learner /v1/settings/ads {'GET': 200}
+anon /v1/social {'GET': 200}
+learner /v1/social {'GET': 200}
+anon /v1/tools {'GET': 200}
+learner /v1/tools {'GET': 200}
+anon /v1/track {}
+learner /v1/track {}
+anon /v1/tutor/course-media {'POST': 401}
+learner /v1/tutor/course-media {'POST': 403}
+anon /v1/tutor/courses {'GET': 401, 'POST': 401}
+learner /v1/tutor/courses {'GET': 403, 'POST': 403}
+anon /v1/tutor/dashboard {'GET': 401}
+learner /v1/tutor/dashboard {'GET': 403}
+anon /v1/tutor/payout-methods {'GET': 401, 'POST': 401}
+learner /v1/tutor/payout-methods {'GET': 403, 'POST': 403}
+anon /v1/tutor/payouts {'GET': 401, 'POST': 401}
+learner /v1/tutor/payouts {'GET': 403, 'POST': 403}
