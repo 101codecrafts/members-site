@@ -499,6 +499,7 @@
     catch (e) {
       if (e.code === "no_backend" || (window.CC_NO_BACKEND && window.CC_NO_BACKEND())) return gate("nobackend");
       if (e.status === 401) return gate("signin");
+      if (e.status === 404) return gate("nobackend", "The admin API is not deployed on this copy yet: the round-11 admin migration and routes have to be applied first. Nothing here is invented.");
       if (e.status === 403) return gate("denied", /mfa|two-factor/i.test(e.message) ? "Turn on two-factor authentication in your account settings to use admin tools." : "");
       return gate("error");
     }
