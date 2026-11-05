@@ -719,6 +719,8 @@ html[data-theme=dark]:not(.static) .hdr .join,html[data-theme=dark]:not(.static)
 html[data-theme=dark]:not(.static) .app .qa svg:has(use[href="#i-plusc"]),html[data-theme=dark]:not(.static) .app.dz .dz-box-b-quick .qa:not(:first-child) svg:has(use[href="#i-plusc"]),html[data-theme=dark]:not(.static) .app.dz .dz-box-b-quick .qa:not(:first-child) use[href="#i-plusc"]{color:var(--accent)!important}
 /* integrate3: the drawer scrim stays a translucent dim in dark (the generated mapping made it an opaque navy fill that hid the page) */
 [data-theme=dark] .sb-scrim{background:rgba(2,4,14,.66);color:inherit}
+/* r11 deploy QA: the account menu's items and name inherited --sh-navy text on the dark surface (unreadable at 412 dark) */
+:where([data-theme=dark]) .acct-menu,:where([data-theme=dark]) .acct-menu [role=menuitem],:where([data-theme=dark]) .acct-menu .am-head .acct-name{color:var(--text)}
 
 /* Site background (round 6, design variant F; work/ui-pro/round6/design/SPEC.md).
    Light: a static 56px hairline grid (navy 4.5%, major 7% every 4 cells); js/bg.js adds drifting navy glyphs (fix/bg-glyphs).
