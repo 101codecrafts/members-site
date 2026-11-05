@@ -379,7 +379,7 @@
     next: function () { return "Finish"; }
   };
   function consentBox() {
-    return '<label class="af-check"><input type="checkbox" name="terms" id="f-terms" aria-describedby="m-terms"' + (S.data.terms ? " checked" : "") + '><span>I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms</a> and the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, including how 101 Codecrafts stores my data in line with Uganda\'s Data Protection and Privacy Act, 2019.</span></label><p class="af-msg" id="m-terms" role="alert"></p>';
+    return '<label class="af-check"><input type="checkbox" name="terms" id="f-terms" aria-describedby="m-terms"' + (S.data.terms ? " checked" : "") + '><span>I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms</a> and the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, including storing my data with 101 Codecrafts\' providers outside Uganda (Germany, France and the United States), in line with Uganda\'s Data Protection and Privacy Act (Cap. 97).</span></label><p class="af-msg" id="m-terms" role="alert"></p>';
   }
 
   /* learner + tutor: about you (DOB drives the age gate) */
