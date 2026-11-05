@@ -14,8 +14,9 @@ import type { Db } from '@/lib/supabase/user';
  *    Clerk-VERIFIED primary email (backend_bind_root). Never from client input.
  *  - Invites: root invites by email; the raw token travels once (email link / copy link); accept checks the invitee's
  *    Clerk-verified email against the invite in the DB.
- *  - Scopes are enforced in SQL (app.require_scope). For plans-branch RPCs that only check is_admin, the routes add
- *    the scope check here (requireScope) until that branch adopts app.require_scope('plans').
+ *  - Scopes are enforced in SQL (app.require_scope), including the plans-branch RPCs since 20261105040000
+ *    (admin_update_plan / admin_set_course_pricing: 'plans'; decide_course_price: 'approvals'). Routes also call
+ *    requireScope here so a missing scope is a clean 403 before any RPC runs.
  */
 const log = createLogger({ mod: 'admin-console' });
 export const ROOT_EMAIL = '101codecrafts@gmail.com';
