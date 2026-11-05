@@ -62,6 +62,11 @@ export const templates = {
     html: layout('Guardian approval needed', `<p>Dear ${esc(p.guardian)}, ${esc(p.child)} wants to join 101 Codecrafts, a learning community for young coders in Uganda. Because they are under 18 we need your consent. The link expires in 7 days.</p>`, { label: 'Review and approve', url: p.url }),
     text: `Approve ${p.child}'s account: ${p.url}`,
   }),
+  guardianConfirmed: (p: { guardian: string; url: string }): Omit<Email, 'to'> => ({
+    subject: 'You approved a 101 Codecrafts account',
+    html: layout('Thank you, consent recorded', `<p>Dear ${esc(p.guardian)}, you approved your child's 101 Codecrafts account. You can review what we keep, change your decision or withdraw consent at any time; withdrawing pauses the account.</p>`, { label: 'Review or withdraw', url: p.url }),
+    text: `Consent recorded. Review or withdraw: ${p.url}`,
+  }),
   announcement: (p: { title: string; body: string; url: string }): Omit<Email, 'to'> => ({
     subject: p.title, html: layout(p.title, `<p>${esc(p.body).replace(/\n/g, '<br>')}</p>`, { label: 'Read more', url: p.url }), text: `${p.title}\n\n${p.body}\n${p.url}`,
   }),

@@ -8,6 +8,7 @@ import { env } from '@/lib/env';
 import { AppError } from '@/lib/errors';
 import { unwrap } from '@/lib/http';
 import { sendEmails, templates } from '@/lib/email';
+import { afterGuardianVerified } from '@/services/auth-roles';
 
 /** Onboarding: role intent, interests, path, level. DOB is set server-side (it drives minor protections). */
 export async function saveOnboarding(s: Session, input: z.infer<typeof onboardingBody>) {
@@ -52,6 +53,7 @@ export async function verifyGuardianToken(token: string): Promise<boolean> {
   const db = serviceClient();
   const row = (await db.from('guardian_consents').update({ verified_at: new Date().toISOString(), verification_method: 'email_link', token_hash: null })
     .eq('token_hash', sha256(token)).gt('token_expires_at', new Date().toISOString()).is('verified_at', null).select('user_id').maybeSingle()).data;
+  if (row?.user_id) await afterGuardianVerified(String(row.user_id));   // r11: activate + "email plus" confirmation
   return Boolean(row);
 }
 

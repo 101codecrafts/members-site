@@ -4,6 +4,7 @@ import { AppError, forbidden, unauthenticated } from '@/lib/errors';
 import { anonClient, userClient, type Db } from '@/lib/supabase/user';
 import { can, effectiveRole, type Action, type Resource, type Role } from '@/lib/rbac';
 import { env } from '@/lib/env';
+import { decide, type AccessCtx, type Plan, type Role as ContractRole } from '@/lib/access';
 import { createLogger } from '@/lib/logger';
 
 export interface Session {
@@ -15,9 +16,11 @@ export interface Session {
   accountStatus: string | null;
   tutorVerified: boolean;
   mfaEnabled: boolean;
+  minor: boolean;          // r11: profiles.is_minor (from DOB, server-derived)
+  guardianConsent: boolean; // r11: a verified, unrevoked guardian consent exists
 }
 
-interface AccessRow { user_id: string | null; roles: string[]; account_status: string | null; tutor_verification: string | null; mfa_enabled: boolean }
+interface AccessRow { user_id: string | null; roles: string[]; account_status: string | null; tutor_verification: string | null; mfa_enabled: boolean; is_minor?: boolean; guardian_consent?: boolean }
 
 /**
  * Verifies the Clerk session on EVERY call. Works for cookies (web) and
@@ -38,6 +41,7 @@ export async function getSession(): Promise<Session | null> {
     accountStatus: acc.account_status ?? null,
     tutorVerified: acc.tutor_verification === 'verified',
     mfaEnabled: Boolean(acc.mfa_enabled),
+    minor: Boolean(acc.is_minor), guardianConsent: Boolean(acc.guardian_consent),
   };
 }
 
@@ -100,4 +104,25 @@ export async function requireAdmin(opts: { superAdmin?: boolean } = {}): Promise
 export function authorize(s: Session | null, resource: Resource, action: Action): void {
   const scope = can(s?.roles ?? [], resource, action);
   if (scope === false) throw s ? forbidden() : unauthenticated();
+}
+
+/**
+ * r11 shared access contract on the server: the same action keys as js/access.js (src/data/access-policy.json).
+ * Role from user_roles only (super_admin exists solely on the verified root email: DB trigger guard_root_role).
+ * Usage in a route: `const s = await requireCan('market.sell');`
+ */
+export function accessCtx(s: Session | null, plan: Plan = 'free'): AccessCtx {
+  if (!s) return { role: 'visitor' };
+  const r = new Set(s.roles);
+  const role: ContractRole = r.has('super_admin') ? 'root_admin' : r.has('admin') ? 'admin' : r.has('tutor') ? 'tutor' : r.has('learner') ? 'learner' : 'guest';
+  return { role, plan, minor: s.minor, consent: !s.minor || s.guardianConsent };
+}
+export async function requireCan(action: string, plan: Plan = 'free'): Promise<Session> {
+  const s = await getSession();
+  const why = decide(accessCtx(s, plan), action);
+  if (why === 'signin') throw unauthenticated();
+  if (!s) throw unauthenticated();
+  if (s.accountStatus === 'banned' || s.accountStatus === 'suspended') throw forbidden(`Account ${s.accountStatus}`);
+  if (why) throw new AppError('forbidden', why === 'plan' ? 'Upgrade your plan to use this' : why === 'consent' ? 'A parent or guardian must approve this first' : why === 'minor' ? 'Not available for under-18 accounts' : 'You do not have access to this', { reason: why, action });
+  return s;
 }

@@ -1960,6 +1960,11 @@ export type Database = {
           verification_method: string | null;
           revoked_at: string | null;
           created_at: string;
+          consent_version: string | null;
+          scope: string[];
+          requested_ip_hash: string | null;
+          guardian_email_verified: boolean;
+          confirmation_sent_at: string | null;
         };
         Insert: {
           id?: string;
@@ -1974,6 +1979,11 @@ export type Database = {
           verification_method?: string | null;
           revoked_at?: string | null;
           created_at?: string;
+          consent_version?: string | null;
+          scope?: string[];
+          requested_ip_hash?: string | null;
+          guardian_email_verified?: boolean;
+          confirmation_sent_at?: string | null;
         };
         Update: {
           id?: string;
@@ -1988,6 +1998,11 @@ export type Database = {
           verification_method?: string | null;
           revoked_at?: string | null;
           created_at?: string;
+          consent_version?: string | null;
+          scope?: string[];
+          requested_ip_hash?: string | null;
+          guardian_email_verified?: boolean;
+          confirmation_sent_at?: string | null;
         };
         Relationships: [];
       };
@@ -3929,6 +3944,12 @@ export type Database = {
         };
         Relationships: [];
       };
+      tutor_payout_intents: {
+        Row: { user_id: string; network: string; last4: string; ciphertext: string | null; created_at: string };
+        Insert: { user_id: string; network: string; last4: string; ciphertext?: string | null; created_at?: string };
+        Update: { user_id?: string; network?: string; last4?: string; ciphertext?: string | null; created_at?: string };
+        Relationships: [];
+      };
       onboarding_state: {
         Row: {
           user_id: string;
@@ -3941,6 +3962,13 @@ export type Database = {
           steps_completed: string[];
           completed_at: string | null;
           updated_at: string;
+          path: string | null;
+          step: string | null;
+          draft: Json | null;
+          gender: string | null;
+          heard_from: string | null;
+          consent_version: string | null;
+          terms_accepted_at: string | null;
         };
         Insert: {
           user_id: string;
@@ -3953,6 +3981,13 @@ export type Database = {
           steps_completed?: string[];
           completed_at?: string | null;
           updated_at?: string;
+          path?: string | null;
+          step?: string | null;
+          draft?: Json | null;
+          gender?: string | null;
+          heard_from?: string | null;
+          consent_version?: string | null;
+          terms_accepted_at?: string | null;
         };
         Update: {
           user_id?: string;
@@ -3965,6 +4000,13 @@ export type Database = {
           steps_completed?: string[];
           completed_at?: string | null;
           updated_at?: string;
+          path?: string | null;
+          step?: string | null;
+          draft?: Json | null;
+          gender?: string | null;
+          heard_from?: string | null;
+          consent_version?: string | null;
+          terms_accepted_at?: string | null;
         };
         Relationships: [];
       };
@@ -5952,6 +5994,10 @@ export type Database = {
           review_note: string | null;
           created_at: string;
           updated_at: string;
+          levels: string[];
+          credentials: Json;
+          payout_network: string | null;
+          payout_phone_last4: string | null;
         };
         Insert: {
           id?: string;
@@ -5968,6 +6014,10 @@ export type Database = {
           review_note?: string | null;
           created_at?: string;
           updated_at?: string;
+          levels?: string[];
+          credentials?: Json;
+          payout_network?: string | null;
+          payout_phone_last4?: string | null;
         };
         Update: {
           id?: string;
@@ -5984,6 +6034,10 @@ export type Database = {
           review_note?: string | null;
           created_at?: string;
           updated_at?: string;
+          levels?: string[];
+          credentials?: Json;
+          payout_network?: string | null;
+          payout_phone_last4?: string | null;
         };
         Relationships: [];
       };
@@ -6483,7 +6537,7 @@ export type Database = {
       account_status: "pending" | "active" | "suspended" | "banned";
       age_rating: "all" | "13_plus" | "16_plus" | "18_plus";
       announcement_audience: "public" | "members" | "learners" | "tutors" | "admins";
-      app_role: "learner" | "tutor" | "admin" | "super_admin";
+      app_role: "learner" | "tutor" | "admin" | "super_admin" | "guest";
       application_status: "pending" | "approved" | "rejected" | "withdrawn";
       billing_interval: "monthly" | "quarterly" | "yearly";
       booking_status: "pending_payment" | "confirmed" | "cancelled" | "attended" | "no_show" | "refunded";

@@ -9,6 +9,7 @@ import { rpc } from '@/repositories/rpc';
 import { sendEmails, templates } from '@/lib/email';
 import type { Logger } from '@/lib/logger';
 import { checkEmail } from '@/services/email-guard';
+import { isRootEmail } from '@/lib/access';
 
 interface ClerkEmail { id: string; email_address: string; verification?: { status?: string } | null }
 interface ClerkUser {
@@ -62,6 +63,11 @@ export async function handleClerkWebhook(raw: string, headers: Headers, log: Log
       await db.from('profile_private').upsert({ user_id: u.id, email: primary?.email_address ?? null, phone: u.phone_numbers?.[0]?.phone_number?.replace(/[^\d+]/g, '') || null,
         mfa_enabled: Boolean(u.two_factor_enabled) }, { onConflict: 'user_id' });
       await db.from('onboarding_state').upsert({ user_id: u.id, email_verified: primary?.verification?.status === 'verified' }, { onConflict: 'user_id' });
+      // r11: root_admin is assigned server-side from the VERIFIED email only (never from metadata the browser can write)
+      if (isRootEmail(primary?.email_address, primary?.verification?.status === 'verified')) {
+        await db.from('user_roles').upsert([{ user_id: u.id, role: 'super_admin' }, { user_id: u.id, role: 'admin' }], { onConflict: 'user_id,role', ignoreDuplicates: true });
+        await db.from('profiles').update({ account_status: 'active', joined_at: new Date().toISOString() }).eq('id', u.id).neq('account_status', 'active');
+      }
       if (evt.type === 'user.created') {
         await db.from('notification_preferences').upsert({ user_id: u.id }, { onConflict: 'user_id', ignoreDuplicates: true });
         if (u.unsafe_metadata?.ref) await rpc(db, 'attach_referral', { p_referred: u.id, p_code: String(u.unsafe_metadata.ref).slice(0, 12) });
