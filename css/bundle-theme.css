@@ -290,6 +290,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .acct-menu .am-roles{border-top:1px solid var(--border-subtle)}
 :where([data-theme=dark]) .am-label{color:var(--text-muted)}
 :where([data-theme=dark]) .acct-menu .am-out{border-top:1px solid var(--border-subtle)}
+:where([data-theme=dark]) .shell .sb-nav .sb-upgrade{border:2px solid var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
 /* --- feed.css --- */
 :where([data-theme=dark]) .ftabs{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .ftab{border-right:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}

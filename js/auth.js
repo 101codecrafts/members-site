@@ -14,7 +14,7 @@
   const STATIC = /[?&]static/.test(location.search) || location.protocol === "file:";
   const listeners = [];
   const AUTH = window.CC_AUTH = { user: null, ready: false, clerk: null, unread: null, onChange: f => { listeners.push(f); if (AUTH.ready) f(AUTH.user); },
-    signOut: async () => { if (AUTH.clerk) await AUTH.clerk.signOut(); location.href = "index.html"; } };
+    signOut: async () => { try { localStorage.removeItem("cc_auth_draft"); } catch (e) {} if (AUTH.clerk) await AUTH.clerk.signOut(); location.href = "/index.html"; } };
   if (STATIC) return;
 
   const $$ = s => [...document.querySelectorAll(s)];
@@ -29,13 +29,13 @@
     document.documentElement.classList.toggle("signed-out", !user);
     // dashboard mockup top bar (only visible in ?static=1 now; the live dashboard uses the shared shell)
     $$(".me-name").forEach(e => e.textContent = name);
-    $$(".me-role").forEach(e => e.innerHTML = user ? "Member" : '<a href="/signin.html">Sign in</a> · <a href="/signup.html">Join</a>');
+    $$(".me-role").forEach(e => e.innerHTML = user ? "Member" : '<a href="/auth.html">Sign in</a> · <a href="/auth.html?mode=join">Join</a>');
     $$(".me-av").forEach(e => { if (!user) { e.removeAttribute("srcset"); e.src = "/assets/img/avatar-guest.svg"; e.alt = "Guest"; } else if (user.imageUrl && user.hasImage) { e.src = user.imageUrl; e.alt = name; } });
     // shared top bar chip
     $$(".chip-me").forEach(c => {
       const b = c.querySelector("b"), sm = c.querySelector("small"), av = c.querySelector(".av");
       if (b) b.textContent = name; if (av) av.textContent = initials(name);
-      if (sm) sm.innerHTML = user ? "Member" : '<a href="/signin.html">Sign in</a> · <a href="/signup.html">Join</a>';
+      if (sm) sm.innerHTML = user ? "Member" : '<a href="/auth.html">Sign in</a> · <a href="/auth.html?mode=join">Join</a>';
     });
     // no fake notification dots / badges; real unread count fills them in below
     $$(".dot, .sbar nav .badge, .side .nav .badge").forEach(e => { e.hidden = true; e.style.display = "none"; });
@@ -48,7 +48,7 @@
     const detail = { user, name, initials: user ? initials(name) : "", email, image: img };
     if (window.CC_SHELL) window.CC_SHELL.account(detail); else document.addEventListener("cc:shell", () => window.CC_SHELL.account(detail), { once: true });
     AUTH.user = user; setUnread(null);
-    if (user) { unread(); roles(); }
+    if (user) { unread(); access(user); } else if (window.CCAccess) window.CCAccess.set({ role: "visitor", user: null });
     AUTH.ready = true; listeners.forEach(f => { try { f(user); } catch (e) {} });
   }
   function setUnread(n) {
@@ -88,18 +88,22 @@
       setUnread(n);
     } catch (e) { setUnread(null); /* offline / API down: stay quiet */ }
   }
-  /* Learner / Tutor / Admin switcher: only the roles this member holds (GET /api/v1/me -> roles), and only if more than one */
-  async function roles() {
-    try {
-      const me = await getMe(); if (!me) return;
-      const rs = new Set((me.roles || []).map(String));
-      const has = { learner: true, tutor: rs.has("tutor"), admin: rs.has("admin") || rs.has("super_admin") };
-      const n = Object.values(has).filter(Boolean).length;
-      $$(".role-tabs a").forEach(a => { const k = (a.textContent || "").trim().toLowerCase(); a.hidden = !has[k]; });
-      document.documentElement.classList.toggle("has-roles", n > 1);
-      const top = has.admin ? "Admin" : has.tutor ? "Tutor" : "Learner";
-      $$(".acct-role").forEach(e => e.textContent = top);
-    } catch (e) { /* offline / API down: keep the switcher hidden */ }
+  /* r11: role, plan and minor/consent state come ONLY from the server (GET /api/v1/auth/session reads the verified
+     Clerk session + user_roles). CCAccess gates the UI with it; the Learner / Tutor / Admin switcher shows only roles held.
+     No API (static preview) or any error: a signed-in user is treated as a guest (least privilege), never more. */
+  async function access(user) {
+    const who = user && user.id;
+    let s = null;
+    try { const r = await fetch("/api/v1/auth/session", { credentials: "include", headers: await authHeaders() }); if (r.ok) { const j = await r.json(); s = (j && (j.data || j)) || null; } } catch (e) {}
+    if ((AUTH.user && AUTH.user.id) !== who) return;   // session changed meanwhile
+    const u = { id: who, email: user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : "", name: user.fullName || user.firstName || "", image: user.hasImage ? user.imageUrl : null };
+    if (window.CCAccess) window.CCAccess.set(s ? { role: s.role, roles: s.roles, plan: s.plan, user: s.user || u, minor: s.minor, consent: s.consent, limits: s.limits, status: s.status, onboarding: s.onboarding } : { role: "guest", user: u });
+    AUTH.session = s;
+    const rs = new Set(((s && s.roles) || []).map(String));
+    const has = { learner: rs.has("learner"), tutor: rs.has("tutor"), admin: rs.has("admin") || rs.has("root_admin") };
+    $$(".role-tabs a").forEach(a => { const k = (a.textContent || "").trim().toLowerCase(); a.hidden = !has[k]; });
+    document.documentElement.classList.toggle("has-roles", Object.values(has).filter(Boolean).length > 1);
+    document.dispatchEvent(new CustomEvent("cc:session", { detail: s }));
   }
   /* Clerk theme: brand colours, square corners, site fonts, orange primary with navy text. The page supplies the
      heading and the sign-in/sign-up switch, so Clerk's own header and footer link are hidden (no box inside a box).
@@ -137,23 +141,9 @@
       alert: { borderRadius: "0", border: "2px solid " + NAVY }
     }
   };
-  /* After sign-in/sign-up. Absolute URLs so the Google round trip (FAPI -> #/sso-callback -> here) never resolves them
-     against a Clerk path. A Google account with no user yet is transferred from SignIn to SignUp, so both
-     components carry both targets. Hash routing keeps the SSO callback on the same static page (signin.html#/sso-callback):
-     the static host has no /signin/sso-callback path. */
+  /* r11: there is ONE auth route (/auth.html, js/auth-flow.js builds the custom Clerk flow); the old signin/signup pages
+     only redirect there, so no prebuilt Clerk component is mounted anywhere. APPEARANCE stays for any future Clerk UI. */
   const abs = p => new URL(p, location.href).href;
-  function mountAuthUi(clerk) {
-    const page = document.body && document.body.dataset.page;
-    const form = page === "signin" ? document.getElementById("si") : page === "signup" ? document.getElementById("su") : null;
-    if (!form) return;
-    // already signed in: leave the auth page once (replace, so Back does not return here)
-    if (clerk.user) { location.replace(page === "signup" ? "onboarding.html" : "dashboard.html"); return; }
-    const host = document.createElement("div"); host.id = "clerk-" + page; form.replaceWith(host);
-    const opts = { routing: "hash", signInUrl: abs("signin.html"), signUpUrl: abs("signup.html"),
-      signInForceRedirectUrl: abs("dashboard.html"), signUpForceRedirectUrl: abs("onboarding.html"),
-      appearance: APPEARANCE };
-    page === "signin" ? clerk.mountSignIn(host, opts) : clerk.mountSignUp(host, opts);
-  }
   /* ClerkJS 6 (Core 3) + the separate @clerk/ui bundle, both from the instance's Frontend API.
      Clerk Protect needs ClerkJS >= 6.39: instances created on/after 27 Oct 2026 have "Require Device Intelligence checks"
      on, which blocks every browser sign-up (incl. a first Google sign-in) when Device Intelligence can't run
@@ -175,8 +165,8 @@
   const start = () => { paint(null, false);
     const fallback = setTimeout(() => { if (!AUTH.ready) paint(null, true); }, 6000);
     loadClerk().then(async Clerk => {
-      await Clerk.load({ ui: { ClerkUI: window.__internal_ClerkUICtor }, signInUrl: abs("signin.html"), signUpUrl: abs("signup.html"),
-        signInFallbackRedirectUrl: abs("dashboard.html"), signUpFallbackRedirectUrl: abs("onboarding.html") }); AUTH.clerk = Clerk; clearTimeout(fallback); paint(Clerk.user || null, true); mountAuthUi(Clerk);
+      await Clerk.load({ ui: { ClerkUI: window.__internal_ClerkUICtor }, signInUrl: abs("/auth.html"), signUpUrl: abs("/auth.html?mode=join"),
+        signInFallbackRedirectUrl: abs("/auth.html?step=route"), signUpFallbackRedirectUrl: abs("/auth.html?step=route") }); AUTH.clerk = Clerk; clearTimeout(fallback); paint(Clerk.user || null, true);
       Clerk.addListener(({ user }) => { if ((user && user.id) !== (AUTH.user && AUTH.user.id)) paint(user || null, true); });
     }).catch(() => { clearTimeout(fallback); if (!AUTH.ready) paint(null, true); }); };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();

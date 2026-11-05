@@ -1,44 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-{{HEAD title="Sign in · 101 Codecrafts" desc="Sign in to your 101 Codecrafts account." path="signin.html"}}
+{{HEAD title="Sign in or join · 101 Codecrafts" desc="Sign in and sign up now live on one page." path="auth.html" noindex}}
+<script>/* r11: one auth route. This old page forwards to /auth.html and keeps ?next= (and other params). */(function(){var q=new URLSearchParams(location.search);location.replace("/auth.html"+(q.toString()?"?"+q.toString():"")+location.hash)})()</script>
+<meta http-equiv="refresh" content="0; url=/auth.html">
 {{CSS}}
-<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/auth-flow.css">
 </head>
-<body class="auth-page" data-page="signin">
-<a class="skip" href="#main">Skip to content</a>
-{{ICONS}}
-<div class="auth">
-<aside class="auth-brand" data-loop="bauhaus" aria-label="About 101 Codecrafts">
-  <a class="auth-logo" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="72" height="36"><b>101 Codecrafts</b></a>
-  <div class="auth-pitch">
-    <p class="auth-kicker">Members</p>
-    <p class="auth-tag">Start at 101. <br>Craft your way up.</p>
-    <ul class="auth-points">
-      <li><svg aria-hidden="true"><use href="#i-learning"/></svg><span><b>Free courses &amp; a curated library</b>Structured paths from your first line of code to job-ready.</span></li>
-      <li><svg aria-hidden="true"><use href="#i-codebox"/></svg><span><b>Practice on real problems</b>Daily challenges, contests and projects you can show employers.</span></li>
-      <li><svg aria-hidden="true"><use href="#i-people"/></svg><span><b>Learn with a community</b>Tutors, study groups, live sessions and events across Uganda.</span></li>
-    </ul>
-  </div>
-  <p class="auth-legal">© <span data-year>2026</span> 101 Codecrafts · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
-</aside>
-<main id="main" class="auth-main">
-<div class="auth-panel">
-<h1 class="auth-h">Welcome back</h1>
-<p class="auth-sub">Sign in to pick up where you left off.</p>
-<div class="auth-form">
-<form id="si" class="grid" style="gap:12px">
- <label class="field">Email or phone<input name="email" type="text" autocomplete="username" required></label>
- <label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label>
- <button class="btn or">Sign in</button>
- <button class="btn" type="button" id="si-google">Continue with Google</button>
-<p id="si-msg" role="status" aria-live="polite"></p>
-</form>
-</div>
-<p class="auth-switch">New to 101 Codecrafts? <a href="signup.html">Create a free account</a></p>
-</div>
-</main>
-</div>
-{{SCRIPTS}}
-<script src="js/pages.js" defer></script>
+<body class="af-page" data-page="auth">
+<main class="af-main"><section class="af-card"><h1 class="af-h">Sign in moved</h1><p class="af-sub">Sign in, sign up and create account are now one page.</p><p><a class="af-btn" href="/auth.html">Continue to sign in</a></p></section></main>
+<script src="js/bg.js" defer></script>
 </body></html>

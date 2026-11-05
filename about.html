@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preload" href="assets/fonts/archivo-black-cc.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
-<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>
+<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");var u=(document.cookie.match(/(?:^|; )__client_uat=(\d+)/)||[])[1];d.classList.add(u&&u!=="0"?"role-pending":"role-visitor");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://101codecrafts.github.io/members-site/#org", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", "https://github.com/101codecrafts", "https://github.com/101codecrafts-ug"], "description": "A tech learning and collaboration community based in Kampala, Uganda: coding, AI, data, cybersecurity, cloud and DevOps, projects, hackathons, mentorship and careers, for beginners through professionals.", "email": "privacy@101codecrafts.org", "address": {"@type": "PostalAddress", "addressLocality": "Kampala", "addressCountry": "UG"}, "foundingLocation": {"@type": "Place", "name": "Kampala, Uganda"}, "areaServed": "UG", "founder": [{"@type": "Person", "name": "Businge Daglous", "jobTitle": "Founder"}, {"@type": "Person", "name": "Ngabirano Octavious", "jobTitle": "Co-founder", "sameAs": ["https://github.com/octavious2"]}, {"@type": "Person", "name": "Mwesigwa Allan", "jobTitle": "Co-founder"}]}</script>
 <link rel="stylesheet" href="css/bundle-app.css">
 <link rel="stylesheet" href="css/about.css">
@@ -96,7 +96,7 @@
 <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="1.5"/><path d="M10.5 18.5h3" stroke-linecap="round"/></symbol>
 </svg>
 
-<header class="topbar"><a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101 Codecrafts home" width="82" height="41"><b>Codecrafts</b></a><span class="sp"></span><a class="btn or" href="signup.html">Join</a></header>
+<header class="topbar"><a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="101 Codecrafts home" width="82" height="41"><b>Codecrafts</b></a><span class="sp"></span><a class="btn or" href="auth.html?mode=join">Join</a></header>
 <main id="main" class="ab">
 
 <!-- 1. HERO -->
@@ -106,7 +106,7 @@
       <p class="kicker">About 101 Codecrafts</p>
       <h1 id="ab-h1" class="ab-h1">Start at 101. <span>Craft your way up.</span></h1>
       <p class="ab-lede">101 Codecrafts is a tech learning and collaboration community based in Kampala, Uganda.<br class="ab-br"> Coding, AI, data, cybersecurity and cloud, for beginners through professionals.</p>
-      <div class="ab-cta"><a class="btn or ab-btn" href="signup.html">Join 101 free</a><a class="btn ab-btn" href="community.html">Meet the community</a></div>
+      <div class="ab-cta"><a class="btn or ab-btn" href="auth.html?mode=join">Join 101 free</a><a class="btn ab-btn" href="community.html">Meet the community</a></div>
     </div>
     <div class="ab-hero-tile" aria-hidden="true">
       <span class="ab-101">101</span>
@@ -224,7 +224,7 @@
     <div class="ab-faq">
       <details><summary>Is 101 Codecrafts free?</summary><div><p>Joining is free. During the launch month everything on 101 is free, with no ads. After that there is a free tier with ads, and 101 Pro if you want it ad-free. Some tutor-led courses and sessions have a price in Uganda Shillings, always shown before you pay.</p></div></details>
       <details><summary>Where is 101 based?</summary><div><p>In Kampala, Uganda. Courses, the library, news and opportunities are online, so you can learn from anywhere, and members also meet in study groups and at <a href="events.html">events and meetups</a>.</p></div></details>
-      <details><summary>Who can join?</summary><div><p>Anyone learning or working in tech, from Primary and O-Level to A-Level, university and professionals. No experience needed. <a href="signup.html">Create a free account</a> to start.</p></div></details>
+      <details><summary>Who can join?</summary><div><p>Anyone learning or working in tech, from Primary and O-Level to A-Level, university and professionals. No experience needed. <a href="auth.html?mode=join">Create a free account</a> to start.</p></div></details>
       <details><summary>How do I become a tutor?</summary><div><p>Create a free account, choose “Tutor” when you set up your profile, and pick the levels you teach. The 101 team verifies tutors before they can publish paid courses or sessions, and every course is reviewed before it goes live.</p></div></details>
       <details><summary>I’m under 18. Can I join?</summary><div><p>Yes, with a parent or guardian’s consent. When you sign up we ask for a guardian’s details and send them a consent request. Until they agree, messaging and payments stay locked. Read more in the <a href="privacy.html">privacy policy</a>.</p></div></details>
       <details><summary>How do I get a certificate?</summary><div><p>Finish a 101 course (video lessons, notes and quizzes) to earn a 101 certificate. Each one has a code that anyone can check on the <a href="verify.html">verify page</a>. Free partner courses, such as freeCodeCamp or Coursera, give their own certificates; the <a href="courses.html">courses page</a> shows which ones are free.</p></div></details>
@@ -237,7 +237,7 @@
   <div class="ab-wrap ab-final-in">
     <h2 id="ab-final-h" class="ab-h2">Your 101 starts today.</h2>
     <p>Create a free account, pick a path and meet people who are learning too.</p>
-    <div class="ab-cta"><a class="btn or ab-btn" href="signup.html">Join 101 free</a><a class="btn ab-btn ab-btn-wa" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg>Join the WhatsApp community<span class="sr-only"> (opens in a new tab)</span></a></div>
+    <div class="ab-cta"><a class="btn or ab-btn" href="auth.html?mode=join">Join 101 free</a><a class="btn ab-btn ab-btn-wa" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg>Join the WhatsApp community<span class="sr-only"> (opens in a new tab)</span></a></div>
   </div>
 </section>
 
@@ -252,6 +252,7 @@
 <script src="js/site-social.js" defer></script>
 <script src="js/site-stats.js" defer></script>
 <script src="js/api.js" defer></script>
+<script src="js/access.js" defer></script>
 <script src="js/auth.js" defer></script>
 <script src="js/share.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous" defer></script>

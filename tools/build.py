@@ -25,12 +25,16 @@ SOCIAL_SOON = [x for x in SOCIAL if x.get('todo') and x not in SOCIAL_LIVE]   # 
 def soc_icon(x):   # footer icon: a link when the url is real, else a non-link "Coming soon" placeholder
     if x in SOCIAL_LIVE: return f'<a href="{html.escape(x["url"])}" target="_blank" rel="noopener noreferrer" aria-label="{html.escape(x["name"])}"><svg aria-hidden="true"><use href="#i-{x["icon"]}"/></svg></a>'
     return f'<span class="soc-soon" role="link" aria-disabled="true" aria-label="{html.escape(x["label"])}: coming soon" title="{html.escape(x["label"])}: coming soon"><svg aria-hidden="true"><use href="#i-{x["icon"]}"/></svg></span>'
+# Round 11 access contract: ONE policy file (src/data/access-policy.json), embedded into js/access.js between /*POLICY*/ and /*END*/
+POLICY = json.loads((root / 'src/data/access-policy.json').read_text())
+_acc = root / 'js/access.js'
+_acc.write_text(re.sub(r'/\*POLICY\*/.*?/\*END\*/', lambda m: '/*POLICY*/' + json.dumps(POLICY, separators=(',', ':')) + '/*END*/', _acc.read_text(), count=1, flags=re.S))
 TEAM = json.loads((root / 'src/data/team.json').read_text())['leaders']   # about.html leaders (bio slots: TODO founder)
 
 ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "@id": SITE + "/#org", "name": "101 Codecrafts", "url": SITE + "/", "logo": SITE + "/assets/icons/icon-512.png",
           "slogan": "Start at 101. Craft your way up.", "sameAs": [x['url'] for x in SOCIAL_LIVE]}
 
-EARLY = '''<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>'''
+EARLY = '''<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");var u=(document.cookie.match(/(?:^|; )__client_uat=(\\d+)/)||[])[1];d.classList.add(u&&u!=="0"?"role-pending":"role-visitor");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>'''
 
 def head(a, page):
     t = a.get('title', '101 Codecrafts'); d = a.get('desc', '101 Codecrafts: learn, build and collaborate in tech.'); p = a.get('path', page)
@@ -59,7 +63,7 @@ def head(a, page):
 <script type="application/ld+json">{json.dumps(ld if len(ld) > 1 else ld[0])}</script>'''
 
 def scripts(charts=False):
-    tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
+    tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/access.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
     tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>', '<script src="js/ai.js" defer></script>', '<script src="js/loaders.min.js" defer></script>']   # loaders: round-9 route/inline/busy/empty loops   # ai.js: 101 AI floating assistant loader (round 7)
@@ -73,6 +77,10 @@ NAV = {
              "Community", ("Groups", "people", "groups.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
              "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Announcements", "megaphone", "announcements.html"), ("Library", "folder", "resources.html"),
              "Your space", ("My Courses", "cap", "courses.html#c101"), ("My Projects", "codebox", "projects.html"), ("My Downloads", "download", "resources.html"), ("My Profile", "user", "profile.html"), ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
+ 'guest': ["", ("Home", "home", "guest.html"), ("Daily News", "doc", "news.html"), ("Events & Meetups", "calendar", "events.html"), ("Opportunities", "briefcase", "opportunities.html"),
+           "Learn free", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
+           "Shop", ("Marketplace", "store", "marketplace.html"), ("My orders", "list", "orders.html"),
+           "Your space", ("Settings", "gear", "settings-apps.html")],
  'tutor': ["Teach", ("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "sessions.html"), ("Earnings & Payouts", "cash", "tutor.html#earnings"),
            "Explore", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
            "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
@@ -127,7 +135,7 @@ def topbar(a, page=''):
   <a class="ib tb-bell" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
   <div class="acct" data-acct aria-busy="true">
     <span class="acct-sk" aria-hidden="true"><i></i><b></b></span><span class="sr-only acct-loading">Loading account</span>
-    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="signin.html">Sign in</a><a class="tb-btn cta" href="signup.html"><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
+    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="auth.html">Sign in</a><a class="tb-btn cta" href="auth.html?mode=join"><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
     <div class="acct-user" hidden>
       <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu"><span class="acct-av" aria-hidden="true"></span><span class="acct-id"><b class="acct-name"></b><small class="acct-role">Member</small></span><svg class="acct-chev" aria-hidden="true"><use href="#i-chev"/></svg><span class="sr-only">account menu</span></button>
       <div class="acct-menu" id="acct-menu" role="menu" aria-label="Account" hidden>

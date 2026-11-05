@@ -1826,6 +1826,16 @@ html:not(.static) .cc-toolbar.in-foot .cc-tb-toggle{width:44px;min-width:44px;he
 @media (max-width:380px){html:not(.static) .shell .topbar{column-gap:3px;padding-left:6px;padding-right:8px}html:not(.static) .tb-btn{padding:0 9px}}
 html:not(.static) .cc-toolbar.in-drawer select{background:transparent;color:inherit}
 
+/* r11 access: visitors (signed out) get NO app shell: no sidebar, drawer button or bell; the top bar keeps the marketing
+   links and Sign in / Join. Guests get a limited sidebar (js/access.js hides what they can't open) plus an upgrade CTA. */
+html.role-visitor .shell{grid-template-columns:minmax(0,1fr)}
+html.role-visitor .shell .sbar,html.role-visitor .sb-scrim,html.role-visitor .topbar .tb-nav,html.role-visitor .topbar .tb-bell{display:none!important}
+.shell .sb-nav .sb-upgrade{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:10px;margin:4px 0 12px;padding:10px;background:#fc8c0c;color:#0B1236;border:2px solid #0B1236;box-shadow:3px 3px 0 #000;font-weight:700;text-decoration:none;height:auto}
+.shell .sb-nav .sb-upgrade svg{width:20px;height:20px;color:#0B1236}
+.shell .sb-nav .sb-upgrade:hover{background:#fc8c0c;color:#0B1236;transform:translate(-1px,-1px)}
+html.sb-collapsed .shell .sb-nav .sb-upgrade span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sbar [hidden],.role-tabs [hidden]{display:none!important}
+
 /* =====================================================================================
    101 Codecrafts — touch layer (live site only for anything that paints; ?static=1 untouched)
    1. touch-action: no double-tap zoom delay on controls; drag/pinch surfaces own their gestures

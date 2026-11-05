@@ -8,8 +8,8 @@
   if (!b || d.classList.contains("static")) return;
   var page = b.dataset.page || "", src = (document.currentScript && document.currentScript.src) || "js/bg.js";
   var NONE = /^(terms|privacy|cookies|article|go|ide|problem|admin|interview|contest|whiteboard)$/;
-  var TYPE = page === "landing" ? "landing" : /^(signin|signup|onboarding|verify)$/.test(page) ? "auth" : /^(404|offline)$/.test(page) ? "err" :
-    /^(dashboard|courses|course|learn|practice|sessions|session|groups|card|cart|checkout|launchpad|announcements|orders|seller|rfq|product-item|product|projects|profile|testing|tutor|settings-apps|aitools|contests|opportunities)$/.test(page) ? "app" : "mkt";
+  var TYPE = page === "landing" ? "landing" : /^(auth|signin|signup|onboarding|verify)$/.test(page) ? "auth" : /^(404|offline)$/.test(page) ? "err" :
+    /^(guest|dashboard|courses|course|learn|practice|sessions|session|groups|card|cart|checkout|launchpad|announcements|orders|seller|rfq|product-item|product|projects|profile|testing|tutor|settings-apps|aitools|contests|opportunities)$/.test(page) ? "app" : "mkt";
   if (NONE.test(page)) TYPE = "";
   var rm = matchMedia("(prefers-reduced-motion: reduce)"), cv = null, w = null, P = null, L = null, live = false, loaded = false;
   var mode = function () { var m = ""; try { m = localStorage.cc_bg_motion || ""; } catch (e) {} return m === "off" || m === "reduced" ? m : "on"; };

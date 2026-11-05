@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Home · 101 Codecrafts" desc="Your guest home on 101 Codecrafts: news, free courses, events and the marketplace." path="guest.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/auth-flow.css">
+</head>
+<body class="flow" data-role="guest" data-page="guest">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="guest" active="Home"}}
+<div class="main">
+{{TOPBAR role="guest" name="Guest" label="Guest"}}
+<main id="main" class="content">
+<div class="page-h"><div><div class="kicker">Guest home</div><h1 data-guest-hi>WELCOME</h1><p>Guests browse, read, learn free and buy. There's no dashboard for guests; become a learner or tutor to get one.</p></div></div>
+<section class="gh-grid" aria-label="What you can do">
+  <a class="gh-card" href="news.html"><svg aria-hidden="true"><use href="#i-doc"/></svg><b>Daily tech news</b><span>Uganda, Africa and the world, every morning.</span></a>
+  <a class="gh-card" href="courses.html"><svg aria-hidden="true"><use href="#i-learning"/></svg><b>Free courses</b><span>External courses (Coursera, freeCodeCamp…) and courses an admin marked free.</span></a>
+  <a class="gh-card" href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><b>Marketplace</b><span>Buy software and products made by 101 members.</span></a>
+  <a class="gh-card" href="events.html"><svg aria-hidden="true"><use href="#i-calendar"/></svg><b>Events and meetups</b><span>See what's on in Kampala and online.</span></a>
+  <a class="gh-card" href="ai-tools.html"><svg aria-hidden="true"><use href="#i-brain"/></svg><b>AI tools</b><span>Explain code, get hints, practise.</span></a>
+  <a class="gh-card" href="opportunities.html"><svg aria-hidden="true"><use href="#i-briefcase"/></svg><b>Opportunities</b><span>Scholarships, internships and jobs.</span></a>
+</section>
+<section class="gh-up" aria-labelledby="gh-up-h">
+  <h2 id="gh-up-h">Want more?</h2>
+  <ul>
+    <li><b>Learner</b>: your own dashboard, tutor and premium courses, 1:1 sessions, projects, selling on the marketplace, rating what you used.</li>
+    <li><b>Tutor</b>: teach courses, take on learners, run sessions, get paid by Mobile Money.</li>
+  </ul>
+  <a class="af-btn" href="auth.html?upgrade=1">Become a learner or tutor</a>
+</section>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script>document.addEventListener("cc:access",function(e){var a=e.detail,h=document.querySelector("[data-guest-hi]");if(h&&a.user&&a.user.name)h.textContent="WELCOME, "+String(a.user.name).split(" ")[0].toUpperCase();});</script>
+</body></html>

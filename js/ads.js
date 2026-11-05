@@ -31,7 +31,7 @@
   const ADSENSE_CLIENT = "ca-pub-TODO";
   const SLOTS = { infeed: "TODO", banner: "TODO", sidebar: "TODO", player: "TODO", lesson: "TODO" };
   const LAUNCH_PROMO = { enabled: true, endsAt: "TODO-launch+1month" }; // ISO date with zone, e.g. "2027-01-31T23:59:00+03:00"
-  const UPGRADE_URL = "signup.html?plan=pro"; // TODO: point at the 101 Pro pricing / checkout page when it exists
+  const UPGRADE_URL = "auth.html?mode=join"; // TODO: point at the 101 Pro pricing / checkout page when it exists
   const HEIGHTS = { infeed: 300, banner: 120, sidebar: 600, player: 100, lesson: 90 }; // px reserved before fill (no layout shift)
 
   /* where ads may go, per body[data-page]. member:true = free signed-in members only. */

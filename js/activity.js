@@ -68,7 +68,7 @@
       '<button type="button" class="act-btn act-cmt" data-act-comment aria-expanded="false" aria-controls="' + tid + '"><svg aria-hidden="true"><use href="#i-comment"/></svg><span class="sr-only">Comments</span><span class="act-n" data-n-comments></span></button>' +
       '<button type="button" class="act-btn act-share" data-act-share><svg aria-hidden="true"><use href="#i-share"/></svg><span class="act-lbl">Share</span></button>';
     var gate = document.createElement("div"); gate.className = "act-gate"; gate.hidden = true; gate.setAttribute("role", "status");
-    gate.innerHTML = '<span>Sign in to like and comment.</span><a class="act-gate-in" href="signin.html">Sign in</a><a class="act-gate-join" href="signup.html">Join free</a>';
+    gate.innerHTML = '<span>Sign in to like and comment.</span><a class="act-gate-in" href="auth.html">Sign in</a><a class="act-gate-join" href="auth.html?mode=join">Join free</a>';
     var thr = document.createElement("div"); thr.className = "act-thread"; thr.id = tid; thr.hidden = true;
     thr.innerHTML = '<ol class="act-list" aria-label="Comments" aria-live="polite"></ol>' +
       (live ? "" : '<p class="act-note">Preview: comments you add here are saved on this device only.</p>') +
@@ -98,7 +98,7 @@
     }
     function showGate() {
       gate.hidden = false; clearTimeout(gateTimer); gateTimer = setTimeout(function () { gate.hidden = true; }, 8000);
-      var a = $(".act-gate-in", gate); a.href = "signin.html?redirect_url=" + encodeURIComponent(location.pathname + "#" + card.id);
+      var a = $(".act-gate-in", gate); a.href = "auth.html?next=" + encodeURIComponent(location.pathname + "#" + card.id);
     }
     async function guard() { var u = await whenAuth(); if (!u) { showGate(); return false; } gate.hidden = true; return true; }
 

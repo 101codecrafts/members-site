@@ -1,27 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-{{HEAD title="Get started · 101 Codecrafts" desc="Set up your 101 Codecrafts account." path="onboarding.html"}}
-<link rel="stylesheet" href="css/brutal.css">
-<link rel="stylesheet" href="css/app.css">
+{{HEAD title="Sign in or join · 101 Codecrafts" desc="Sign in and sign up now live on one page." path="auth.html" noindex}}
+<script>/* r11: one auth route. This old page forwards to /auth.html and keeps ?next= (and other params). */(function(){var q=new URLSearchParams(location.search);if(!q.has(step))q.set(step,route);location.replace("/auth.html"+(q.toString()?"?"+q.toString():"")+location.hash)})()</script>
+<meta http-equiv="refresh" content="0; url=/auth.html">
+{{CSS}}
+<link rel="stylesheet" href="css/auth-flow.css">
 </head>
-<body class="flow" data-page="onboarding">
-<a class="skip" href="#main">Skip to content</a>
-{{ICONS}}
-<main id="main" class="center">
-<div class="panel-x">
-<a class="brandbar" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="82" height="41"><b>Codecrafts</b></a>
-
-<p class="kicker" id="ob-n"></p>
-<p id="minor-note" class="muted" hidden>We've emailed your guardian. You can explore now; messaging and payments unlock after they consent.</p>
-<section class="step"><h1>HOW WILL YOU USE 101?</h1><div class="opts"><button type="button" class="opt" data-role="learner" data-single aria-pressed="true">Learner</button><button type="button" class="opt" data-role="tutor" data-single aria-pressed="false">Tutor</button></div></section>
-<section class="step" hidden><h1>YOUR LEVEL</h1>
- <div id="learner-level"><p>What best describes where you are now?</p><div class="opts"><button type="button" class="opt" data-mylevel data-single aria-pressed="false">Primary</button><button type="button" class="opt" data-mylevel data-single aria-pressed="false">O-Level</button><button type="button" class="opt" data-mylevel data-single aria-pressed="false">A-Level</button><button type="button" class="opt" data-mylevel data-single aria-pressed="true">University</button><button type="button" class="opt" data-mylevel data-single aria-pressed="false">Professional</button></div></div>
- <div id="tutor-levels" hidden><p>Which levels do you teach? Pick all that apply.</p><div class="opts"><button type="button" class="opt" data-teach aria-pressed="false">Primary</button><button type="button" class="opt" data-teach aria-pressed="false">O-Level</button><button type="button" class="opt" data-teach aria-pressed="false">A-Level</button><button type="button" class="opt" data-teach aria-pressed="false">University</button><button type="button" class="opt" data-teach aria-pressed="false">Professional</button></div></div></section>
-<section class="step" hidden><h1>WHAT INTERESTS YOU?</h1><div class="opts"><button type="button" class="opt" data-int aria-pressed="false">Software Engineering</button><button type="button" class="opt" data-int aria-pressed="false">Data Science</button><button type="button" class="opt" data-int aria-pressed="false">Cybersecurity</button><button type="button" class="opt" data-int aria-pressed="false">AI & ML</button><button type="button" class="opt" data-int aria-pressed="false">Cloud & DevOps</button><button type="button" class="opt" data-int aria-pressed="false">Networking</button><button type="button" class="opt" data-int aria-pressed="false">Design</button><button type="button" class="opt" data-int aria-pressed="false">Startups</button></div></section>
-<div class="row" style="justify-content:space-between;margin-top:14px"><button type="button" class="btn" id="ob-back">Back</button><button type="button" class="btn or" id="ob-next">Next</button></div>
-</div>
-</main>
-{{SCRIPTS}}
-<script src="js/pages.js" defer></script>
+<body class="af-page" data-page="auth">
+<main class="af-main"><section class="af-card"><h1 class="af-h">Sign in moved</h1><p class="af-sub">Sign in, sign up and create account are now one page.</p><p><a class="af-btn" href="/auth.html">Continue to sign in</a></p></section></main>
+<script src="js/bg.js" defer></script>
 </body></html>

@@ -5,9 +5,53 @@
       "source": "/ai.html",
       "destination": "/ai-tools.html",
       "permanent": true
+    },
+    {
+      "source": "/signin.html",
+      "destination": "/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/signin",
+      "destination": "/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/signup.html",
+      "destination": "/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/signup",
+      "destination": "/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/onboarding.html",
+      "destination": "/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/onboarding",
+      "destination": "/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/login",
+      "destination": "/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/register",
+      "destination": "/auth.html",
+      "permanent": true
     }
   ],
   "rewrites": [
+    {
+      "source": "/auth",
+      "destination": "/auth.html"
+    },
     {
       "source": "/go/:id",
       "destination": "/go.html?id=:id"
