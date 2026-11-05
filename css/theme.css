@@ -139,3 +139,8 @@ html[data-theme=dark]:not(.static) .app .qa svg:has(use[href="#i-plusc"]),html[d
 [data-theme=dark] .sb-scrim{background:rgba(2,4,14,.66);color:inherit}
 /* r11 deploy QA: the account menu's items and name inherited --sh-navy text on the dark surface (unreadable at 412 dark) */
 :where([data-theme=dark]) .acct-menu,:where([data-theme=dark]) .acct-menu [role=menuitem],:where([data-theme=dark]) .acct-menu .am-head .acct-name{color:var(--text)}
+
+/* r12 design (BUS F4): account-menu role chip was navy text on the dark surface (1.2:1). Role chip = light text on a
+   raised surface with the strong border; the plan chip keeps navy on cyan (13:1). */
+[data-theme=dark] .am-chips i{color:var(--text);border-color:var(--border-strong);background:var(--surface-3)}
+[data-theme=dark] .am-chips .am-plan{color:var(--on-accent);background:var(--accent-2);border-color:var(--accent-2)}

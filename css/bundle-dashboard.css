@@ -1516,6 +1516,16 @@ html:not(.static) .ef-region:empty{min-height:var(--tap)}                       
 @media (min-width:1280px){html:not(.static) .page-h>div:first-child{flex:1 1 20rem;min-width:0}html:not(.static) .page-h>:is(.row,nav.filters,.ses-actions){flex:0 1 auto}}
 /* lists that scripts fill: an empty list holds the fold, so the sections below it are never pushed down in view (events@1440 CLS) */
 html:not(.static) :is(#ev-list,#opp-grid,#news-grid,#res-grid,#learn-grid,#sets,#ann-list,#kpis):empty{min-height:70vh}
+/* ===================================================================== r12 design polish (work/round12/design/RESEARCH.md)
+   Every rule is scoped html:not(.static) so ?static=1 stays the exact mockup; colours come only from role tokens (theme-safe). */
+/* one focal point: the dashboard header already has "Browse courses" as its primary action, so the quick-access row drops its copy */
+html:not(.static) .dash-quick .dq-dup{display:none}
+/* fresh-account empty states: the faint example rows read as real (made-up) courses. They stay as an abstract outline only:
+   no names, no numbers, no "Example" tag (founder rule: no demo data for real accounts) */
+html:not(.static) .dash-empty .ph-tag{display:none}
+html:not(.static) .dash-empty .ph-row span,html:not(.static) .dash-empty .ph-row em{font-size:0;line-height:0;color:transparent;height:10px;background:var(--surface-3)}
+html:not(.static) .dash-empty .ph-row span{width:62%}
+html:not(.static) .dash-empty .ph-row em{width:40px;justify-self:end}
 
 /* ==== 101 Codecrafts app shell (2026-11): navy L-frame (sidebar + top bar), collapsible rail, mobile drawer ====
    Markup: tools/build.py sidebar()/topbar(). Behaviour: js/shell.js. Loaded last in every CSS bundle so it wins over

@@ -45,6 +45,8 @@
 .st-row+.st-row{border-top:1px solid #DDE2EE}
 .st-row b{display:block;font:700 15px var(--body)}
 .st-ok{color:#0f7a45}
+.st-row [hidden]{display:none!important}
+.st-row.st-off b{color:var(--st-mut)}
 .st-sessions,.st-conn,.st-help{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .st-sessions li,.st-conn li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:2px solid var(--st-line)}
 .st-sessions li.st-empty,.st-conn li.st-empty{border-style:dashed}
@@ -132,3 +134,21 @@ html.a11y-underline a{text-decoration:underline!important}
 [data-theme=dark] :is(.st-f ::placeholder,#st-skill-in::placeholder,.pf-ph){color:#7F89A8}
 [data-theme=dark] .pf-ph-chip{border-color:#7F89A8;color:#7F89A8}
 [data-theme=dark] .st-tog input,[data-theme=dark] .st-check input,[data-theme=dark] .st-seg input{accent-color:#05e6f2}
+/* r12 design: the sticky section tabs scroll sideways on phones with the scrollbar hidden, so "Billing", "Security"…
+   were simply cut off at the edge. Scroll shadows (they show only while there is more to scroll) + snap make it obvious. */
+@media (max-width:1023px){
+  html:not(.static) .st-nav{scroll-snap-type:x proximity;scroll-padding-inline:4px;
+    background:linear-gradient(90deg,var(--surface-1,#fff) 40%,transparent) left center/32px 100% no-repeat local,
+      linear-gradient(270deg,var(--surface-1,#fff) 40%,transparent) right center/32px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%,rgba(11,18,54,.28),transparent) left center/14px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%,rgba(11,18,54,.28),transparent) right center/14px 100% no-repeat scroll;
+    background-color:var(--surface-1,#fff)}
+  html:not(.static) .st-nav a{scroll-snap-align:start}
+  html:not(.static)[data-theme=dark] .st-nav{background:linear-gradient(90deg,var(--surface-1) 40%,transparent) left center/32px 100% no-repeat local,
+      linear-gradient(270deg,var(--surface-1) 40%,transparent) right center/32px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%,rgba(95,227,240,.35),transparent) left center/14px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%,rgba(95,227,240,.35),transparent) right center/14px 100% no-repeat scroll;
+    background-color:var(--surface-1)}
+}
+/* r12 design: section links ("Add", "Edit", "View profile") were 18px-tall text targets; 24px minimum (WCAG 2.5.8) */
+html:not(.static) .sec-title .st-link{display:inline-flex;align-items:center;min-height:32px;padding-inline:6px}
