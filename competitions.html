@@ -93,6 +93,18 @@
 <symbol id="i-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16"/><path d="M9 4v16"/><path d="m15.5 9.5-2.5 2.5 2.5 2.5" stroke-linecap="square"/></symbol>
 <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M14 4H4v16h10"/><path d="M10 12h11M17 8l4 4-4 4"/></symbol>
 <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="1.5"/><path d="M10.5 18.5h3" stroke-linecap="round"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7v.5M12 17h.01"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><rect x="2.5" y="5" width="19" height="14"/><path d="M2.5 10h19M6 15h4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-guard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><circle cx="12" cy="10" r="2.5"/><path d="M8 16c1-2 2.4-3 4-3s3 1 4 3"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><rect x="3" y="4" width="18" height="16"/><circle cx="9" cy="10" r="2"/><path d="M3 18l6-5 4 3 3-2 5 4"/></symbol>
+<symbol id="i-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 2.5h8.5L19 7v14.5H6z"/><path d="M14 2.5V7h5M9 13h6M9 17h6"/></symbol>
+<symbol id="i-motion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M3 12h4l2-6 4 12 2-6h6"/></symbol>
 </svg>
 
 <div class="shell">
@@ -116,14 +128,25 @@
   <a class="ib tb-bell" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
   <div class="acct" data-acct aria-busy="true">
     <span class="acct-sk" aria-hidden="true"><i></i><b></b></span><span class="sr-only acct-loading">Loading account</span>
-    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="signin.html">Sign in</a><a class="tb-btn cta" href="signup.html"><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
+    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="signin.html" data-return>Sign in</a><a class="tb-btn cta" href="signup.html" data-return><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
     <div class="acct-user" hidden>
       <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu"><span class="acct-av" aria-hidden="true"></span><span class="acct-id"><b class="acct-name"></b><small class="acct-role">Member</small></span><svg class="acct-chev" aria-hidden="true"><use href="#i-chev"/></svg><span class="sr-only">account menu</span></button>
       <div class="acct-menu" id="acct-menu" role="menu" aria-label="Account" hidden>
-        <div class="am-head" role="none"><b class="acct-name"></b><small class="acct-email"></small></div>
-        <a role="menuitem" href="profile.html"><svg aria-hidden="true"><use href="#i-user"/></svg>Profile</a>
-        <a role="menuitem" href="settings-apps.html"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+        <div class="am-head" role="none"><span class="acct-av am-av" aria-hidden="true"></span><span class="am-who"><b class="acct-name"></b><small class="acct-email"></small><span class="am-chips"><i class="am-role acct-role">Member</i><i class="am-plan" data-acct-plan hidden></i></span></span></div>
+        <a role="menuitem" href="profile.html" data-acct-me><svg aria-hidden="true"><use href="#i-user"/></svg>View profile</a>
+        <a role="menuitem" href="settings.html#profile"><svg aria-hidden="true"><use href="#i-pen"/></svg>Edit profile</a>
+        <a role="menuitem" class="am-up" href="pricing.html" data-acct-upgrade><svg aria-hidden="true"><use href="#i-star"/></svg><span class="am-grow"><span data-acct-planline>Your plan</span></span><b class="am-up-tag">Upgrade</b></a>
+        <div class="am-sep" role="separator"></div>
+        <a role="menuitem" href="settings.html#billing"><svg aria-hidden="true"><use href="#i-card"/></svg>Billing &amp; payment methods</a>
+        <a role="menuitem" href="settings.html#payouts" data-acct-tutor hidden><svg aria-hidden="true"><use href="#i-cash"/></svg>Payouts</a>
+        <div class="am-sep" role="separator"></div>
+        <a role="menuitem" href="settings.html"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+        <a role="menuitem" href="settings.html#help"><svg aria-hidden="true"><use href="#i-help"/></svg>Help &amp; support</a>
+        <button type="button" role="menuitem" data-acct-theme><svg aria-hidden="true"><use href="#i-moon"/></svg><span class="am-grow">Theme</span><small class="am-val" data-acct-theme-val>System</small></button>
+        <a role="menuitem" href="settings.html#language"><svg aria-hidden="true"><use href="#i-globe"/></svg><span class="am-grow">Language</span><small class="am-val" data-acct-lang>English</small></a>
         <div class="role-tabs am-roles" role="group" aria-label="Switch role"><span class="am-label" aria-hidden="true">Switch role</span><a role="menuitem" href="dashboard.html">Learner</a><a role="menuitem" href="tutor.html">Tutor</a><a role="menuitem" href="admin.html">Admin</a></div>
+        <div class="am-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-acct-switch><svg aria-hidden="true"><use href="#i-swap"/></svg>Switch account</button>
         <button type="button" role="menuitem" class="am-out" data-signout><svg aria-hidden="true"><use href="#i-logout"/></svg>Sign out</button>
       </div>
     </div>
@@ -154,6 +177,8 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js" integrity="sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu" crossorigin="anonymous" defer></script>
 <script src="js/shell.js" defer></script>
 <script src="js/ui.js" defer></script>
+<script src="js/access.js" defer></script>
+<script src="js/account.js" defer></script>
 <script src="js/motion.js" defer></script>
 <script src="js/era.js" defer></script>
 <script src="js/ads.js" defer></script>

@@ -1741,7 +1741,20 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
 .acct-chev{width:16px;height:16px;color:var(--sh-mut)}
 .acct-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:1000;min-width:240px;background:#fff;color:var(--sh-navy);border:2px solid var(--sh-navy);box-shadow:5px 5px 0 var(--sh-or);padding:6px 0}
 .acct-menu[hidden]{display:none}
-.am-head{display:flex;flex-direction:column;gap:3px;padding:8px 14px 10px;border-bottom:1px solid #DDE2EE;margin-bottom:4px}
+.am-head{display:flex;flex-direction:row;align-items:center;gap:12px;padding:10px 14px 12px;border-bottom:1px solid #DDE2EE;margin-bottom:4px}
+.am-head .am-av{width:44px;height:44px;font-size:16px;border:2px solid var(--sh-navy)}
+.am-who{display:flex;flex-direction:column;gap:2px;min-width:0}
+.am-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.am-chips i{font:700 11px/1 var(--mono,monospace);font-style:normal;letter-spacing:.8px;text-transform:uppercase;padding:4px 6px;border:1.5px solid var(--sh-navy);color:var(--sh-navy);background:#fff}
+.am-chips .am-plan{background:var(--sh-cy,#05e6f2);border-color:var(--sh-navy)}
+.am-chips i[hidden]{display:none}
+.acct-menu{width:min(320px,calc(100vw - 16px));max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px);overflow-y:auto;overscroll-behavior:contain}
+.acct-menu [role=menuitem][hidden]{display:none}
+.am-sep{height:0;border-top:1px solid #DDE2EE;margin:4px 0}
+.am-grow{flex:1;min-width:0}
+.am-val{font:500 12px var(--body);color:#44506E}
+.am-up-tag{font:700 11px/1 var(--mono,monospace);letter-spacing:.8px;text-transform:uppercase;padding:5px 7px;background:var(--sh-or);color:var(--sh-navy);border:1.5px solid var(--sh-navy)}
+.am-up-tag[hidden]{display:none}
 .am-head b{font:700 14px var(--body)}
 .am-head small{font:500 13px var(--body);color:#44506E;word-break:break-all}
 .acct-menu [role=menuitem]{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:0 14px;background:none;border:0;font:600 14px var(--body);color:var(--sh-navy);text-decoration:none;text-align:left;cursor:pointer}

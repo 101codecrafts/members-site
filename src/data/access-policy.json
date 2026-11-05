@@ -1,0 +1,17 @@
+{
+  "_note": "STUB from r11/profile. The auth agent owns this file; merge these profile.* / account.* keys into the owner's version. Roles: visitor|guest|learner|tutor|admin|root_admin. Plans: free|standard|plus|pro.",
+  "actions": {
+    "profile.view_own":      { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
+    "profile.edit":          { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
+    "profile.public":        { "roles": ["learner", "tutor", "admin", "root_admin"] },
+    "profile.share":         { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
+    "account.billing":       { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
+    "account.upgrade":       { "roles": ["guest", "learner", "tutor"] },
+    "account.payouts":       { "roles": ["tutor"] },
+    "account.guardian":      { "roles": ["guest", "learner"] },
+    "account.export":        { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
+    "account.delete":        { "roles": ["guest", "learner", "tutor", "admin"] },
+    "settings.connected_apps": { "roles": ["learner", "tutor", "admin", "root_admin"] }
+  },
+  "limits": {}
+}

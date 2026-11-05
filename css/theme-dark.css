@@ -284,6 +284,10 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .tb-btn.cta:hover{background:var(--surface-1);border-color:var(--border-subtle);color:var(--text)}
 :where([data-theme=dark]) .acct-menu{background:var(--surface-1)}
 :where([data-theme=dark]) .am-head{border-bottom:1px solid var(--border-subtle)}
+:where([data-theme=dark]) .am-chips i{background:var(--surface-1)}
+:where([data-theme=dark]) .am-chips .am-plan{color:var(--on-accent)}
+:where([data-theme=dark]) .am-sep{border-top:1px solid var(--border-subtle)}
+:where([data-theme=dark]) .am-val{color:var(--text-muted)}
 :where([data-theme=dark]) .am-head small{color:var(--text-muted)}
 :where([data-theme=dark]) .acct-menu [role=menuitem]:hover,:where([data-theme=dark]) .acct-menu [role=menuitem]:focus{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .acct-menu .am-roles{border-top:1px solid var(--border-subtle)}
