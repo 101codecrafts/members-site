@@ -2061,6 +2061,10 @@ html:not(.static) :is(.flow-foot,.lfoot) .socials a:focus-visible{outline:3px so
 /* r11: honest empty state for "Latest updates" until the real announcements feed has rows (js/era.js latest()) */
 html:not(.static) .e92 .e-latest-empty{grid-column:1/-1;margin:0;padding:var(--s-4,24px);border:var(--bw,2px) dashed var(--border-strong);color:var(--text-muted,var(--text));font-size:var(--step-0,1rem)}
 html:not(.static) .e92 .e-latest-empty a{color:var(--text);font-weight:700;text-decoration:underline}
+/* r12 QA: no placeholder content on the live site. A stat (or its tile / section) shows only when js/site-stats.js marks one
+   of its keys real:true (it adds .stat-real); the "Latest updates" band shows only once real announcements render. */
+html:not(.static) [data-stat-gate]:not(.stat-real){display:none!important}
+html:not(.static) [data-latest-section]:not(.has-items){display:none!important}
 
 /* =====================================================================================
    101 Codecrafts card system ("ck") — ONE brutalist card for the whole live site.

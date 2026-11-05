@@ -200,15 +200,15 @@
   </div>
 </section>
 
-<!-- 7. STATS (values come from js/site-stats.js; its TODO(founder) flags stay as they are; the HTML numbers are the no-JS fallback) -->
-<section class="ab-sec ab-alt" aria-labelledby="ab-stats">
+<!-- 7. STATS (values come from js/site-stats.js; the live site shows a stat only when its entry there is marked real:true, data-stat-gate) -->
+<section class="ab-sec ab-alt" data-stat-gate="members resources workshops hackathons" aria-labelledby="ab-stats">
   <div class="ab-wrap">
     <div class="ab-head"><p class="kicker">101 in numbers</p><h2 id="ab-stats" class="ab-h2">A growing community</h2></div>
     <ul class="ab-stats">
-      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="members">10,000+</b><span class="ck-lbl">Active members</span></div></li>
-      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="resources">50+</b><span class="ck-lbl">Learning resources</span></div></li>
-      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="workshops">100+</b><span class="ck-lbl">Online workshops</span></div></li>
-      <li><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="hackathons">500+</b><span class="ck-lbl">Projects &amp; hackathons</span></div></li>
+      <li data-stat-gate="members"><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="members">10,000+</b><span class="ck-lbl">Active members</span></div></li>
+      <li data-stat-gate="resources"><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="resources">50+</b><span class="ck-lbl">Learning resources</span></div></li>
+      <li data-stat-gate="workshops"><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="workshops">100+</b><span class="ck-lbl">Online workshops</span></div></li>
+      <li data-stat-gate="hackathons"><div class="ck ck--stat ab-stat"><b class="ck-num" data-site-stat="hackathons">500+</b><span class="ck-lbl">Projects &amp; hackathons</span></div></li>
     </ul>
   </div>
 </section>

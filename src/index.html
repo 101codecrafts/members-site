@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-<!-- TODO(founder): the "10,000+" in this description is a placeholder too; keep it in step with js/site-stats.js (members). -->
-{{HEAD title="101 Codecrafts · Your IT journey starts here" desc="Join 10,000+ learners in Uganda and beyond: learning paths, skill-building workshops, hackathons, mentorship and certification support." path="index.html" jsonld="landing.json"}}
+<!-- r12 QA: no member count in the description until js/site-stats.js has a real (real:true) members value. -->
+{{HEAD title="101 Codecrafts · Your IT journey starts here" desc="Join learners in Uganda and beyond: learning paths, skill-building workshops, hackathons, mentorship and certification support." path="index.html" jsonld="landing.json"}}
 <link rel="stylesheet" href="css/brutal.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/landing.css">
@@ -41,13 +41,13 @@
 <p style="left:34px;top:257px;width:385px;font-size:12.6px;line-height:15px;font-weight:500;color:var(--nv)">Join our vibrant community to grow in IT as a programmer, <br>computer scientist, Data Analyst, ethical hacker, software engineer, <br>or other tech professional. We welcome all skill levels to share <br>knowledge, collaborate, and innovate.<a class="mc-cta" href="card.html"><svg aria-hidden="true"><use href="#i-badge"/></svg>Make your member card</a></p>
 <a class="btn-or hov" href="auth.html?mode=join" style="left:33px;top:331px;width:180px;height:35px">JOIN OUR COMMUNITY <svg class="i" style="width:15px;height:15px"><use href="#i-arrow"/></svg></a>
 <a class="btn-ol hov" href="#paths" style="left:228px;top:331px;width:176px;height:35px">EXPLORE LEARNING PATHS</a>
-<img src="assets/img/avatar-row-1.webp" alt="" style="left:34px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-2.webp" alt="" style="left:65px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-3.webp" alt="" style="left:96px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-4.webp" alt="" style="left:127px;top:383px;width:30px;height:31px">
-<img src="assets/img/avatar-row-5.webp" alt="" style="left:158px;top:383px;width:30px;height:31px">
-<b style="left:202px;top:381px;font-size:14px;font-weight:700" data-count="10000" data-suffix="+" data-sep="1" data-site-stat="members">10,000+</b>
-<span style="left:203px;top:398px;font-size:11px;font-weight:500"><i class="avs" aria-hidden="true"><img src="assets/img/avatar-row-1.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-2.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-3.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-4.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-5.webp" alt="" width="30" height="31"></i>members and growing</span>
+<img data-stat-gate="members" src="assets/img/avatar-row-1.webp" alt="" style="left:34px;top:383px;width:30px;height:31px">
+<img data-stat-gate="members" src="assets/img/avatar-row-2.webp" alt="" style="left:65px;top:383px;width:30px;height:31px">
+<img data-stat-gate="members" src="assets/img/avatar-row-3.webp" alt="" style="left:96px;top:383px;width:30px;height:31px">
+<img data-stat-gate="members" src="assets/img/avatar-row-4.webp" alt="" style="left:127px;top:383px;width:30px;height:31px">
+<img data-stat-gate="members" src="assets/img/avatar-row-5.webp" alt="" style="left:158px;top:383px;width:30px;height:31px">
+<b data-stat-gate="members" style="left:202px;top:381px;font-size:14px;font-weight:700" data-count="10000" data-suffix="+" data-sep="1" data-site-stat="members">10,000+</b>
+<span data-stat-gate="members" style="left:203px;top:398px;font-size:11px;font-weight:500"><i class="avs" aria-hidden="true"><img src="assets/img/avatar-row-1.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-2.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-3.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-4.webp" alt="" width="30" height="31"><img src="assets/img/avatar-row-5.webp" alt="" width="30" height="31"></i>members and growing</span>
 
 <img fetchpriority="high" decoding="async" src="assets/img/landing-hero-photo.webp" srcset="assets/img/landing-hero-photo.webp 443w, assets/img/landing-hero-photo-800.webp 800w" sizes="(max-width:1023px) 100vw, 443px" width="443" height="370" alt="Member coding on a 101 Codecrafts laptop" class="heavy-hero" style="left:405px;top:64px;width:443px;height:370px">
 <a class="hov words-tile" href="auth.html?mode=join" aria-label="Learn, build, collaborate, grow: join 101 Codecrafts" style="left:855px;top:70px;width:144px;height:190px;background:var(--lor)">
@@ -91,12 +91,12 @@ GROW</div>
   <p class="about-p" style="left:38px;top:117px;width:390px;font-size:12.5px;line-height:16.5px;font-weight:500;color:var(--nv)">We're building a global community of learners, creators, <br>and problem-solvers. Whether you're just starting or leveling up, <br>101 Codecrafts gives you the tools, support, and network <br>to achieve your goals.</p>
   <a class="btn-nv hov on-dark" href="auth.html?mode=join" style="left:37px;top:191px;width:178px;height:33px">JOIN THE COMMUNITY <svg class="i" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
 </section>
-<div class="tile ck-skin" style="left:440px;top:819px;width:226px;height:112px;background:var(--lcy)"><svg style="left:32px;top:21px"><use href="#i-people"/></svg><b style="left:32px;top:60px" data-count="10" data-suffix="K+" data-site-stat="members" data-fmt="short">10K+</b><small style="left:32px;top:88px">ACTIVE MEMBERS</small></div>
-<div class="tile on-dark ck-skin" style="left:677px;top:819px;width:277px;height:112px;background:var(--nv);color:#fff"><svg style="left:33px;top:16px;color:var(--lcy)"><use href="#i-openbook"/></svg><b style="left:33px;top:60px;color:var(--lcy)" data-count="50" data-suffix="+" data-site-stat="resources">50+</b><small style="left:33px;top:86px">LEARNING RESOURCES</small></div>
-<div class="tile" style="left:966px;top:818px;width:28px;height:108px;background:var(--lcy)"></div>
-<div class="tile ck-skin" style="left:440px;top:939px;width:226px;height:108px;background:var(--lor)"><svg style="left:32px;top:12px"><use href="#i-cap"/></svg><b style="left:32px;top:58px" data-count="100" data-suffix="+" data-site-stat="workshops">100+</b><small style="left:32px;top:84px">ONLINE WORKSHOPS</small></div>
-<div class="tile ck-skin" style="left:676px;top:938px;width:278px;height:109px;background:var(--lcy)"><svg style="left:35px;top:12px"><use href="#i-trophy"/></svg><b style="left:35px;top:58px" data-count="500" data-suffix="+" data-site-stat="hackathons">500+</b><small style="left:35px;top:84px">PROJECTS &amp; HACKATHONS</small></div>
-<div class="tile" style="left:966px;top:933px;width:28px;height:114px;background:var(--lor)"></div>
+<div data-stat-gate="members" class="tile ck-skin" style="left:440px;top:819px;width:226px;height:112px;background:var(--lcy)"><svg style="left:32px;top:21px"><use href="#i-people"/></svg><b style="left:32px;top:60px" data-count="10" data-suffix="K+" data-site-stat="members" data-fmt="short">10K+</b><small style="left:32px;top:88px">ACTIVE MEMBERS</small></div>
+<div data-stat-gate="resources" class="tile on-dark ck-skin" style="left:677px;top:819px;width:277px;height:112px;background:var(--nv);color:#fff"><svg style="left:33px;top:16px;color:var(--lcy)"><use href="#i-openbook"/></svg><b style="left:33px;top:60px;color:var(--lcy)" data-count="50" data-suffix="+" data-site-stat="resources">50+</b><small style="left:33px;top:86px">LEARNING RESOURCES</small></div>
+<div data-stat-gate="members resources workshops hackathons" class="tile" style="left:966px;top:818px;width:28px;height:108px;background:var(--lcy)"></div>
+<div data-stat-gate="workshops" class="tile ck-skin" style="left:440px;top:939px;width:226px;height:108px;background:var(--lor)"><svg style="left:32px;top:12px"><use href="#i-cap"/></svg><b style="left:32px;top:58px" data-count="100" data-suffix="+" data-site-stat="workshops">100+</b><small style="left:32px;top:84px">ONLINE WORKSHOPS</small></div>
+<div data-stat-gate="hackathons" class="tile ck-skin" style="left:676px;top:938px;width:278px;height:109px;background:var(--lcy)"><svg style="left:35px;top:12px"><use href="#i-trophy"/></svg><b style="left:35px;top:58px" data-count="500" data-suffix="+" data-site-stat="hackathons">500+</b><small style="left:35px;top:84px">PROJECTS &amp; HACKATHONS</small></div>
+<div data-stat-gate="members resources workshops hackathons" class="tile" style="left:966px;top:933px;width:28px;height:114px;background:var(--lor)"></div>
 
 <!-- ============ FIND YOUR PATH ============ -->
 <div data-legacy="paths" style="left:32px;top:1062px;width:961px;height:2px;background:#e3e6ea"></div>
@@ -127,26 +127,27 @@ GROW</div>
   </div>
 </section>
 
-<!-- ============ TESTIMONIALS ============ -->
-<section class="band"></section>
-<div class="eyebrow" style="left:35px;top:1298px;color:var(--lcy);font-size:10.5px"><i style="border-color:var(--lor);width:14px;height:8px"></i>SUCCESS STORIES</div>
-<h2 class="disp split" style="left:34px;top:1324px;font-size:19.5px;transform:scaleY(1.15);color:#fff">WHAT OUR MEMBERS SAY</h2>
-<p style="left:34px;top:1346px;font-size:12px;color:#e7edf3">Real people. Real skills. Real growth.</p>
-<article class="tcard ck-skin" style="left:325px;width:223px"><img loading="lazy" decoding="async" src="assets/img/t-emmanuel.webp" alt=""><b>Emmanuel K.</b><small>Software Engineer</small><p>"101 Codecrafts helped me go from <br>zero to building real projects. The <br>community is amazing!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
-<article class="tcard ck-skin" style="left:558px;width:222px"><img loading="lazy" decoding="async" src="assets/img/t-grace.webp" alt=""><b>Grace N.</b><small>Data Analyst</small><p>"The workshops and mentorship <br>programs gave me the confidence <br>to switch careers into data analysis."</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
-<article class="tcard ck-skin" style="left:790px;width:207px"><img loading="lazy" decoding="async" src="assets/img/t-david.webp" alt=""><b>David M.</b><small>Cybersecurity Analyst</small><p style="width:135px">"Great resources, supportive peers, <br>and practical learning. This community <br>is a game-changer!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
+<!-- ============ TESTIMONIALS (r12 QA: placeholder people and quotes, so ?static=1 mockup only; data-legacy hides them on the
+     live site. Show testimonials only from a real data source with consenting members.) ============ -->
+<section class="band" data-legacy="testimonials"></section>
+<div data-legacy="testimonials" class="eyebrow" style="left:35px;top:1298px;color:var(--lcy);font-size:10.5px"><i style="border-color:var(--lor);width:14px;height:8px"></i>SUCCESS STORIES</div>
+<h2 data-legacy="testimonials" class="disp split" style="left:34px;top:1324px;font-size:19.5px;transform:scaleY(1.15);color:#fff">WHAT OUR MEMBERS SAY</h2>
+<p data-legacy="testimonials" style="left:34px;top:1346px;font-size:12px;color:#e7edf3">Real people. Real skills. Real growth.</p>
+<article data-legacy="testimonials" class="tcard ck-skin" style="left:325px;width:223px"><img loading="lazy" decoding="async" src="assets/img/t-emmanuel.webp" alt=""><b>Emmanuel K.</b><small>Software Engineer</small><p>"101 Codecrafts helped me go from <br>zero to building real projects. The <br>community is amazing!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
+<article data-legacy="testimonials" class="tcard ck-skin" style="left:558px;width:222px"><img loading="lazy" decoding="async" src="assets/img/t-grace.webp" alt=""><b>Grace N.</b><small>Data Analyst</small><p>"The workshops and mentorship <br>programs gave me the confidence <br>to switch careers into data analysis."</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
+<article data-legacy="testimonials" class="tcard ck-skin" style="left:790px;width:207px"><img loading="lazy" decoding="async" src="assets/img/t-david.webp" alt=""><b>David M.</b><small>Cybersecurity Analyst</small><p style="width:135px">"Great resources, supportive peers, <br>and practical learning. This community <br>is a game-changer!"</p><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></article>
 
 <!-- ============ era92 polish: IMPACT, LOGO STRIP, SKILLS, LATEST UPDATES (live only) ============ -->
-<!-- TODO(founder): every number in this band is a PLACEHOLDER. Set the real values in js/site-stats.js (the one source);
-     the values printed here are only the no-JS fallback and are overwritten from that file. -->
-<section class="e92 e-stats" data-loop="halftone" aria-labelledby="e-stats-h" data-todo="site-stats">
+<!-- TODO(founder): every number in this band is a PLACEHOLDER. Set the real values in js/site-stats.js (the one source) and mark
+     each real:true. Until then the live site hides the band (data-stat-gate); only ?static=1 design shots show the mockup values. -->
+<section data-stat-gate="learners hours projects schools" class="e92 e-stats" data-loop="halftone" aria-labelledby="e-stats-h" data-todo="site-stats">
   <div class="e-in">
     <div class="e-head"><div><p class="e-kick">Our impact</p><h2 id="e-stats-h">Growing together</h2></div></div>
     <div class="e-grid e-grid-4">
-      <article class="e-card e-stat ck ck--stat"><span class="e-avs" aria-hidden="true"><i>AN</i><i>JK</i><i>BM</i><i>RT</i></span><b data-stat="learners">1,000+</b><span class="e-lbl">Learners trained</span></article>
-      <article class="e-card e-stat inv ck ck--stat ck--inv"><span class="e-avs" aria-hidden="true"><i>SO</i><i>PL</i><i>DK</i><i>MW</i></span><b data-stat="hours">5,000+</b><span class="e-lbl">Hours of hands-on labs</span></article>
-      <article class="e-card e-stat ck ck--stat"><span class="e-avs" aria-hidden="true"><i>EN</i><i>GA</i><i>HT</i><i>IB</i></span><b data-stat="projects">120+</b><span class="e-lbl">Projects shipped</span></article>
-      <article class="e-card e-stat ck ck--stat"><span class="e-avs" aria-hidden="true"><i>CU</i><i>MK</i><i>KY</i><i>NB</i></span><b data-stat="schools">10+</b><span class="e-lbl">Partner schools</span></article>
+      <article data-stat-gate="learners" class="e-card e-stat ck ck--stat"><span class="e-avs" aria-hidden="true"><i>AN</i><i>JK</i><i>BM</i><i>RT</i></span><b data-stat="learners">1,000+</b><span class="e-lbl">Learners trained</span></article>
+      <article data-stat-gate="hours" class="e-card e-stat inv ck ck--stat ck--inv"><span class="e-avs" aria-hidden="true"><i>SO</i><i>PL</i><i>DK</i><i>MW</i></span><b data-stat="hours">5,000+</b><span class="e-lbl">Hours of hands-on labs</span></article>
+      <article data-stat-gate="projects" class="e-card e-stat ck ck--stat"><span class="e-avs" aria-hidden="true"><i>EN</i><i>GA</i><i>HT</i><i>IB</i></span><b data-stat="projects">120+</b><span class="e-lbl">Projects shipped</span></article>
+      <article data-stat-gate="schools" class="e-card e-stat ck ck--stat"><span class="e-avs" aria-hidden="true"><i>CU</i><i>MK</i><i>KY</i><i>NB</i></span><b data-stat="schools">10+</b><span class="e-lbl">Partner schools</span></article>
     </div>
   </div>
 </section>
@@ -171,7 +172,7 @@ GROW</div>
   </div>
 </section>
 
-<section class="e92 e-news" aria-labelledby="e-news-h">
+<section class="e92 e-news" data-latest-section aria-labelledby="e-news-h">
   <div class="e-in">
     <div class="e-head"><div><p class="e-kick">From the 101 team</p><h2 id="e-news-h">Latest updates</h2></div><a class="e-all" href="news.html">Explore all <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
     <div class="e-grid e-grid-3" data-latest>

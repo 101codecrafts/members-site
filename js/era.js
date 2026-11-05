@@ -10,7 +10,8 @@
 
   function stats() {
     const cfg = (window.CC_SITE_STATS || {}).items || {};
-    const els = [...document.querySelectorAll("[data-stat]")];
+    const real = k => !!(window.CC_SITE_STATS && window.CC_SITE_STATS.isReal && window.CC_SITE_STATS.isReal(k));   /* r12 QA: real values only */
+    const els = [...document.querySelectorAll("[data-stat]")].filter(el => real(el.dataset.stat));
     els.forEach(el => { const c = cfg[el.dataset.stat]; if (!c) return; el.textContent = fmt(c.value, c.suffix);
       const lbl = el.parentElement.querySelector(".e-lbl"); if (lbl && c.label) lbl.textContent = c.label; });
     if (still()) return;
@@ -38,7 +39,7 @@
     const host = document.querySelector("[data-latest]"); if (!host) return;
     const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const safe = u => /^(https?:\/\/|[a-z0-9-]+\.html)/i.test(u || "") ? u : "news.html";
-    const render = items => { if (!items || !items.length) return;
+    const render = items => { if (!items || !items.length) return; const sec = host.closest("[data-latest-section]"); if (sec) sec.classList.add("has-items");
       host.innerHTML = items.slice(0, 3).map(a => { const d = new Date(a.published_at || a.publishedAt);
         const when = isNaN(d) ? "" : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Africa/Kampala" });
         return `<article class="e-card e-ncard ck"><time class="e-date ck-eyebrow"${isNaN(d) ? "" : ` datetime="${d.toISOString()}"`}>${esc(when)}</time><h3 class="ck-title"><a class="e-stretch ck-link" href="${esc(safe(a.link))}">${esc(a.title)}</a></h3><span class="e-more ck-foot" aria-hidden="true">Read more <svg><use href="#i-arrow"/></svg></span></article>`; }).join(""); };

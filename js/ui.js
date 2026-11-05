@@ -164,8 +164,11 @@
     /* live site: the strip joins the page flow above the final CTA / footer (static mockup keeps it below the canvas) */
     if (!document.documentElement.classList.contains("static")) { const ft = $(".page>.e-final") || $(".page>.lfoot"); if (ft) ft.before(strip); }
     const news = await API.fetchNews();
-    const items = news.slice(0, 10).map(n => `<a href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer"><b>${esc(n.cat)}</b> ${esc(n.title)}</a>`).join("<i>■</i>");
-    $(".marquee-track", strip).innerHTML = items + "<i>■</i>" + items;
+    /* r12 QA: the second set only makes the scroll loop seamless, so it is aria-hidden and out of the tab order (screen readers
+       and keyboards meet each headline once); the ■ separators are decorative */
+    const SEP = '<i aria-hidden="true">■</i>', top = news.slice(0, 10);
+    const set = copy => top.map(n => `<a href="${API.goHref(n.id)}" target="_blank" rel="noopener noreferrer"${copy ? ' aria-hidden="true" tabindex="-1" data-mq-copy' : ""}><b>${esc(n.cat)}</b> ${esc(n.title)}</a>`).join(copy ? SEP.replace("<i ", "<i data-mq-copy ") : SEP);
+    $(".marquee-track", strip).innerHTML = top.length ? set(false) + SEP.replace("<i ", "<i data-mq-copy ") + set(true) : "";
     $("#tit-cards").innerHTML = news.slice(0, 3).map(n => newsCard(n, true)).join("");
     $("#tit-date").textContent = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   }
