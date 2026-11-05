@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Course builder · 101 Codecrafts" desc="Build a 101 Codecrafts course from modules and lessons: YouTube videos, books, text, files and quizzes. Preview it, then submit it for review." path="builder.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/dash.css">
+</head>
+<body class="flow" data-role="tutor" data-page="builder">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="tutor" active="Course builder"}}
+<div class="main">
+{{TOPBAR role="tutor" label="Tutor"}}
+<main id="main" class="content">
+  <div id="b-bars"></div>
+  <div id="b-root" aria-live="polite">{{LOADER label="the course builder"}}</div>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/dash-common.js" defer></script>
+<script src="js/course-store.js" defer></script>
+<script src="js/builder.js" defer></script>
+</body></html>

@@ -367,6 +367,7 @@
     },
     /* ---------------- Course player ---------------- */
     async course() {
+      if (q.has("preview")) return;   // tutor/admin preview of a draft: js/course-preview.js renders it (round 11)
       const c = await API.fetchCourse(q.get("id") || "web-basics");
       /* r11 plans: lesson locks + rating gate (UI only; RLS on lessons is the authority). Never in ?static mockups. */
       const P = !STATIC && window.CC_PLANS;
