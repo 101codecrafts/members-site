@@ -40,6 +40,8 @@ html[data-theme=dark]:not(.static) .ann-banner .btn.ink{background:var(--color-o
 html:not(.static) :is(.ck,.ann-card,article.card) :is(.tags,.mk-tags,.ctags,.fc-tags,.aud)>:not(:first-child),
 html:not(.static) .prod .tagx{border-color:transparent!important;background:transparent!important;
   color:var(--text-muted,#3D4566)!important;padding-inline:4px!important;box-shadow:none!important}
+/* inverse (navy) cards: the muted secondary tags take the card's own muted ink, not the page's (light --text-muted on navy was 2.5:1) */
+html:not(.static) .ck--inv :is(.tags,.mk-tags,.ctags,.fc-tags,.aud)>:not(:first-child){color:var(--ck-mut,#B9C1DA)!important}
 
 /* 6. Buttons: snappy lift with a hold (outBack), a real press into the shadow, and one focus ring everywhere */
 html:not(.static) .btn{transition:transform 140ms cubic-bezier(.34,1.7,.5,1),box-shadow 140ms cubic-bezier(.2,.8,.2,1)}

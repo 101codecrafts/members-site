@@ -24,12 +24,15 @@
         el.style.setProperty("--ck-rv-d", Math.min(k++, 5) * 40 + "ms"); el.classList.add("ck-rv-go");
         el.addEventListener("animationend", () => done(el), { once: true }); setTimeout(() => done(el), 700); });
     }, { rootMargin: "0px 0px -6% 0px" });
+    const hclip = (el, r) => { for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        const o = getComputedStyle(p).overflowX; if (o === "auto" || o === "scroll" || o === "hidden") { const q = p.getBoundingClientRect(); if (r.left >= q.right - 1 || r.right <= q.left + 1) return true; } } return false; };
     const scan = root => {
       const vh = innerHeight;
       (root.matches && root.matches(CARD) ? [root] : []).concat([...(root.querySelectorAll ? root.querySelectorAll(CARD) : [])]).forEach(el => {
         if (seen.has(el)) return; seen.add(el);
         if (el.parentElement && el.parentElement.closest(".ck,.ck-skin,.ann-card,article.card,.ord")) return;   // nested card: the outer one moves
         const r = el.getBoundingClientRect(); if (!r.width || (r.top < vh && r.bottom > 0)) return;
+        if (hclip(el, r)) return;   // off to the side in a horizontal row (marketplace carousels): it shows when swiped to, no reveal
         el.classList.add("ck-rv"); io.observe(el);
       });
     };
