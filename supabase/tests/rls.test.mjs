@@ -23,12 +23,14 @@ async function fixtures(db) {
       ('${U.pend}','pending','Pending Pat','pending',null,null);
     insert into public.profile_private (user_id, email, date_of_birth) values
       ('${U.alice}','alice@example.com','2000-01-01'), ('${U.bob}','bob@example.com','2001-01-01'),
-      ('${U.kid}','kid@example.com', (now() - interval '11 years')::date), ('${U.tutorA}','amina@example.com','1990-05-05');
+      ('${U.kid}','kid@example.com', (now() - interval '11 years')::date), ('${U.tutorA}','amina@example.com','1990-05-05'),
+      ('${U.root}','101codecrafts@gmail.com','1995-01-01');
+    select public.backend_bind_root('${U.root}', '101codecrafts@gmail.com');   -- round 11: root is bound server-side from the verified email
     insert into public.guardian_consents (user_id, guardian_name, guardian_phone, relationship, verified_at, verification_method)
       values ('${U.kid}','Parent Kid','+256700000000','parent',now(),'admin_manual');
     update public.profiles set account_status = 'active', joined_at = now() where id = '${U.kid}';
     insert into public.user_roles (user_id, role) values
-      ('${U.root}','super_admin'),('${U.root}','admin'),('${U.admin}','admin'),
+      ('${U.admin}','admin'),
       ('${U.tutorA}','tutor'),('${U.tutorB}','tutor'),('${U.tutorA}','learner'),
       ('${U.alice}','learner'),('${U.bob}','learner'),('${U.kid}','learner');
     insert into public.tutor_profiles (user_id, bio, expertise, verification_status, verified_at, flw_subaccount_id)
@@ -187,7 +189,7 @@ export const tests = [
     await fails(db, `select public.admin_set_role($1,'admin',true)`, [U.bob], '42501');
     await as(db, U.root);
     await q(db, `select public.admin_set_role($1,'admin',true)`, [U.bob]);
-    await fails(db, `select public.admin_set_role($1,'super_admin',false)`, [U.root], /last super_admin/);
+    await fails(db, `select public.admin_set_role($1,'super_admin',false)`, [U.root], /root admin cannot be removed/);
     await as(db, 'postgres');
     assert.ok(await one(db, `select 1 from public.audit_log where action='admin.set_role' and actor_id=$1`, [U.root]));
   }),

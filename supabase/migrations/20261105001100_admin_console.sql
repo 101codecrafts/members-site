@@ -448,24 +448,24 @@ $$;
 
 -- ================================================ C. APPROVAL QUEUE =========
 do $$ begin
-  if not exists (select 1 from pg_type where typname = 'submission_kind') then
-    create type public.submission_kind as enum ('course','lesson','book','link','video','project','campaign','event','listing','price_change');
+  if not exists (select 1 from pg_type where typname = 'review_item_kind') then
+    create type public.review_item_kind as enum ('course','lesson','book','link','video','project','campaign','event','listing','price_change');
   end if;
-  if not exists (select 1 from pg_type where typname = 'submission_status') then
-    create type public.submission_status as enum ('pending','approved','rejected','changes_requested','withdrawn');
+  if not exists (select 1 from pg_type where typname = 'review_item_status') then
+    create type public.review_item_status as enum ('pending','approved','rejected','changes_requested','withdrawn');
   end if;
 end $$;
 
-create table if not exists public.submissions (
+create table if not exists public.review_submissions (
   id               uuid primary key default gen_random_uuid(),
-  kind             public.submission_kind not null,
+  kind             public.review_item_kind not null,
   entity_ref       text not null check (char_length(entity_ref) between 1 and 120),
   submitter_id     text not null references public.profiles(id) on delete cascade,
   title            text not null check (char_length(title) between 2 and 200),
   summary          text check (char_length(summary) <= 2000),
   payload          jsonb not null default '{}' check (pg_column_size(payload) <= 200000),
   urls             text[] not null default '{}' check (cardinality(urls) <= 50),
-  status           public.submission_status not null default 'pending',
+  status           public.review_item_status not null default 'pending',
   risk_level       text not null default 'unchecked' check (risk_level in ('unchecked','low','medium','high','blocked')),
   risk_flags       jsonb not null default '[]',
   checked_at       timestamptz,
@@ -477,34 +477,34 @@ create table if not exists public.submissions (
   created_at       timestamptz not null default now(),
   updated_at       timestamptz not null default now()
 );
-create unique index if not exists submissions_one_open on public.submissions (kind, entity_ref) where status in ('pending','changes_requested');
-create index if not exists submissions_queue_idx on public.submissions (status, created_at);
-create index if not exists submissions_submitter_idx on public.submissions (submitter_id, created_at desc);
-drop trigger if exists submissions_updated_at on public.submissions;
-create trigger submissions_updated_at before update on public.submissions for each row execute function app.set_updated_at();
+create unique index if not exists review_sub_one_open on public.review_submissions (kind, entity_ref) where status in ('pending','changes_requested');
+create index if not exists review_sub_queue_idx on public.review_submissions (status, created_at);
+create index if not exists review_sub_submitter_idx on public.review_submissions (submitter_id, created_at desc);
+drop trigger if exists review_sub_updated_at on public.review_submissions;
+create trigger review_sub_updated_at before update on public.review_submissions for each row execute function app.set_updated_at();
 
-create or replace function app.guard_submissions()
+create or replace function app.guard_review_submissions()
 returns trigger language plpgsql set search_path = '' as $$
 begin
   if not app.is_privileged() then raise exception 'submissions change only via submit_for_review / admin_decide_submission' using errcode = '42501'; end if;
   return coalesce(new, old);
 end;
 $$;
-drop trigger if exists submissions_guard on public.submissions;
-create trigger submissions_guard before insert or update or delete on public.submissions for each row execute function app.guard_submissions();
+drop trigger if exists review_sub_guard on public.review_submissions;
+create trigger review_sub_guard before insert or update or delete on public.review_submissions for each row execute function app.guard_review_submissions();
 
 -- Owner check per kind (where the row lives in a known table).
-create or replace function app.submission_owner_ok(p_kind public.submission_kind, p_ref text, p_user text)
+create or replace function app.submission_owner_ok(p_kind public.review_item_kind, p_ref text, p_user text)
 returns boolean language plpgsql stable security definer set search_path = '' as $$
-declare id uuid := app.try_uuid(p_ref);
+declare v_id uuid := app.try_uuid(p_ref);
 begin
   case p_kind
-    when 'course' then return exists (select 1 from public.courses where courses.id = id and tutor_id = p_user);
-    when 'price_change' then return exists (select 1 from public.courses where courses.id = id and tutor_id = p_user);
-    when 'lesson' then return exists (select 1 from public.lessons l join public.courses c on c.id = l.course_id where l.id = id and c.tutor_id = p_user);
-    when 'event' then return exists (select 1 from public.events where events.id = id and created_by = p_user);
-    when 'project' then return exists (select 1 from public.projects where projects.id = id and owner_id = p_user);
-    when 'listing' then return exists (select 1 from public.mkt_products pr join public.mkt_stores s on s.id = pr.store_id where pr.id = id and s.owner_id = p_user);
+    when 'course' then return exists (select 1 from public.courses where courses.id = v_id and tutor_id = p_user);
+    when 'price_change' then return exists (select 1 from public.courses where courses.id = v_id and tutor_id = p_user);
+    when 'lesson' then return exists (select 1 from public.lessons l join public.courses c on c.id = l.course_id where l.id = v_id and c.tutor_id = p_user);
+    when 'event' then return exists (select 1 from public.events where events.id = v_id and created_by = p_user);
+    when 'project' then return exists (select 1 from public.projects where projects.id = v_id and owner_id = p_user);
+    when 'listing' then return exists (select 1 from public.mkt_products pr join public.mkt_stores s on s.id = pr.store_id where pr.id = v_id and s.owner_id = p_user);
     else return true;   -- book / link / video / campaign: the submission IS the item (payload); owned by its submitter
   end case;
 end;
@@ -512,10 +512,10 @@ $$;
 
 -- Learners & tutors submit (guests can't publish). Resubmitting an open item
 -- bumps its version and resets the checks (Udemy-style "fix and resubmit").
-create or replace function public.submit_for_review(p_kind public.submission_kind, p_entity_ref text, p_title text,
+create or replace function public.submit_for_review(p_kind public.review_item_kind, p_entity_ref text, p_title text,
                                                     p_summary text default null, p_payload jsonb default '{}', p_urls text[] default '{}')
-returns public.submissions language plpgsql security definer set search_path = '' as $$
-declare me text := app.requesting_user_id(); s public.submissions; u text[];
+returns public.review_submissions language plpgsql security definer set search_path = '' as $$
+declare me text := app.requesting_user_id(); s public.review_submissions; u text[];
 begin
   if me is null or not app.is_member() then raise exception 'members only' using errcode = '42501'; end if;
   if not exists (select 1 from public.user_roles where user_id = me and role in ('learner','tutor','admin','super_admin')) then
@@ -532,14 +532,14 @@ begin
     end if;
   end if;
   u := array(select distinct btrim(x) from unnest(coalesce(p_urls, '{}')) x where btrim(x) ~ '^https?://' limit 50);
-  select * into s from public.submissions where kind = p_kind and entity_ref = p_entity_ref and status in ('pending','changes_requested') for update;
+  select * into s from public.review_submissions where kind = p_kind and entity_ref = p_entity_ref and status in ('pending','changes_requested') for update;
   if found then
     if s.submitter_id <> me then raise exception 'not your item' using errcode = '42501'; end if;
-    update public.submissions set title = p_title, summary = p_summary, payload = coalesce(p_payload, '{}'), urls = u, status = 'pending',
+    update public.review_submissions set title = p_title, summary = p_summary, payload = coalesce(p_payload, '{}'), urls = u, status = 'pending',
            risk_level = 'unchecked', risk_flags = '[]', checked_at = null, version = version + 1
      where id = s.id returning * into s;
   else
-    insert into public.submissions (kind, entity_ref, submitter_id, title, summary, payload, urls)
+    insert into public.review_submissions (kind, entity_ref, submitter_id, title, summary, payload, urls)
     values (p_kind, p_entity_ref, me, p_title, p_summary, coalesce(p_payload, '{}'), u) returning * into s;
   end if;
   if p_kind = 'course' then
@@ -552,7 +552,7 @@ $$;
 create or replace function public.withdraw_submission(p_id uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 begin
-  update public.submissions set status = 'withdrawn' where id = p_id and submitter_id = app.requesting_user_id() and status in ('pending','changes_requested');
+  update public.review_submissions set status = 'withdrawn' where id = p_id and submitter_id = app.requesting_user_id() and status in ('pending','changes_requested');
   if not found then raise exception 'nothing to withdraw' using errcode = 'P0001'; end if;
 end;
 $$;
@@ -562,40 +562,40 @@ create or replace function public.backend_set_submission_risk(p_id uuid, p_level
 returns void language plpgsql security definer set search_path = '' as $$
 begin
   perform app.require_backend();
-  update public.submissions set risk_level = p_level, risk_flags = coalesce(p_flags, '[]'), checked_at = now() where id = p_id;
+  update public.review_submissions set risk_level = p_level, risk_flags = coalesce(p_flags, '[]'), checked_at = now() where id = p_id;
 end;
 $$;
 
 -- Approved? Other areas use this in their public read paths ("nothing is
 -- public until approved"). Items never submitted are not approved.
-create or replace function public.is_approved(p_kind public.submission_kind, p_entity_ref text)
+create or replace function public.is_approved(p_kind public.review_item_kind, p_entity_ref text)
 returns boolean language sql stable security definer set search_path = '' as $$
-  select exists (select 1 from public.submissions s where s.kind = p_kind and s.entity_ref = p_entity_ref and s.status = 'approved')
+  select exists (select 1 from public.review_submissions s where s.kind = p_kind and s.entity_ref = p_entity_ref and s.status = 'approved')
 $$;
 
-create or replace function public.admin_review_queue(p_status public.submission_status default 'pending', p_kind public.submission_kind default null,
+create or replace function public.admin_review_queue(p_status public.review_item_status default 'pending', p_kind public.review_item_kind default null,
                                                      p_limit int default 50, p_offset int default 0)
 returns jsonb language plpgsql stable security definer set search_path = '' as $$
 begin
   perform app.require_scope('approvals');
   return jsonb_build_object(
-    'total', (select count(*) from public.submissions s where s.status = p_status and (p_kind is null or s.kind = p_kind)),
-    'counts', coalesce((select jsonb_object_agg(k, n) from (select s.kind::text k, count(*) n from public.submissions s where s.status = p_status group by s.kind) c), '{}'::jsonb),
+    'total', (select count(*) from public.review_submissions s where s.status = p_status and (p_kind is null or s.kind = p_kind)),
+    'counts', coalesce((select jsonb_object_agg(k, n) from (select s.kind::text k, count(*) n from public.review_submissions s where s.status = p_status group by s.kind) c), '{}'::jsonb),
     'items', coalesce((select jsonb_agg(to_jsonb(s) || jsonb_build_object('submitter', jsonb_build_object('id', p.id, 'display_name', p.display_name, 'username', p.username, 'is_minor', p.is_minor))
                        order by case s.risk_level when 'blocked' then 0 when 'high' then 1 when 'medium' then 2 else 3 end, s.created_at)
-               from (select * from public.submissions s where s.status = p_status and (p_kind is null or s.kind = p_kind)
+               from (select * from public.review_submissions s where s.status = p_status and (p_kind is null or s.kind = p_kind)
                      order by s.created_at limit least(greatest(p_limit, 1), 200) offset greatest(p_offset, 0)) s
                join public.profiles p on p.id = s.submitter_id), '[]'::jsonb));
 end;
 $$;
 
 create or replace function public.admin_decide_submission(p_id uuid, p_decision text, p_reason text default null, p_fixes jsonb default '[]')
-returns public.submissions language plpgsql security definer set search_path = '' as $$
-declare s public.submissions; before jsonb; st public.submission_status; cid uuid; link text;
+returns public.review_submissions language plpgsql security definer set search_path = '' as $$
+declare s public.review_submissions; before jsonb; st public.review_item_status; cid uuid; link text;
 begin
   perform app.require_scope('approvals');
   if p_decision not in ('approve','reject','request_changes') then raise exception 'decision must be approve, reject or request_changes' using errcode = '22023'; end if;
-  select * into s from public.submissions where id = p_id for update;
+  select * into s from public.review_submissions where id = p_id for update;
   if not found then raise exception 'submission not found' using errcode = 'P0002'; end if;
   if s.status <> 'pending' then raise exception 'submission is %', s.status using errcode = 'P0001'; end if;
   if s.submitter_id = app.requesting_user_id() and not app.is_root() then raise exception 'you cannot review your own submission' using errcode = '42501'; end if;
@@ -609,8 +609,8 @@ begin
     raise exception 'links are % risk: add an override note to approve', s.risk_level using errcode = '22023';
   end if;
   before := jsonb_build_object('status', s.status, 'version', s.version);
-  st := case p_decision when 'approve' then 'approved' when 'reject' then 'rejected' else 'changes_requested' end::public.submission_status;
-  update public.submissions set status = st, decision_reason = p_reason, required_fixes = coalesce(p_fixes, '[]'),
+  st := case p_decision when 'approve' then 'approved' when 'reject' then 'rejected' else 'changes_requested' end::public.review_item_status;
+  update public.review_submissions set status = st, decision_reason = p_reason, required_fixes = coalesce(p_fixes, '[]'),
          decided_by = app.requesting_user_id(), decided_at = now()
    where id = s.id returning * into s;
   cid := app.try_uuid(s.entity_ref);
@@ -633,7 +633,7 @@ begin
   perform app.notify(s.submitter_id, 'review.' || p_decision,
                      '"' || s.title || '" ' || case st when 'approved' then 'is approved and live' when 'rejected' then 'was not approved' else 'needs changes' end,
                      p_reason, link, jsonb_build_object('submission_id', s.id, 'kind', s.kind, 'fixes', coalesce(p_fixes, '[]')));
-  perform app.audit_change('admin.review_' || p_decision, 'submissions', s.id::text, before,
+  perform app.audit_change('admin.review_' || p_decision, 'review_submissions', s.id::text, before,
                            jsonb_build_object('status', st, 'reason', p_reason, 'fixes', p_fixes),
                            jsonb_build_object('kind', s.kind, 'entity_ref', s.entity_ref, 'risk_level', s.risk_level));
   return s;
@@ -753,7 +753,7 @@ returns jsonb language sql stable security definer set search_path = '' as $$
   select pc.limits -> p_key from public.plan_catalog pc where pc.audience = p_audience and pc.plan = app.user_plan(p_user, p_audience)
 $$;
 
-create or replace function public.my_plan()
+create or replace function public.my_plan_limits()
 returns jsonb language sql stable security definer set search_path = '' as $$
   select jsonb_build_object(
     'learner', jsonb_build_object('plan', app.user_plan(app.requesting_user_id(), 'learner'),
@@ -864,10 +864,10 @@ begin
     'guests', (select count(*) from public.profiles p where p.deleted_at is null and not exists (select 1 from public.user_roles ur where ur.user_id = p.id)),
     'admins', (select count(distinct user_id) from public.user_roles where role in ('admin','super_admin')),
     'admins_suspended', (select count(*) from public.admin_grants where status = 'suspended'),
-    'submissions_pending', (select count(*) from public.submissions where status = 'pending'),
-    'submissions_high_risk', (select count(*) from public.submissions where status = 'pending' and risk_level in ('high','blocked')),
-    'submissions_by_kind', coalesce((select jsonb_object_agg(kind, n) from (select kind::text, count(*) n from public.submissions where status = 'pending' group by kind) x), '{}'::jsonb),
-    'decided_7d', (select count(*) from public.submissions where decided_at > now() - interval '7 days'),
+    'submissions_pending', (select count(*) from public.review_submissions where status = 'pending'),
+    'submissions_high_risk', (select count(*) from public.review_submissions where status = 'pending' and risk_level in ('high','blocked')),
+    'submissions_by_kind', coalesce((select jsonb_object_agg(kind, n) from (select kind::text, count(*) n from public.review_submissions where status = 'pending' group by kind) x), '{}'::jsonb),
+    'decided_7d', (select count(*) from public.review_submissions where decided_at > now() - interval '7 days'),
     'guardian_pending', (select count(*) from public.guardian_consents where verified_at is null and revoked_at is null),
     'plans', coalesce((select jsonb_object_agg(k, n) from (
                select 'learner:' || app.user_plan(p.id, 'learner') k, count(*) n from public.profiles p where p.deleted_at is null group by 1
@@ -1024,19 +1024,19 @@ $$;
 -- target's data; the only writes are the session counter + the audit row.
 create or replace function public.admin_support_snapshot(p_session uuid)
 returns jsonb language plpgsql security definer set search_path = '' as $$
-declare s public.support_view_sessions; t text; role text; snap jsonb;
+declare s public.support_view_sessions; t text; v_role text; snap jsonb;
 begin
   perform app.require_scope('support_view');
   select * into s from public.support_view_sessions where id = p_session and admin_id = app.requesting_user_id();
   if not found then raise exception 'support view not found' using errcode = 'P0002'; end if;
   if s.ended_at is not null or s.expires_at < now() then raise exception 'support view ended; start a new one' using errcode = 'P0001'; end if;
   t := s.target_id;
-  role := case when exists (select 1 from public.user_roles where user_id = t and role in ('admin','super_admin')) then 'admin'
+  v_role := case when exists (select 1 from public.user_roles where user_id = t and role in ('admin','super_admin')) then 'admin'
                when exists (select 1 from public.user_roles where user_id = t and role = 'tutor') then 'tutor'
                when exists (select 1 from public.user_roles where user_id = t and role = 'learner') then 'learner' else 'guest' end;
   snap := jsonb_build_object(
     'session', jsonb_build_object('id', s.id, 'expires_at', s.expires_at, 'reason', s.reason, 'read_only', true),
-    'role', role,
+    'role', v_role,
     'profile', (select jsonb_build_object('id', p.id, 'display_name', p.display_name, 'username', p.username, 'avatar_url', p.avatar_url,
                  'headline', p.headline, 'account_status', p.account_status, 'is_minor', p.is_minor, 'education_level', p.education_level,
                  'joined_at', p.joined_at, 'last_seen_at', p.last_seen_at,
@@ -1048,7 +1048,7 @@ begin
     'courses_taught', coalesce((select jsonb_agg(jsonb_build_object('title', c.title, 'status', c.status, 'is_free', c.is_free, 'price_ugx', c.price_ugx, 'learners', c.enrollments_count) order by c.created_at desc)
                      from public.courses c where c.tutor_id = t and c.deleted_at is null), '[]'::jsonb),
     'submissions', coalesce((select jsonb_agg(jsonb_build_object('kind', x.kind, 'title', x.title, 'status', x.status, 'risk_level', x.risk_level, 'created_at', x.created_at) order by x.created_at desc)
-                     from (select * from public.submissions where submitter_id = t order by created_at desc limit 20) x), '[]'::jsonb),
+                     from (select * from public.review_submissions where submitter_id = t order by created_at desc limit 20) x), '[]'::jsonb),
     'notifications_unread', (select count(*) from public.notifications n where n.user_id = t and n.read_at is null),
     'guardian', (select jsonb_build_object('state', case when g.revoked_at is not null then 'revoked' when g.verified_at is not null then 'verified' else 'pending' end)
                    from public.guardian_consents g where g.user_id = t order by g.created_at desc limit 1));
@@ -1061,7 +1061,7 @@ $$;
 -- ================================================================ RLS ========
 alter table public.admin_grants enable row level security;
 alter table public.admin_invites enable row level security;
-alter table public.submissions enable row level security;
+alter table public.review_submissions enable row level security;
 alter table public.plan_catalog enable row level security;
 alter table public.user_plans enable row level security;
 alter table public.support_view_sessions enable row level security;
@@ -1070,8 +1070,8 @@ drop policy if exists admin_grants_read on public.admin_grants;
 create policy admin_grants_read on public.admin_grants for select to authenticated using (user_id = (select app.requesting_user_id()) or (select app.is_admin()));
 drop policy if exists admin_invites_root on public.admin_invites;
 create policy admin_invites_root on public.admin_invites for select to authenticated using ((select app.is_root()));
-drop policy if exists submissions_read on public.submissions;
-create policy submissions_read on public.submissions for select to authenticated
+drop policy if exists review_sub_read on public.review_submissions;
+create policy review_sub_read on public.review_submissions for select to authenticated
   using (submitter_id = (select app.requesting_user_id()) or (select app.admin_has('approvals')));
 drop policy if exists plan_catalog_public on public.plan_catalog;
 create policy plan_catalog_public on public.plan_catalog for select to anon, authenticated using (status = 'published' or (select app.is_admin()));
@@ -1082,10 +1082,10 @@ create policy support_view_read on public.support_view_sessions for select to au
   using (admin_id = (select app.requesting_user_id()) or target_id = (select app.requesting_user_id()) or (select app.admin_has('audit')));
 
 -- ============================================================= grants ========
-revoke all on public.admin_grants, public.admin_invites, public.submissions, public.plan_catalog, public.user_plans, public.support_view_sessions from anon, authenticated;
-grant select on public.admin_grants, public.admin_invites, public.submissions, public.user_plans, public.support_view_sessions to authenticated;
+revoke all on public.admin_grants, public.admin_invites, public.review_submissions, public.plan_catalog, public.user_plans, public.support_view_sessions from anon, authenticated;
+grant select on public.admin_grants, public.admin_invites, public.review_submissions, public.user_plans, public.support_view_sessions to authenticated;
 grant select on public.plan_catalog to anon, authenticated;
-grant select, insert, update, delete on public.admin_grants, public.admin_invites, public.submissions, public.plan_catalog, public.user_plans, public.support_view_sessions to service_role;
+grant select, insert, update, delete on public.admin_grants, public.admin_invites, public.review_submissions, public.plan_catalog, public.user_plans, public.support_view_sessions to service_role;
 
 revoke execute on function public.backend_bind_root(text, text), public.backend_accept_admin_invite(text, text, text),
   public.backend_set_submission_risk(uuid, text, jsonb) from public, anon, authenticated;
@@ -1094,13 +1094,14 @@ grant execute on function public.backend_bind_root(text, text), public.backend_a
 
 grant execute on function app.root_email(), app.root_user_id(), app.is_root(text), app.admin_has(text), app.admin_scope_list(),
   app.user_plan(text, text), app.plan_limit(text, text, text) to anon, authenticated, service_role;
-grant execute on function public.is_approved(public.submission_kind, text) to anon, authenticated, service_role;
+revoke execute on function public.is_approved(public.review_item_kind, text) from public, anon;
+grant execute on function public.is_approved(public.review_item_kind, text) to authenticated, service_role;
 grant execute on function public.admin_me(), public.admin_list_admins(), public.admin_invite(text, text[]), public.admin_revoke_invite(uuid),
   public.admin_set_scopes(text, text[]), public.admin_set_admin_status(text, text, text), public.admin_remove_admin(text, text),
   public.admin_set_role(text, public.app_role, boolean),
-  public.submit_for_review(public.submission_kind, text, text, text, jsonb, text[]), public.withdraw_submission(uuid),
-  public.admin_review_queue(public.submission_status, public.submission_kind, int, int), public.admin_decide_submission(uuid, text, text, jsonb),
-  public.my_plan(), public.admin_upsert_plan(text, text, text, bigint, bigint, jsonb, text[], text, text),
+  public.submit_for_review(public.review_item_kind, text, text, text, jsonb, text[]), public.withdraw_submission(uuid),
+  public.admin_review_queue(public.review_item_status, public.review_item_kind, int, int), public.admin_decide_submission(uuid, text, text, jsonb),
+  public.my_plan_limits(), public.admin_upsert_plan(text, text, text, bigint, bigint, jsonb, text[], text, text),
   public.admin_set_user_plan(text, text, text, text, timestamptz), public.admin_set_course_pricing(uuid, boolean, bigint, text),
   public.admin_set_flag(text, boolean, int, public.app_role[]), public.admin_audit_search(text, text, text, timestamptz, timestamptz, int, int),
   public.admin_console_stats(), public.admin_search_users(text, text, text, boolean, int, int), public.admin_set_user_role(text, text, boolean, text),
