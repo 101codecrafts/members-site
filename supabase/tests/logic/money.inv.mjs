@@ -154,7 +154,11 @@ export const tests = [
     const cap = Number((await one(db, `select app.plan_limit('tutor', app.user_plan($1,'tutor'), 'students.max') v`, [U.tutorA])).v);
     for (const u of [U.alice, U.bob, L3]) {
       await as(db, u);
-      const co = (await one(db, `select public.create_checkout('course', $1) c`, [c.id])).c;
+      // refusing the checkout before payment (r12 money L4) is a way of keeping the cap, not a test error
+      await db.query('savepoint s1');
+      let co;
+      try { co = (await one(db, `select public.create_checkout('course', $1) c`, [c.id])).c; }
+      catch (e) { await db.query('rollback to savepoint s1'); if (/not taking new students/.test(e.message)) continue; throw e; }
       await pay(db, co.tx_ref, co.amount_ugx, ++flw);
     }
     await as(db, 'postgres');
