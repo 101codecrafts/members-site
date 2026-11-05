@@ -292,7 +292,10 @@
     }
     S.email = (s.user && s.user.email) || S.email;
     var staff = s.role === "admin" || s.role === "root_admin";
-    var upgrade = params.get("upgrade") === "1" && s.role === "guest";
+    /* upgrade=1 | learner | tutor (pricing / upgrade pages send the audience). A guest may become a learner or tutor; a learner
+       may apply to teach. Anything else (a learner asking to be a learner) just lands home, never loops back here. */
+    var UP = params.get("upgrade"), want = UP === "learner" || UP === "tutor" ? UP : null;
+    var upgrade = (s.role === "guest" && (UP === "1" || !!want)) || (s.role === "learner" && want === "tutor");
     if (staff || (s.onboarding && s.onboarding.completed && !upgrade)) {
       if (s.onboarding && s.onboarding.step === "guardian_pending") return showGuardianPending(s);
       clearDraft(); return land(s);
@@ -301,10 +304,12 @@
     var d = loadDraft();
     if (d && d.email && d.email !== S.email) d = null;
     if (!d && s.onboarding && s.onboarding.draft && s.onboarding.draft.path) d = { path: s.onboarding.draft.path, step: s.onboarding.draft.step, data: s.onboarding.draft.data || {} };
-    if (d && FLOWS[d.path] && !(upgrade && d.path === "guest")) { S.data = d.data || {}; return go(d.path, stepsFor(d.path).indexOf(d.step) >= 0 ? d.step : stepsFor(d.path)[0], true); }
+    if (d && FLOWS[d.path] && !(upgrade && d.path === "guest") && (!want || d.path === want)) { S.data = d.data || {}; return go(d.path, stepsFor(d.path).indexOf(d.step) >= 0 ? d.step : stepsFor(d.path)[0], true); }
+    if (upgrade && want && FLOWS[want]) return go(want, stepsFor(want)[0], true);
     showPath(upgrade);
   }
 
+  function isUpgrade() { var u = params.get("upgrade"); return u === "1" || u === "learner" || u === "tutor"; }
   /* ------------------------------------------------------------------ path choice */
   function showPath(upgrade) {
     S.path = null; S.step = null; progress();
@@ -331,11 +336,11 @@
   window.addEventListener("popstate", function (e) {
     var st = e.state;
     if (st && st.af && FLOWS[st.path] && stepsFor(st.path).indexOf(st.step) >= 0) { S.path = st.path; S.step = st.step; render(); }
-    else if (S.session) showPath(params.get("upgrade") === "1");
+    else if (S.session) showPath(isUpgrade());
   });
   function back() {
     var list = stepsFor(S.path), i = list.indexOf(S.step);
-    if (i > 0) go(S.path, list[i - 1]); else showPath(params.get("upgrade") === "1");
+    if (i > 0) go(S.path, list[i - 1]); else showPath(isUpgrade());
   }
   function next() {
     var list = stepsFor(S.path), i = list.indexOf(S.step);
