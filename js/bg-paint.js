@@ -1,4 +1,5 @@
-/* Background painter (dark theme only): "+" marks on the 56px grid, faint sub-divided cells and drifting code glyphs.
+/* Background painter: drifting code glyphs in both themes (dark: cyan/orange/soft white; light: navy ink), plus, dark only, "+" marks on
+   the 56px grid and faint sub-divided cells (light keeps its static CSS grid).
    Shared by the worker (js/bg-worker.js, OffscreenCanvas) and the main-thread fallback (js/bg.js). Numbers: design SPEC v2, variant F. */
 (function (g) {
   var FONT = '"CCBG Mono","CC Mono",ui-monospace,monospace';
@@ -6,18 +7,22 @@
   var SET = [];
   [["{", 3], ["}", 3], ["[", 2], ["]", 2], ["(", 2], [")", 2], ["<", 2], [">", 2], ["</>", 1], ["==", 1], ["!=", 1], ["<=", 1], ["=>", 1], ["->", 1], ["fn", 1], ["if", 1],
    ["0x", 1], ["NaN", 1], ["$", 1], ["#", 1], ["&", 1], ["*", 1], ["?", 1], ["/", 1], ["\\", 1], [";", 1], ["0", 4], ["1", 4]].forEach(function (x) { for (var i = 0; i < x[1]; i++) SET.push(x[0]); });
-  /* colours: [hex, share, alpha lo, alpha hi] */
-  var GC = [["#05e6f2", .55, .10, .24], ["#fc8c0c", .30, .10, .25], ["#EEF1F8", .15, .08, .18]];
+  /* colours: [hex, share, alpha lo, alpha hi]. fix/bg-glyphs (founder, 5 Nov 2026: "too faint and too small"): alpha 2x the round-6/7/8
+     values (.10-.24 / .10-.25 / .08-.18), capped at CAP so a glyph never reaches text strength (max ~2.9:1 against the page, under the
+     4.5:1 text minimum; the 20px text guard keeps them off copy anyway). Light (new): navy ink at the same strength. */
+  var GC = [["#05e6f2", .55, .20, .48], ["#fc8c0c", .30, .20, .50], ["#EEF1F8", .15, .16, .36]];
+  var GCL = [["#0B1236", 1, .18, .42]], CAP = .42;
   var XC = [["#05e6f2", .45, .22, .38], ["#EEF1F8", .35, .20, .35], ["#fc8c0c", .20, .18, .30]];
   /* page types: glyph density x, glyph alpha x, speed px/s, marks on majors only, mark alpha x */
-  var TYPES = { landing: [1, 1, 4, 9, 0, 1], mkt: [.7, .8, 3, 7, 0, 1], app: [.5, .6, 3, 6, 1, .6], auth: [.6, .7, 3, 6, 0, 1], err: [.8, .9, 4, 8, 0, 1], quiet: [.3, .5, 2, 4, 1, .5] };
+  /* fix/bg-glyphs: app pages .6 density / .8 alpha (were .5 / .6): their open background is narrow strips between cards, so the few glyphs that fit must read */
+  var TYPES = { landing: [1, 1, 4, 9, 0, 1], mkt: [.7, .8, 3, 7, 0, 1], app: [.6, .8, 3, 6, 1, .6], auth: [.6, .7, 3, 6, 0, 1], err: [.8, .9, 4, 8, 0, 1], quiet: [.3, .5, 2, 4, 1, .5] };
   function rng(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   function pick(r, L) { var x = r(); for (var i = 0; i < L.length - 1; i++) if ((x -= L[i][1]) < 0) return L[i]; return L[L.length - 1]; }
   function alpha(r, c) { var u = r(), v = r(); return c[2] + (c[3] - c[2]) * (u < .6 ? v / 3 : 1 / 3 + v * 2 / 3); }   /* 60% in the lower third */
   function ease(x) { x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x * (3 - 2 * x); }
 
   g.CCBGP = function (cv) {
-    var ctx = cv.getContext("2d"), W = 0, H = 0, dpr = 1, T, r = rng(101), G = [], X = [], S = [], R = [], O = [], x0 = 0, sz, still = false;
+    var ctx = cv.getContext("2d"), W = 0, H = 0, dpr = 1, T, r = rng(101), G = [], X = [], S = [], R = [], O = [], x0 = 0, sz, still = false, dark = true;
     function inBox(x, y, w, h, L, pad) { for (var i = 0; i < L.length; i++) { var q = L[i]; if (x + w > q[0] - pad && x < q[0] + q[2] + pad && y + h > q[1] - pad && y < q[1] + q[3] + pad) return true; } return false; }
     /* distance fade: 1 far from text, 0 at the text box (20px band), so a glyph drifting towards copy fades out instead of passing under it */
     function near(x, y, w, h) { var k = 1; for (var j = 0; j < R.length; j++) { var q = R[j], dx = Math.max(q[0] - x - w, 0, x - q[0] - q[2]), dy = Math.max(q[1] - y - h, 0, y - q[1] - q[3]);
@@ -25,24 +30,26 @@
     function spawn(o, t, first) {
       var s = sz[0] + r() * (sz[1] - sz[0] + 1) | 0, tok = SET[r() * SET.length | 0];
       if (tok.length > 1) s = sz[0] + (s - sz[0]) / 2 | 0;   /* multi-char tokens: lower half of the size range */
+      /* fix/bg-glyphs: 40 placement tries (was 14) so the larger glyphs still find the open page between cards; weight 500/700 (was 400/600) */
       var w = s * .6 * tok.length, ok = false, x, y;
-      for (var k = 0; k < 14 && !ok; k++) { x = 8 + r() * (W - 16 - w); y = 72 + r() * (H - 80 - s); ok = !inBox(x, y, w, s, R, 20) && !inBox(x, y, w, s, O, 4); }
-      var c = pick(r, GC);
-      o.t = tok; o.s = s; o.w = w; o.x = x; o.y = y; o.c = c[0]; o.a = alpha(r, c) * T[1]; o.b = r() < .15 ? 600 : 400; o.ok = ok;
+      for (var k = 0; k < 40 && !ok; k++) { x = 8 + r() * (W - 16 - w); y = 72 + r() * (H - 80 - s); ok = !inBox(x, y, w, s, R, 20) && !inBox(x, y, w, s, O, 4); }
+      var c = pick(r, dark ? GC : GCL);
+      o.t = tok; o.s = s; o.w = w; o.x = x; o.y = y; o.c = c[0]; o.a = Math.min(CAP, alpha(r, c) * T[1]); o.b = r() < .15 ? 700 : 500; o.ok = ok;
       o.vy = -(T[2] + r() * (T[3] - T[2])); o.vx = (r() - .5) * 1.2; o.life = 20 + r() * 25; o.t0 = first ? t - r() * o.life * .8 : t;
       return o;
     }
     function setup(o) {
-      W = o.W; H = o.H; dpr = Math.min(o.dpr || 1, 1.5); still = !!o.still; T = TYPES[o.type] || TYPES.mkt;
+      W = o.W; H = o.H; dpr = Math.min(o.dpr || 1, 1.5); still = !!o.still; dark = o.dark !== false; T = TYPES[o.type] || TYPES.mkt;
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       var ph = W < 600, base = W >= 1100 ? 3.6 : W >= 600 ? 3 : 2.4, area = W * H / 1e5;
-      sz = W >= 1100 ? [14, 22] : W >= 600 ? [13, 20] : [12, 18];
+      sz = W >= 1100 ? [21, 32] : W >= 600 ? [19, 29] : [17, 26];   /* fix/bg-glyphs: ~1.45-1.5x the round-6/7/8 sizes (14-22 / 13-20 / 12-18 px) */
       if (ph && T[3] > 6) T = T.slice(), T[2] = 3, T[3] = 6;   /* phones: 3-6 px/s */
       r = rng(101 + W * 7 + H);
       var n = Math.min(70, Math.round(area * base * T[0])); G = [];
       for (var i = 0; i < n; i++) G.push(spawn({}, o.time || 0, true));
       /* marks on the grid lattice (x = centre + k*56, y = k*56): 2.4 per 100k px², 40% on majors (app pages: majors only) */
       x0 = (W / 2) % 56; X = []; S = [];
+      if (!dark) return;   /* light: glyphs only (the CSS grid is the lattice) */
       var cols = Math.ceil(W / 56) + 1, rows = Math.ceil(H / 56) + 1, nx = Math.round(area * 2.4), cx = Math.round(W / 2);
       for (var m = 0, tries = 0; m < nx && tries < nx * 20; tries++) {
         var maj = T[4] || r() < .4, i2 = r() * cols | 0, j2 = r() * rows | 0, xx = Math.round(x0 + i2 * 56), yy = j2 * 56;

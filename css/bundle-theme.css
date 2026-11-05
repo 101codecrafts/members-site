@@ -721,7 +721,7 @@ html[data-theme=dark]:not(.static) .app .qa svg:has(use[href="#i-plusc"]),html[d
 [data-theme=dark] .sb-scrim{background:rgba(2,4,14,.66);color:inherit}
 
 /* Site background (round 6, design variant F; work/ui-pro/round6/design/SPEC.md).
-   Light: a static 56px hairline grid (navy 4.5%, major 7% every 4 cells). Nothing else, no JS work.
+   Light: a static 56px hairline grid (navy 4.5%, major 7% every 4 cells); js/bg.js adds drifting navy glyphs (fix/bg-glyphs).
    Dark: the same grid in soft white (5.5% / 9%) + a faint cyan bottom glow; js/bg.js adds a canvas with "+" marks and drifting
    code glyphs (OffscreenCanvas worker) on pages that allow them.
    The layer is fixed to the viewport (no scrolling layer, no parallax). body becomes the stacking context (z-index:0), so
@@ -749,7 +749,7 @@ html[data-theme=dark]:not(.static) body:is([data-page=ide],[data-page=problem],[
   background-size:224px 224px,224px 224px,56px 56px,56px 56px;background-position:0 0,calc(50% + 112px) 0,0 0,calc(50% + 28px) 0}
 /* the glyph canvas (js/bg.js): same layer, above the grid */
 #ccbg{position:fixed;inset:0;z-index:-1;width:100%;height:100%;pointer-events:none;display:block}
-html:not([data-theme=dark]) #ccbg,html.static #ccbg{display:none}
+html.static #ccbg{display:none}
 
 /* ROOT CAUSE of "no background" pages (round 11): a full-page layout wrapper that paints its own colour sits above body::before
    and hides the whole layer. Every such wrapper is listed HERE, once, and lets the layer through; the body carries its colour
@@ -766,8 +766,7 @@ html:not(.static) body .page>.lhero{background:none!important}
 /* background + sideways shadows only: no padding, margin or size change, so nothing moves */
 html:not(.static) .ccbg-cut{background-color:var(--ccbg-page)!important;box-shadow:-3px 0 0 var(--ccbg-page),3px 0 0 var(--ccbg-page);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 
-/* "Background animation" setting (View settings): only meaningful in dark mode */
-html:not([data-theme=dark]) .cc-bgm{display:none!important}
+/* "Background animation" setting (View settings): both themes since fix/bg-glyphs (light has drifting glyphs too) */
 
 @media print{html body::before,#ccbg{display:none!important}}
 
