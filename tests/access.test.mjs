@@ -80,6 +80,42 @@ test('page guard: visitor on an app page goes to /auth?next=; wrong role goes ho
   assert.deepEqual(r.replaced, [], 'public page stays public');
 });
 
+test('gate modes: hide / lock / tease (BUS F1: guests never see member-only links)', () => {
+  const mk = (href) => { const a = { hidden: false, dataset: {}, attrs: { href } };
+    a.getAttribute = (k) => (k in a.attrs ? a.attrs[k] : null); a.setAttribute = (k, v) => { a.attrs[k] = String(v); }; a.removeAttribute = (k) => { delete a.attrs[k]; }; return a; };
+  const { A } = load();
+  const run = (role, mode, action, href) => { A.set(role === 'visitor' ? { role } : { role, user: { id: 'u' } }); const el = mk(href); A.gate(el, action, mode); return el; };
+  let el = run('visitor', 'tease', 'shell.full', 'projects.html');
+  assert.equal(el.hidden, false, 'visitor sees the teaser'); assert.match(el.dataset.canTo, /^\/auth\.html\?next=%2Fprojects\.html/);
+  el = run('guest', 'tease', 'shell.full', 'projects.html'); assert.equal(el.hidden, true, 'guest: projects teaser hidden');
+  el = run('guest', 'tease', 'market.sell', 'seller.html'); assert.equal(el.hidden, true, 'guest: Sell on 101 hidden');
+  el = run('learner', 'tease', 'market.sell', 'seller.html'); assert.equal(el.hidden, false); assert.equal(el.dataset.canTo, undefined);
+  el = run('admin', 'tease', 'market.sell', 'seller.html'); assert.equal(el.hidden, true, 'staff cannot sell -> hidden');
+  el = run('guest', 'lock', 'market.sell', 'seller.html'); assert.equal(el.hidden, false, 'lock still shows + routes to upgrade'); assert.match(el.dataset.canTo, /upgrade=1/);
+  el = run('visitor', 'hide', 'shell.full', 'projects.html'); assert.equal(el.hidden, true);
+});
+
+test('guest-visible source pages gate every link to a member-only page (no F1 regressions)', () => {
+  const pages = ['index', 'about', 'community', 'marketplace', 'news', 'courses', 'guest', 'events', 'resources', 'practice', 'ai-tools', 'opportunities', 'pricing'];
+  const guestDenied = Object.entries(policy.pages).filter(([p, a]) => p !== '$comment' && !policy.actions[a].roles.includes('guest')).map(([p]) => p);
+  const leaks = [];
+  for (const pg of pages) {
+    let html; try { html = readFileSync(new URL(`../src/${pg}.html`, import.meta.url), 'utf8'); } catch { continue; }
+    const body = html.replace(/\{\{[^}]*\}\}/g, '');
+    for (const m of body.matchAll(/<a\b[^>]*href="([a-z0-9-]+)\.html[^"]*"[^>]*>/gi)) {
+      if (!guestDenied.includes(m[1].toLowerCase())) continue;
+      // gated if the anchor or an ancestor opened before it (within 600 chars) carries data-can
+      const before = body.slice(Math.max(0, m.index - 600), m.index + m[0].length);
+      if (!/data-can="/.test(before)) leaks.push(`${pg}.html -> ${m[1]}.html`);
+    }
+  }
+  // Guest scope for sessions / groups / competitions / testing / card is founder question Q9 (round 11 report): these links
+  // still route guests to "become a learner" (lock behaviour). Remove an entry here once the founder decides.
+  const PENDING_Q9 = ['index.html -> card.html', 'index.html -> sessions.html', 'index.html -> groups.html', 'about.html -> sessions.html',
+    'about.html -> groups.html', 'community.html -> groups.html', 'community.html -> competitions.html', 'community.html -> testing.html'];
+  assert.deepEqual(leaks.filter((l) => !PENDING_Q9.includes(l)), []);
+});
+
 test('every page in the policy maps to a real action and every role has a home page', () => {
   for (const [p, a] of Object.entries(policy.pages)) { if (p === '$comment') continue; assert.ok(policy.actions[a], `${p} -> ${a}`); }
   for (const r of policy.roles) assert.ok(policy.home[r], r);
