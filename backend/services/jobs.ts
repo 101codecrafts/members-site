@@ -82,14 +82,19 @@ export async function deliverNotificationEmails(log: Logger) {
 /** DPPA erasure: process verified delete requests (Clerk user + DB anonymisation). */
 export async function processDeletionRequests(log: Logger) {
   const db = serviceClient();
-  const reqs = (await db.from('data_requests').select('id, user_id').eq('kind', 'delete').in('status', ['received', 'processing'])
+  const reqs = (await db.from('data_requests').select('id, user_id').eq('kind', 'delete').in('status', ['received', 'processing'])   // 'cancelled' requests are never picked up
     .lte('created_at', new Date(Date.now() - 24 * 3600 * 1000).toISOString()).limit(50)).data ?? [];   // 24 h cool-off
+  let done = 0, failed = 0;
   for (const r of reqs) {
-    await rpc(db, 'erase_user', { p_user: r.user_id, p_actor: 'privacy-job' });
+    // one request failing (e.g. the root admin, which erase_user refuses) must not block everyone else's erasure
+    try { await rpc(db, 'erase_user', { p_user: r.user_id, p_actor: 'privacy-job' }); }
+    catch (err) { failed++; log.warn('deletion_failed', { request: r.id, error: err instanceof Error ? err.message.slice(0, 200) : 'error' }); continue; }
+    // the Clerk account goes only after the DB erase committed, so a failed erase never leaves an orphaned, sign-in-less profile
     try { await (await clerkClient()).users.deleteUser(r.user_id); } catch { /* already gone */ }
+    done++;
   }
-  log.info('deletions_processed', { count: reqs.length });
-  return reqs.length;
+  log.info('deletions_processed', { count: done, failed });
+  return done;
 }
 
 /** Renders PDFs for newly issued certificates into the private bucket. */
