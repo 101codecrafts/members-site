@@ -7,10 +7,10 @@ import { ZodError } from 'zod';
 
 export type ErrorCode =
   | 'bad_request' | 'unauthenticated' | 'forbidden' | 'not_found' | 'conflict'
-  | 'rate_limited' | 'mfa_required' | 'payment_required' | 'unprocessable' | 'upstream_error' | 'internal';
+  | 'rate_limited' | 'mfa_required' | 'reverification_required' | 'payment_required' | 'unprocessable' | 'upstream_error' | 'internal';
 
 const STATUS: Record<ErrorCode, number> = {
-  bad_request: 400, unauthenticated: 401, payment_required: 402, forbidden: 403, mfa_required: 403, not_found: 404,
+  bad_request: 400, unauthenticated: 401, payment_required: 402, forbidden: 403, mfa_required: 403, reverification_required: 403, not_found: 404,
   conflict: 409, unprocessable: 422, rate_limited: 429, upstream_error: 502, internal: 500,
 };
 
