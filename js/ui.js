@@ -180,7 +180,9 @@
   }
   /* social icon rows: render from fetchSocialLinks(); keep the mockup icons when there is no data */
   function socialRow(list, size) {
-    return list.filter(l => l.active && l.url).map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on ${esc(l.label)}">${ico(l.icon)}</a>`).join("");
+    /* SR-19 (r12 R12-SEC-09): admin-editable links render only if they are https: (no javascript:/data: URLs) */
+    const safe = u => { try { return new URL(u).protocol === "https:"; } catch (e) { return false; } };
+    return list.filter(l => l.active && l.url && safe(l.url)).map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on ${esc(l.label)}">${ico(l.icon)}</a>`).join("");
   }
   async function socials() {
     const rows = $$("[data-socials]"); if (!rows.length) return;

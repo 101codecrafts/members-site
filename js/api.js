@@ -309,7 +309,9 @@
   /* ---------- CSV export (client-side) ---------- */
   function toCSV(rows) {
     if (!rows.length) return ""; const cols = Object.keys(rows[0]);
-    const esc = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    /* SR-18 / CWE-1236 (r12 R12-SEC-09): neutralise spreadsheet formulas (= + - @ TAB CR) so a display name like
+       =HYPERLINK(...) is text in Excel/Sheets, same rule as the backend lib/csv.ts */
+    const esc = v => { let s = v == null ? "" : typeof v === "object" ? JSON.stringify(v) : String(v); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
     return [cols.join(","), ...rows.map(r => cols.map(c => esc(r[c])).join(","))].join("\n");
   }
   function downloadCSV(name, rows) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([toCSV(rows)], { type: "text/csv" })); a.download = name; a.click(); }
