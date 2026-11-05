@@ -111,3 +111,49 @@ export function ageOn(dob: string, today: Date = new Date()): number | null {
 }
 export const ADULT_AGE = 18;
 export const MIN_AGE = 5;    // same lower bound as setDateOfBirthOnce (primary-school learners join only through guardian consent)
+
+// ---------------------------------------------------------------------------------------------------------------
+// Helpers from r11/plans-api (argument order: action first). Same decision rules as decide()/limit() above.
+// ---------------------------------------------------------------------------------------------------------------
+type Limits = Record<string, number | boolean | null>;
+export type AccessRole = Role;
+export type PlanTier = Plan;
+export type Ctx = AccessCtx;
+export type Why = Denial | null;
+const LIMITS = POLICY.limits as unknown as Record<string, Record<string, Limits>>;
+
+export const planRank = (p: string | null | undefined): number => Math.max(0, (PLANS as readonly string[]).indexOf(p ?? 'free'));
+
+/** DB roles -> contract role. 'super_admin' can only exist on the verified root email (DB trigger guard_root_role). */
+export function accessRole(signedIn: boolean, dbRoles: readonly string[] = []): Role {
+  if (!signedIn) return 'visitor';
+  if (dbRoles.includes('root_admin') || dbRoles.includes('super_admin')) return 'root_admin';
+  if (dbRoles.includes('admin')) return 'admin';
+  if (dbRoles.includes('tutor')) return 'tutor';
+  if (dbRoles.includes('learner')) return 'learner';
+  return 'guest';
+}
+export const why = (action: string, c: AccessCtx): Why => decide(c, action);
+export const canFor = (action: string, c: AccessCtx): boolean => decide(c, action) === null;
+
+/** Cheapest plan that satisfies an action's plan rule (for "upgrade to Standard" copy). */
+export function minPlanFor(action: string): Plan | null {
+  const p = rule(action)?.plans; if (!p?.length) return null;
+  return [...p].sort((a, b) => planRank(a) - planRank(b))[0] as Plan;
+}
+
+/** Plans-style limit: staff unlimited; unknown key = 0 (most restrictive); overrides = live plan_tiers.limits. */
+export function planLimit(role: Role, plan: string | null | undefined, key: string, overrides?: Limits | null): number | boolean | null {
+  if (isStaff(role)) return null;
+  if (overrides && key in overrides) return overrides[key] ?? null;
+  const table = LIMITS[role === 'visitor' ? 'guest' : role] ?? LIMITS.guest;
+  const row = table?.[plan ?? 'free'] ?? table?.free;
+  if (!row || !(key in row)) return 0;
+  return row[key] ?? null;
+}
+export function underLimit(cap: number | boolean | null, used: number): boolean {
+  if (cap === null || cap === true) return true;
+  if (cap === false) return false;
+  return used < cap;
+}
+export const POLICY_VERSION: number = Number(POLICY.version);
