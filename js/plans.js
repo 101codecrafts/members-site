@@ -83,7 +83,7 @@
 
   /* ---------------- rating gate (course page): verified enrolment only ---------------- */
   function ratingCard(course, enrolled) {
-    var a = ACC(); var host = $("#p-ov"); if (!host || !a || $("#rt-card")) return;
+    var a = ACC(); var host = $("#p-ov"); if (!host || !a || $("#rt-card")) return;   // placed AFTER the tab panels: show() rewrites #p-ov
     var el = document.createElement("div"); el.className = "card rt-card"; el.id = "rt-card"; el.style.marginTop = "12px";
     var why = a.why("rating.create");
     if (why) {
@@ -109,7 +109,7 @@
         };
       });
     }
-    host.appendChild(el);
+    var panels = host.parentNode; (panels && panels.lastElementChild ? panels.lastElementChild : host).insertAdjacentElement("afterend", el);
   }
 
   /* ---------------- page: pricing ---------------- */

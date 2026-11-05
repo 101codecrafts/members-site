@@ -59,19 +59,23 @@
 .up-warn{border:2px solid var(--ink);background:var(--or);color:var(--ink);padding:8px 10px;font-weight:700;font-size:var(--step--1)}
 /* locked lesson */
 .lk-tick{background:#fff}
-#c-lessons a.is-locked{color:var(--mut)}
+#c-lessons a.is-locked:not([aria-current]){color:var(--mut)}
+#c-lessons a.is-locked[aria-current] .tick{border-color:#fff}
 #c-lessons a.is-locked .tick{background:var(--ink);color:#fff}
 #c-lessons a.is-locked .tick svg{width:12px;height:12px}
-.lk-panel{display:grid;place-items:center;gap:10px;min-height:240px;padding:24px;background:var(--ink);color:#fff;text-align:center;border:2px solid var(--ink)}
+.lk-panel{display:grid;place-items:center;gap:10px;min-height:240px;padding:24px clamp(12px,4vw,24px);min-width:0;max-width:100%;box-sizing:border-box;overflow-wrap:anywhere;background:var(--ink);color:#fff;text-align:center;border:2px solid var(--ink)}
 .lk-panel .lk-ic{display:grid;place-items:center;width:56px;height:56px;background:var(--or);color:var(--ink);border:2px solid #fff;box-shadow:4px 4px 0 #fff}
 .lk-panel .lk-ic svg{width:28px;height:28px}
 .lk-panel h3{font:400 var(--step-1) var(--disp);letter-spacing:.3px}
 .lk-panel p{max-width:46ch;color:#dfe6ff}
-.lk-panel .row{justify-content:center}
+.lk-panel .row{justify-content:center;flex-wrap:wrap;gap:10px}
+.lk-panel .btn{max-width:100%;white-space:normal;text-align:center}
 .lk-panel .btn{border-color:#fff}
 .lk-panel .btn.ghost{background:transparent;color:#fff}
 /* rating gate */
-.rt-card{display:grid;gap:10px}
+.rt-card{display:grid;gap:10px;min-width:0;max-width:100%;box-sizing:border-box}
+.rt-card textarea{max-width:100%;box-sizing:border-box}
+.stage-area{min-width:0}
 .rt-stars{display:inline-flex;gap:4px}
 .rt-stars button{width:40px;height:40px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:700 18px var(--body);cursor:pointer}
 .rt-stars button[aria-pressed=true]{background:var(--ink);color:#fff}
