@@ -116,10 +116,32 @@
     set("mfa", u.twoFactorEnabled ? "<b class=st-ok>On.</b> Your account asks for a second step when you sign in." : "Off. Add an authenticator app so a stolen password isn't enough.");
     set("pw", u.passwordEnabled ? "A password is set. Change it any time." : "You sign in without a password (Google or email code). You can add one.");
     $$('#security [data-clerk-profile]').forEach(function (b, i) { if (i === 1) b.textContent = u.twoFactorEnabled ? "Manage" : "Set up"; if (i === 0) b.textContent = u.passwordEnabled ? "Change password" : "Add a password"; });
+    methods(u);
     // connected accounts
     var ex = u.externalAccounts || [];
     $("#st-conn").innerHTML = ex.length ? ex.map(function (a) { var p = String(a.provider || a.verification && a.verification.strategy || "").replace(/^oauth_/, ""); return '<li><b>' + esc(p.charAt(0).toUpperCase() + p.slice(1)) + '</b><small>' + esc(a.emailAddress || a.username || "") + '</small></li>'; }).join("")
       : '<li class="st-empty">No connected accounts yet. Connect Google or GitHub for one-tap sign in.</li>';
+  }
+
+  /* r12 design (BUS F3): a security row whose sign-in method is switched OFF in the Clerk instance would open the
+     profile panel on the password page (the only one left), so it looked broken. When Clerk's environment says the
+     method is off, the row says so plainly and the button is removed; when the environment isn't known, nothing changes. */
+  function methodOn(k) {
+    var c = window.CC_AUTH && window.CC_AUTH.clerk, env = c && (c.__unstable__environment || c.environment);
+    var at = env && env.userSettings && env.userSettings.attributes; if (!at) return null;
+    var a = at[k]; if (!a) return false; return a.enabled !== false;
+  }
+  function methods(u) {
+    var OFF = { password: "Not used on 101. You sign in with Google or a one-time code sent to your email.",
+      authenticator_app: "Not available on 101 yet. Each sign-in already needs a one-time code sent to your email.",
+      passkey: "Not available on 101 yet." };
+    $$("#security [data-st-method]").forEach(function (row) {
+      var k = row.dataset.stMethod, on = methodOn(k), b = $("[data-clerk-profile]", row), small = $("small", row);
+      if (k === "authenticator_app" && u && u.twoFactorEnabled) on = true;   /* already enrolled: keep Manage */
+      if (k === "password" && u && u.passwordEnabled) on = true;
+      if (on === false) { if (b) b.hidden = true; if (small) small.textContent = OFF[k]; row.classList.add("st-off"); }
+      else { if (b) b.hidden = false; row.classList.remove("st-off"); }
+    });
   }
 
   async function sessions() {

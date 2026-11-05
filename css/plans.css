@@ -97,3 +97,5 @@
 .pl-hero p{max-width:62ch;color:var(--mut)}
 [data-theme=dark] .pl-hero p{color:#c9d3f5}
 .pl-h2{font:400 var(--step-2)/1.1 var(--disp);margin-bottom:12px}
+/* r12 design: nothing on the site is set below 12px (the "2 months free" and "Suggested price" tags were 11px) */
+html:not(.static) .pl-save,html:not(.static) .pl-sugg{font-size:12px}

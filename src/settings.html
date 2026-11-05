@@ -111,9 +111,9 @@
   <section class="card st-sec" id="security" data-st-acct aria-labelledby="h-security">
     <div class="sec-title"><h2 id="h-security">SECURITY</h2></div>
     <div class="st-rows">
-      <div class="st-row"><div><b>Password</b><small data-st="pw">Change your password or add one if you sign in with Google.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Change password</button></div>
-      <div class="st-row"><div><b>Two-step verification</b><small data-st="mfa">Add an authenticator app so a stolen password isn't enough.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Set up</button></div>
-      <div class="st-row"><div><b>Passkeys</b><small>Sign in with your phone's fingerprint or face unlock.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Manage</button></div>
+      <div class="st-row" data-st-method="password"><div><b>Password</b><small data-st="pw">Change your password or add one if you sign in with Google.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Change password</button></div>
+      <div class="st-row" data-st-method="authenticator_app"><div><b>Two-step verification</b><small data-st="mfa">Add an authenticator app so a stolen password isn't enough.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Set up</button></div>
+      <div class="st-row" data-st-method="passkey"><div><b>Passkeys</b><small data-st="passkey">Sign in with your phone's fingerprint or face unlock.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Manage</button></div>
     </div>
     <h3 class="st-h3">Active sessions and devices</h3>
     <ul class="st-sessions" id="st-sessions"><li class="st-empty">Loading your sessions…</li></ul>
