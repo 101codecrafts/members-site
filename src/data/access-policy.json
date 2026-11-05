@@ -1,0 +1,43 @@
+{
+  "version": "r11-plans-stub-1",
+  "_note": "Shared access contract. OWNER: auth agent (r11/auth). This is the plans agent's minimal stub with the same shape; on merge keep the owner's file and fold in any keys below that it lacks. The server mirror is backend/lib/access.ts + RLS; this file only drives UI.",
+  "roles": ["visitor", "guest", "learner", "tutor", "admin", "root_admin"],
+  "plans": ["free", "standard", "plus", "pro"],
+  "staff": ["admin", "root_admin"],
+  "redirects": {
+    "visitor": "/auth.html?next={next}",
+    "guest": "/pricing.html?become=1&next={next}",
+    "plan": "/pricing.html?need={plan}&next={next}"
+  },
+  "actions": {
+    "news.read":               { "roles": ["visitor", "guest", "learner", "tutor", "admin", "root_admin"] },
+    "course.view_external":    { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
+    "course.enroll_free":      { "roles": ["guest", "learner", "tutor", "admin", "root_admin"], "limit": "courses_active" },
+    "course.enroll":           { "roles": ["learner", "tutor", "admin", "root_admin"], "limit": "courses_active" },
+    "lesson.view_locked":      { "roles": ["learner", "tutor", "admin", "root_admin"], "minPlan": "standard" },
+    "market.buy":              { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
+    "market.sell":             { "roles": ["learner", "tutor", "admin", "root_admin"], "limit": "listings_active", "approval": true },
+    "rating.create":           { "roles": ["learner", "tutor", "admin", "root_admin"], "requires": "verified_use" },
+    "session.book":            { "roles": ["learner", "tutor", "admin", "root_admin"] },
+    "course.price_request":    { "roles": ["tutor", "admin", "root_admin"], "approval": true },
+    "course.price_approve":    { "roles": ["admin", "root_admin"] },
+    "plan.upgrade":            { "roles": ["learner", "tutor"] },
+    "plan.manage":             { "roles": ["admin", "root_admin"] },
+    "payment.provider_manage": { "roles": ["root_admin"] }
+  },
+  "limits": {
+    "guest":   { "free": { "courses_active": 1, "lessons_free_per_course": 3, "ai_daily": 5, "listings_active": 0 } },
+    "learner": {
+      "free":     { "courses_active": 1,    "lessons_free_per_course": 3,    "ai_daily": 10,   "projects_active": 2,    "listings_active": 3,   "seller_fee_pct": 15, "certificates": false, "offline": false, "session_discount_pct": 0,  "sessions_included_monthly": 0 },
+      "standard": { "courses_active": 3,    "lessons_free_per_course": null, "ai_daily": 50,   "projects_active": 5,    "listings_active": 10,  "seller_fee_pct": 12, "certificates": true,  "offline": false, "session_discount_pct": 0,  "sessions_included_monthly": 0 },
+      "plus":     { "courses_active": 10,   "lessons_free_per_course": null, "ai_daily": 200,  "projects_active": 20,   "listings_active": 25,  "seller_fee_pct": 10, "certificates": true,  "offline": true,  "session_discount_pct": 10, "sessions_included_monthly": 0 },
+      "pro":      { "courses_active": null, "lessons_free_per_course": null, "ai_daily": 1000, "projects_active": null, "listings_active": 100, "seller_fee_pct": 8,  "certificates": true,  "offline": true,  "session_discount_pct": 15, "sessions_included_monthly": 1 }
+    },
+    "tutor": {
+      "free":     { "max_students": 2,    "courses_published": 1,    "sessions_monthly": 4,    "commission_pct": 30, "price_max_ugx": 50000,  "listings_active": 3,   "seller_fee_pct": 15, "coupons": false, "featured_monthly": 0, "payout_min_ugx": 50000, "courses_active": 1,    "lessons_free_per_course": 3 },
+      "standard": { "max_students": 25,   "courses_published": 3,    "sessions_monthly": 20,   "commission_pct": 20, "price_max_ugx": 150000, "listings_active": 10,  "seller_fee_pct": 12, "coupons": true,  "featured_monthly": 0, "payout_min_ugx": 20000, "courses_active": 3,    "lessons_free_per_course": null },
+      "plus":     { "max_students": 150,  "courses_published": 10,   "sessions_monthly": 60,   "commission_pct": 15, "price_max_ugx": 300000, "listings_active": 25,  "seller_fee_pct": 10, "coupons": true,  "featured_monthly": 1, "payout_min_ugx": 10000, "courses_active": 10,   "lessons_free_per_course": null },
+      "pro":      { "max_students": null, "courses_published": null, "sessions_monthly": null, "commission_pct": 10, "price_max_ugx": 500000, "listings_active": 100, "seller_fee_pct": 8,  "coupons": true,  "featured_monthly": 3, "payout_min_ugx": 10000, "courses_active": null, "lessons_free_per_course": null }
+    }
+  }
+}
