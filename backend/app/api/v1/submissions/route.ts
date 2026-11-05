@@ -3,6 +3,7 @@ import { requireMember } from '@/lib/auth';
 import { call } from '@/services/admin-console';
 import { checkSubmission } from '@/services/link-check';
 import { submitBody } from '@/lib/admin-validation';
+import type { Json } from '@/types/database';
 /** My submissions (RLS: own rows). */
 export const GET = route(async () => {
   const s = await requireMember();
@@ -12,7 +13,7 @@ export const GET = route(async () => {
 export const POST = route(async ({ req }) => {
   const s = await requireMember();
   const b = await body(req, submitBody);
-  const row = await call<{ id: string }>(s.db, 'submit_for_review', { p_kind: b.kind, p_entity_ref: b.entity_ref, p_title: b.title, p_summary: b.summary ?? null, p_payload: b.payload, p_urls: b.urls });
+  const row = await call<{ id: string }>(s.db, 'submit_for_review', { p_kind: b.kind, p_entity_ref: b.entity_ref, p_title: b.title, p_summary: b.summary ?? null, p_payload: b.payload as Json /* parsed from the JSON body, so it is JSON */, p_urls: b.urls });
   const risk = await checkSubmission(row.id);
   return { ...row, risk };
 }, { rateLimit: { name: 'submit-review', max: 30, windowSeconds: 3600 } });

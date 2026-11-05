@@ -2,6 +2,8 @@ import 'server-only';
 import { env } from '@/lib/env';
 import { serviceClient } from '@/lib/supabase/admin';
 import { createLogger } from '@/lib/logger';
+import { rpc } from '@/repositories/rpc';
+import type { Json } from '@/types/database';
 import { combine, maxLevel, staticUrlRisk, type RiskFlag, type UrlRisk } from '@/lib/link-risk';
 
 /**
@@ -101,9 +103,7 @@ export async function checkSubmission(id: string): Promise<{ level: string; flag
     const row = (await db.from('review_submissions').select('id, urls').eq('id', id).maybeSingle()).data as { id: string; urls: string[] } | null;
     if (!row) return null;
     const v = await checkUrls(row.urls ?? []);
-    const call = db.rpc as unknown as (n: string, a: object) => Promise<{ error: { message: string } | null }>;
-    const { error } = await call.call(db, 'backend_set_submission_risk', { p_id: id, p_level: v.level, p_flags: v.flags });
-    if (error) throw new Error(error.message);
+    await rpc(db, 'backend_set_submission_risk', { p_id: id, p_level: v.level, p_flags: JSON.parse(JSON.stringify(v.flags)) as Json });   // drops undefined fields: exactly what goes over the wire
     return v;
   } catch (err) {
     log.warn('checkSubmission failed', { id, error: String(err) });

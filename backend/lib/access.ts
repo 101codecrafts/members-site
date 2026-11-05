@@ -38,7 +38,7 @@ export function decide(ctx: AccessCtx, action: string): Denial | null {
   if (!r) return 'role';
   if (!r.roles.includes(ctx.role)) return ctx.role === 'visitor' ? 'signin' : 'role';
   if (r.minor === 'deny' && ctx.minor) return 'minor';
-  if (r.minor === 'consent' && ctx.minor && ctx.consent === false) return 'consent';
+  if (r.minor === 'consent' && ctx.minor && ctx.consent !== true) return 'consent';   // fail closed like js/access.js (BUS L20)
   if (r.plans && !isStaff(ctx.role) && !r.plans.includes(ctx.plan ?? 'free')) return 'plan';
   return null;
 }

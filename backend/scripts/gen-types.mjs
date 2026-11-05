@@ -5,8 +5,20 @@
 //   DATABASE_URL=postgres://... node scripts/gen-types.mjs > types/database.ts
 import pg from 'pg';
 
+// Read-only remote mode: SUPABASE_PROJECT_REF=<ref> introspects a hosted project through the Management API's
+// /database/query/read-only endpoint (SELECT-only; the caller's network layer supplies the token). Nothing is written.
+const REF = process.env.SUPABASE_PROJECT_REF;
 const url = process.env.DATABASE_URL ?? 'postgres://postgres@127.0.0.1:54329/ccx_test';
-const db = new pg.Client({ connectionString: url });
+const db = REF ? {
+  async connect() {}, async end() {},
+  async query(sql) {
+    const r = await fetch(`https://api.supabase.com/v1/projects/${REF}/database/query/read-only`, {
+      method: 'POST', headers: { 'content-type': 'application/json', ...(process.env.SUPABASE_ACCESS_TOKEN ? { authorization: `Bearer ${process.env.SUPABASE_ACCESS_TOKEN}` } : {}) },
+      body: JSON.stringify({ query: sql }) });
+    if (!r.ok) throw new Error(`management API ${r.status}: ${(await r.text()).slice(0, 200)}`);
+    return { rows: await r.json() };
+  },
+} : new pg.Client({ connectionString: url });
 await db.connect();
 
 const enums = (await db.query(`
@@ -102,7 +114,8 @@ for (const f of fns) {
     else inArgs.push([n, f.argtypes[i]]);
   });
   const firstDefault = inArgs.length - (f.ndefaults ?? 0);
-  const args = inArgs.map(([n, ty], i) => `${n}${i >= firstDefault ? '?' : ''}: ${tsType(ty, ty)}`).join('; ');
+  // A defaulted arg may be omitted (default applies) or sent as null (SQL NULL: the functions treat it as "no filter / keep").
+  const args = inArgs.map(([n, ty], i) => `${n}${i >= firstDefault ? '?' : ''}: ${tsType(ty, ty)}${i >= firstDefault ? ' | null' : ''}`).join('; ');
   let ret;
   if (f.rettype === 'void') ret = 'undefined';
   else if (outCols.length) ret = `{ ${outCols.map(([n, ty]) => `${n}: ${tsType(ty, ty)}`).join('; ')} }[]`;

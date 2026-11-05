@@ -1,6 +1,7 @@
 import 'server-only';
 import type { Db } from '@/lib/supabase/user';
 import { unwrap, unwrapMaybe } from '@/lib/http';
+import { withOrganiserFlag } from '@/lib/event-organiser';
 
 /** Read models for public/member catalogue pages. RLS decides visibility. */
 export interface Page { limit: number; offset: number }
@@ -40,11 +41,12 @@ export const catalogRepo = {
     if (p.category) q = q.eq('category', p.category);
     return unwrap(await q);
   },
-  events: async (db: Db, p: Page & { level?: string }) => {
-    let q = db.from('events').select('id, slug, title, description, starts_at, ends_at, timezone, location, is_online, cal_com_url, cover_url, capacity, price_ugx, registrations_count, levels, is_featured, group_id')
+  /** `me` = the signed-in user id (or null). Each row gets `organiser: true` when `me` created the event; the creator's id itself is never returned. */
+  events: async (db: Db, p: Page & { level?: string }, me: string | null = null) => {
+    let q = db.from('events').select('id, slug, title, description, starts_at, ends_at, timezone, location, is_online, cal_com_url, cover_url, capacity, price_ugx, registrations_count, levels, is_featured, group_id, created_by')
       .eq('status', 'published').gte('starts_at', new Date().toISOString()).order('starts_at').range(p.offset, p.offset + p.limit - 1);
     if (p.level) q = q.contains('levels', [p.level]);
-    return unwrap(await q);
+    return withOrganiserFlag(unwrap(await q), me);
   },
   launches: async (db: Db, p: Page & { sort: 'top' | 'new'; day?: string }) => {
     let q = db.from('launch_products').select('id, slug, name, tagline, logo_url, demo_url, repo_url, stack_tags, stage, level, upvotes_count, comments_count, followers_count, launched_on, owner_id').eq('status', 'published').is('hidden_at', null);
