@@ -72,7 +72,7 @@ export const POLICY = {
     "settings": "shell.app"
   },
   "plans_route": "/pricing.html",
-  "guardian_route": "/settings-apps.html#guardian",
+  "guardian_route": "/settings.html#guardian",
   "actions": {
     "page.public": {
       "roles": [
