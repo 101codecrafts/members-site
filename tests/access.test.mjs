@@ -126,7 +126,7 @@ test('parity with backend lib/access.ts decide() for every role x action x minor
   const B = await import(backend);
   const { A } = load();
   let n = 0;
-  for (const role of policy.roles) for (const plan of policy.plans) for (const minor of [false, true]) for (const consent of [false, true])
+  for (const role of policy.roles) for (const plan of policy.plans) for (const minor of [false, true]) for (const consent of [false, true, undefined])
     for (const action of Object.keys(policy.actions)) {
       const ctx = { role, plan, minor, consent };
       assert.equal(A.why(action, ctx), B.decide(ctx, action), `${action} ${JSON.stringify(ctx)}`); n++;
