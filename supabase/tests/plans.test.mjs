@@ -37,8 +37,8 @@ export const tests = [
     const c = (await one(db, `select public.plans_catalogue() c`)).c;
     assert.deepEqual(c.learner.map((x) => x.tier), ['free', 'standard', 'plus', 'pro']);
     assert.deepEqual(c.tutor.map((x) => x.tier), ['free', 'standard', 'plus', 'pro']);
-    assert.equal(c.tutor[0].limits.max_students, 2, 'founder anchor: Tutor Free = 2 students');
-    assert.equal(c.learner[0].limits.courses_active, 1, 'founder anchor: Learner Free = 1 course');
+    assert.equal(c.tutor[0].limits['students.max'], 2, 'founder anchor: Tutor Free = 2 students');
+    assert.equal(c.learner[0].limits['courses.active'], 1, 'founder anchor: Learner Free = 1 course');
     assert.equal(c.learner[1].monthly_ugx, 15000);
     assert.equal(c.learner[0].monthly_ugx, null, 'free has no price');
     await as(db, 'anon');
@@ -227,10 +227,10 @@ export const tests = [
 
   t('admin: plans and prices are editable data (admins only); edits are audited', async (db) => {
     await as(db, U.tutorA);
-    await fails(db, `select public.admin_update_plan('tutor','free', null, null, '{"max_students":5}'::jsonb)`, [], '42501');
+    await fails(db, `select public.admin_update_plan('tutor','free', null, null, '{"students.max":5}'::jsonb)`, [], '42501');
     await as(db, U.admin);
-    const r = (await one(db, `select public.admin_update_plan('tutor','free', null, null, '{"max_students":5}'::jsonb) r`)).r;
-    assert.equal(r[0].limits.max_students, 5);
+    const r = (await one(db, `select public.admin_update_plan('tutor','free', null, null, '{"students.max":5}'::jsonb) r`)).r;
+    assert.equal(r[0].limits['students.max'], 5);
     await q(db, `select public.admin_update_plan('learner','standard', null, null, null, null, 20000, 200000, true)`);
     const c = (await one(db, `select public.plans_catalogue() c`)).c;
     assert.equal(c.learner[1].monthly_ugx, 20000); assert.equal(c.learner[1].price_is_suggestion, false);
@@ -240,7 +240,7 @@ export const tests = [
 
   t('marketplace: guests cannot list; sellers submit for review; listing count follows the plan', async (db) => {
     await as(db, U.admin);
-    await q(db, `select public.admin_update_plan('learner','free', null, null, '{"listings_active":1}'::jsonb)`);
+    await q(db, `select public.admin_update_plan('learner','free', null, null, '{"listings.active":1}'::jsonb)`);
     await as(db, U.bob);
     const st = await one(db, `insert into public.mkt_stores (slug, name) values ('bob-kit','Bob Kit') returning id`);
     await fails(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, status) values ($1,'bob-zero','Bob kit zero','digital',2000,'published')`, [st.id], /admin after review/);

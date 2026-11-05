@@ -23,6 +23,12 @@ const schema = z.object({
   FLW_SECRET_KEY: z.string().optional(),
   FLW_SECRET_HASH: z.string().optional(), // webhook verif-hash
   FLW_PAYOUT_CALLBACK_URL: z.string().url().optional(),
+  // Round 11 payment providers (lib/payments). This build refuses PAYMENTS_MODE=live in code.
+  PAYMENTS_MODE: z.enum(['sandbox', 'live']).default('sandbox'),
+  PESAPAL_CONSUMER_KEY: z.string().optional(), PESAPAL_CONSUMER_SECRET: z.string().optional(), PESAPAL_IPN_ID: z.string().optional(),
+  DPO_COMPANY_TOKEN: z.string().optional(), DPO_SERVICE_TYPE: z.string().optional(), DPO_SANDBOX: z.enum(['true', 'false']).default('false'),
+  MTN_MOMO_SUBSCRIPTION_KEY: z.string().optional(), MTN_MOMO_API_USER: z.string().optional(), MTN_MOMO_API_KEY: z.string().optional(),
+  AIRTEL_CLIENT_ID: z.string().optional(), AIRTEL_CLIENT_SECRET: z.string().optional(),
 
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM: z.string().default('101 Codecrafts <hello@101codecrafts.com>'),

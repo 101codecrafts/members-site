@@ -8,6 +8,7 @@ import { flutterwave, type Subaccount } from '@/lib/flutterwave';
 import { env } from '@/lib/env';
 import { AppError } from '@/lib/errors';
 import { rateLimit, LIMITS } from '@/lib/ratelimit';
+import { assertFlutterwaveSandbox } from '@/services/billing';
 
 interface CheckoutRow {
   payment_id: string; tx_ref: string; amount_ugx: number; list_price_ugx: number; discount_ugx: number; description: string;
@@ -23,6 +24,13 @@ interface CheckoutRow {
  */
 export async function createCheckout(s: Session, input: z.infer<typeof checkoutBody>) {
   await rateLimit(LIMITS.checkout, s.userId);
+  assertFlutterwaveSandbox();   // r11: sandbox-only build — refuse live keys before anything is created
+  if (input.purpose === 'course' && input.reference_id) {   // r11: tutor capacity / guest rules, readable before paying
+    const { data: v } = await (s.db.rpc as unknown as (n: string, a: object) => Promise<{ data: { ok?: boolean; reason?: string } | null }>)('can_enroll', { p_course: input.reference_id });
+    if (v && v.ok === false && v.reason !== 'plan_limit') {
+      throw new AppError(v.reason === 'tutor_full' ? 'unprocessable' : 'forbidden', v.reason === 'tutor_full' ? 'This tutor has no free student places on their plan right now' : 'Become a learner to buy courses', v);
+    }
+  }
   const row = (await rpc(s.db, 'create_checkout', {
     p_purpose: input.purpose, p_reference_id: input.reference_id, p_coupon_code: input.coupon_code,
     p_quantity: input.quantity, p_note: input.note, p_amount_ugx: input.amount_ugx,
@@ -53,6 +61,7 @@ export async function createCheckout(s: Session, input: z.infer<typeof checkoutB
 /** Marketplace v2: server-priced multi-vendor cart checkout -> Flutterwave hosted link (funds held in escrow). */
 export async function createMarketplaceCheckout(s: Session, shipping: Record<string, unknown>, coupon?: string) {
   await rateLimit(LIMITS.checkout, s.userId);
+  assertFlutterwaveSandbox();
   const row = (await rpc(s.db, 'mkt_checkout', { p_shipping: shipping as never, p_coupon: coupon })) as unknown as CheckoutRow & { group_id: string };
   if (row.free) return { status: 'fulfilled' as const, payment_id: row.payment_id, tx_ref: row.tx_ref, amount_ugx: 0, group_id: row.group_id };
   const e = env();

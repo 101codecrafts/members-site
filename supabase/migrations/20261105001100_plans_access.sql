@@ -141,12 +141,12 @@ $$;
 alter table public.courses add column all_lessons_free boolean not null default false;   -- admin-only: open every lesson to every plan
 alter table public.lessons add column min_plan public.member_plan;                        -- tutor/admin override per lesson (null = default rule)
 
--- default rule: the first N lessons (N = learner free limit `lessons_free_per_course`) are free, the rest need Standard
+-- default rule: the first N lessons (N = learner free limit `lessons.free_per_course`) are free, the rest need Standard
 create or replace function app.lesson_min_plan(p_lesson uuid)
 returns public.member_plan language sql stable security definer set search_path = '' as $$
   select coalesce(l.min_plan,
     case when (select count(*) from public.lessons x where x.course_id = l.course_id and x.position < l.position)
-              < coalesce(app.plan_limit('learner', 'free', 'lessons_free_per_course'), 2147483647)
+              < coalesce(app.plan_limit('learner', 'free', 'lessons.free_per_course'), 2147483647)
          then 'free'::public.member_plan else 'standard'::public.member_plan end)
   from public.lessons l where l.id = p_lesson
 $$;
@@ -215,17 +215,17 @@ begin
   if app.is_enrolled(c.id) then return jsonb_build_object('ok', true, 'reason', 'already_enrolled'); end if;
   if not c.is_free and not app.r11_has_member_role(me) then return jsonb_build_object('ok', false, 'reason', 'guest_paid_course'); end if;
   if c.tutor_id is not null and c.tutor_id <> me and not app.is_student_of(c.tutor_id, me) then
-    tcap := app.plan_limit('tutor', app.user_plan(c.tutor_id, 'tutor'), 'max_students');
+    tcap := app.plan_limit('tutor', app.user_plan(c.tutor_id, 'tutor'), 'students.max');
     if tcap is not null and app.tutor_student_count(c.tutor_id) >= tcap then
       return jsonb_build_object('ok', false, 'reason', 'tutor_full', 'limit', tcap); end if;
   end if;
   if c.is_free then
     tier := app.learning_tier(me); aud := case when app.has_role('tutor') then 'tutor' else 'learner' end;
-    cap := app.plan_limit(aud, tier, 'courses_active');
+    cap := app.plan_limit(aud, tier, 'courses.active');
     select count(*) into used from public.enrollments e join public.courses c2 on c2.id = e.course_id
      where e.user_id = me and e.status = 'active' and c2.is_free and e.payment_id is null;
     if cap is not null and used >= cap then
-      return jsonb_build_object('ok', false, 'reason', 'plan_limit', 'key', 'courses_active', 'limit', cap, 'used', used, 'plan', tier); end if;
+      return jsonb_build_object('ok', false, 'reason', 'plan_limit', 'key', 'courses.active', 'limit', cap, 'used', used, 'plan', tier); end if;
   end if;
   return jsonb_build_object('ok', true, 'purchase_required', not c.is_free);
 end;
@@ -314,7 +314,7 @@ begin
   if me is null or not app.is_tutor() or not app.owns_course(p_course) then raise exception 'only the course tutor can request a price' using errcode = '42501'; end if;
   if not p_make_free then
     if p_price_ugx is null or p_price_ugx < 1000 then raise exception 'price must be at least UGX 1,000' using errcode = '22023'; end if;
-    cap := app.plan_limit('tutor', app.user_plan(me, 'tutor'), 'price_max_ugx');
+    cap := app.plan_limit('tutor', app.user_plan(me, 'tutor'), 'price.max_ugx');
     if cap is not null and p_price_ugx > cap then
       raise exception 'your plan allows prices up to UGX %', to_char(cap, 'FM999,999,999') using errcode = 'P0001'; end if;
   end if;
@@ -416,7 +416,7 @@ returns jsonb language sql stable security definer set search_path = '' as $$
     'learner_limits', (select limits from public.plan_tiers where audience = 'learner' and tier = app.user_plan(app.requesting_user_id(), 'learner')),
     'tutor_limits', case when app.has_role('tutor') then (select limits from public.plan_tiers where audience = 'tutor' and tier = app.user_plan(app.requesting_user_id(), 'tutor')) end,
     'usage', jsonb_build_object(
-      'courses_active', (select count(*) from public.enrollments e join public.courses c on c.id = e.course_id
+      'courses.active', (select count(*) from public.enrollments e join public.courses c on c.id = e.course_id
                           where e.user_id = app.requesting_user_id() and e.status = 'active' and c.is_free and e.payment_id is null),
       'students', case when app.has_role('tutor') then app.tutor_student_count(app.requesting_user_id()) end),
     'subscriptions', coalesce((select jsonb_agg(jsonb_build_object('audience', coalesce(s.audience, 'learner'), 'tier', coalesce(sp.tier, sp.grants_plan), 'interval', sp.interval,
@@ -543,8 +543,8 @@ begin
     raise exception 'listings are published by an admin after review: submit it for review' using errcode = '42501'; end if;
   if tg_op = 'INSERT' then
     select s.owner_id into owner from public.mkt_stores s where s.id = new.store_id;
-    cap := greatest(coalesce(app.plan_limit('learner', app.user_plan(owner, 'learner'), 'listings_active'), 2147483647),
-                    case when app.has_role('tutor') then coalesce(app.plan_limit('tutor', app.user_plan(owner, 'tutor'), 'listings_active'), 2147483647) else 0 end);
+    cap := greatest(coalesce(app.plan_limit('learner', app.user_plan(owner, 'learner'), 'listings.active'), 2147483647),
+                    case when app.has_role('tutor') then coalesce(app.plan_limit('tutor', app.user_plan(owner, 'tutor'), 'listings.active'), 2147483647) else 0 end);
     select count(*) into used from public.mkt_products p join public.mkt_stores s on s.id = p.store_id
      where s.owner_id = owner and p.status in ('draft','pending_review','published');
     if used >= cap then raise exception 'your plan allows % listings: upgrade to list more', cap using errcode = 'P0001'; end if;
@@ -686,28 +686,28 @@ $$;
 -- SUGGESTED defaults (PLANS.md). Admin edits them via admin_update_plan; nothing in code depends on these numbers.
 insert into public.plan_tiers (audience, tier, name, tagline, sort, highlight, limits, features) values
   ('learner','free','Free','Start learning at no cost', 0, false,
-   '{"courses_active":1,"lessons_free_per_course":3,"ai_daily":10,"projects_active":2,"listings_active":3,"seller_fee_pct":15,"certificates":false,"offline":false,"session_discount_pct":0,"sessions_included_monthly":0}',
+   '{"courses.active":1,"lessons.free_per_course":3,"ai.daily":10,"projects.active":2,"listings.active":3,"seller.fee_pct":15,"certificates":false,"offline":false,"sessions.discount_pct":0,"sessions.included_monthly":0}',
    '["1 active 101 course (first 3 lessons + previews)","Every external course, free","Buy and sell on the marketplace","10 AI messages a day"]'),
   ('learner','standard','Standard','Unlock every lesson', 1, true,
-   '{"courses_active":3,"lessons_free_per_course":null,"ai_daily":50,"projects_active":5,"listings_active":10,"seller_fee_pct":12,"certificates":true,"offline":false,"session_discount_pct":0,"sessions_included_monthly":0}',
+   '{"courses.active":3,"lessons.free_per_course":null,"ai.daily":50,"projects.active":5,"listings.active":10,"seller.fee_pct":12,"certificates":true,"offline":false,"sessions.discount_pct":0,"sessions.included_monthly":0}',
    '["3 active 101 courses, every lesson","Certificates","No ads","50 AI messages a day"]'),
   ('learner','plus','Plus','Learn more, faster', 2, false,
-   '{"courses_active":10,"lessons_free_per_course":null,"ai_daily":200,"projects_active":20,"listings_active":25,"seller_fee_pct":10,"certificates":true,"offline":true,"session_discount_pct":10,"sessions_included_monthly":0}',
+   '{"courses.active":10,"lessons.free_per_course":null,"ai.daily":200,"projects.active":20,"listings.active":25,"seller.fee_pct":10,"certificates":true,"offline":true,"sessions.discount_pct":10,"sessions.included_monthly":0}',
    '["10 active courses","Offline downloads","10% off 1:1 sessions","200 AI messages a day"]'),
   ('learner','pro','Pro','Everything, plus a mentor', 3, false,
-   '{"courses_active":null,"lessons_free_per_course":null,"ai_daily":1000,"projects_active":null,"listings_active":100,"seller_fee_pct":8,"certificates":true,"offline":true,"session_discount_pct":15,"sessions_included_monthly":1}',
+   '{"courses.active":null,"lessons.free_per_course":null,"ai.daily":1000,"projects.active":null,"listings.active":100,"seller.fee_pct":8,"certificates":true,"offline":true,"sessions.discount_pct":15,"sessions.included_monthly":1}',
    '["Unlimited courses","1 mentor session a month","15% off more sessions","Career review"]'),
   ('tutor','free','Free','Teach your first students', 0, false,
-   '{"max_students":2,"courses_published":1,"sessions_monthly":4,"commission_pct":30,"price_max_ugx":50000,"listings_active":3,"seller_fee_pct":15,"coupons":false,"featured_monthly":0,"payout_min_ugx":50000,"courses_active":1,"lessons_free_per_course":3}',
+   '{"students.max":2,"courses.published":1,"sessions.per_month":4,"commission.pct":30,"price.max_ugx":50000,"listings.active":3,"seller.fee_pct":15,"coupons":false,"featured.monthly":0,"payout.min_ugx":50000,"courses.active":1,"lessons.free_per_course":3}',
    '["Up to 2 students","1 published course","30% commission"]'),
   ('tutor','standard','Standard','Grow a class', 1, true,
-   '{"max_students":25,"courses_published":3,"sessions_monthly":20,"commission_pct":20,"price_max_ugx":150000,"listings_active":10,"seller_fee_pct":12,"coupons":true,"featured_monthly":0,"payout_min_ugx":20000,"courses_active":3,"lessons_free_per_course":null}',
+   '{"students.max":25,"courses.published":3,"sessions.per_month":20,"commission.pct":20,"price.max_ugx":150000,"listings.active":10,"seller.fee_pct":12,"coupons":true,"featured.monthly":0,"payout.min_ugx":20000,"courses.active":3,"lessons.free_per_course":null}',
    '["Up to 25 students","3 published courses","20% commission","Coupons"]'),
   ('tutor','plus','Plus','Run a school', 2, false,
-   '{"max_students":150,"courses_published":10,"sessions_monthly":60,"commission_pct":15,"price_max_ugx":300000,"listings_active":25,"seller_fee_pct":10,"coupons":true,"featured_monthly":1,"payout_min_ugx":10000,"courses_active":10,"lessons_free_per_course":null}',
+   '{"students.max":150,"courses.published":10,"sessions.per_month":60,"commission.pct":15,"price.max_ugx":300000,"listings.active":25,"seller.fee_pct":10,"coupons":true,"featured.monthly":1,"payout.min_ugx":10000,"courses.active":10,"lessons.free_per_course":null}',
    '["Up to 150 students","10 courses","15% commission","1 featured slot a month"]'),
   ('tutor','pro','Pro','No limits', 3, false,
-   '{"max_students":null,"courses_published":null,"sessions_monthly":null,"commission_pct":10,"price_max_ugx":500000,"listings_active":100,"seller_fee_pct":8,"coupons":true,"featured_monthly":3,"payout_min_ugx":10000,"courses_active":null,"lessons_free_per_course":null}',
+   '{"students.max":null,"courses.published":null,"sessions.per_month":null,"commission.pct":10,"price.max_ugx":500000,"listings.active":100,"seller.fee_pct":8,"coupons":true,"featured.monthly":3,"payout.min_ugx":10000,"courses.active":null,"lessons.free_per_course":null}',
    '["Unlimited students and courses","10% commission","3 featured slots a month","Analytics export"]')
 on conflict (audience, tier) do nothing;
 

@@ -76,7 +76,8 @@ export interface PaymentAdapter {
 
 export type PaymentErrorCode = 'live_refused' | 'not_configured' | 'not_implemented' | 'unsupported_method' | 'upstream' | 'bad_amount';
 export class PaymentError extends Error {
-  constructor(public readonly code: PaymentErrorCode, message: string) { super(message); this.name = 'PaymentError'; }
+  readonly code: PaymentErrorCode;
+  constructor(code: PaymentErrorCode, message: string) { super(message); this.code = code; this.name = 'PaymentError'; }
 }
 
 /** Ugandan MSISDN → 2567XXXXXXXX. Throws on anything else. */

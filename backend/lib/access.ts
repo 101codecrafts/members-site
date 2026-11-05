@@ -1,8 +1,8 @@
 /**
  * Shared access contract, server half (round 11).
- * OWNER: auth agent (r11/auth-api). This is the plans agent's minimal stub with the SAME API as the front end's
- * js/access.js (role, plan, can, limit), so branches merge cleanly. RLS re-checks everything in the database;
- * this layer only gives early, readable errors.
+ * OWNER: auth agent (r11/auth-api). This is the plans agent's stub with the SAME decision rules as the owner's
+ * js/access.js (`why`): roles → minor → plans; staff bypass plans; unknown actions are denied (fail closed).
+ * RLS re-checks everything in the database; this layer only gives early, readable errors.
  *
  * Policy data: data/access-policy.json (byte-identical copy of the site's src/data/access-policy.json; a test
  * keeps them in sync). Limits there are DEFAULTS: live values come from public.plan_tiers (admin-editable).
@@ -13,22 +13,21 @@ export const ROLES = ['visitor', 'guest', 'learner', 'tutor', 'admin', 'root_adm
 export const PLANS = ['free', 'standard', 'plus', 'pro'] as const;
 export type AccessRole = (typeof ROLES)[number];
 export type PlanTier = (typeof PLANS)[number];
-export type ActionKey = keyof typeof policy.actions;
 
-interface ActionRule { roles: string[]; minPlan?: string; limit?: string; approval?: boolean; requires?: string }
+interface ActionRule { roles: string[]; plans?: string[]; minor?: 'deny' | 'consent' }
 type Limits = Record<string, number | boolean | null>;
+export interface Ctx { role: AccessRole; plan?: string | null; minor?: boolean; consent?: boolean }
 
-const ACTIONS = policy.actions as Record<string, ActionRule>;
-const LIMITS = policy.limits as Record<string, Record<string, Limits>>;
+const ACTIONS = policy.actions as unknown as Record<string, ActionRule>;
+const LIMITS = policy.limits as unknown as Record<string, Record<string, Limits>>;
 const STAFF = new Set<string>(policy.staff);
 
 export const planRank = (p: string | null | undefined): number => Math.max(0, PLANS.indexOf((p ?? 'free') as PlanTier));
-export const isStaff = (r: AccessRole): boolean => STAFF.has(r);
+export const isStaff = (r: string): boolean => STAFF.has(r);
 
 /**
- * Maps the DB role list (app_role enum: learner | tutor | admin | super_admin) to the round-11 role.
- * root_admin is ONLY ever derived server-side from a verified email by the auth agent's code; the DB
- * role 'super_admin' maps to it here. A signed-in profile with no learner/tutor role is a guest.
+ * DB roles (app_role: learner | tutor | admin | super_admin [+ guest from r11/auth]) → round-11 role.
+ * root_admin is ONLY ever granted server-side from the verified email (owner: auth); here 'super_admin' maps to it.
  */
 export function accessRole(signedIn: boolean, dbRoles: readonly string[] = []): AccessRole {
   if (!signedIn) return 'visitor';
@@ -39,22 +38,27 @@ export function accessRole(signedIn: boolean, dbRoles: readonly string[] = []): 
   return 'guest';
 }
 
-export function actionRule(action: string): ActionRule | undefined { return ACTIONS[action]; }
+export type Why = null | 'signin' | 'role' | 'plan' | 'minor' | 'consent';
 
-export type Denial = 'visitor' | 'guest' | 'role' | 'plan' | 'unknown_action';
-export interface Decision { ok: boolean; reason?: Denial; minPlan?: PlanTier }
-
-/** Role + plan check for one action key. Unknown keys are denied (fail closed). */
-export function decide(role: AccessRole, plan: string | null | undefined, action: string): Decision {
+/** Same order as the owner's client `why()`. */
+export function why(action: string, c: Ctx): Why {
   const rule = ACTIONS[action];
-  if (!rule) return { ok: false, reason: 'unknown_action' };
-  if (!rule.roles.includes(role)) return { ok: false, reason: role === 'visitor' ? 'visitor' : role === 'guest' ? 'guest' : 'role' };
-  if (rule.minPlan && !isStaff(role) && planRank(plan) < planRank(rule.minPlan)) return { ok: false, reason: 'plan', minPlan: rule.minPlan as PlanTier };
-  return { ok: true };
+  if (!rule || !Array.isArray(rule.roles)) return 'role';
+  if (!rule.roles.includes(c.role)) return c.role === 'visitor' ? 'signin' : 'role';
+  if (rule.minor === 'deny' && c.minor) return 'minor';
+  if (rule.minor === 'consent' && c.minor && c.consent === false) return 'consent';
+  if (rule.plans && !isStaff(c.role) && !rule.plans.includes(c.plan ?? 'free')) return 'plan';
+  return null;
 }
-export const can = (role: AccessRole, plan: string | null | undefined, action: string): boolean => decide(role, plan, action).ok;
+export const can = (action: string, c: Ctx): boolean => why(action, c) === null;
 
-/** Default limit for role+plan (null = unlimited). Staff are never limited. `overrides` = live plan_tiers.limits. */
+/** Cheapest plan that satisfies an action's plan rule (for "upgrade to Standard" copy). */
+export function minPlanFor(action: string): PlanTier | null {
+  const p = ACTIONS[action]?.plans; if (!p?.length) return null;
+  return [...p].sort((a, b) => planRank(a) - planRank(b))[0] as PlanTier;
+}
+
+/** Default limit (null = unlimited). Staff are never limited. `overrides` = live plan_tiers.limits from the DB. */
 export function limit(role: AccessRole, plan: string | null | undefined, key: string, overrides?: Limits | null): number | boolean | null {
   if (isStaff(role)) return null;
   if (overrides && key in overrides) return overrides[key] ?? null;
@@ -63,22 +67,10 @@ export function limit(role: AccessRole, plan: string | null | undefined, key: st
   if (!row || !(key in row)) return 0;     // unknown key → most restrictive
   return row[key] ?? null;
 }
-
-/** Is `used` still under the cap? null cap = unlimited. */
 export function underLimit(cap: number | boolean | null, used: number): boolean {
   if (cap === null || cap === true) return true;
   if (cap === false) return false;
   return used < cap;
 }
 
-/** Front-end redirect target for a denial (mirrors policy.redirects). */
-export function redirectFor(d: Decision, next: string): string | null {
-  if (d.ok) return null;
-  const n = encodeURIComponent(next);
-  if (d.reason === 'visitor') return policy.redirects.visitor.replace('{next}', n);
-  if (d.reason === 'guest') return policy.redirects.guest.replace('{next}', n);
-  if (d.reason === 'plan') return policy.redirects.plan.replace('{plan}', d.minPlan ?? 'standard').replace('{next}', n);
-  return null;
-}
-
-export const POLICY_VERSION: string = policy.version;
+export const POLICY_VERSION: number = policy.version;
