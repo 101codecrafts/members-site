@@ -46,3 +46,8 @@ export const adminCoursePricingBody = z.object({
 export const providerSwitchBody = z.object({ enabled: z.boolean(), sort: z.number().int().min(0).max(999).optional() }).strict();
 
 export const itemUseBody = z.object({ kind: z.enum(['resource', 'book', 'external_course', 'ai_tool']), id: z.string().min(1).max(120) }).strict();
+
+export const ratingBody = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('course'), slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/).max(80), rating: z.number().int().min(1).max(5), body: z.string().max(3000).optional() }).strict(),
+  z.object({ kind: z.literal('item'), item_kind: z.enum(['resource', 'book', 'external_course', 'ai_tool']), item_id: z.string().min(1).max(120), rating: z.number().int().min(1).max(5), body: z.string().max(3000).optional() }).strict(),
+]);

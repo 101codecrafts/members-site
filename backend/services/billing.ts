@@ -8,7 +8,7 @@ import { AppError } from '@/lib/errors';
 import { rateLimit, LIMITS } from '@/lib/ratelimit';
 import { accessRole, POLICY_VERSION } from '@/lib/access';
 import { getAdapter, describeProviders, PaymentError, type FetchLike, type PaymentEnv, type PaymentMethod, type EnabledProvider } from '@/lib/payments/index.ts';
-import type { adminCoursePricingBody, adminPlanBody, planCheckoutBody, priceRequestBody } from '@/lib/plans-validation';
+import type { adminCoursePricingBody, adminPlanBody, planCheckoutBody, priceRequestBody, ratingBody } from '@/lib/plans-validation';
 
 /**
  * Round 11: plans, entitlements, plan checkout and pricing approvals.
@@ -125,3 +125,22 @@ export const updatePlan = (s: Session, aud: string, t: string, b: z.infer<typeof
 export const setProvider = (s: Session, code: string, enabled: boolean, sort?: number) =>
   call(s.db, 'admin_set_payment_provider', { p_code: code, p_enabled: enabled, p_sort: sort ?? null });
 export const recordItemUse = (s: Session, kind: string, id: string) => call(s.db, 'record_item_use', { p_kind: kind, p_item: id }).then(() => ({ ok: true }));
+
+/** Verified-only ratings: the DB triggers/RLS refuse anyone who did not enrol / use the item (42501 → 403). */
+export async function createRating(s: Session, b: z.infer<typeof ratingBody>) {
+  if (b.kind === 'course') {
+    const c = (await s.db.from('courses').select('id, tutor_id').eq('slug', b.slug).maybeSingle()).data;
+    if (!c?.tutor_id) throw new AppError('not_found', 'Course not found');
+    // the unique index is on an expression (coalesce(course_id, …)), so no ON CONFLICT: update-or-insert
+    const mine = (await s.db.from('tutor_reviews').select('id').eq('learner_id', s.userId).eq('tutor_id', c.tutor_id).eq('course_id', c.id).maybeSingle()).data;
+    const { error } = mine
+      ? await s.db.from('tutor_reviews').update({ rating: b.rating, body: b.body ?? null } as never).eq('id', mine.id)
+      : await s.db.from('tutor_reviews').insert({ tutor_id: c.tutor_id, learner_id: s.userId, course_id: c.id, rating: b.rating, body: b.body ?? null } as never);
+    if (error) throw error;
+    return { ok: true, kind: 'course' as const };
+  }
+  const { error } = await s.db.from('item_ratings' as never).upsert({ user_id: s.userId, item_kind: b.item_kind, item_id: b.item_id, rating: b.rating, body: b.body ?? null } as never,
+    { onConflict: 'user_id,item_kind,item_id' });
+  if (error) throw error;
+  return { ok: true, kind: 'item' as const };
+}

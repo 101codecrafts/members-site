@@ -1,5 +1,5 @@
 {
- "$comment": "Shared access contract \u2014 STUB on r11/plans. OWNER: r11/auth (src/data/access-policy.json there). Same format as the owner's file. On merge keep the owner's file and fold in the keys marked NEW below (plans branch) and the limits block. Front end: js/access.js; server: backend/data/access-policy.json + lib/access.ts + RLS (the DB is the authority).",
+ "$comment": "Shared access contract \u2014 STUB on r11/plans. OWNER: r11/auth (src/data/access-policy.json there). Same format as the owner's file. On merge keep the owner's file and fold in the keys marked NEW below (plans branch) and the limits block. Front end: js/access.js; server: backend/data/access-policy.json + lib/access.ts + RLS (the DB is the authority). STUB DIFFERENCES: auth_route=/signup.html and home.guest=/courses.html only because /auth.html and /guest.html are created on r11/auth; the owner's values (/auth.html, /guest.html) win on merge.",
  "version": 1,
  "roles": [
   "visitor",
@@ -21,13 +21,13 @@
  ],
  "home": {
   "visitor": "/index.html",
-  "guest": "/guest.html",
+  "guest": "/courses.html",
   "learner": "/dashboard.html",
   "tutor": "/tutor.html",
   "admin": "/admin.html",
   "root_admin": "/admin.html"
  },
- "auth_route": "/auth.html",
+ "auth_route": "/signup.html",
  "plans_route": "/pricing.html",
  "checkout_route": "/upgrade.html",
  "pages": {
