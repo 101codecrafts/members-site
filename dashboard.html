@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dashboard · 101 Codecrafts</title>
-<meta name="description" content="Your 101 Codecrafts member space: learning paths, community tools, projects, events and daily tech news.">
+<title>My learning · 101 Codecrafts</title>
+<meta name="description" content="Your 101 Codecrafts learner dashboard: continue learning, your courses and progress, plan limits, certificates, saved items and sessions.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://101codecrafts.github.io/members-site/dashboard.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="101 Codecrafts">
-<meta property="og:title" content="Dashboard · 101 Codecrafts"><meta property="og:description" content="Your 101 Codecrafts member space: learning paths, community tools, projects, events and daily tech news.">
+<meta property="og:title" content="My learning · 101 Codecrafts"><meta property="og:description" content="Your 101 Codecrafts learner dashboard: continue learning, your courses and progress, plan limits, certificates, saved items and sessions.">
 <meta property="og:url" content="https://101codecrafts.github.io/members-site/dashboard.html"><meta property="og:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="theme-color" content="#0B1236">
@@ -19,12 +19,11 @@
 <link rel="preload" href="assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");var u=(document.cookie.match(/(?:^|; )__client_uat=(\d+)/)||[])[1];d.classList.add(u&&u!=="0"?"role-pending":"role-visitor");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://101codecrafts.github.io/members-site/#org", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", "https://github.com/101codecrafts", "https://github.com/101codecrafts-ug"]}</script>
-<link rel="stylesheet" href="css/feed.css">
-<link rel="stylesheet" href="css/bundle-dashboard.css">
-<link rel="stylesheet" id="fitcss" href="css/dashboard.fit.css">
+<link rel="stylesheet" href="css/dash.css">
+<link rel="stylesheet" href="css/bundle-app.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
 </head>
-<body data-page="dashboard" data-role="member">
+<body class="flow" data-role="learner" data-page="dashboard">
 <a class="skip" href="#main">Skip to content</a>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
 <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 1.5 11.5h3V21h5.5v-6h4v6H19.5v-9.5h3z"/></symbol>
@@ -96,15 +95,27 @@
 <symbol id="i-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16"/><path d="M9 4v16"/><path d="m15.5 9.5-2.5 2.5 2.5 2.5" stroke-linecap="square"/></symbol>
 <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M14 4H4v16h10"/><path d="M10 12h11M17 8l4 4-4 4"/></symbol>
 <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="1.5"/><path d="M10.5 18.5h3" stroke-linecap="round"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7v.5M12 17h.01"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><rect x="2.5" y="5" width="19" height="14"/><path d="M2.5 10h19M6 15h4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-guard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><circle cx="12" cy="10" r="2.5"/><path d="M8 16c1-2 2.4-3 4-3s3 1 4 3"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><rect x="3" y="4" width="18" height="16"/><circle cx="9" cy="10" r="2"/><path d="M3 18l6-5 4 3 3-2 5 4"/></symbol>
+<symbol id="i-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 2.5h8.5L19 7v14.5H6z"/><path d="M14 2.5V7h5M9 13h6M9 17h6"/></symbol>
+<symbol id="i-motion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M3 12h4l2-6 4 12 2-6h6"/></symbol>
 </svg>
 
-<div class="shell dash-shell">
+<div class="shell">
 <div class="sbar" id="sbar">
   <div class="sb-head">
     <a class="sb-logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="57" height="32"><span class="sb-word"><b>101 Codecrafts</b><small>Build. Learn. Grow.</small></span><span class="sr-only">101 Codecrafts home</span></a>
     <button type="button" class="sb-toggle" data-sb-toggle aria-controls="sbar" aria-expanded="true" aria-label="Collapse sidebar"><svg aria-hidden="true"><use href="#i-panel"/></svg></button>
   </div>
-  <nav class="sb-nav" aria-label="Main"><div class="sb-sec"><a href="dashboard.html" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a><a href="profile.html"><svg aria-hidden="true"><use href="#i-users"/></svg><span>Community</span></a><a href="announcements.html"><svg aria-hidden="true"><use href="#i-bell"/></svg><span>Notifications</span></a></div><div class="sb-sec"><h2 class="sb-h">Learn</h2><a href="courses.html"><svg aria-hidden="true"><use href="#i-learning"/></svg><span>Learning</span></a><a href="learn.html"><svg aria-hidden="true"><use href="#i-openbook"/></svg><span>Learn</span></a><a href="practice.html"><svg aria-hidden="true"><use href="#i-codebox"/></svg><span>Practice</span></a><a href="ai-tools.html"><svg aria-hidden="true"><use href="#i-brain"/></svg><span>AI Tools</span></a></div><div class="sb-sec"><h2 class="sb-h">Build</h2><a href="projects.html"><svg aria-hidden="true"><use href="#i-code"/></svg><span>Projects</span></a><a href="launchpad.html"><svg aria-hidden="true"><use href="#i-trophy"/></svg><span>Launchpad</span></a><a href="testing.html"><svg aria-hidden="true"><use href="#i-clipboard"/></svg><span>Testing</span></a><a href="competitions.html"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Competitions</span></a></div><div class="sb-sec"><h2 class="sb-h">Community</h2><a href="groups.html"><svg aria-hidden="true"><use href="#i-people"/></svg><span>Groups</span></a><a href="events.html"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Events &amp; Meetups</span></a><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a></div><div class="sb-sec"><h2 class="sb-h">Stay updated</h2><a href="news.html"><svg aria-hidden="true"><use href="#i-doc"/></svg><span>Daily News</span></a><a href="opportunities.html"><svg aria-hidden="true"><use href="#i-briefcase"/></svg><span>Opportunities</span></a><a href="announcements.html"><svg aria-hidden="true"><use href="#i-megaphone"/></svg><span>Announcements</span></a><a href="resources.html"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Library</span></a></div><div class="sb-sec"><h2 class="sb-h">Your space</h2><a href="courses.html#c101"><svg aria-hidden="true"><use href="#i-cap"/></svg><span>My Courses</span></a><a href="projects.html"><svg aria-hidden="true"><use href="#i-codebox"/></svg><span>My Projects</span></a><a href="resources.html"><svg aria-hidden="true"><use href="#i-download"/></svg><span>My Downloads</span></a><a href="profile.html"><svg aria-hidden="true"><use href="#i-user"/></svg><span>My Profile</span></a><a href="card.html"><svg aria-hidden="true"><use href="#i-badge"/></svg><span>Member card</span></a><a href="settings-apps.html"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></a></div></nav>
+  <nav class="sb-nav" aria-label="Main"><div class="sb-sec"><a href="dashboard.html" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a><a href="profile.html"><svg aria-hidden="true"><use href="#i-users"/></svg><span>Community</span></a><a href="announcements.html"><svg aria-hidden="true"><use href="#i-bell"/></svg><span>Notifications</span></a></div><div class="sb-sec"><h2 class="sb-h">Learn</h2><a href="courses.html"><svg aria-hidden="true"><use href="#i-learning"/></svg><span>Learning</span></a><a href="learn.html"><svg aria-hidden="true"><use href="#i-openbook"/></svg><span>Learn</span></a><a href="practice.html"><svg aria-hidden="true"><use href="#i-codebox"/></svg><span>Practice</span></a><a href="ai-tools.html"><svg aria-hidden="true"><use href="#i-brain"/></svg><span>AI Tools</span></a></div><div class="sb-sec"><h2 class="sb-h">Build</h2><a href="projects.html"><svg aria-hidden="true"><use href="#i-code"/></svg><span>Projects</span></a><a href="launchpad.html"><svg aria-hidden="true"><use href="#i-trophy"/></svg><span>Launchpad</span></a><a href="testing.html"><svg aria-hidden="true"><use href="#i-clipboard"/></svg><span>Testing</span></a><a href="competitions.html"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Competitions</span></a></div><div class="sb-sec"><h2 class="sb-h">Community</h2><a href="groups.html"><svg aria-hidden="true"><use href="#i-people"/></svg><span>Groups</span></a><a href="events.html"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Events &amp; Meetups</span></a><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a></div><div class="sb-sec"><h2 class="sb-h">Stay updated</h2><a href="news.html"><svg aria-hidden="true"><use href="#i-doc"/></svg><span>Daily News</span></a><a href="opportunities.html"><svg aria-hidden="true"><use href="#i-briefcase"/></svg><span>Opportunities</span></a><a href="announcements.html"><svg aria-hidden="true"><use href="#i-megaphone"/></svg><span>Announcements</span></a><a href="resources.html"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Library</span></a></div><div class="sb-sec"><h2 class="sb-h">Your space</h2><a href="dashboard.html#my-courses"><svg aria-hidden="true"><use href="#i-cap"/></svg><span>My Courses</span></a><a href="dashboard.html#certificates"><svg aria-hidden="true"><use href="#i-badge"/></svg><span>Certificates</span></a><a href="projects.html"><svg aria-hidden="true"><use href="#i-codebox"/></svg><span>My Projects</span></a><a href="resources.html"><svg aria-hidden="true"><use href="#i-download"/></svg><span>My Downloads</span></a><a href="profile.html"><svg aria-hidden="true"><use href="#i-user"/></svg><span>My Profile</span></a><a href="card.html"><svg aria-hidden="true"><use href="#i-badge"/></svg><span>Member card</span></a><a href="settings.html"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></a></div></nav>
   <div class="sb-foot"><a class="sb-wa" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>
 </div>
 <div class="sb-scrim" data-sb-scrim hidden></div>
@@ -119,185 +130,54 @@
   <a class="ib tb-bell" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
   <div class="acct" data-acct aria-busy="true">
     <span class="acct-sk" aria-hidden="true"><i></i><b></b></span><span class="sr-only acct-loading">Loading account</span>
-    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="auth.html">Sign in</a><a class="tb-btn cta" href="auth.html?mode=join"><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
+    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="auth.html" data-return>Sign in</a><a class="tb-btn cta" href="auth.html?mode=join" data-return><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
     <div class="acct-user" hidden>
       <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu"><span class="acct-av" aria-hidden="true"></span><span class="acct-id"><b class="acct-name"></b><small class="acct-role">Member</small></span><svg class="acct-chev" aria-hidden="true"><use href="#i-chev"/></svg><span class="sr-only">account menu</span></button>
       <div class="acct-menu" id="acct-menu" role="menu" aria-label="Account" hidden>
-        <div class="am-head" role="none"><b class="acct-name"></b><small class="acct-email"></small></div>
-        <a role="menuitem" href="profile.html"><svg aria-hidden="true"><use href="#i-user"/></svg>Profile</a>
-        <a role="menuitem" href="settings-apps.html"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+        <div class="am-head" role="none"><span class="acct-av am-av" aria-hidden="true"></span><span class="am-who"><b class="acct-name"></b><small class="acct-email"></small><span class="am-chips"><i class="am-role acct-role">Member</i><i class="am-plan" data-acct-plan hidden></i></span></span></div>
+        <a role="menuitem" href="profile.html" data-acct-me><svg aria-hidden="true"><use href="#i-user"/></svg>View profile</a>
+        <a role="menuitem" href="settings.html#profile"><svg aria-hidden="true"><use href="#i-pen"/></svg>Edit profile</a>
+        <a role="menuitem" class="am-up" href="pricing.html" data-acct-upgrade><svg aria-hidden="true"><use href="#i-star"/></svg><span class="am-grow"><span data-acct-planline>Your plan</span></span><b class="am-up-tag">Upgrade</b></a>
+        <div class="am-sep" role="separator"></div>
+        <a role="menuitem" href="settings.html#billing"><svg aria-hidden="true"><use href="#i-card"/></svg>Billing &amp; payment methods</a>
+        <a role="menuitem" href="settings.html#payouts" data-acct-tutor hidden><svg aria-hidden="true"><use href="#i-cash"/></svg>Payouts</a>
+        <div class="am-sep" role="separator"></div>
+        <a role="menuitem" href="settings.html"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+        <a role="menuitem" href="settings.html#help"><svg aria-hidden="true"><use href="#i-help"/></svg>Help &amp; support</a>
+        <button type="button" role="menuitem" data-acct-theme><svg aria-hidden="true"><use href="#i-moon"/></svg><span class="am-grow">Theme</span><small class="am-val" data-acct-theme-val>System</small></button>
+        <a role="menuitem" href="settings.html#language"><svg aria-hidden="true"><use href="#i-globe"/></svg><span class="am-grow">Language</span><small class="am-val" data-acct-lang>English</small></a>
         <div class="role-tabs am-roles" role="group" aria-label="Switch role"><span class="am-label" aria-hidden="true">Switch role</span><a role="menuitem" href="dashboard.html">Learner</a><a role="menuitem" href="tutor.html">Tutor</a><a role="menuitem" href="admin.html">Admin</a></div>
+        <div class="am-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-acct-switch><svg aria-hidden="true"><use href="#i-swap"/></svg>Switch account</button>
         <button type="button" role="menuitem" class="am-out" data-signout><svg aria-hidden="true"><use href="#i-logout"/></svg>Sign out</button>
       </div>
     </div>
   </div>
 </header>
-<div class="ann-slot" data-ann-slot aria-hidden="true"></div>
-<main class="app" id="main">
-
-<!-- ============ SIDEBAR ============ -->
-<aside class="side">
-  <img class="brand-logo" src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="101">
-  <div class="brand-name">101 <br>Codecrafts</div>
-  <div class="brand-tag">Build. Learn. Grow.</div>
-  <svg class="i side-arrow"><use href="#i-arrow"/></svg>
-  <nav class="nav" style="top:0">
-    <a class="active" href="dashboard.html" style="top:91px"><svg><use href="#i-home"/></svg><span>Home</span></a>
-    <a href="profile.html" style="top:131px"><svg><use href="#i-users"/></svg><span>Community</span></a>
-    <a href="courses.html" style="top:172px"><svg><use href="#i-learning"/></svg><span>Learning</span></a>
-    <a href="projects.html" style="top:212px"><svg><use href="#i-code"/></svg><span>Projects</span></a>
-    <a href="resources.html" style="top:253px"><svg><use href="#i-folder"/></svg><span>Resources</span></a>
-    <a href="marketplace.html" style="top:293px"><svg><use href="#i-store"/></svg><span>Marketplace</span></a>
-    <a href="events.html" style="top:334px"><svg><use href="#i-calendar"/></svg><span>Events</span></a>
-    <a aria-disabled="true" style="top:376px"><svg><use href="#i-chat"/></svg><span>Messages</span><i class="badge">3</i></a>
-    <a href="announcements.html" style="top:415px"><svg><use href="#i-bell"/></svg><span>Notifications</span><i class="badge">5</i></a>
-  </nav>
-  <div class="side-rule" style="top:468px"></div>
-  <div class="side-h">YOUR SPACE</div>
-  <nav class="nav" style="top:0">
-    <a href="courses.html" style="top:517px"><svg><use href="#i-cap"/></svg><span>My Courses</span></a>
-    <a href="projects.html" style="top:557px"><svg><use href="#i-codebox"/></svg><span>My Projects</span></a>
-    <a href="resources.html" style="top:597px"><svg><use href="#i-download"/></svg><span>My Downloads</span></a>
-    <a href="profile.html" style="top:638px"><svg><use href="#i-user"/></svg><span>My Profile</span></a>
-    <a href="settings-apps.html" style="top:681px"><svg><use href="#i-gear"/></svg><span>Settings</span></a>
-  </nav>
-  <div class="side-rule" style="top:724px"></div>
-  <div class="invite">
-    <img src="assets/img/better-tech-art.webp" alt="" width="104" height="96">
-    <div class="t">Better <br>Tech <br>Together</div>
-    <a class="inv-btn hov on-dark" href="#" data-wa-share="Join me on 101 Codecrafts — learn, build and collaborate in tech:"><svg class="i"><use href="#i-userplus"/></svg>Invite Friends</a>
+<main id="main" class="content">
+  <div id="l-bars"></div>
+  <div class="page-h">
+    <div><div class="kicker">Learner space</div><h1 id="l-hello">WELCOME</h1><p>Pick up where you left off, and keep an eye on what your plan includes.</p></div>
+    <div class="row"><a class="btn or" href="courses.html" id="l-browse"><svg aria-hidden="true"><use href="#i-cap"/></svg>Browse courses</a><a class="btn" href="practice.html">Practice</a></div>
   </div>
-</aside>
-<div class="copy">© 2025 101 Codecrafts. All rights reserved.</div>
-
-<!-- ============ TOP BAR ============ -->
-<label class="search"><svg><use href="#i-search"/></svg><span>Search courses, projects, people, or resources...</span></label>
-<svg class="i tb-ic" style="left:1162px;top:22px"><use href="#i-bell"/></svg>
-<i class="dot" style="left:1177px;top:20px"></i>
-<svg class="i tb-ic" style="left:1209px;top:22px"><use href="#i-msg"/></svg>
-<div class="vrule"></div>
-<img class="me-av" src="assets/img/avatar-member.webp" alt="">
-<div class="me-name">Guest</div>
-<div class="me-role">Member</div>
-<a class="role-switch abs" href="admin.html" aria-label="Switch view: Learner, Tutor or Admin" style="left:1494px;top:24px;width:18px;height:18px;color:#1d2328"><svg class="i" style="width:18px;height:18px"><use href="#i-chev"/></svg></a>
-<div class="toprule"></div>
-
-<!-- ============ HERO ============ -->
-<img class="hero-photo heavy-hero" fetchpriority="high" decoding="async" src="assets/img/dash-hero-photo.webp" srcset="assets/img/dash-hero-photo.webp 545w, assets/img/dash-hero-photo-800.webp 800w" sizes="(max-width:1099px) 100vw, 545px" alt="Member coding on a 101 Codecrafts laptop">
-<section class="hero">
-  <canvas class="fx-canvas" data-fx="grid"></canvas>
-  <div class="kick">WELCOME TO 101 CODECRAFTS</div>
-  <h1 class="split">LEARN  BUILD
-COLLABORATE</h1>
-  <p>A global technology community for learners, creators, <br>and problem-solvers. Level up your skills, work on real <br>projects, and grow your career in tech.</p>
-  <a class="cta hov" href="auth.html?mode=join">Join Community <svg class="i" style="width:18px;height:18px"><use href="#i-arrow"/></svg></a>
-</section>
-<section class="cyanp">
-  <div class="t">Build <br>the <br>Future <br>Together</div>
-  <i class="abs blk o" style="left:15px;top:128px;width:10px;height:21px"></i>
-  <i class="abs blk" style="left:38px;top:152px;width:19px;height:19px"></i>
-  <i class="abs blk o" style="left:15px;top:173px;width:22px;height:30px"></i>
-  <i class="abs blk" style="left:37px;top:203px;width:50px;height:60px"></i>
-  <i class="abs blk o" style="left:63px;top:236px;width:24px;height:27px"></i>
-</section>
-
-<div class="stat s1 ck-skin"><svg style="left:16px;color:var(--or)"><use href="#i-people"/></svg><b style="left:72px;top:10px" data-count="10" data-suffix="K+" data-site-stat="members" data-fmt="short">10K+</b><small style="left:72px;top:33px">Active Members</small></div>
-<div class="stat s2 ck-skin"><svg style="left:14px;color:#0B1236"><use href="#i-code"/></svg><b style="left:68px;top:10px" data-count="500" data-suffix="+">500+</b><small style="left:68px;top:33px">Projects &amp; Resources</small></div>
-<div class="stat s3 ck-skin"><svg style="left:14px;color:#0B1236"><use href="#i-book"/></svg><b style="left:68px;top:10px" data-count="100" data-suffix="+">100+</b><small style="left:68px;top:33px">Learning Paths</small></div>
-
-<!-- ============ FEATURED ============ -->
-<div class="rule" style="top:433px"></div>
-<i class="sec-ic" style="left:261px;top:450px"></i>
-<h2 class="sec-h" style="left:282px;top:446px">FEATURED SOFTWARE &amp; TOOLS</h2>
-<div class="sec-sub" style="left:281px;top:469px">Access our community-built tools, software and services.</div>
-<a class="viewall" href="ai-tools.html" style="left:1137px;top:450px">View All <svg class="i"><use href="#i-arrow"/></svg></a>
-
-<!-- TODO(founder): SecureScan, DataInsight Pro, CloudDeploy and TaskFlow are mockup tools with no page yet; on the live site they show without an arrow (.tool-soon). Link each one when it exists. -->
-<article class="tool hov on-dark ck-skin ck--inv" style="left:261px"><div class="ib bg-or"><svg><use href="#i-code"/></svg></div><h3><a class="tool-a ck-link" href="ide.html">CodeCraft IDE</a></h3><p>A lightweight IDE for <br>modern developers.</p><span class="tag">Development Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:457px"><div class="ib bg-cy"><svg><use href="#i-shield"/></svg></div><h3>SecureScan</h3><p>Scan and assess your <br>web applications.</p><span class="tag">Security Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:652px"><div class="ib bg-or"><svg><use href="#i-bars"/></svg></div><h3>DataInsight Pro</h3><p>Analyze your data <br>with ease.</p><span class="tag">Data Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:846px"><div class="ib bg-cy"><svg><use href="#i-cloud"/></svg></div><h3>CloudDeploy</h3><p>Deploy your apps <br>in minutes.</p><span class="tag">Cloud Service</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:1039px"><div class="ib bg-or"><svg><use href="#i-list"/></svg></div><h3>TaskFlow</h3><p>Manage your projects <br>and teams.</p><span class="tag">Productivity Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-
-<!-- ============ LEARNING PATHS ============ -->
-<div class="rule" style="top:655px"></div>
-<i class="abs" style="left:261px;top:671px;width:17px;height:5px;background:var(--or)"></i>
-<h2 class="sec-h" style="left:282px;top:664px">LEARNING PATHS</h2>
-<div class="sec-sub" style="left:260px;top:685px">Structured paths to help you gain skills and achieve your goals.</div>
-<a class="viewall" href="courses.html" style="left:1147px;top:670px">View All <svg class="i"><use href="#i-arrow"/></svg></a>
-
-<a class="lp o hov" style="left:261px;width:177px"><div class="ib"><svg><use href="#i-code"/></svg></div><h4>Software Engineering</h4><small>12 courses • Beginner</small></a>
-<a class="lp c hov" style="left:447px;width:162px"><div class="ib"><svg><use href="#i-chart"/></svg></div><h4>Data Science &amp; Analytics</h4><small>10 courses • Beginner</small></a>
-<a class="lp d hov on-dark" style="left:618px;width:150px"><div class="ib"><svg><use href="#i-shieldc"/></svg></div><h4 style="font-size:10.5px">Cybersecurity &amp; Ethical Hacking</h4><small>8 courses • Intermediate</small></a>
-<a class="lp o hov" style="left:777px;width:147px"><div class="ib" style="background:none;color:#0B1236"><svg style="width:30px;height:30px"><use href="#i-brain"/></svg></div><h4>AI &amp; Machine Learning</h4><small>12 courses • Intermediate</small></a>
-<a class="lp c hov" style="left:933px;width:142px"><div class="ib" style="background:none;color:#0B1236"><svg style="width:32px;height:32px"><use href="#i-cloud"/></svg></div><h4>Cloud &amp; DevOps</h4><small>10 courses • Intermediate</small></a>
-<a class="lp d hov on-dark" style="left:1084px;width:140px"><div class="ib" style="background:#06e6f1;color:#0B1236"><svg><use href="#i-network"/></svg></div><h4 style="font-size:10px">IT Infrastructure &amp; Networking</h4><small>8 courses • Beginner</small></a>
-
-<!-- ============ RECENT ACTIVITY ============ -->
-<div class="rule" style="top:826px"></div>
-<i class="abs" style="left:261px;top:837px;width:14px;height:8px;background:linear-gradient(var(--or) 0 2px,transparent 2px 5px,var(--or) 5px)"></i>
-<h2 class="sec-h" style="left:282px;top:834px;font-family:var(--body);font-weight:700;font-size:14px;top:832px;letter-spacing:.4px">RECENT ACTIVITY</h2>
-
-<article class="act hov ck-skin" style="left:260px;width:221px"><img src="assets/img/avatar-sarah.webp" alt=""><b>Sarah N.</b><span class="who">Software Engineer</span><q>"Just finished the React basics module. <br>This is amazing!"</q><span class="ago">2h ago</span><span class="meta" style="left:140px"><svg><use href="#i-heart"/></svg>24 <svg style="margin-left:8px"><use href="#i-comment"/></svg>6</span></article>
-<article class="act hov ck-skin" style="left:497px;width:209px"><img src="assets/img/avatar-david.webp" alt=""><b>David K.</b><span class="who">Shared a project</span><q>"Check out my new open-source tool <br>for log analysis. Feedback welcome!"</q><span class="ago">4h ago</span><span class="meta" style="left:127px"><svg><use href="#i-heart"/></svg>18 <svg style="margin-left:8px"><use href="#i-comment"/></svg>12</span></article>
-<article class="act hov ck-skin" style="left:722px;width:208px"><img src="assets/img/avatar-grace.webp" alt=""><b>Grace M.</b><span class="who">Joined the community</span><q>"Excited to be here! Looking forward <br>to learning and collaborating."</q><span class="ago">5h ago</span><span class="meta" style="left:127px"><svg><use href="#i-heart"/></svg>32 <svg style="margin-left:8px"><use href="#i-comment"/></svg>4</span></article>
-
-<section class="study hov on-dark ck-skin ck--inv">
-  <img src="assets/img/study-corner.webp" alt="" style="left:164px;top:28px;width:112px;height:76px">
-  <svg style="left:20px;top:18px;width:56px;height:52px;color:#06e6f1"><use href="#i-people"/></svg>
-  <b style="left:94px;top:12px;font-size:15px;font-weight:600">Join a Study Group</b>
-  <span style="left:94px;top:33px;font-size:10.5px;line-height:14px;color:#e2e8ec">Find peers, share knowledge, <br>and solve problems together.</span>
-  <a class="hov" href="groups.html" style="left:94px;top:69px;width:112px;height:23px;background:var(--or);color:#0B1236;font-size:10px;font-weight:600;display:flex;align-items:center;gap:10px;padding-left:12px">Explore Groups <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
-</section>
-
-<!-- ============ RIGHT COLUMN ============ -->
-<div class="panel" style="top:80px;height:238px"></div>
-<div class="qa-h abs"><svg class="i abs" style="left:13px;top:11px;width:17px;height:17px"><use href="#i-grid"/></svg><span class="abs" style="left:43px;top:10px">Quick Access</span></div>
-<a class="qa hov" style="left:1256px;top:129px;height:86px;background:var(--or);color:#0B1236"><svg style="top:15px;width:34px;height:34px"><use href="#i-people"/></svg><span style="top:54px">Join Community</span></a>
-<a class="qa hov" style="left:1390px;top:129px;height:86px;width:123px;background:#ebeced;color:#0B1236"><svg style="top:15px"><use href="#i-plusc"/></svg><span style="top:54px">Create Project</span></a>
-<a class="qa hov" style="left:1256px;top:224px;height:80px;background:#05e7f2;color:#0B1236"><svg style="top:14px"><use href="#i-cap"/></svg><span style="top:49px">Browse Courses</span></a>
-<a class="qa hov on-dark" style="left:1390px;top:224px;height:80px;width:123px;background:#191e24;color:#fff"><svg style="top:14px;width:26px;height:26px;color:#fff"><use href="#i-doc"/></svg><span style="top:49px">Read Docs</span></a>
-
-<div class="panel" style="top:331px;height:265px"></div>
-<svg class="i abs" style="left:1252px;top:341px;width:18px;height:18px;color:#0B1236"><use href="#i-chat"/></svg>
-<b class="abs" style="left:1284px;top:342px;font-size:14px;font-weight:600">Latest from Community</b>
-<a class="abs" href="announcements.html" style="left:1468px;top:347px;font-size:10.5px;font-weight:600;color:#0B1236">View All →</a>
-<div class="feed" style="top:372px"><span class="ci" style="background:#06e2ee;color:#0B1236"><svg><use href="#i-chat"/></svg></span><b>New message from David K.</b><small>About the project you shared...</small><i>2m ago</i></div>
-<div class="feed" style="top:424px"><span class="ci" style="background:var(--or);color:#0B1236"><svg><use href="#i-star"/></svg></span><b>Your project got 5 new stars</b><small>Web App Portfolio</small><i>12m ago</i></div>
-<div class="feed" style="top:479px"><span class="ci" style="background:#06e2ee;color:#0B1236"><svg><use href="#i-chat"/></svg></span><b>Grace M. commented on your post</b><small>"This is really helpful!"</small><i>1h ago</i></div>
-<div class="feed" style="top:535px"><span class="ci" style="background:#0B1236;color:#fff"><svg><use href="#i-info"/></svg></span><b>System update</b><small>New resources are now available</small><i>3h ago</i></div>
-
-<div class="panel" style="top:604px;height:244px"></div>
-<svg class="i abs" style="left:1252px;top:614px;width:19px;height:19px;color:#0B1236"><use href="#i-calendar"/></svg>
-<b class="abs" style="left:1284px;top:615px;font-size:13.5px;font-weight:600">Upcoming Events</b>
-<a class="abs cal-book" href="events.html" data-cal="101codecrafts" style="left:1463px;top:620px;font-size:10.5px;font-weight:500;color:#1b8acb">View All →</a>
-<div class="ev" style="top:646px"><div class="d"><small>NOV</small><b>16</b></div><i class="bar"></i><h5>Web Development Workshop</h5><span class="tm">10:00 AM – 12:00 PM</span><span class="on">Online</span></div>
-<div class="ev" style="top:714px"><div class="d"><small>NOV</small><b>18</b></div><i class="bar"></i><h5>Ethical Hacking Webinar</h5><span class="tm">6:00 PM – 8:00 PM</span><span class="on">Online</span></div>
-<div class="ev" style="top:783px"><div class="d"><small>NOV</small><b>22</b></div><i class="bar"></i><h5>Hackathon 2025</h5><span class="tm">All Day</span><span class="on">Online</span></div>
-
-<a class="brandcard hov on-dark" href="index.html"><img src="assets/img/logo-101-brandcard.webp" alt="101" style="left:10px;top:10px;width:68px;height:36px"><b style="left:86px;top:10px;font-family:var(--disp2);font-weight:400;font-size:15.5px">101 Codecrafts</b><small style="left:86px;top:30px;font-size:10.5px;color:#dbe2e7">Build. Learn. Grow</small><svg class="i" style="left:232px;top:19px;width:16px;height:16px"><use href="#i-arrow"/></svg></a>
-
-<!-- ============ FOOTER ============ -->
-<footer class="foot">
-  <a href="index.html" style="left:926px">Home</a><a href="courses.html" style="left:986px">Learn</a><a href="index.html#community" style="left:1045px">Community</a><a href="resources.html" style="left:1127px">Resources</a><a href="index.html#about" style="left:1207px">About</a>
-  <div class="socials" data-socials><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on YouTube" style="left:1326px;width:20px;height:20px"><svg><use href="#i-yt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Instagram" style="left:1360px"><svg><use href="#i-ig"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on TikTok" style="left:1389px"><svg><use href="#i-tt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on X" style="left:1421px"><svg><use href="#i-x"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on LinkedIn" style="left:1454px"><svg><use href="#i-in"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Discord" style="left:1488px;width:20px;height:20px"><svg><use href="#i-discord"/></svg></a></div>
-</footer>
+  <section id="l-kpis" class="dash-kpis" aria-label="Key numbers" aria-busy="true"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading your numbers…</span></div></section>
+  <section class="grid g2" style="align-items:start">
+    <div class="card" id="continue"><div class="sec-title"><h2>CONTINUE LEARNING</h2></div><div id="l-continue"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading your next lesson…</span></div></div></div>
+    <div class="card" id="plan"><div class="sec-title"><h2>YOUR PLAN</h2></div><div id="l-plan"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading your plan…</span></div></div></div>
+  </section>
+  <section class="card" id="my-courses"><div class="sec-title"><h2>MY COURSES</h2><a class="viewall" href="courses.html">Find more →</a></div><div id="l-courses"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading your courses…</span></div></div></section>
+  <section class="grid g3" style="align-items:start">
+    <div class="card" id="certificates"><div class="sec-title"><h2>CERTIFICATES</h2></div><div id="l-certs"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading certificates…</span></div></div></div>
+    <div class="card" id="saved"><div class="sec-title"><h2>SAVED</h2></div><div id="l-saved"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading saved items…</span></div></div></div>
+    <div class="card" id="sessions"><div class="sec-title"><h2>SESSIONS</h2></div><div id="l-sessions"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading sessions…</span></div></div></div>
+  </section>
 </main>
-<script src="js/dash-layout.js"></script>
-
-<!-- ============ BELOW THE MOCKUP (not part of the 1v1 comparison) ============ -->
-<section id="below-fold" class="below" aria-label="More for you">
-  <div class="below-col fwidget" id="feed-widget">
-    <div class="sec-title"><div class="ftabs sm" id="fw-tabs" aria-label="Today in tech, opportunities and events"></div></div>
-    <div id="fw-tit" role="tabpanel" aria-labelledby="tab-tit"><div class="fw-h"><b>TODAY IN TECH</b> <small id="tit-date"></small><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="tit-list"><li class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading today in tech…</span></li></ol></div>
-    <div id="fw-dopp" role="tabpanel" aria-labelledby="tab-dopp" hidden><div class="fw-h"><b>OPEN NOW</b> <small>Deadlines in EAT</small><a class="viewall" href="opportunities.html">All opportunities <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dopp-list"></ol></div>
-    <div id="fw-dev" role="tabpanel" aria-labelledby="tab-dev" hidden><div class="fw-h"><b>COMING UP</b> <small>Times in EAT</small><a class="viewall" href="events.html">All events <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dev-list"></ol></div>
-  </div>
-  <div class="below-col">
-    <div class="sec-title"><h2>FROM THE LIBRARY</h2><a class="viewall" href="resources.html">Open Library <svg class="i"><use href="#i-arrow"/></svg></a></div>
-    <div id="library-row" class="rgrid"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading the library…</span></div></div>
-  </div>
-</section>
+<footer class="flow-foot">
+  <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
+  <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
+  <div class="socials" data-socials><a href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer" aria-label="Join the 101 Codecrafts WhatsApp community"><svg aria-hidden="true"><use href="#i-wa"/></svg></a><a href="https://github.com/101codecrafts" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts on GitHub"><svg aria-hidden="true"><use href="#i-gh"/></svg></a><a href="https://github.com/101codecrafts-ug" target="_blank" rel="noopener noreferrer" aria-label="101 Codecrafts team account on GitHub (101codecrafts-ug)"><svg aria-hidden="true"><use href="#i-gh"/></svg></a><span class="soc-soon" role="link" aria-disabled="true" aria-label="YouTube: coming soon" title="YouTube: coming soon"><svg aria-hidden="true"><use href="#i-yt"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="TikTok: coming soon" title="TikTok: coming soon"><svg aria-hidden="true"><use href="#i-tt"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Instagram: coming soon" title="Instagram: coming soon"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Facebook: coming soon" title="Facebook: coming soon"><svg aria-hidden="true"><use href="#i-fb"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="X: coming soon" title="X: coming soon"><svg aria-hidden="true"><use href="#i-x"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="LinkedIn: coming soon" title="LinkedIn: coming soon"><svg aria-hidden="true"><use href="#i-in"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Telegram: coming soon" title="Telegram: coming soon"><svg aria-hidden="true"><use href="#i-tg"/></svg></span><span class="soc-soon" role="link" aria-disabled="true" aria-label="Discord: coming soon" title="Discord: coming soon"><svg aria-hidden="true"><use href="#i-discord"/></svg></span></div>
+</footer>
 </div></div>
 <script src="js/data.js" defer></script>
 <script src="js/site-social.js" defer></script>
@@ -305,7 +185,6 @@ COLLABORATE</h1>
 <script src="js/api.js" defer></script>
 <script src="js/access.js" defer></script>
 <script src="js/auth.js" defer></script>
-<script src="js/access.js" defer></script>
 <script src="js/share.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous" defer></script>
@@ -313,16 +192,14 @@ COLLABORATE</h1>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js" integrity="sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu" crossorigin="anonymous" defer></script>
 <script src="js/shell.js" defer></script>
 <script src="js/ui.js" defer></script>
+<script src="js/access.js" defer></script>
+<script src="js/account.js" defer></script>
 <script src="js/motion.js" defer></script>
 <script src="js/era.js" defer></script>
 <script src="js/ads.js" defer></script>
 <script src="js/bg.js" defer></script>
 <script src="js/ai.js" defer></script>
 <script src="js/loaders.min.js" defer></script>
-<script src="js/feed-data.js" defer></script>
-<script src="js/events-data.js" defer></script>
-<script src="js/feed-api.js" defer></script>
-<script src="js/feed.js" defer></script>
-<script src="js/activity.js" defer></script>
-</body>
-</html>
+<script src="js/dash-common.js" defer></script>
+<script src="js/learner.js" defer></script>
+</body></html>

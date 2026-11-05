@@ -1,7 +1,7 @@
 /* Learner dashboard (round 11): real data only, empty-safe.
    Source: GET /api/v1/learner/dashboard (enrollments + progress + next lesson, counts, certificates, saved, sessions,
    streak, plan). Plan limits come from CCAccess.limit() (admin-set; defaults in the shared access policy):
-   Free = 1 active course, some lessons locked (lessons.preview_only), no 1:1 sessions (sessions.per_month = 0). */
+   Free = 1 active course, lessons past lessons.free_per_course locked, no 1:1 sessions (sessions.per_month = 0). */
 (async function () {
   const D = window.CCDash; if (!D) return;
   const { $, esc, ico, num, empty, bar, kpi, fmtDate, ago } = D;
@@ -24,15 +24,15 @@
   const plan = (source === "demo" ? data.plan : (A.plan || data.plan || "free")).toLowerCase();
   const planName = { free: "Free", standard: "Standard", plus: "Plus", pro: "Pro" }[plan] || plan;
   const lim = k => (A.limit ? A.limit(k) : null);
-  const maxCourses = lim("courses.active"), previewOnly = !!lim("lessons.preview_only"), sessionsCap = lim("sessions.per_month");
-  const plansRoute = (A.policy && A.policy.plans_route) || "settings-apps.html#plan";
+  const maxCourses = lim("courses.active"), freePerCourse = lim("lessons.free_per_course"), previewOnly = typeof freePerCourse === "number", sessionsCap = lim("sessions.per_month");
+  const plansRoute = (A.policy && A.policy.plans_route) || "pricing.html";
 
   /* ---------- banners ---------- */
   const bars = [];
   if (source === "demo") bars.push(D.demoBar());
   if (source === "offline") bars.push(bar("local", `${ico("info")}<span>Live data isn't connected on this page yet, so nothing below is filled in. Your real courses and progress show here once it is.</span>`));
   if (source === "error") bars.push(bar("err", `${ico("info")}<span>We couldn't load your learning (${esc(note)}).</span><span class="sp"></span><button class="btn sm" data-retry type="button">Try again</button>`));
-  if (source === "auth") bars.push(bar("err", `${ico("lock")}<span>Your account couldn't be verified: ${esc(note || "sign in again")}.</span><span class="sp"></span><a class="btn sm" href="${esc(A.authUrl ? A.authUrl(location.pathname) : "signin.html")}">Sign in</a>`));
+  if (source === "auth") bars.push(bar("err", `${ico("lock")}<span>Your account couldn't be verified: ${esc(note || "sign in again")}.</span><span class="sp"></span><a class="btn sm" href="${esc(A.authUrl ? A.authUrl(location.pathname) : "auth.html")}">Sign in</a>`));
   $("#l-bars").innerHTML = bars.join("");
 
   /* ---------- KPIs ---------- */
@@ -68,7 +68,7 @@
   const meter = maxCourses != null ? `<div class="meter" aria-label="${used} of ${maxCourses} course${maxCourses === 1 ? "" : "s"} used">${Array.from({ length: Math.max(1, maxCourses) }, (_, i) => `<i class="${i < used ? "on" : ""}"></i>`).join("")}</div><small class="muted">${val(num(used))} of ${num(maxCourses)} course${maxCourses === 1 ? "" : "s"} used</small>` : "";
   const perks = [];
   perks.push(maxCourses != null ? `${num(maxCourses)} active course${maxCourses === 1 ? "" : "s"} at a time` : "Unlimited courses");
-  perks.push(previewOnly ? "Some lessons in each course are locked" : "Every lesson unlocked");
+  perks.push(previewOnly ? `First ${freePerCourse} lessons of each course (plus previews); the rest are locked` : "Every lesson unlocked");
   perks.push(sessionsCap === 0 ? "No 1:1 sessions" : sessionsCap == null ? "1:1 sessions included" : `${num(sessionsCap)} 1:1 sessions a month`);
   perks.push("Free external courses (Coursera, freeCodeCamp…) always included");
   const isTop = plan === "pro";

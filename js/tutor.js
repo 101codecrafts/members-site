@@ -43,7 +43,7 @@
   if (source === "offline") bars.push(bar("local", `${ico("info")}<span>Live data isn't connected on this page yet, so the numbers below show nothing. Courses you build are saved on this device until the server is connected.</span>`));
   else if (source === "api+local") bars.push(bar("local", `${ico("info")}<span>Your numbers are live. Courses you build are saved on this device until the course server is connected.</span>`));
   if (source === "error") bars.push(bar("err", `${ico("info")}<span>We couldn't load your dashboard (${esc(note)}). The numbers below are not your real totals.</span><span class="sp"></span><button class="btn sm" data-retry type="button">Try again</button>`));
-  if (source === "auth") bars.push(bar("err", `${ico("lock")}<span>Your tutor account couldn't be verified: ${esc(note || "sign in again")}.</span><span class="sp"></span><a class="btn sm" href="${esc(A.authUrl ? A.authUrl(location.pathname) : "signin.html")}">Sign in</a>`));
+  if (source === "auth") bars.push(bar("err", `${ico("lock")}<span>Your tutor account couldn't be verified: ${esc(note || "sign in again")}.</span><span class="sp"></span><a class="btn sm" href="${esc(A.authUrl ? A.authUrl(location.pathname) : "auth.html")}">Sign in</a>`));
   $("#t-bars").innerHTML = bars.join("");
   const known = source === "api" || source === "api+local" || source === "demo";   // KPI values are real (or labelled demo)
   const val = v => known ? v : "—";
@@ -79,7 +79,7 @@
 
   /* ---------- learners ---------- */
   const ls = data.learners || [];
-  if (cap != null) $("#t-cap").innerHTML = `Plan limit: ${cap} learners · <a href="${esc((A.policy && A.policy.plans_route) || "settings-apps.html#plan")}">Upgrade</a>`;
+  if (cap != null) $("#t-cap").innerHTML = `Plan limit: ${cap} learners · <a href="${esc((A.policy && A.policy.plans_route) || "pricing.html")}">Upgrade</a>`;
   $("#t-learners").innerHTML = ls.length
     ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>Learner</th><th>Course</th><th style="width:34%">Progress</th><th>Last active</th></tr></thead><tbody>${ls.map(l => { const p = Math.round(+l.progress || 0);
         return `<tr><td><b>${esc(l.name)}</b></td><td>${esc(l.course)}</td><td><div class="row" style="flex-wrap:nowrap"><div class="prog" style="flex:1" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(l.name)} progress"><i style="width:${p}%"></i></div><b>${p}%</b></div></td><td>${esc(ago(l.last_activity_at))}</td></tr>`; }).join("")}</tbody></table></div>`

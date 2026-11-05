@@ -214,7 +214,7 @@
       catch (x) {
         if (x.status === 403 && /reverif/i.test(x.code || x.message || "")) {
           st.innerHTML = '<div class="st-note"><b>Confirm it\'s you.</b> For your safety, deleting an account needs a fresh sign-in (within the last 10 minutes).<div class="row"><button type="button" class="btn or" data-reauth>Sign in again</button></div></div>';
-          $("[data-reauth]", st).onclick = async function () { try { await window.CC_AUTH.clerk.signOut(); } catch (z) {} location.href = "signin.html?return=" + encodeURIComponent("/settings.html#delete"); };
+          $("[data-reauth]", st).onclick = async function () { try { await window.CC_AUTH.clerk.signOut(); } catch (z) {} location.href = "auth.html?next=" + encodeURIComponent("/settings.html#delete"); };
           say(msg, "");
         } else say(msg, errText(x), true);
         btn.disabled = false;
@@ -225,7 +225,7 @@
   function clerkPanel() {
     $$("[data-clerk-profile]").forEach(function (b) { b.addEventListener("click", function () { var c = window.CC_AUTH && window.CC_AUTH.clerk;
       if (c && c.openUserProfile) c.openUserProfile({ appearance: { variables: { colorPrimary: "#fc8c0c", colorText: "#0B1236", borderRadius: "0px" } }, customPages: [], __experimental_startPath: b.dataset.clerkProfile === "security" ? "/security" : undefined });
-      else location.href = "signin.html?return=" + encodeURIComponent("/settings.html"); }); });
+      else location.href = "auth.html?next=" + encodeURIComponent("/settings.html"); }); });
   }
 
   /* ------------------------------------------------------------ boot */

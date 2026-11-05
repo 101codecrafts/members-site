@@ -88,8 +88,8 @@
   }
   function boot() {
     if (handle) return loadPublic();
-    if (!window.CC_AUTH) return message("Sign in to see your profile", "Your profile shows your skills, education, links, badges and certificates.", '<a class="btn or" href="signin.html?return=%2Fprofile.html">Sign in</a><a class="btn" href="signup.html">Join 101 free</a>');
-    window.CC_AUTH.onChange(function (u) { if (u) loadOwn(u); else message("Sign in to see your profile", "Your profile shows your skills, education, links, badges and certificates. Looking for someone? Open their /u/username link.", '<a class="btn or" href="signin.html?return=%2Fprofile.html">Sign in</a><a class="btn" href="signup.html?return=%2Fprofile.html">Join 101 free</a>'); });
+    if (!window.CC_AUTH) return message("Sign in to see your profile", "Your profile shows your skills, education, links, badges and certificates.", '<a class="btn or" href="auth.html?next=%2Fprofile.html">Sign in</a><a class="btn" href="auth.html?mode=join">Join 101 free</a>');
+    window.CC_AUTH.onChange(function (u) { if (u) loadOwn(u); else message("Sign in to see your profile", "Your profile shows your skills, education, links, badges and certificates. Looking for someone? Open their /u/username link.", '<a class="btn or" href="auth.html?next=%2Fprofile.html">Sign in</a><a class="btn" href="auth.html?mode=join&return=%2Fprofile.html">Join 101 free</a>'); });
   }
 
   /* ------------------------------------------------------------ share: image card (card.html look, flat brutalist) */

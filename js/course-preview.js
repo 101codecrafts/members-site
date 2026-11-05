@@ -31,7 +31,11 @@
   if ((tree.legacy_lessons || []).length) mods.push({ id: "legacy", title: "More lessons", lessons: tree.legacy_lessons });
   const flat = []; mods.forEach((m, mi) => (m.lessons || []).forEach(l => flat.push({ l, m, mi })));
   const status = C.statusOf(course, tree.submissions || []);
-  const previewOnlyFree = true;   // Free-plan learners get only the lessons marked "Free preview" (CCAccess limit lessons.preview_only)
+  // r11 integrate: same rule as the DB (app.can_view_lesson): on Free, the first lessons.free_per_course lessons plus every
+  // "Free preview" lesson are open; a per-lesson min_plan above free locks it. Default from the policy's learner Free row.
+  const POL = (window.CCAccess && CCAccess.policy) || {};
+  const freeN = (((POL.limits || {}).learner || {}).free || {})["lessons.free_per_course"];
+  const freeFirst = typeof freeN === "number" ? freeN : 3;
 
   /* preview bar */
   const back = staff ? `<a class="btn sm" href="admin.html#approvals">Back to approvals</a>` : `<a class="btn sm" href="builder.html?id=${encodeURIComponent(courseId)}&tab=curriculum">Back to builder</a>`;
@@ -61,11 +65,11 @@
     let html = "", lastMod = null;
     flat.forEach((x, i) => {
       if (x.m !== lastMod) { html += `<li class="pv-mod">M${x.mi + 1} · ${esc(x.m.title)}</li>`; lastMod = x.m; }
-      const locked = previewOnlyFree && !x.l.is_preview;
+      const locked = !x.l.is_preview && (i >= freeFirst || (x.l.min_plan && x.l.min_plan !== "free"));
       html += `<li><a href="?preview=${encodeURIComponent(courseId)}${subId ? "&submission=" + encodeURIComponent(subId) : ""}&lesson=${encodeURIComponent(x.l.id)}" data-i="${i}"${i === cur ? ' aria-current="true"' : ""}><span class="tick" role="img" aria-label="${esc(x.l.kind)} lesson">${ico(kindIcon[x.l.kind] || "doc")}</span><span>${esc(x.l.title)}${x.l.is_preview ? ' <small class="muted">· free preview</small>' : locked ? ` <small class="lock" title="Locked for Free-plan learners">${ico("lock")}</small>` : ""}${x.l.approved === false && status.key === "approved" ? ' <small class="muted">· not yet approved</small>' : ""}</span></a></li>`;
     });
     $("#c-lessons").innerHTML = html;
-    $("#c-pct").textContent = `${flat.filter(x => x.l.is_preview).length} free-preview lesson(s) · the rest unlock with enrolment (and a paid plan where the course needs one)`;
+    $("#c-pct").textContent = `First ${freeFirst} lesson(s) + ${flat.filter(x => x.l.is_preview).length} free-preview lesson(s) open on Free · the rest unlock on a paid plan or when the course is bought`;
   }
   function stage(l) {
     const p = l.payload || {};

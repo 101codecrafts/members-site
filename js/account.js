@@ -58,13 +58,13 @@
         b.onclick = function () { c.setActive({ session: s.id }).then(function () { location.reload(); }); };
         anchor.parentNode.insertBefore(b, anchor);
       });
-      var add = document.createElement("a"); add.setAttribute("role", "menuitem"); add.className = "am-other"; add.href = "signin.html?add=1";
+      var add = document.createElement("a"); add.setAttribute("role", "menuitem"); add.className = "am-other"; add.href = "auth.html?add=1";
       add.innerHTML = '<svg aria-hidden="true"><use href="#i-userplus"/></svg>Add another account'; anchor.parentNode.insertBefore(add, anchor);
       anchor.hidden = true; var f = $(".am-other", menu); if (f) f.focus();
       return;
     }
     /* single-session instance: sign out, then sign in with the other account (and come back here) */
-    var back = "signin.html?switch=1&return=" + encodeURIComponent(location.pathname + location.search);
+    var back = "auth.html?switch=1&next=" + encodeURIComponent(location.pathname + location.search);
     try { if (c) await c.signOut(); } catch (e) {}
     location.href = back;
   }
@@ -72,7 +72,7 @@
   function init() {
     $$("[data-return]").forEach(function (a) {
       var u = new URL(a.getAttribute("href"), location.href);
-      if (!/^\/?(signin|signup|auth|index)?(\.html)?$/.test(location.pathname.replace(/^\//, ""))) u.searchParams.set("return", location.pathname + location.search);
+      if (!/^\/?(signin|signup|auth|index)?(\.html)?$/.test(location.pathname.replace(/^\//, ""))) u.searchParams.set("next", location.pathname + location.search);   // r11 integrate: the /auth route reads ?next=
       a.href = u.pathname.replace(/^\//, "") + u.search;
     });
     $$("[data-acct-theme-val]").forEach(function (e) { e.textContent = themeName(); });

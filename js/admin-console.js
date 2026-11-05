@@ -66,7 +66,7 @@
   function authUrl() {
     const next = "/admin.html" + location.hash;
     if (window.CCAccess && window.CCAccess.authUrl) return window.CCAccess.authUrl(next);
-    return "signin.html?next=" + encodeURIComponent(next);
+    return "auth.html?next=" + encodeURIComponent(next);
   }
   function gate(kind, extra) {
     $$(".ac-panel").forEach(p => p.hidden = true); $("#ac-tabs").hidden = true;
