@@ -63,6 +63,12 @@ export const tests = [
     await q(db, `set local app.break_glass = 'rebind-root'`);
     await q(db, `delete from app.root_identity`);
     assert.equal((await one(db, `select app.root_user_id() r`)).r, null);
+    // a privileged super_admin grant to the VERIFIED root-email account re-binds (r11 auth service path); anyone else is refused
+    await as(db, 'service');
+    await fails(db, `insert into public.user_roles (user_id, role) values ($1,'super_admin')`, [U.alice], /reserved for the root/);
+    await q(db, `insert into public.user_roles (user_id, role) values ($1,'super_admin') on conflict do nothing`, [U.root]);
+    await as(db, 'postgres');
+    assert.equal((await one(db, `select app.root_user_id() r`)).r, U.root);
   }),
   // -------------------------------------------------------------- admins -----
   t('admins: root invites by email, invitee accepts with the verified email, scopes are enforced', async (db) => {

@@ -80,6 +80,11 @@ begin
   if cur is null then
     insert into app.root_identity (user_id, email) values (p_user, app.root_email());
   end if;
+  -- keep the mirrors consistent (the r11 auth guard also reads these)
+  insert into public.profile_private (user_id, email) values (p_user, app.root_email())
+  on conflict (user_id) do update set email = excluded.email where public.profile_private.email is distinct from excluded.email;
+  insert into public.onboarding_state (user_id, email_verified) values (p_user, true)
+  on conflict (user_id) do update set email_verified = true;
   insert into public.user_roles (user_id, role) values (p_user, 'super_admin'), (p_user, 'admin') on conflict do nothing;
   update public.profiles set account_status = 'active', status_reason = null, suspended_until = null,
          joined_at = coalesce(joined_at, now())
@@ -93,6 +98,23 @@ begin
 end;
 $$;
 
+-- First privileged super_admin grant to the verified root-email account binds
+-- root (so the r11 auth service's direct grant and backend_bind_root converge).
+create or replace function app.autobind_root(p_user text)
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+  if app.root_user_id() is not null then return; end if;
+  if exists (select 1 from public.profile_private pp where pp.user_id = p_user and lower(pp.email) = app.root_email())
+     and exists (select 1 from public.onboarding_state o where o.user_id = p_user and o.email_verified) then
+    insert into app.root_identity (user_id, email) values (p_user, app.root_email());
+    insert into public.audit_log (actor_id, actor_role, action, table_name, record_id, new_data)
+    values (p_user, 'server', 'root.bind', 'root_identity', p_user, jsonb_build_object('user_id', p_user, 'via', 'role_grant'));
+  end if;
+end;
+$$;
+revoke all on function app.autobind_root(text) from public, anon, authenticated;
+grant execute on function app.autobind_root(text) to service_role;
+
 -- Roles: replaces the round-2 guard. super_admin is reserved for the bound root
 -- id; root's super_admin/admin rows can never be deleted or changed by anyone
 -- (this also blocks deleting root's profile, which cascades here).
@@ -102,6 +124,10 @@ declare root text := app.root_user_id();
 begin
   if not app.is_privileged() then
     raise exception 'roles change only via admin RPCs' using errcode = '42501';
+  end if;
+  if tg_op in ('INSERT','UPDATE') and new.role = 'super_admin' and root is null then
+    perform app.autobind_root(new.user_id);
+    root := app.root_user_id();
   end if;
   if tg_op in ('UPDATE','DELETE') and old.role in ('super_admin','admin') and old.user_id = root
      and coalesce(current_setting('app.break_glass', true), '') <> 'rebind-root' then
