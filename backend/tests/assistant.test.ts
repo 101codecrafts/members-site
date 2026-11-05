@@ -128,3 +128,10 @@ test('spotlighting wrapper cannot be closed from inside; URL detection', () => {
   assert.equal(firstUrl('no link here'), null);
   assert.ok(htmlToText('<p>a</p>').text.length >= 1);
 });
+test('LG3: no Gemini, Groq or paid AI Gateway anywhere in the server AI code; env schema has no such keys', async () => {
+  const fs = await import('node:fs');
+  for (const f of ['lib/ai.ts', 'lib/news.ts', 'services/news.ts', 'services/ai.ts', 'lib/env.ts', 'lib/assistant/chat.ts']) {
+    const s = fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
+    assert.ok(!/generativelanguage\.googleapis|api\.groq\.com|ai-gateway\.vercel\.sh|GEMINI_|GROQ_|AI_GATEWAY_API_KEY|gpt-4o/.test(s), f);
+  }
+});

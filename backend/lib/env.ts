@@ -41,15 +41,9 @@ const schema = z.object({
 
   GITHUB_TOKEN: z.string().optional(),       // GitHub API (repo unfurl, trending)
   GOOGLE_BOOKS_API_KEY: z.string().optional(),
-  AI_GATEWAY_API_KEY: z.string().optional(), // Vercel AI Gateway (news summaries)
-  AI_MODEL: z.string().default('openai/gpt-4o-mini'),
   // On-site AI fallbacks (server-only keys; tried in order after the Vercel AI Gateway)
   OPENROUTER_API_KEY: z.string().optional(),
-  OPENROUTER_FREE_MODEL: z.string().default('meta-llama/llama-3.3-70b-instruct:free'),
-  GROQ_API_KEY: z.string().optional(),
-  GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
-  GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
+  NEWS_AI_SUMMARIES: z.string().optional(), // '1' = one free-model summary per ingested news item (off by default: spends the free daily quota)
   // Video meetings (Jitsi needs nothing). TODO: create OAuth apps, then set these.
   JITSI_DOMAIN: z.string().default('meet.jit.si'),
   GOOGLE_CLIENT_ID: z.string().optional(), GOOGLE_CLIENT_SECRET: z.string().optional(),

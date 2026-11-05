@@ -1,52 +1,32 @@
 import 'server-only';
 import { env } from '@/lib/env';
 import { AppError } from '@/lib/errors';
+import { complete, freeModels } from '@/lib/assistant/chat';
 
 /**
- * Provider chain for FREE on-site AI. Every provider below speaks the
- * OpenAI-compatible /chat/completions shape, so one client covers all of them.
- * Order: Vercel AI Gateway → OpenRouter (:free) → Groq → Gemini. Keys are
- * server-only env vars; users never supply or store keys here.
+ * On-site AI (practice explain/hint/debug, AI tools chat, quota-metered features): OpenRouter FREE models only.
+ * Round 12 (legal LG3 + cost): the Vercel AI Gateway (its default model was a PAID OpenAI model billed to gateway
+ * credit), Groq and Gemini providers were REMOVED. Gemini's API terms bar services likely to be used by under-18s
+ * and its free tier trains on prompts. Every call now goes through the same free-only fallback chain as 101 AI
+ * (lib/assistant/chat.ts: ':free' ids + the free-only openrouter/free router). Keys stay server-only env vars.
  */
 export interface ChatMessage { role: 'system' | 'user' | 'assistant'; content: string }
 export interface ChatResult { text: string; provider: string; model: string; input_tokens: number; output_tokens: number; latency_ms: number }
-interface Provider { id: string; url: string; key: string; model: string; headers?: Record<string, string> }
-
-export function providers(): Provider[] {
-  const e = env();
-  const list: Provider[] = [];
-  if (e.AI_GATEWAY_API_KEY) list.push({ id: 'vercel-ai-gateway', url: 'https://ai-gateway.vercel.sh/v1/chat/completions', key: e.AI_GATEWAY_API_KEY, model: e.AI_MODEL });
-  if (e.OPENROUTER_API_KEY) list.push({ id: 'openrouter', url: 'https://openrouter.ai/api/v1/chat/completions', key: e.OPENROUTER_API_KEY, model: e.OPENROUTER_FREE_MODEL,
-    headers: { 'HTTP-Referer': e.APP_URL, 'X-Title': '101 Codecrafts' } });
-  if (e.GROQ_API_KEY) list.push({ id: 'groq', url: 'https://api.groq.com/openai/v1/chat/completions', key: e.GROQ_API_KEY, model: e.GROQ_MODEL });
-  if (e.GEMINI_API_KEY) list.push({ id: 'gemini', url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', key: e.GEMINI_API_KEY, model: e.GEMINI_MODEL });
-  return list;
-}
 
 export function availableModels() {
-  return providers().map((p) => ({ provider: p.id, model: p.model }));
+  return env().OPENROUTER_API_KEY ? freeModels().map((model) => ({ provider: 'openrouter', model })) : [];
 }
 
 export async function chatComplete(messages: ChatMessage[], opts: { maxTokens?: number; temperature?: number } = {}): Promise<ChatResult> {
-  const list = providers();
-  if (!list.length) throw new AppError('upstream_error', 'On-site AI is not configured yet');
-  let lastErr = '';
-  for (const p of list) {
-    const t0 = Date.now();
-    try {
-      const res = await fetch(p.url, {
-        method: 'POST', signal: AbortSignal.timeout(30_000),
-        headers: { 'content-type': 'application/json', authorization: `Bearer ${p.key}`, ...(p.headers ?? {}) },
-        body: JSON.stringify({ model: p.model, messages, max_tokens: opts.maxTokens ?? 800, temperature: opts.temperature ?? 0.4 }),
-      });
-      if (res.status === 429 || res.status >= 500) { lastErr = `${p.id} ${res.status}`; continue; }   // fall through to next free provider
-      if (!res.ok) { lastErr = `${p.id} ${res.status}`; continue; }
-      const j = (await res.json()) as { choices?: Array<{ message?: { content?: string } }>; usage?: { prompt_tokens?: number; completion_tokens?: number } };
-      return { text: j.choices?.[0]?.message?.content ?? '', provider: p.id, model: p.model,
-        input_tokens: j.usage?.prompt_tokens ?? 0, output_tokens: j.usage?.completion_tokens ?? 0, latency_ms: Date.now() - t0 };
-    } catch (e) { lastErr = `${p.id} ${String(e)}`; }
+  if (!env().OPENROUTER_API_KEY) throw new AppError('upstream_error', 'On-site AI is not configured yet');
+  const t0 = Date.now();
+  const attempts: Array<{ model: string; status: number | string }> = [];
+  const out = await complete(messages, AbortSignal.timeout(55_000), attempts, { maxTokens: opts.maxTokens ?? 800, temperature: opts.temperature ?? 0.4, maxChars: 8000 });
+  if (!out || !out.text) {
+    const day = attempts.some((a) => String(a.status).includes('day-cap'));
+    throw new AppError('upstream_error', day ? "The free AI allowance for today is used up; it resets at 03:00 Kampala time." : 'All free AI models are busy, try again shortly');
   }
-  throw new AppError('upstream_error', `All AI providers are busy, try again shortly (${lastErr.split(' ')[0]})`);
+  return { text: out.text, provider: 'openrouter', model: out.model, input_tokens: 0, output_tokens: 0, latency_ms: Date.now() - t0 };
 }
 
 // ---------------------------------------------------------------- moderation --
