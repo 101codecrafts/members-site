@@ -52,5 +52,5 @@ export async function courseTree(db: Db, courseId: string) {
 
 export async function nextPosition(db: Db, table: 'course_modules' | 'lessons', courseId: string): Promise<number> {
   const rows = await run<Array<{ position: number }>>(loose(db).from(table).select('position').eq('course_id', courseId).order('position', { ascending: false }).limit(1));
-  return rows.length ? rows[0].position + 1 : 0;
+  return rows[0] ? rows[0].position + 1 : 0;
 }

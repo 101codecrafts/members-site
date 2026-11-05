@@ -11,10 +11,10 @@ export function youtubeId(input: string): string | null {
   try { u = new URL(s); } catch { return null; }
   const host = u.hostname.replace(/^(www\.|m\.)/, '');
   let id: string | null = null;
-  if (host === 'youtu.be') id = u.pathname.slice(1).split('/')[0];
+  if (host === 'youtu.be') id = u.pathname.slice(1).split('/')[0] ?? null;
   else if (['youtube.com', 'youtube-nocookie.com', 'music.youtube.com'].includes(host)) {
     const p = u.pathname.split('/').filter(Boolean);
-    id = p[0] === 'watch' ? u.searchParams.get('v') : ['embed', 'shorts', 'live', 'v'].includes(p[0]) ? p[1] ?? null : null;
+    id = p[0] === 'watch' ? u.searchParams.get('v') : ['embed', 'shorts', 'live', 'v'].includes(p[0] ?? '') ? p[1] ?? null : null;
   }
   return id && YT_ID.test(id) ? id : null;
 }
