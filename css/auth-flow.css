@@ -57,6 +57,7 @@ body.af-page{margin:0;min-height:100vh;min-height:100dvh;color:var(--color-ink,#
 
 /* buttons */
 .af-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-top:8px}
+.af-actions.af-stack{flex-direction:column;align-items:stretch}.af-actions.af-stack .af-btn{width:100%;text-align:center;justify-content:center}
 .af-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 20px;border:2px solid #0B1236;border-radius:0;background:#fc8c0c;color:#0B1236;box-shadow:4px 4px 0 #0B1236;font:700 15px/1 var(--font-body);letter-spacing:.5px;text-transform:uppercase;text-decoration:none;cursor:pointer}
 .af-btn:hover,.af-btn:focus-visible{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #0B1236}
 .af-btn:focus-visible{outline:3px solid var(--color-focus,#00b9e6);outline-offset:2px}

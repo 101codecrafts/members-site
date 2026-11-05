@@ -170,7 +170,7 @@
     var back = location.origin + "/auth.html?sso=1" + (params.get("next") ? "&next=" + encodeURIComponent(params.get("next")) : "");
     try {
       await c.client.signIn.authenticateWithRedirect({ strategy: "oauth_google", redirectUrl: back, redirectUrlComplete: location.origin + "/auth.html?step=route" + (params.get("next") ? "&next=" + encodeURIComponent(params.get("next")) : "") });
-    } catch (err) { busy(btn, false); showEmail(esc(clerkMsg(err, "Google sign-in failed. Try again or use your email."))); }
+    } catch (err) { busy(btn, false); if (sessionExists(err)) return showAddAccount(c, "This site keeps one account signed in at a time. Sign out of the current account first, then continue with Google."); showEmail(esc(clerkMsg(err, "Google sign-in failed. Try again or use your email."))); }
   }
   async function onEmail(e) {
     e.preventDefault();
@@ -181,7 +181,11 @@
     try {
       var c = await clerk(); if (!c) throw new Error("Sign-in is unavailable right now. Check your connection and try again.");
       await startCode(c, email);
-    } catch (err) { busy(btn, false); setErr("email", clerkMsg(err, err.message || "Something went wrong.")); firstErrorFocus(); }
+    } catch (err) {
+      busy(btn, false);
+      if (sessionExists(err)) { var cc = await clerk(); return showAddAccount(cc, "This site keeps one account signed in at a time. Sign out of the current account first, then sign in with " + esc(email) + "."); }
+      setErr("email", clerkMsg(err, err.message || "Something went wrong.")); firstErrorFocus();
+    }
   }
   async function startCode(c, email) {
     try {
@@ -561,6 +565,31 @@
       '<div class="af-actions"><a class="af-btn ghost" href="/settings-apps.html#guardian">Change guardian</a><a class="af-btn" href="' + esc(to) + '">Continue</a></div>');
   }
 
+  /* ------------------------------------------------------------------ add another account (?add=1, from the account menu)
+     A signed-in member is NOT bounced home here. Clerk multi-session instances add the new session next to the current one;
+     single-session instances (Clerk's default) refuse with session_exists, so we offer "sign out of X and continue". */
+  var ADD = params.get("add") === "1";
+  function currentEmail(c) { return (c && c.user && c.user.primaryEmailAddress && c.user.primaryEmailAddress.emailAddress) || "your current account"; }
+  function homeHref() { var role = (A() && A().role) || "learner"; return A() && A().home ? A().home(role) : "/dashboard.html"; }
+  function showAddAccount(c, note) {
+    S.path = null; S.step = null; S.email = ""; progress();
+    var who = esc(currentEmail(c));
+    view('<h1 class="af-h" id="af-h">Add another account</h1>' +
+      '<p class="af-sub">You\'re signed in as <b>' + who + '</b>. Use a different email or Google account to add or switch to another 101 account.</p>' +
+      (note ? '<p class="af-note warn" role="alert">' + note + "</p>" : "") +
+      '<div class="af-actions af-stack"><button type="button" class="af-btn" data-add-email>Use another email</button>' +
+      '<button type="button" class="af-btn ghost" data-add-switch>Sign out of ' + who + ' and continue</button>' +
+      '<a class="af-btn ghost" href="' + esc(homeHref()) + '" data-add-back>Back to my account</a></div>', "[data-add-email]");
+    $("[data-add-email]").addEventListener("click", function () { showEmail("Adding another account. You stay signed in as " + who + " unless you switch."); });
+    $("[data-add-switch]").addEventListener("click", async function (e) {
+      busy(e.currentTarget, true);
+      try { await c.signOut(); } catch (x) { /* already signed out */ }
+      try { if (window.CCAccess && CCAccess.set) CCAccess.set({ role: "visitor", user: null }); } catch (x) {}
+      showEmail("Signed out of " + who + ". Sign in with the other account.");
+    });
+  }
+  function sessionExists(err) { var x = err && err.errors && err.errors[0]; return !!x && (x.code === "session_exists" || /already signed in|session.*exist/i.test(x.longMessage || x.message || "")); }
+
   /* ------------------------------------------------------------------ boot */
   async function boot() {
     var g = params.get("guardian");
@@ -572,6 +601,7 @@
           continueSignUpUrl: location.origin + "/auth.html?step=route", firstFactorUrl: location.origin + "/auth.html", signInUrl: location.origin + "/auth.html", signUpUrl: location.origin + "/auth.html" });
       } catch (e) { return showEmail(esc(clerkMsg(e, "Google sign-in didn't finish. Try again."))); }
     }
+    if (c && c.user && ADD && params.get("sso") !== "1") return showAddAccount(c);
     if (c && c.user) { S.email = (c.user.primaryEmailAddress && c.user.primaryEmailAddress.emailAddress) || ""; return routeAfterAuth(); }
     if (!c) return showEmail("Sign-in couldn't load. Check your connection, then reload the page." + (note ? "<br>" + note : ""));
     showEmail(note);
