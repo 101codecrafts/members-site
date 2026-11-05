@@ -2,36 +2,75 @@ import 'server-only';
 import { SYSTEM_PROMPT } from './knowledge.ts';
 
 /**
- * 101 AI: OpenRouter FREE models only (ids ending ":free"), so the assistant costs $0.
+ * 101 AI: OpenRouter FREE models only, so the assistant costs $0.
+ * Allowed ids: anything ending ":free", plus the "openrouter/free" router (OpenRouter docs: it "falls back only to
+ * other free models"). Every other id is dropped, including from an ASSISTANT_MODELS override.
  * The key is OPENROUTER_API_KEY (server-only env var). It is never logged, echoed or sent to the browser.
- * Models are tried in order; a model that is rate-limited, down or returns nothing hands over to the next.
- * Set ASSISTANT_MODELS (comma-separated) to override the list; non-":free" ids are dropped.
+ *
+ * Round 12 fallback chain: models are sent in GROUPS through OpenRouter's native `models` fallback array (one
+ * upstream request tries up to 3 models, which spends 1 of the account's free-model requests instead of 3), and we
+ * loop over the groups ourselves with per-attempt timeouts. A group that is rate-limited, down, times out or streams
+ * nothing hands over to the next group. Order (picked from the live /api/v1/models list and our eval, 2026-11-05):
+ * strongest general/reasoning first, then fast reliable ones, then the random free router as the last resort.
  */
-export const DEFAULT_MODELS = ['nvidia/nemotron-3.5-super-vl:free', 'thinkingmachines/inkling-small:free', 'google/gemma-4-31b-it:free', 'google/gemma-4-26b-a4b-it:free', 'nvidia/nemotron-3.5-lightning:free'];
-export const LIMITS = { maxInput: 600, maxHistory: 8, maxHistoryChars: 6000, maxTokens: 1000, connectMs: 15_000, idleMs: 20_000, totalMs: 50_000 };
+export const DEFAULT_MODELS = [
+  'nvidia/nemotron-3.5-super-vl:free',          // 120B MoE (12B active), 1M ctx, answered every round-7/8 test
+  'google/gemma-4-31b-it:free',                 // dense 31B, strong general + multilingual
+  'nvidia/nemotron-3-ultra-550b-a55b:free',     // 550B MoE frontier reasoning, slower
+  'dots-studio/dots-3-note-preview:free',       // 280B MoE (16B active), 512k ctx
+  'google/gemma-4-26b-a4b-it:free',
+  'cohere/north-mini-code:free',                // coding-tuned
+  'nvidia/nemotron-3.5-lightning:free',         // fast 30B MoE
+  'openrouter/free',                            // free-only random router: last resort
+];
+export const GROUP = 3;
+export const LIMITS = {
+  maxInput: 4000, maxHistory: 12, maxHistoryChars: 14_000, maxAssistantChars: 3000, maxTokens: 2000,
+  connectMs: 14_000, idleMs: 20_000, totalMs: 55_000,
+};
 
+export const isFreeModel = (m: string) => m === 'openrouter/free' || /^[\w.-]+\/[\w.:-]+:free$/.test(m);
 export function freeModels(): string[] {
   const env = (process.env.ASSISTANT_MODELS ?? '').split(',').map((s) => s.trim()).filter(Boolean);
-  const list = (env.length ? env : DEFAULT_MODELS).filter((m) => /^[\w.-]+\/[\w.:-]+:free$/.test(m));
+  const list = (env.length ? env : DEFAULT_MODELS).filter(isFreeModel);
   return list.length ? list : DEFAULT_MODELS;
+}
+export function modelGroups(list = freeModels()): string[][] {
+  const g: string[][] = [];
+  for (let i = 0; i < list.length; i += GROUP) g.push(list.slice(i, i + GROUP));
+  return g;
 }
 
 export interface Msg { role: 'user' | 'assistant'; content: string }
+export type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string };
 
-/** Trim the conversation: last N turns, last message must be the user's, total chars capped. */
-export function buildMessages(history: Msg[]) {
+/**
+ * Data minimisation for a platform with children on it: phone numbers and real-looking email addresses in the
+ * user's text are replaced before the text leaves our server (example/test domains are kept for coding questions).
+ */
+export function scrubPersonal(s: string): string {
+  return s
+    .replace(/[\w.+-]+@([\w-]+\.)+[a-z]{2,}/gi, (m) => (/@(example|test|domain|email|mail\.com$|company)\b|@[\w-]+\.(test|invalid|example|local)$/i.test(m) ? m : '[email removed]'))
+    .replace(/(?<![\w./-])(?:\+?256|0)[\s-]?7\d{2}[\s-]?\d{3}[\s-]?\d{3}(?![\w/-])/g, '[phone removed]')
+    .replace(/(?<![\w./-])\+\d{1,3}[\s-]?\d{2,4}[\s-]?\d{3,4}[\s-]?\d{3,4}(?![\w/-])/g, '[phone removed]');
+}
+
+/** Trim the conversation: last N turns, last message must be the user's, total chars capped; optional extra system context. */
+export function buildMessages(history: Msg[], extra?: string, system = SYSTEM_PROMPT): ChatMessage[] {
   const h = history.slice(-LIMITS.maxHistory);
   let total = 0;
   const kept: Msg[] = [];
   for (let i = h.length - 1; i >= 0; i--) {
     const m = h[i]!;
-    const c = m.content.slice(0, m.role === 'user' ? LIMITS.maxInput : 1500);
-    if (total + c.length > LIMITS.maxHistoryChars) break;
+    const c = m.role === 'user' ? scrubPersonal(m.content.slice(0, LIMITS.maxInput)) : m.content.slice(0, LIMITS.maxAssistantChars);
+    if (kept.length && total + c.length > LIMITS.maxHistoryChars) break;
     total += c.length;
     kept.unshift({ role: m.role, content: c });
   }
   while (kept.length && kept[0]!.role !== 'user') kept.shift();
-  return [{ role: 'system' as const, content: SYSTEM_PROMPT }, ...kept];
+  const sys: ChatMessage[] = [{ role: 'system', content: system }];
+  if (extra) sys.push({ role: 'system', content: extra });
+  return [...sys, ...kept];
 }
 
 /** Remove anything that looks like a key from text we might log or return (defence in depth). */
@@ -42,36 +81,59 @@ export function redact(s: string): string {
   return out.slice(0, 300);
 }
 
+/** Short, non-secret status for an upstream error body, e.g. "429:day-cap" when the free daily quota is spent. */
+export function classify(status: number, body: string): string {
+  const b = body.toLowerCase();
+  if (status === 429 && /per-day|per day|daily/.test(b)) return '429:day-cap';
+  if (status === 429 && /per-min|per min|minute/.test(b)) return '429:minute-cap';
+  if (status === 429) return '429:upstream';
+  if (status === 402) return '402:credits';
+  if (status === 404 && /no endpoints|not found|does not exist|not a valid model/.test(b)) return '404:model-gone';
+  return String(status);
+}
+
 type Attempt = { model: string; status: number | string };
+export interface OpenOpts { maxTokens?: number; temperature?: number }
+
+const CUT = '\n\n*(The reply was cut off. Please ask again.)*';
 
 /**
- * Opens a stream from the first free model that answers. Resolves with a ReadableStream of plain-text deltas
- * (already started: at least one text chunk arrived) or null when every model failed.
+ * Opens a stream from the first model group that answers. Resolves with a ReadableStream of plain-text deltas
+ * (already started: at least one text chunk arrived) and the model that served it, or null when every group failed.
  */
-export async function openStream(messages: ReturnType<typeof buildMessages>, signal: AbortSignal, attempts: Attempt[]): Promise<{ stream: ReadableStream<Uint8Array>; model: string } | null> {
+export async function openStream(messages: ChatMessage[], signal: AbortSignal, attempts: Attempt[], opts: OpenOpts = {}): Promise<{ stream: ReadableStream<Uint8Array>; model: string } | null> {
   const key = process.env.OPENROUTER_API_KEY;
   if (!key) { attempts.push({ model: '-', status: 'no_key' }); return null; }
   const deadline = Date.now() + LIMITS.totalMs;
-  for (const model of freeModels()) {
-    if (signal.aborted || Date.now() > deadline - 3000) break;
+  for (const group of modelGroups()) {
+    if (signal.aborted || Date.now() > deadline - 4000) break;
+    const label = group.map((m) => m.split('/').pop()).join('|');
     const ctl = new AbortController();
     const onAbort = () => ctl.abort();
     signal.addEventListener('abort', onAbort, { once: true });
     let timer = setTimeout(() => ctl.abort(), LIMITS.connectMs);
+    const cleanup = () => { clearTimeout(timer); signal.removeEventListener('abort', onAbort); };
     try {
+      const payload: Record<string, unknown> = {
+        messages, stream: true, max_tokens: opts.maxTokens ?? LIMITS.maxTokens, temperature: opts.temperature ?? 0.4,
+        reasoning: { effort: 'low', exclude: true },
+      };
+      if (group.length > 1) payload.models = group; else payload.model = group[0];
       const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST', signal: ctl.signal,
         headers: { 'content-type': 'application/json', authorization: `Bearer ${key}`, 'HTTP-Referer': process.env.APP_URL ?? 'https://101codecrafts.org', 'X-Title': '101 Codecrafts 101 AI' },
-        body: JSON.stringify({ model, messages, stream: true, max_tokens: LIMITS.maxTokens, temperature: 0.3, reasoning: { effort: 'low', exclude: true } }),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok || !res.body) { attempts.push({ model, status: res.status }); clearTimeout(timer); signal.removeEventListener('abort', onAbort); try { await res.body?.cancel(); } catch { /* ignore */ } continue; }
+      if (!res.ok || !res.body) {
+        let txt = ''; try { txt = (await res.text()).slice(0, 600); } catch { /* ignore */ }
+        attempts.push({ model: label, status: classify(res.status, txt) }); cleanup(); continue;
+      }
       const reader = res.body.getReader();
       const dec = new TextDecoder();
       const enc = new TextEncoder();
       let buf = '';
       const queue: string[] = [];
-      let done = false;
-      // pull SSE lines until we have text (or the stream ends / errors)
+      let done = false; let served = '';
       const pump = async (): Promise<void> => {
         clearTimeout(timer); timer = setTimeout(() => ctl.abort(), LIMITS.idleMs);
         const { value, done: d } = await reader.read();
@@ -83,45 +145,58 @@ export async function openStream(messages: ReturnType<typeof buildMessages>, sig
           if (!line.startsWith('data:')) continue;
           const data = line.slice(5).trim();
           if (data === '[DONE]') { done = true; return; }
-          try {
-            const j = JSON.parse(data) as { choices?: Array<{ delta?: { content?: string } }>; error?: { code?: number | string } };
-            if (j.error) throw new Error('upstream_error_' + String(j.error.code ?? ''));
-            const t = j.choices?.[0]?.delta?.content;
-            if (t) queue.push(t);
-          } catch (e) { if (e instanceof Error && e.message.startsWith('upstream_error')) throw e; }
+          let j: { model?: string; choices?: Array<{ delta?: { content?: string }; finish_reason?: string }>; error?: { code?: number | string; message?: string } };
+          try { j = JSON.parse(data); } catch { continue; }
+          if (j.error) throw new Error('upstream_error_' + classify(Number(j.error.code) || 0, String(j.error.message ?? '')));
+          if (j.model && !served) served = j.model;
+          const t = j.choices?.[0]?.delta?.content;
+          if (t) queue.push(t);
+          if (j.choices?.[0]?.finish_reason === 'error') throw new Error('upstream_error_finish');
         }
       };
       try { while (!queue.length && !done) await pump(); }
-      catch (e) { attempts.push({ model, status: e instanceof Error && e.message.startsWith('upstream_error') ? e.message : 'stream_error' }); clearTimeout(timer); signal.removeEventListener('abort', onAbort); try { await reader.cancel(); } catch { /* ignore */ } continue; }
-      if (!queue.length) { attempts.push({ model, status: 'empty' }); clearTimeout(timer); signal.removeEventListener('abort', onAbort); continue; }
+      catch (e) { attempts.push({ model: label, status: e instanceof Error && e.message.startsWith('upstream_error') ? e.message.replace('upstream_error_', 'err:') : ctl.signal.aborted ? 'timeout' : 'stream_error' }); cleanup(); try { await reader.cancel(); } catch { /* ignore */ } continue; }
+      if (!queue.length) { attempts.push({ model: label, status: 'empty' }); cleanup(); continue; }
+      const model = served || group[0]!;
       attempts.push({ model, status: 200 });
       const stream = new ReadableStream<Uint8Array>({
         async pull(c) {
           try {
             while (!queue.length && !done && Date.now() < deadline) await pump();
             if (queue.length) { c.enqueue(enc.encode(queue.splice(0).join(''))); return; }
-            clearTimeout(timer); signal.removeEventListener('abort', onAbort); c.close();
-          } catch { clearTimeout(timer); signal.removeEventListener('abort', onAbort); c.close(); }
+            if (!done) c.enqueue(enc.encode(CUT));   // hit the overall deadline mid-reply
+            cleanup(); c.close();
+          } catch { try { c.enqueue(enc.encode(CUT)); } catch { /* ignore */ } cleanup(); c.close(); }
         },
-        async cancel() { clearTimeout(timer); signal.removeEventListener('abort', onAbort); ctl.abort(); try { await reader.cancel(); } catch { /* ignore */ } },
+        async cancel() { cleanup(); ctl.abort(); try { await reader.cancel(); } catch { /* ignore */ } },
       });
       return { stream, model };
     } catch {
-      attempts.push({ model, status: ctl.signal.aborted ? 'timeout' : 'network' });
-      clearTimeout(timer); signal.removeEventListener('abort', onAbort);
+      attempts.push({ model: label, status: ctl.signal.aborted ? 'timeout' : 'network' });
+      cleanup();
     }
   }
   return null;
 }
 
+/** Non-streaming helper (used by Explain): collects the whole reply, max ~maxChars. */
+export async function complete(messages: ChatMessage[], signal: AbortSignal, attempts: Attempt[], opts: OpenOpts & { maxChars?: number } = {}): Promise<{ text: string; model: string } | null> {
+  const opened = await openStream(messages, signal, attempts, opts);
+  if (!opened) return null;
+  const r = opened.stream.getReader(); const dec = new TextDecoder(); let out = '';
+  for (;;) { const { value, done } = await r.read(); if (done) break; out += dec.decode(value, { stream: true }); if (out.length > (opts.maxChars ?? 4000)) { try { await r.cancel(); } catch { /* ignore */ } break; } }
+  return { text: out.trim(), model: opened.model };
+}
+
 /* ------------------------------------------------------------------ rate limit (per IP, per instance) */
 const hits = new Map<string, number[]>();
 export const RATE = { perMinute: 6, perHour: 40 };
-export function localLimit(ip: string, now = Date.now()): boolean {
-  const arr = (hits.get(ip) ?? []).filter((t) => now - t < 3600_000);
+export function localLimit(ip: string, now = Date.now(), bucket = ''): boolean {
+  const k = bucket + ip;
+  const arr = (hits.get(k) ?? []).filter((t) => now - t < 3600_000);
   const lastMin = arr.filter((t) => now - t < 60_000).length;
-  if (lastMin >= RATE.perMinute || arr.length >= RATE.perHour) { hits.set(ip, arr); return false; }
-  arr.push(now); hits.set(ip, arr);
-  if (hits.size > 5000) for (const k of hits.keys()) { hits.delete(k); if (hits.size < 4000) break; }
+  if (lastMin >= RATE.perMinute || arr.length >= RATE.perHour) { hits.set(k, arr); return false; }
+  arr.push(now); hits.set(k, arr);
+  if (hits.size > 5000) for (const key of hits.keys()) { hits.delete(key); if (hits.size < 4000) break; }
   return true;
 }
