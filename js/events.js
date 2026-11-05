@@ -162,7 +162,9 @@
     $("#tk-list").onclick = e => { const b = e.target.closest("[data-tk]"); if (!b) return; const t = F.tickets().find(x => x.code === b.dataset.tk); const ev = all.find(x => x.id === t.eventId); ticketView(dlg("tk-dlg", "YOUR TICKET"), t, ev); };
 
     /* organiser view (101-hosted) */
-    const hosted = all.filter(e => e.host101);
+    if (window.CCAccess && !CCAccess.resolved && CCAccess.ready) await Promise.race([CCAccess.ready, new Promise(r => setTimeout(r, 2500))]);
+    const hosted = F.organiserEvents(all, window.CCAccess && CCAccess.resolved ? CCAccess.role : "visitor");
+    $("#organiser").hidden = !hosted.length; { const ob = $("#org-btn"); if (ob) ob.hidden = !hosted.length; }
     $("#org-ev").innerHTML = hosted.map(e => `<option value="${esc(e.id)}">${esc(e.title)}</option>`).join("");
     const drawOrg = async () => { const id = $("#org-ev").value; const e = all.find(x => x.id === id); if (!e) return; const list = await F.attendees(id);
       const inN = list.filter(a => a.checkedIn).length;
@@ -178,7 +180,7 @@
       const o = Object.fromEntries(new FormData(f)); o.start = new Date(o.start + ":00+03:00").toISOString(); o.end = new Date((o.end || f.start.value) + ":00+03:00").toISOString(); o.price = Number(o.price || 0);
       const r = await F.submitEvent(o); $("#ev-msg").textContent = r.notSent ? r.message : r.offline ? "Thanks! Saved for admin review (offline preview — syncs when the backend is live)." : "Thanks! An admin will review it before it appears."; f.reset(); };
 
-    bindCard($("#ev-list")); draw(); drawTickets(); drawOrg();
+    bindCard($("#ev-list")); draw(); drawTickets(); if (hosted.length) drawOrg();
     if (location.hash && all.some(e => e.id === location.hash.slice(1))) setTimeout(() => { const el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }, 50);
   }
   if (document.body.dataset.page === "events") init();

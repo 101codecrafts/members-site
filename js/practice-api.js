@@ -40,8 +40,39 @@
       const r = await fetch(BASE + path, { credentials: "same-origin", ...opts, signal: ctl.signal,
         headers: { Accept: "application/json", ...(opts.body ? { "Content-Type": "application/json" } : {}), ...(opts.headers || {}) } });
       if (!r.ok) throw new Error(r.status + " " + path);
-      return await r.json();
+      return unwrap(await r.json());
     } finally { clearTimeout(t); }
+  }
+  /* BUS Q6/Q7: the backend answers { data } with an array, { rows, total } or an object. Lists become { items, total } (what
+     the pages read); rows are mapped from Postgres snake_case to the page shape. Missing numbers stay null, never invented. */
+  function unwrap(j) {
+    const d = j && typeof j === "object" && Object.prototype.hasOwnProperty.call(j, "data") ? j.data : j;
+    if (Array.isArray(d)) return { items: d, total: d.length };
+    if (d && typeof d === "object" && Array.isArray(d.rows)) return { items: d.rows, total: d.total ?? d.rows.length };
+    return d;
+  }
+  const cap = v => (typeof v === "string" && v ? v[0].toUpperCase() + v.slice(1) : v);
+  const items = v => (v && Array.isArray(v.items) ? v.items : []);
+  const mapProblem = x => ({ ...x, id: x.slug || x.id, difficulty: cap(x.difficulty), topic: x.topic ?? (x.tags && x.tags[0]) ?? "", companies: x.companies ?? x.company_tags ?? [],
+    accuracy: x.accuracy ?? (x.attempts_count ? Math.round((x.solved_count || 0) / x.attempts_count * 100) : 0), submissions: x.submissions ?? x.attempts_count ?? 0, status: x.status ?? null });
+  const contestStatus = c => { const n = Date.now(), a = Date.parse(c.start), b = Date.parse(c.end); return n < a ? "upcoming" : n < b ? "live" : "past"; };
+  const mapContest = x => { const c = { ...x, id: x.slug || x.id, name: x.name ?? x.title, start: x.start ?? x.starts_at, end: x.end ?? x.ends_at,
+    problems: x.problems ?? null, participants: x.participants ?? null, rated: x.rated ?? false }; return { ...c, status: x.status ?? contestStatus(c) }; };
+  /* /practice/progress = { stats, by_topic, by_difficulty }; a fresh account has stats null -> the page's honest empty state */
+  function mapProgress(r) {
+    if (!r || r.codingScore !== undefined) return r;   // null, or already the page shape (demo)
+    const st = r.stats || {}, streak = st.potd_streak ?? 0, best = st.potd_best ?? 0;
+    if (!st.solved_total) return { rank: null, codingScore: st.coding_score || 0, solved: 0, attempted: null, byDifficulty: {}, byTopic: [], empty: true, streak, bestStreak: best };
+    return { rank: null, codingScore: st.coding_score || 0, solved: st.solved_total, attempted: null, institute: null, streak, bestStreak: best,
+      byDifficulty: Object.fromEntries(Object.entries(r.by_difficulty || {}).map(([d, n]) => [cap(d), { solved: n, total: null }])),
+      byTopic: (r.by_topic || []).map(t => ({ topic: t.name || t.topic, solved: t.solved, total: t.total })) };
+  }
+  /* /practice/potd = { day, problems: {…} | null }; no problem published today -> null (the page says so) */
+  function mapPotd(r) {
+    if (!r || r.problemId) return r || null;
+    const pr = Array.isArray(r.problems) ? r.problems[0] : r.problems;
+    if (!pr) return null;
+    return { date: r.day, problemId: pr.slug || pr.id, title: pr.title, difficulty: cap(pr.difficulty), topic: (pr.tags && pr.tags[0]) || "", endsAt: endOfTodayEAT(), streak: null, bestStreak: null, solvedToday: false };
   }
   const post = (path, body) => call(path, { method: "POST", body: JSON.stringify(body) }, 20000);
   const demoOK = () => STATIC || (/[?&]demo=1(&|$)/.test(location.search) && !!(window.CCAccess && CCAccess.can && CCAccess.can("demo.view")));
@@ -78,7 +109,7 @@
   const endOfTodayEAT = () => { const d = new Date(Date.now() + 3 * 36e5); d.setUTCHours(23, 59, 59, 0); return new Date(d - 3 * 36e5).toISOString(); };
 
   window.CC_PAPI = {
-    STATIC, BASE, demoOK,
+    STATIC, BASE, demoOK, _map: { unwrap, mapProblem, mapContest, mapProgress, mapPotd },
     articles: (f) => withMock(() => call("/articles" + qs(f)), () => {
       const s = (f && f.q || "").toLowerCase();
       const items = P().articles.filter(a => (!f.topic || f.topic === "all" || a.topic === f.topic) && (!f.sub || a.sub === f.sub) && (!f.level || f.level === "all" || a.level === f.level) && (!f.edu || f.edu === "all" || a.edu === f.edu) && (!s || (a.title + " " + a.desc + " " + a.sub).toLowerCase().includes(s)));
@@ -93,7 +124,7 @@
     addComment: (slug, text) => withMock(() => post(`/articles/${encodeURIComponent(slug)}/comments`, { text }), () => ({ id: Date.now(), user: "You", av: "ME", ago: "just now", text, likes: 0, mock: true }), () => { throw new Error("Your comment wasn't posted (offline). Try again."); }),
     improve: (slug, body) => withMock(() => post(`/articles/${encodeURIComponent(slug)}/improve`, body), () => ({ id: "imp-" + Date.now(), status: "pending_review", mock: true }), { status: "offline" }),
 
-    problems: (f) => withMock(() => call("/practice/problems" + qs(f)), () => ({ items: P().problems, total: P().problems.length, mock: true }), NONE),
+    problems: (f) => withMock(() => call("/practice/problems" + qs(f)).then(v => ({ ...v, items: items(v).map(mapProblem) })), () => ({ items: P().problems, total: P().problems.length, mock: true }), NONE),
     problem: (id) => withMock(() => call("/practice/problems/" + encodeURIComponent(id)), () => ({ ...(P().problemDetail[id] || P().problemDetail["pair-sum-sorted"]), mock: true }), null),
     run: async (id, lang, code) => withMock(() => post(`/practice/problems/${encodeURIComponent(id)}/run`, { lang, code }), async () => { await wait(600); return mockJudge(id, lang, code, false); }, JUDGE_OFF),
     submit: async (id, lang, code) => withMock(() => post(`/practice/problems/${encodeURIComponent(id)}/submit`, { lang, code }), async () => { await wait(900); return mockJudge(id, lang, code, true); }, JUDGE_OFF),
@@ -101,9 +132,9 @@
       await wait(500);
       return { stdout: "", stderr: "Code runner is not connected yet (mock). On the live site this runs in the sandboxed judge.\nstdin received: " + (stdin ? stdin.length + " bytes" : "none"), exitCode: 0, runtimeMs: 0, memoryKb: 0, mock: true };
     }, () => ({ stdout: "", stderr: "The code runner isn't reachable right now. Nothing was run.", exitCode: -1, runtimeMs: 0, memoryKb: 0, offline: true })),
-    potd: () => withMock(() => call("/practice/potd"), () => ({ ...P().potd, endsAt: endOfTodayEAT(), mock: true }), null),
-    progress: () => withMock(() => call("/practice/progress"), () => ({ ...P().progress, mock: true }), null),
-    contests: (status) => withMock(() => call("/practice/contests" + qs({ status })), () => ({ items: P().contests.map(rebase), mock: true }), NONE),
+    potd: () => withMock(() => call("/practice/potd").then(mapPotd), () => ({ ...P().potd, endsAt: endOfTodayEAT(), mock: true }), null),
+    progress: () => withMock(() => call("/practice/progress").then(mapProgress), () => ({ ...P().progress, mock: true }), null),
+    contests: (status) => withMock(() => call("/practice/contests" + qs({ when: ["upcoming", "live", "past"].includes(status) ? status : undefined })).then(v => ({ ...v, items: items(v).map(mapContest) })), () => ({ items: P().contests.map(rebase), mock: true }), NONE),
     contest: (id) => withMock(() => call("/practice/contests/" + encodeURIComponent(id)), () => ({ ...rebase(P().contests.find(c => c.id === id) || P().contests[0]), problems: P().contestProblems, mock: true }), null),
     leaderboard: (id) => withMock(() => call(`/practice/contests/${encodeURIComponent(id)}/leaderboard`), () => ({ items: P().leaderboard, updatedAt: new Date().toISOString(), mock: true }), () => ({ items: [], updatedAt: new Date().toISOString(), offline: true })),
     register: (id) => withMock(() => post(`/practice/contests/${encodeURIComponent(id)}/register`, {}), () => ({ registered: true, mock: true }), { registered: false, offline: true }),

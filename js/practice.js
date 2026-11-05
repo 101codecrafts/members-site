@@ -12,7 +12,7 @@
   const topicName = id => (D.TOPICS.find(t => t.id === id) || {}).name || id;
   const FLAME = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fc8c0c" d="M12 1c1 4-3 6-3 10a3 3 0 0 0 6 0c0-1-.4-2-1-3 3 1.5 5 4.5 5 8a7 7 0 0 1-14 0c0-6 6-8 7-15z"/><path fill="#ffd27a" d="M12 13c1.5 1.4 2.5 2.8 2.5 4.5a2.5 2.5 0 0 1-5 0c0-1.6 1.2-3 2.5-4.5z"/></svg>`;
   const fmtEAT = iso => new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Kampala", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(iso)) + " EAT";
-  const hms = ms => { ms = Math.max(0, ms); const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4), s = Math.floor(ms % 6e4 / 1e3), p = n => String(n).padStart(2, "0"); return (d ? d + "d " : "") + `${p(h)}:${p(m)}:${p(s)}`; };
+  const hms = ms => { ms = Math.max(0, ms) || 0;   /* never "NaN:NaN:NaN" (BUS Q7) */ const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4), s = Math.floor(ms % 6e4 / 1e3), p = n => String(n).padStart(2, "0"); return (d ? d + "d " : "") + `${p(h)}:${p(m)}:${p(s)}`; };
   const ticking = []; setInterval(() => ticking.forEach(f => f()), 1000);
   function tabs(root, onChange) {   /* roving tablist: arrows/Home/End move, Enter/Space or click selects */
     const ts = $$("[role=tab]", root);
@@ -107,7 +107,7 @@
     const [potd0, pg0, list] = await Promise.all([API.potd(), API.progress(), API.problems({})]);
     /* real zeros for a fresh account / unreachable backend: no fake streaks, ranks or scores */
     const pg = pg0 || { rank: null, codingScore: 0, solved: 0, byDifficulty: {}, byTopic: [], empty: true };
-    const potd = potd0;
+    const potd = potd0 && { ...potd0, streak: potd0.streak ?? pg.streak ?? 0, bestStreak: potd0.bestStreak ?? pg.bestStreak ?? 0 };   // streak lives in progress
     if (!potd) $("#potd").innerHTML = `<div class="kicker">Problem of the Day</div><h2>No problem of the day yet</h2><p class="muted">When the daily problem is published it shows here, with your streak.</p>`;
     if (potd) {
     $("#potd").innerHTML = `<div class="kicker">Problem of the Day · ${esc(potd.date)}</div><h2>${esc(potd.title)}</h2>
@@ -120,8 +120,8 @@
     if (pg.empty) { $("#cscore").innerHTML = `<div class="sec-title"><h2>Coding score</h2></div><p class="muted">0 points so far. Solve a problem to start your score and rank.</p>`; $("#rings").innerHTML = `<div class="sec-title"><h2>Progress by topic</h2></div><p class="muted">Nothing solved yet. Your progress by topic appears here.</p>`; }
     else {
     const bd = pg.byDifficulty, clr = { Easy: "var(--color-success)", Medium: "var(--or)", Hard: "#b42318" };
-    $("#cscore").innerHTML = `<div class="sec-title"><h2>Coding score</h2><span class="tagx">Rank #${num(pg.rank)}</span></div><div class="cscore"><div class="row" style="align-items:flex-end;gap:16px"><span class="big">${pg.codingScore}</span><span class="muted"><b style="color:var(--ink)">${pg.solved}</b> solved · ${pg.attempted} attempted<br>#${pg.institute.rank} at ${esc(pg.institute.name)}</span></div>
-      <div class="dbars">${Object.entries(bd).map(([k, v]) => `<div class="dbar"><span class="${dcls(k)}">${k}</span><div class="prog" role="progressbar" aria-label="${k} solved" aria-valuemin="0" aria-valuemax="${v.total}" aria-valuenow="${v.solved}"><i style="width:${(v.solved / v.total * 100).toFixed(1)}%;background:${clr[k]}"></i></div><span>${v.solved}/${v.total}</span></div>`).join("")}</div></div>`;
+    $("#cscore").innerHTML = `<div class="sec-title"><h2>Coding score</h2>${pg.rank ? `<span class="tagx">Rank #${num(pg.rank)}</span>` : ""}</div><div class="cscore"><div class="row" style="align-items:flex-end;gap:16px"><span class="big">${pg.codingScore}</span><span class="muted"><b style="color:var(--ink)">${pg.solved}</b> solved${pg.attempted != null ? ` · ${pg.attempted} attempted` : ""}${pg.institute && pg.institute.rank ? `<br>#${pg.institute.rank} at ${esc(pg.institute.name)}` : ""}</span></div>
+      <div class="dbars">${Object.entries(bd).map(([k, v]) => `<div class="dbar"><span class="${dcls(k)}">${k}</span><div class="prog" role="progressbar" aria-label="${k} solved" aria-valuemin="0" aria-valuemax="${v.total || v.solved}" aria-valuenow="${v.solved}"><i style="width:${v.total ? (v.solved / v.total * 100).toFixed(1) : 100}%;background:${clr[k]}"></i></div><span>${v.total ? `${v.solved}/${v.total}` : v.solved}</span></div>`).join("")}</div></div>`;
     const C = 2 * Math.PI * 26;
     $("#rings").innerHTML = `<div class="sec-title"><h2>Progress by topic</h2></div><div class="rings">${pg.byTopic.map(t => { const p = t.solved / t.total; return `<div class="ring" role="img" aria-label="${esc(t.topic)}: ${t.solved} of ${t.total} solved"><svg viewBox="0 0 64 64"><circle class="bg" cx="32" cy="32" r="26" fill="none" stroke-width="7"/><circle class="fg" cx="32" cy="32" r="26" fill="none" stroke-width="7" stroke-dasharray="${(C * p).toFixed(1)} ${C.toFixed(1)}"/></svg><span class="pct">${Math.round(p * 100)}%</span><span>${esc(t.topic)}<br><small class="muted">${t.solved}/${t.total}</small></span></div>`; }).join("")}</div>`;
     }

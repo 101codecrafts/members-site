@@ -27,19 +27,55 @@
   function toast(msg, bad) { const t = $("#cc-toast"); if (!t) return; t.textContent = msg; t.className = "show" + (bad ? " bad" : ""); clearTimeout(t._h); t._h = setTimeout(() => t.className = "", 3200); }
 
   /* -------------------------------------------------------------------- API */
+  /* Every failure becomes ONE precise, honest message (BUS F2). kind drives the full-page gate on boot; text is what a
+     toast says after an action. A write that failed always says "nothing was saved". */
+  function describe(e, write) {
+    const st = e && e.status, code = e && e.code, ref = e && e.requestId ? ` (ref ${String(e.requestId).slice(0, 8)})` : "";
+    const nothing = write ? " Nothing was saved." : "";
+    const server = e && e.serverMessage && String(e.serverMessage).replace(/\s+$/, "").replace(/([^.!?])$/, "$1.");   // always a full sentence
+    if (!st) return { kind: "network", text: "No connection to the server. Check your internet and try again." + nothing };
+    if (e.notJson) return { kind: "nobackend", text: "The admin API is not available on this copy of the site (it answered with a web page, not data)." + nothing };
+    if (st === 401) return { kind: "signin", text: "Your session has ended. Sign in again, then retry." + nothing };
+    if (code === "mfa_required") return { kind: "mfa", text: "Turn on two-factor authentication in your account settings to use admin tools." + nothing };
+    if (code === "reverification_required") return { kind: "reverify", text: "For safety, confirm it's you again (sign in again), then retry." + nothing };
+    if (st === 403) return { kind: "denied", text: (server && !/^HTTP \d+\.$/.test(server) ? server : "Your admin permissions don't cover this.") + nothing };
+    if (st === 404) return { kind: "notfound", text: (server && !/^HTTP \d+\.$/.test(server) ? server : "That item or endpoint was not found.") + nothing };
+    if (st === 400 || st === 409 || st === 422) return { kind: "invalid", text: (server || "The server did not accept that.") + nothing };
+    if (st === 429) return { kind: "ratelimited", text: "Too many requests. Wait a minute and try again." + nothing };
+    if (code === "schema_outdated") return { kind: "schema", text: "Database not updated: this feature needs a database migration that isn't applied on this server yet." + nothing + ref };
+    if (st === 502 || st === 503 || st === 504) return { kind: "upstream", text: "A service the server depends on did not answer. Try again in a minute." + nothing + ref };
+    return { kind: "server", text: "The server hit an error" + (write ? " and the database was not updated." : ".") + " Try again; if it keeps happening, report it" + (ref ? " with" + ref.replace(/[()]/g, "") : "") + "." };
+  }
   async function api(path, opts = {}) {
     if (DEMO) return demoApi(path, opts);
-    const r = await fetch(BASE + path, { credentials: "include", ...opts,
-      headers: { Accept: "application/json", ...(opts.body ? { "Content-Type": "application/json" } : {}), ...(opts.headers || {}) } });
-    let j = null; try { j = await r.json(); } catch (e) { /* not json */ }
-    if (!r.ok) { const e = new Error((j && j.error && j.error.message) || ("HTTP " + r.status)); e.status = r.status; e.code = j && j.error && j.error.code; throw e; }
+    let r;
+    try {
+      r = await fetch(BASE + path, { credentials: "include", ...opts,
+        headers: { Accept: "application/json", ...(opts.body ? { "Content-Type": "application/json" } : {}), ...(opts.headers || {}) } });
+    } catch (x) { const e = new Error("network"); e.status = 0; e.network = true; throw e; }
+    let j = null, isJson = /json/i.test(r.headers.get("content-type") || "");
+    try { j = await r.json(); } catch (x) { isJson = false; }
+    if (!r.ok || !isJson) {
+      const e = new Error((j && j.error && j.error.message) || ("HTTP " + r.status));
+      e.status = r.status; e.code = j && j.error && j.error.code; e.serverMessage = j && j.error && j.error.message;
+      e.requestId = (j && j.error && j.error.request_id) || r.headers.get("x-request-id"); e.notJson = !isJson;
+      throw e;
+    }
     return j && Object.prototype.hasOwnProperty.call(j, "data") ? j.data : j;
   }
   const post = (p, b, m = "POST") => api(p, { method: m, body: JSON.stringify(b || {}) });
   const qs = o => { const u = new URLSearchParams(); Object.entries(o).forEach(([k, v]) => { if (v !== undefined && v !== null && v !== "") u.set(k, v); }); const s = u.toString(); return s ? "?" + s : ""; };
-  async function act(fn, okMsg) {
+  let LAST_ERR = "";
+  const failed = what => esc(what + (LAST_ERR ? " " + LAST_ERR : ""));   // inline panel error = what + why
+  async function act(fn, okMsg) {   // okMsg marks a write: failures then say nothing was saved
+    LAST_ERR = "";
     try { const r = await fn(); if (okMsg) toast(okMsg); return r ?? true; }
-    catch (e) { toast(e.message || "Something went wrong", true); return null; }
+    catch (e) {
+      if (e && e.message && !("status" in e)) { toast(e.message, true); return null; }   // local validation / demo
+      const d = describe(e, !!okMsg); LAST_ERR = d.text; toast(d.text, true);
+      if (d.kind === "signin") setTimeout(() => { location.href = authUrl(); }, 1800);
+      return null;
+    }
   }
 
   /* ---------------------------------------------------------------- drawer */
@@ -76,7 +112,14 @@
       signin: ["SIGN IN TO CONTINUE", "The admin console is for 101 Codecrafts admins. Sign in with your admin account.", `<a class="btn or" href="${esc(authUrl())}">${icon("user")}Sign in</a>`],
       denied: ["ADMINS ONLY", "Your account is not an admin. If you were invited, open the link from the invite email while signed in with that address.", `<a class="btn ink" href="${esc(home)}">${icon("home")}Go to my home</a>`],
       nobackend: ["CONSOLE OFFLINE", "This copy of the site has no 101 backend, so there is nothing real to show. Open the console on the live app.", `<a class="btn ink" href="index.html">${icon("home")}Home</a>`],
-      error: ["COULD NOT LOAD", "The console could not reach the server. Check your connection and reload.", `<button class="btn ink" type="button" onclick="location.reload()">Reload</button>`],
+      error: ["COULD NOT LOAD", "The console could not load. Reload to try again.", `<button class="btn ink" type="button" onclick="location.reload()">Reload</button>`],
+      network: ["NO CONNECTION", "The console could not reach the server. Check your internet connection and reload.", `<button class="btn ink" type="button" onclick="location.reload()">Reload</button>`],
+      mfa: ["TWO-FACTOR NEEDED", "Admin tools need two-factor authentication. Turn it on in your account settings, then reload.", `<a class="btn or" href="settings.html#security">${icon("lock")}Open security settings</a>`],
+      reverify: ["CONFIRM IT'S YOU", "For safety, sign in again before using admin tools.", `<a class="btn or" href="${esc(authUrl())}">${icon("user")}Sign in again</a>`],
+      schema: ["DATABASE NOT UPDATED", "The server is up, but its database is missing the admin console migration, so nothing can be shown or saved yet.", `<button class="btn ink" type="button" onclick="location.reload()">Reload</button>`],
+      server: ["SERVER ERROR", "The server hit an error loading the console. Nothing was changed. Reload to try again.", `<button class="btn ink" type="button" onclick="location.reload()">Reload</button>`],
+      upstream: ["SERVICE UNAVAILABLE", "A service the console depends on did not answer. Try again in a minute.", `<button class="btn ink" type="button" onclick="location.reload()">Reload</button>`],
+      ratelimited: ["SLOW DOWN", "Too many requests in a short time. Wait a minute, then reload.", `<button class="btn ink" type="button" onclick="location.reload()">Reload</button>`],
       accepted: ["WELCOME TO THE TEAM", "Your admin invite is accepted. Reload to open the console with your permissions.", `<a class="btn or" href="admin.html">Open the console</a>`],
     }[kind];
     g.innerHTML = `<div class="ac-gate-in"><span class="ac-gate-ic" aria-hidden="true">${icon(kind === "accepted" ? "check" : "lock")}</span><h2>${M[0]}</h2><p>${esc(extra || M[1])}</p><div class="ac-row">${M[2]}</div></div>`;
@@ -103,7 +146,7 @@
   async function overview() {
     const box = $("#ov-tiles");
     const s = await act(() => api("/admin/stats"));
-    if (!s) { box.innerHTML = `<p class="ac-empty">Numbers are unavailable right now.</p>`; return; }
+    if (!s) { box.innerHTML = `<p class="ac-empty">${failed("Numbers are unavailable.")}</p>`; return; }
     box.innerHTML = [
       tile("Active members", s.members_total, "e.g. 120 once people join", "ink"),
       tile("Waiting for approval", s.members_pending, "e.g. 4 new sign-ups"),
@@ -133,7 +176,7 @@
   async function approvals() {
     const list = $("#ap-list");
     const d = await act(() => api("/admin/approvals" + qs({ status: AP.status, kind: AP.kind, limit: AP.limit, offset: AP.offset })));
-    if (!d) { list.innerHTML = `<p class="ac-empty">The queue could not load.</p>`; return; }
+    if (!d) { list.innerHTML = `<p class="ac-empty">${failed("The queue could not load.")}</p>`; return; }
     AP.items = d.items || [];
     const counts = d.counts || {};
     $("#ap-kinds").innerHTML = `<button class="chip" data-ap-kind="" aria-pressed="${!AP.kind}">All <b>${num(Object.values(counts).reduce((a, b) => a + b, 0))}</b></button>`
@@ -215,7 +258,7 @@
   async function users() {
     const tb = $("#us-table tbody");
     const d = await act(() => api("/admin/people" + qs({ q: US.q, role: US.role, status: US.status, minor: US.minor, limit: US.limit, offset: US.offset })));
-    if (!d) { tb.innerHTML = `<tr><td colspan="7" class="ac-empty">Users could not load.</td></tr>`; return; }
+    if (!d) { tb.innerHTML = `<tr><td colspan="7" class="ac-empty">${failed("Users could not load.")}</td></tr>`; return; }
     US.items = d.items || [];
     tb.innerHTML = US.items.length ? US.items.map(u => `<tr>
       <td><b>${esc(u.display_name || u.username || "—")}</b><br><small class="muted">${esc(u.email || u.id)}</small></td>
@@ -283,7 +326,7 @@
   async function admins() {
     const d = ADM = await act(() => api("/admin/admins"));
     const list = $("#ad-list");
-    if (!d) { list.innerHTML = `<p class="ac-empty">Admins could not load.</p>`; return; }
+    if (!d) { list.innerHTML = `<p class="ac-empty">${failed("Admins could not load.")}</p>`; return; }
     const all = (ME && ME.all_scopes) || Object.keys(SCOPE_LABEL);
     list.innerHTML = (d.admins || []).map(a => `<article class="ac-item ${a.is_root ? "is-root" : ""}">
       <div class="ac-item-main"><h3>${esc(a.display_name || a.username || a.email || a.user_id)} ${a.is_root ? `<span class="ac-pill root">${icon("lock")}Root · permanent</span>` : ""}${a.status === "suspended" ? '<span class="ac-pill st-suspended">Suspended</span>' : ""}</h3>
@@ -332,7 +375,7 @@
   async function plans() {
     const g = $("#pl-grid");
     const d = await act(() => api("/admin/plans"));
-    if (!d) { g.innerHTML = `<p class="ac-empty">Plans could not load.</p>`; return; }
+    if (!d) { g.innerHTML = `<p class="ac-empty">${failed("Plans could not load.")}</p>`; return; }
     if (d.available === false) { g.innerHTML = `<div class="ac-empty-card"><b>Plans are not in the database yet.</b><span>They arrive with the round-11 plans migration (plan tiers, prices and limits). Nothing is hard-coded, so this editor fills in as soon as it is applied.</span></div>`; return; }
     const col = aud => `<div class="ac-plancol"><h3>${aud === "learner" ? "LEARNER PLANS" : "TUTOR PLANS"}</h3>${(d[aud] || []).map(t => `
       <form class="card ac-plan" data-plan="${aud}/${esc(t.tier)}">
@@ -409,7 +452,7 @@
   async function audit() {
     const tb = $("#au-table tbody");
     const d = await act(() => api("/admin/audit-log" + qs(AU)));
-    if (!d) { tb.innerHTML = `<tr><td colspan="4" class="ac-empty">The audit log could not load.</td></tr>`; return; }
+    if (!d) { tb.innerHTML = `<tr><td colspan="4" class="ac-empty">${failed("The audit log could not load.")}</td></tr>`; return; }
     tb.innerHTML = (d.items || []).length ? d.items.map(r => `<tr><td><small>${when(r.created_at)}</small></td>
       <td><b>${esc(r.actor_name || r.actor_id || "system")}</b><br><small class="muted">${esc(r.actor_role || "")}</small></td>
       <td><code>${esc(r.action)}</code><br><small class="muted">${esc(r.table_name)}${r.record_id ? " · " + esc(String(r.record_id).slice(0, 40)) : ""}</small></td>
@@ -488,7 +531,9 @@
     try { await post("/admin/invites/accept", { token }); history.replaceState(null, "", "admin.html"); gate("accepted"); }
     catch (e) {
       if (e.status === 401) { location.href = authUrl(); return; }
-      gate("denied", e.message || "This invite could not be accepted.");
+      const d = describe(e, true);
+      if (["network", "schema", "server", "upstream", "ratelimited", "mfa", "reverify"].includes(d.kind)) return gate(d.kind, d.text);
+      gate("denied", e.serverMessage || "This invite could not be accepted.");
     }
   }
   async function boot() {
@@ -498,10 +543,12 @@
     try { ME = await api("/admin/me"); }
     catch (e) {
       if (e.code === "no_backend" || (window.CC_NO_BACKEND && window.CC_NO_BACKEND())) return gate("nobackend");
-      if (e.status === 401) return gate("signin");
-      if (e.status === 404) return gate("nobackend", "The admin API is not deployed on this copy yet: the round-11 admin migration and routes have to be applied first. Nothing here is invented.");
-      if (e.status === 403) return gate("denied", /mfa|two-factor/i.test(e.message) ? "Turn on two-factor authentication in your account settings to use admin tools." : "");
-      return gate("error");
+      const d = describe(e, false);
+      if (d.kind === "signin") return gate("signin");
+      if (d.kind === "nobackend" || d.kind === "notfound") return gate("nobackend", "The admin API is not deployed on this copy yet. Nothing here is invented.");
+      if (d.kind === "denied") return gate("denied");
+      if (d.kind === "invalid") return gate("server");
+      return gate(d.kind, d.kind === "schema" || d.kind === "server" ? null : undefined);
     }
     if (!ME || !ME.is_admin) return gate("denied");
     DEMO = params.get("demo") === "1";
@@ -516,5 +563,6 @@
     svBar(); route();
     addEventListener("hashchange", route);
   }
+  window.CCAdminErrors = { describe };   // unit tests (tests/admin-errors.test.mjs)
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true }); else boot();
 })();

@@ -16,7 +16,7 @@
 {{TOPBAR role="learner" name="Guest" label="Learner"}}
 <main id="main" class="content"><div class="ann-slot" data-ann-slot aria-hidden="true"></div>
 <div class="page-h"><div><div class="kicker">Events &amp; meetups</div><h1>EVENTS &amp; MEETUPS</h1><p>Hackathons, community meetups, conferences and workshops — in Kampala, across Africa and online. All times are East Africa Time (EAT).</p></div>
- <div class="row"><a class="btn" href="#organiser"><svg aria-hidden="true"><use href="#i-clipboard"/></svg>Organiser view</a><a class="btn or" href="#submit-event"><svg aria-hidden="true"><use href="#i-plusc"/></svg>Submit an event</a></div></div>
+ <div class="row"><a class="btn" href="#organiser" id="org-btn" hidden><svg aria-hidden="true"><use href="#i-clipboard"/></svg>Organiser view</a><a class="btn or" href="#submit-event"><svg aria-hidden="true"><use href="#i-plusc"/></svg>Submit an event</a></div></div>
 
 <section class="card efilters" aria-label="Filter events">
  <div class="filters ef-region" id="ef-region" role="group" aria-label="Where"></div>
@@ -45,7 +45,7 @@
  <ul class="list" id="tk-list"></ul>
 </section>
 
-<section class="card" id="organiser" aria-labelledby="h-org">
+<section class="card" id="organiser" aria-labelledby="h-org" hidden>
  <div class="sec-title"><h2 id="h-org">ORGANISER VIEW</h2><span class="tagx">101 hosts &amp; admins</span></div>
  <div class="org-top"><label class="field">Event<select id="org-ev"></select></label>
   <form class="row" id="org-check"><label class="field" style="flex:1"><span>Check in by ticket code (or scan the QR with any scanner app)</span><input id="org-code" required placeholder="101-HACK-XXXXXX" autocomplete="off"></label><button class="btn ink" style="align-self:flex-end">Check in</button></form></div>

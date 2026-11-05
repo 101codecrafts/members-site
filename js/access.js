@@ -13,6 +13,7 @@
      .limit(key)                -> number | boolean | null (null = unlimited / not set)
      .gate(el, action[, mode])  -> wires an element: mode "hide" (default) removes it for roles that can't use it;
                                    "lock" keeps it and routes a tap to /auth.html?next=… (visitor) or the upgrade path.
+                                   "tease" = visible to visitors (tap -> sign in), hidden from every signed-in role that can't.
      .home([role])              -> the landing page for a role
      .authUrl(next[, extra])    -> "/auth.html?next=…"
      .onChange(fn)              -> fn(CCAccess) after every state change
@@ -93,7 +94,8 @@
     if (href) { try { var u = new URL(href, location.href); if (u.origin === location.origin) next = u.pathname + u.search + u.hash; } catch (e) {} }
     var target = ok ? null : A.denyTarget(action, next);
     if (ok) { el.hidden = false; el.removeAttribute("aria-disabled"); delete el.dataset.canTo; return; }
-    if (mode === "hide" || !target) { el.hidden = true; return; }
+    // "tease": visitors still see it (tap -> sign in / sign up); any signed-in role that can't use it never sees it
+    if (mode === "hide" || !target || (mode === "tease" && A.role !== "visitor")) { el.hidden = true; return; }
     el.hidden = false; el.setAttribute("aria-disabled", "false"); el.dataset.canTo = target;
   };
   function applyAll() {
