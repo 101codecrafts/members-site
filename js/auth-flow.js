@@ -109,10 +109,13 @@
     var f = focusSel ? $(focusSel, root) : $("h1, h2", root);
     if (f) { if (!f.hasAttribute("tabindex") && /^H[12]$/.test(f.tagName)) f.setAttribute("tabindex", "-1"); try { f.focus({ preventScroll: false }); } catch (e) {} }
   }
+  /* r12 QA: the <label> holds only the field's name, so the accessible name stays short ("Email"); the helper text and the
+     error message sit outside it and are linked to the control with aria-describedby (hint first, then the error). */
   var field = function (name, label, input, opts) {
     opts = opts || {};
-    return '<label class="af-field">' + esc(label) + (opts.optional ? ' <span class="opt">(optional)</span>' : "") + input +
-      (opts.hint ? "<small>" + esc(opts.hint) + "</small>" : "") + '<p class="af-msg" id="m-' + name + '" role="alert"></p></label>';
+    if (opts.hint) input = input.replace('aria-describedby="m-' + name + '"', 'aria-describedby="h-' + name + ' m-' + name + '"');
+    return '<div class="af-field"><label for="f-' + name + '">' + esc(label) + (opts.optional ? ' <span class="opt">(optional)</span>' : "") + "</label>" + input +
+      (opts.hint ? '<small id="h-' + name + '">' + esc(opts.hint) + "</small>" : "") + '<p class="af-msg" id="m-' + name + '" role="alert"></p></div>';
   };
   var input = function (name, type, attrs) { return '<input name="' + name + '" id="f-' + name + '" type="' + type + '" aria-describedby="m-' + name + '" value="' + esc(S.data[name] == null ? "" : S.data[name]) + '" ' + (attrs || "") + ">"; };
   var select = function (name, options, ph) {

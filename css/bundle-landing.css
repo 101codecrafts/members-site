@@ -564,6 +564,8 @@ html:not(.static):not(.has-roles) .role-tabs,html:not(.static):not(.has-roles) .
 /* view-settings widget: a small button that opens Lite / language / theme */
 .cc-toolbar .cc-tb-toggle{min-width:var(--touch-min-target);justify-content:center;padding:0;background:transparent}
 .cc-toolbar .cc-tb-toggle svg{width:20px;height:20px}
+/* r12 QA: the theme toggle (◐) is a full 44 px touch target like its neighbours, never squeezed to a sliver in the docked panel or drawer */
+html:not(.static) .cc-toolbar #cc-theme{flex:none;min-width:var(--touch-min-target,44px);justify-content:center;padding:0 12px;font-size:18px;line-height:1}
 .cc-toolbar:not(.open){padding:2px;box-shadow:3px 3px 0 var(--or);opacity:.85}
 .cc-toolbar:not(.open):hover{opacity:1}
 .cc-toolbar:not(.open)>:not(.cc-tb-toggle){display:none!important}

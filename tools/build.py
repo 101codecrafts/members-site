@@ -37,7 +37,8 @@ ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "@id": SITE
 EARLY = '''<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");var u=(document.cookie.match(/(?:^|; )__client_uat=(\\d+)/)||[])[1];d.classList.add(u&&u!=="0"?"role-pending":"role-visitor");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>'''
 
 def head(a, page):
-    t = a.get('title', '101 Codecrafts'); d = a.get('desc', '101 Codecrafts: learn, build and collaborate in tech.'); p = a.get('path', page)
+    # placeholder attributes may carry HTML entities (title="Events &amp; Meetups"): decode once, escape once (r12 QA: no literal &amp;amp;)
+    t = html.unescape(a.get('title', '101 Codecrafts')); d = html.unescape(a.get('desc', '101 Codecrafts: learn, build and collaborate in tech.')); p = a.get('path', page)
     url = SITE + '/' + ('' if p == 'index.html' else p)
     og = a.get('og', 'assets/og/og-default.png')
     ld = [ORG_LD]
