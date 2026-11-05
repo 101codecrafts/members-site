@@ -40,7 +40,7 @@ def mock_api(persona):
     if path.startswith('/api/v1/portfolio/'):
       if persona == 'tutor': return await J({'data': {'profile': base['profile'], 'badges': [{'awarded_at': '2026-10-02T00:00:00Z', 'badges': {'code': 'first_lesson', 'name': 'First lesson'}}], 'certificates': [], 'projects': [], 'tutor': {'expertise': ['python']}}})
       return await J({'error': {'code': 'not_found'}}, 404)
-    if path.startswith('/api/'): return await J({'data': None})
+    if path.startswith('/api/'): return await J({'error': {'code': 'not_found'}}, 404)   # unknown API = absent (static domain)
     return await route.continue_()
   return h
 

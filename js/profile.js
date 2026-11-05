@@ -127,15 +127,15 @@
     [role, edu].filter(Boolean).forEach(function (t, i) { var w = ctx.measureText(t.toUpperCase()).width + 32; ctx.fillStyle = i ? NAVY2 : CY; ctx.fillRect(tx, y, w, 46); ctx.strokeStyle = WHITE; ctx.lineWidth = 3; ctx.strokeRect(tx + 1.5, y + 1.5, w - 3, 43); ctx.fillStyle = i ? WHITE : NAVY; ctx.fillText(t.toUpperCase(), tx + 16, y + 32); tx += w + 12; });
     /* headline */
     y = 580; ctx.fillStyle = WHITE; ctx.font = "600 40px " + F.sans;
-    wrap(ctx, p.headline || "Learning, building and growing in tech with 101 Codecrafts.", W - 144, 3).forEach(function (l, i) { ctx.fillText(l, 72, y + i * 54); });
-    /* skills */
-    y = 800; ctx.fillStyle = OR; ctx.font = "700 26px " + F.mono; ctx.fillText("SKILLS", 72, y); y += 26;
+    var hl = wrap(ctx, p.headline || "Learning, building and growing in tech with 101 Codecrafts.", W - 144, 3); hl.forEach(function (l, i) { ctx.fillText(l, 72, y + i * 54); });
+    /* skills: right under the headline, so short profiles don't leave a hole */
+    y = Math.max(y + hl.length * 54 + 70, 720); ctx.fillStyle = OR; ctx.font = "700 26px " + F.mono; ctx.fillText("SKILLS", 72, y); y += 26;
     var sx = 72, sy = y; ctx.font = "700 30px " + F.sans;
     (p.skills && p.skills.length ? p.skills : ["Add skills on 101"]).slice(0, 10).forEach(function (sk) { var w = ctx.measureText(sk).width + 40; if (sx + w > W - 72) { sx = 72; sy += 76; } if (sy > 1080) return;
       ctx.fillStyle = NAVY3; ctx.fillRect(sx + 6, sy + 6, w, 60); ctx.fillStyle = NAVY2; ctx.fillRect(sx, sy, w, 60); ctx.strokeStyle = MUT; ctx.lineWidth = 3; ctx.strokeRect(sx + 1.5, sy + 1.5, w - 3, 57); ctx.fillStyle = WHITE; ctx.fillText(sk, sx + 20, sy + 41); sx += w + 16; });
     /* counts (real only) */
     var nb = (D.badges || []).length, nc = (D.certificates || []).length;
-    ctx.fillStyle = MUT; ctx.font = "700 28px " + F.mono; ctx.fillText(nb + " BADGE" + (nb === 1 ? "" : "S") + "  ·  " + nc + " CERTIFICATE" + (nc === 1 ? "" : "S"), 72, 1190);
+    ctx.fillStyle = MUT; ctx.font = "700 28px " + F.mono; ctx.fillText(nb + " BADGE" + (nb === 1 ? "" : "S") + "  ·  " + nc + " CERTIFICATE" + (nc === 1 ? "" : "S"), 72, Math.min(sy + 140, 1190));
     /* footer bar */
     ctx.fillStyle = OR; ctx.fillRect(0, H - 110, W, 110); ctx.fillStyle = NAVY; ctx.font = "400 36px " + F.disp; ctx.fillText("START AT 101.", 72, H - 42);
     ctx.font = "700 28px " + F.mono; ctx.textAlign = "right"; ctx.fillText(linkText(), W - 72, H - 44); ctx.textAlign = "left";

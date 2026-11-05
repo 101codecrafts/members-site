@@ -76,6 +76,7 @@ html.a11y-underline a{text-decoration:underline!important}
   .st-nav{position:sticky;top:64px;z-index:5;flex-direction:row;overflow-x:auto;scrollbar-width:none;padding:4px;box-shadow:3px 3px 0 var(--st-line)}
   .st-nav::-webkit-scrollbar{display:none}
   .st-nav a{flex:none;min-height:44px;white-space:nowrap}
+  .st-sec{scroll-margin-top:156px}
 }
 @media (max-width:600px){.st-grid,.st-dl{grid-template-columns:minmax(0,1fr)}.st-row{flex-wrap:wrap}}
 
