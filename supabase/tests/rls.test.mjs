@@ -156,6 +156,8 @@ export const tests = [
     await fails(db, `insert into public.courses (slug, title) values ('learner-course','Nope')`, [], '42501');
   }),
   t('tutor sees progress of own learners only, and own earnings only', async (db) => {
+    await as(db, 'postgres');   // r11 plans: Free = 1 active course; this test needs two, so Alice is on Standard
+    await q(db, `update public.profiles set plan='standard' where id=$1`, [U.alice]);
     await as(db, U.alice);
     await q(db, `insert into public.enrollments (user_id, course_id) values ($1,$2),($1,$3)`, [U.alice, await courseId(db, 'web-foundations'), await courseId(db, 'python-for-ai')]);
     await as(db, U.tutorA);

@@ -102,14 +102,14 @@ end;
 $$;
 create trigger subscriptions_supersede before insert or update of status on public.subscriptions for each row execute function app.subscription_supersede();
 
--- ads: any paid learner tier is ad-free (was: only 'pro')
+-- ads: launch promo first (unchanged), then any PAID learner tier is ad-free (was: only 'pro'), then age
 create or replace function app.ad_tier(p_user text)
 returns text language sql stable security definer set search_path = '' as $$
-  select case when p_user is null then 'standard'
-              when p.plan <> 'free' then 'none'
-              when p.is_minor then 'child_directed'
+  select case when app.promo_active() then 'none'
+              when p_user is null then 'standard'
+              when (select plan from public.profiles where id = p_user) <> 'free' then 'none'
+              when (select is_minor from public.profiles where id = p_user) then 'child_directed'
               else 'standard' end
-    from public.profiles p where p.id = p_user
 $$;
 
 create or replace function app.user_plan(p_user text, p_audience text)
@@ -117,10 +117,12 @@ returns public.member_plan language sql stable security definer set search_path 
   select coalesce((select case when p_audience = 'tutor' then p.tutor_plan else p.plan end from public.profiles p where p.id = p_user), 'free')
 $$;
 
--- tier used for LEARNING (a tutor who studies gets the better of the two)
+-- tier used for LEARNING (a tutor who studies gets the better of the two). The launch promo (everyone is Pro,
+-- no paywall; 20261102000997) wins while it runs.
 create or replace function app.learning_tier(p_user text)
 returns public.member_plan language sql stable security definer set search_path = '' as $$
-  select coalesce((select greatest(p.plan, p.tutor_plan) from public.profiles p where p.id = p_user), 'free')
+  select case when app.promo_active() then 'pro'::public.member_plan
+              else coalesce((select greatest(p.plan, p.tutor_plan) from public.profiles p where p.id = p_user), 'free') end
 $$;
 
 -- numeric limit: null = unlimited; missing row/key = 0 (fail closed); true = unlimited, false = 0
@@ -265,8 +267,10 @@ $$;
 create trigger payments_buyer_guard before insert on public.payments for each row execute function app.guard_payment_buyer();
 
 -- ------------------------------------------- course pricing (admin-approved) ----
+-- NOT security definer: app.is_privileged() must see the real caller (inside a definer it is always the owner).
+-- The admin RPCs below run as definer, so their own updates pass as privileged.
 create or replace function app.guard_course_pricing()
-returns trigger language plpgsql security definer set search_path = '' as $$
+returns trigger language plpgsql set search_path = '' as $$
 begin
   if app.is_privileged() or app.is_admin() then return new; end if;
   if tg_op = 'INSERT' then
@@ -736,9 +740,10 @@ grant execute on function app.plan_rank(public.member_plan), app.r11_has_member_
   app.plan_limit(text, public.member_plan, text), app.lesson_min_plan(uuid), app.can_view_lesson(uuid), app.tutor_student_count(text, text),
   app.is_student_of(text, text) to anon, authenticated;
 
-revoke all on function public.course_syllabus(uuid), public.plans_catalogue(), app.plans_json(text) from public;
-grant execute on function app.plans_json(text) to anon, authenticated;
-grant execute on function public.course_syllabus(uuid), public.plans_catalogue() to anon, authenticated;
+-- SR-04: neither is added to anon's public RPC allow-list. Visitors get the catalogue through GET /api/v1/plans
+-- (served with the service client); the syllabus is for signed-in users only (visitors cannot open courses).
+revoke all on function public.course_syllabus(uuid), public.plans_catalogue(), app.plans_json(text) from public, anon;
+grant execute on function app.plans_json(text), public.course_syllabus(uuid), public.plans_catalogue() to authenticated;
 
 revoke all on function public.can_enroll(uuid), public.my_entitlements(), public.create_plan_checkout(text, public.member_plan, public.billing_interval, text),
   public.request_course_price(uuid, bigint, boolean, text), public.decide_course_price(uuid, boolean, text),

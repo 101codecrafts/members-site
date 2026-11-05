@@ -9,14 +9,19 @@ async function shop(db) {
   const st = await one(db, `insert into public.mkt_stores (slug, name) values ('amina-tech','Amina Tech') returning id, kyc_status`);
   assert.equal(st.kyc_status, 'pending');
   await fails(db, `update public.mkt_stores set kyc_status='verified' where id=$1`, [st.id], '42501');
-  await fails(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, status) values ($1,'x-early','Early','digital',10000,'published')`, [st.id], /KYC/);
+  await fails(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, status) values ($1,'x-early','Early','digital',10000,'published')`, [st.id], /KYC|admin after review/);
   await as(db, U.admin);
   await q(db, `select public.admin_set_store_kyc($1,'verified')`, [st.id]);
   await as(db, U.tutorA);
-  const dig = await one(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, status) values ($1,'react-kit','React UI kit','digital',20000,'published') returning id`, [st.id]);
+  // r11 plans: sellers submit listings for review; only an admin publishes them
+  await fails(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, status) values ($1,'self-pub','Self','digital',20000,'published')`, [st.id], /admin after review/);
+  const dig = await one(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, status) values ($1,'react-kit','React UI kit','digital',20000,'pending_review') returning id`, [st.id]);
   await q(db, `insert into public.mkt_digital_assets (product_id, storage_path, filename) values ($1, 'mkt/react-kit.zip', 'react-kit.zip')`, [dig.id]);
-  const phy = await one(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, stock, moq, status) values ($1,'esp32','ESP32 board','physical',30000,10,2,'published') returning id`, [st.id]);
+  const phy = await one(db, `insert into public.mkt_products (store_id, slug, title, type, price_ugx, stock, moq, status) values ($1,'esp32','ESP32 board','physical',30000,10,2,'pending_review') returning id`, [st.id]);
   await q(db, `insert into public.mkt_price_tiers (product_id, min_qty, unit_price_ugx) values ($1, 5, 25000)`, [phy.id]);
+  await as(db, U.admin);
+  await q(db, `update public.mkt_products set status='published' where id = any($1::uuid[])`, [[dig.id, phy.id]]);
+  await as(db, U.tutorA);
   return { store: st.id, dig: dig.id, phy: phy.id };
 }
 const ledgerZero = async (db) => {
