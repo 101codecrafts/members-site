@@ -142,7 +142,23 @@
   const acceptQuote = (rfq, sellerId) => or(`/market/rfq/${rfq}/accept`, demoOr(() => ({ ok: true, demo: true })), { method: "POST", body: JSON.stringify({ seller: sellerId }) });
   const sendQuote = (rfq, body) => or(`/market/rfq/${rfq}/quotes`, demoOr(() => ({ ok: true, demo: true })), { method: "POST", body: JSON.stringify(body) });
 
-  window.MarketAPI = { ready, demoOK, product, seller, fetchCategories, fetchProducts, fetchProduct, fetchAffiliates, fetchReviews, fetchQA, askQuestion, suggest,
+  /* BUS (founder): the marketplace hero and "Deals of the day" carry no invented promos. Slides come only from the listings
+     the backend returned (count + lowest real price per category, "Made by 101" only if such listings exist); [] = hide the band. */
+  const HERO_ART = { laptops: "hero-laptops", iot: "hero-iot" };
+  function heroSlides(list) {
+    list = Array.isArray(list) ? list.filter(p => p && p.title && +p.price > 0) : [];
+    const cats = (D() && D().marketCategories) || [], name = id => (cats.find(c => c.id === id) || {}).name || "";
+    const fmt = n => "UGX " + Math.round(n).toLocaleString("en-UG"), by = {};
+    list.forEach(p => { if (!name(p.cat)) return; (by[p.cat] = by[p.cat] || []).push(p); });
+    const slides = Object.keys(by).sort((a, b) => by[b].length - by[a].length).map(c => { const ps = by[c], low = ps.reduce((m, p) => Math.min(m, +p.price), Infinity), pic = ps.find(p => /^https:\/\//.test(p.img || ""));
+      return { img: HERO_ART[c] || (pic ? pic.img : ""), k: name(c).toUpperCase(), t: `${name(c)} from ${fmt(low)}`, s: `${ps.length} listing${ps.length === 1 ? "" : "s"} on 101 Market right now.`,
+        href: `marketplace.html?cat=${encodeURIComponent(c)}#browse`, cta: "Shop " + name(c).toLowerCase(), tone: "ink" }; });
+    const made = list.filter(p => p.made101);
+    if (made.length) slides.push({ img: "hero-made101", k: "MADE BY 101 MEMBERS", t: "Apps, templates & services built here", s: `${made.length} listing${made.length === 1 ? "" : "s"} from 101 members.`, href: "#browse", cta: "Browse member shops", tone: "or", quick: "member" });
+    return slides.slice(0, 3);
+  }
+  const deals = list => (Array.isArray(list) ? list : []).filter(p => p && p.deal && +p.compare > +p.price && +p.price > 0);
+  window.MarketAPI = { heroSlides, deals, ready, demoOK, product, seller, fetchCategories, fetchProducts, fetchProduct, fetchAffiliates, fetchReviews, fetchQA, askQuestion, suggest,
     getCart, setCart, addToCart, cartCount, getWishlist, toggleWish, tierPrice, checkout, fetchOrders, confirmDelivery, openDispute,
     fetchSellerOverview, saveProduct, updateOrderStatus, requestSellerPayout, replyReview, fetchRFQ, postRFQ, acceptQuote, sendQuote };
 })();

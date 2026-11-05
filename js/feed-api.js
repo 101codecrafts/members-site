@@ -47,7 +47,7 @@
   const mapEvent = e => ({ ...e, start: e.start ?? e.starts_at, end: e.end ?? e.ends_at ?? e.starts_at, venue: e.venue ?? e.location ?? (e.is_online ? "Online" : ""),
     region: e.region ?? (e.is_online ? "online" : e.city ? String(e.city).toLowerCase() : null), desc: e.desc ?? e.description ?? "",
     price: e.price ?? e.price_ugx ?? 0, currency: e.currency ?? "UGX", going: e.going ?? e.registrations_count ?? 0, url: e.url ?? e.cal_com_url ?? null,
-    org: e.org ?? "community", type: e.type ?? e.mode ?? null, host101: e.host101 ?? !e.cal_com_url });
+    org: e.org ?? "community", type: e.type ?? e.mode ?? null, host101: e.host101 ?? !e.cal_com_url, organiser: e.organiser === true });
   const post = (p, body) => call(p, { method: "POST", body: JSON.stringify(body) });
   const DEMO_URL = /[?&]demo=1(&|$)/.test(location.search);
   const demoOK = () => STATIC || (DEMO_URL && !!(window.CCAccess && CCAccess.can && CCAccess.can("demo.view")));
@@ -137,5 +137,14 @@
   /* go.html lookup: news + opportunities ids → original source url */
   window.CC_FEED_GO = () => [...(D() ? D().news.concat(D().opportunities) : []), ...(ED() ? ED().events : []), ...(window.__ccFeedNews || [])];
 
-  window.CC_FEED_API = { _unwrap: unwrap, _map: { mapAnn, mapNews, mapOpp, mapEvent }, fetchAnnouncements, postAnnouncement, readSet, markRead, fetchNews, explainNews, fetchOpportunities, submitOpportunity, pendingOpportunities, reviewOpportunity, remind, reminders, saved, toggleSave, fetchEvents, toggleGoing, tickets, rsvp, attendees, checkIn, submitEvent, pendingEvents, reviewEvent, STATIC, demoOK };
+  /* organiser view: admins see every 101-hosted event; anyone else only the events the server marked `organiser: true`
+     (they created it). [] = the organiser view and its button stay hidden (visitors, guests, ordinary members). */
+  const STAFF = ["admin", "root_admin"];
+  function organiserEvents(all, role) {
+    const hosted = (Array.isArray(all) ? all : []).filter(e => e && e.host101);
+    if (STAFF.includes(role)) return hosted;
+    if (!role || role === "visitor" || role === "guest") return [];
+    return hosted.filter(e => e.organiser === true);
+  }
+  window.CC_FEED_API = { organiserEvents, _unwrap: unwrap, _map: { mapAnn, mapNews, mapOpp, mapEvent }, fetchAnnouncements, postAnnouncement, readSet, markRead, fetchNews, explainNews, fetchOpportunities, submitOpportunity, pendingOpportunities, reviewOpportunity, remind, reminders, saved, toggleSave, fetchEvents, toggleGoing, tickets, rsvp, attendees, checkIn, submitEvent, pendingEvents, reviewEvent, STATIC, demoOK };
 })();

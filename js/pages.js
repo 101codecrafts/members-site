@@ -20,6 +20,13 @@
   /* round 11: honest empty / unavailable states (never seeded people or numbers). Signed-out actions go to /auth with next=. */
   const authUrl = () => (window.CCAccess && CCAccess.authUrl ? CCAccess.authUrl(location.pathname + location.search) : "auth.html?next=" + encodeURIComponent(location.pathname + location.search));
   const signedIn = () => !!(window.CCAccess && CCAccess.role && CCAccess.role !== "visitor");
+  /* signedIn() reads CCAccess, which is "visitor" until js/auth.js hears from the server. A page whose copy depends on it
+     waits for that answer (max 2.5 s) and redraws once if the answer comes later, so a signed-in member never sees "Sign in to …". */
+  const afterAccess = async draw => {
+    const A = window.CCAccess; if (!A || A.resolved || !A.ready) return draw();
+    let late = true; await Promise.race([A.ready.then(() => { late = false; }), new Promise(r => setTimeout(r, 2500))]);
+    await draw(); if (late) A.ready.then(() => draw());
+  };
   const emptyBox = (title, body, href, label) => `<div class="card dash-empty" role="status" style="padding:24px"><b class="h3" style="display:block;margin-bottom:6px">${esc(title)}</b><p class="muted">${esc(body)}</p>${href ? `<p><a class="btn or sm" href="${esc(href)}">${esc(label)}</a></p>` : ""}</div>`;
   const offlineNote = what => API.lastStatus && (API.lastStatus() === 401 || API.lastStatus() === 403) ? `Sign in to see ${what}.` : `We couldn't load ${what} right now. Check your connection and try again.`;
 
@@ -235,7 +242,7 @@
       };
       $("#lp-list").addEventListener("click", async e => { const v = e.target.closest(".vote"); if (!v) return; const on = v.getAttribute("aria-pressed") !== "true"; v.setAttribute("aria-pressed", on); const b = $("b", v); b.textContent = +b.textContent + (on ? 1 : -1); await API.upvoteProduct(v.closest("[data-id]").dataset.id); });
       $("#lp-date").textContent = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
-      levelChips(l => { level = l; draw(); }); draw();
+      levelChips(l => { level = l; draw(); }); afterAccess(draw);
     },
     async product() {
       const p = await API.fetchProduct(q.get("id") || "");
@@ -266,7 +273,7 @@
       $("#triage").innerHTML = (Object.keys(tri).length ? "" : `<p class="muted">No bug reports to triage yet.</p>`) + Object.entries(tri).map(([col, items]) => `<div class="tcol" data-col="${esc(col)}"><h3>${esc(col)} <small>${items.length}</small></h3>${items.map(b => `<div class="bug sev-${b.sev}" draggable="true" data-id="${b.id}" tabindex="0"><b>${esc(b.t)}</b><small>${b.sev} · @${esc(b.who)}</small></div>`).join("")}</div>`).join("");
       let drag = null; $("#triage").addEventListener("dragstart", e => drag = e.target.closest(".bug")); $("#triage").addEventListener("dragover", e => e.preventDefault());
       $("#triage").addEventListener("drop", e => { const col = e.target.closest(".tcol"); if (col && drag) { col.appendChild(drag); API.moveBug(drag.dataset.id, col.dataset.col); } });
-      levelChips(l => { level = l; draw(); }); draw();
+      levelChips(l => { level = l; draw(); }); afterAccess(draw);
     },
     /* ---------------- Competitions ---------------- */
     async competitions() {
@@ -301,7 +308,7 @@
       const draw = async () => { const gs = await API.fetchGroups(st.level, st.kind);
         $("#g-list").innerHTML = gs.map(g => `<article class="card"><div class="row" style="justify-content:space-between"><span class="tagx">${esc(g.kind)}</span>${levelBadge(g.level)}</div><h3 class="h3"><a href="groups.html?id=${g.id}">${esc(g.name)}</a></h3><p>${esc(g.desc)}</p><div class="row" style="justify-content:space-between;margin-top:8px"><small>${g.members} members</small><button class="btn sm ${g.open ? "or" : ""}" data-joing="${g.id}">${g.open ? "Join" : "Request"}</button></div></article>`).join("") || emptyBox("No groups yet", "Study groups, project teams and school chapters appear here once they are created.", signedIn() ? "community.html" : authUrl(), signedIn() ? "Visit the community" : "Sign in to join a group"); };
       $("#f-kind").onclick = e => { const b = e.target.closest("[data-k]"); if (!b) return; $$("[data-k]").forEach(x => x.setAttribute("aria-pressed", x === b)); st.kind = b.dataset.k; draw(); };
-      levelChips(l => { st.level = l; draw(); }); draw();
+      levelChips(l => { st.level = l; draw(); }); afterAccess(draw);
     },
     /* ---------------- Projects ---------------- */
     async projects() {

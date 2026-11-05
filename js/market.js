@@ -135,15 +135,13 @@
     $$("[data-p]", pg).forEach(b => b.onclick = () => { state.page = +b.dataset.p; render(); $("#browse").scrollIntoView(); });
   }
   function marketplace() {
-    // hero carousel
-    const slides = [
-      { img: "hero-laptops", k: "BACK-TO-CAMPUS", t: "Refurbished laptops from UGX 1.35M", s: "Graded A, 6-month warranty, boda delivery in Kampala.", href: "marketplace.html?cat=laptops#browse", cta: "Shop laptops", tone: "ink" },
-      { img: "hero-iot", k: "IOT STARTER WEEK", t: "ESP32, sensors & kits for your project", s: "Bulk prices from 10 units. Pickup at the 101 hub desk.", href: "marketplace.html?cat=iot#browse", cta: "Shop components", tone: "ink" },
-      { img: "hero-made101", k: "MADE BY 101 MEMBERS", t: "Apps, templates & services built here", s: "Support the community. Every sale pays a member.", href: "#browse", cta: "Browse member shops", tone: "or", quick: "member" }
-    ];
+    // hero carousel: only real listings (MarketAPI.heroSlides); no listings -> no band
+    const slides = A.heroSlides(D.marketProducts);
+    $("#mk-hero").hidden = !slides.length;
+    if (slides.length) {
     const sl = $("#mk-slides"), dots = $("#mk-dots"); let cur = 0, timer = null, paused = lite();
-    sl.innerHTML = slides.map((s, i) => `<article class="mk-slide t-${s.tone}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}" ${i ? "hidden" : ""} style="background-image:url(${img(s.img)})">
-      <div class="mk-slide-in"><span class="mk-kick">${s.k}</span><h2>${esc(s.t)}</h2><p>${esc(s.s)}</p><a class="btn ${s.tone === "or" ? "ink" : "or"}" href="${s.href}" ${s.quick ? `data-quick="${s.quick}"` : ""}>${s.cta} →</a></div></article>`).join("");
+    sl.innerHTML = slides.map((s, i) => `<article class="mk-slide t-${s.tone}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}" ${i ? "hidden" : ""} ${s.img ? `style="background-image:url(${esc(img(s.img))})"` : ""}>
+      <div class="mk-slide-in"><span class="mk-kick">${esc(s.k)}</span><h2>${esc(s.t)}</h2><p>${esc(s.s)}</p><a class="btn ${s.tone === "or" ? "ink" : "or"}" href="${s.href}" ${s.quick ? `data-quick="${s.quick}"` : ""}>${s.cta} →</a></div></article>`).join("");
     dots.innerHTML = slides.map((s, i) => `<button type="button" aria-label="Slide ${i + 1}: ${esc(s.k)}" aria-pressed="${i === 0}"></button>`).join("");
     const show = i => { cur = (i + slides.length) % slides.length; $$(".mk-slide", sl).forEach((s, j) => s.hidden = j !== cur); $$("button", dots).forEach((d, j) => d.setAttribute("aria-pressed", j === cur)); };
     const play = () => { clearInterval(timer); if (!paused) timer = setInterval(() => show(cur + 1), 6000); };
@@ -152,12 +150,16 @@
     const pb = $("#mk-pause"); const setP = v => { paused = v; pb.setAttribute("aria-pressed", v); pb.setAttribute("aria-label", v ? "Play carousel" : "Pause carousel"); pb.textContent = v ? "▶" : "❚❚"; play(); };
     pb.onclick = () => setP(!paused); setP(paused);
     $("#mk-hero").addEventListener("focusin", () => clearInterval(timer)); $("#mk-hero").addEventListener("mouseenter", () => clearInterval(timer)); $("#mk-hero").addEventListener("mouseleave", play);
-    // deals countdown → next midnight EAT (UTC+3, no DST)
+    const ctl = $(".mk-hero-ctl"); ctl.hidden = slides.length < 2; ctl.style.display = slides.length < 2 ? "none" : "";   // css sets display:flex
+    }
+    // deals of the day: the band (and its midnight countdown) shows only when real discounted listings flagged as deals exist
+    const dealList = A.deals(D.marketProducts), dealSec = $(".mk-deals");
+    if (dealSec) dealSec.hidden = !dealList.length;
     const tick = () => { const now = Date.now(), eat = now + 3 * 36e5, end = Math.ceil(eat / 864e5) * 864e5 - 3 * 36e5, ms = Math.max(0, end - now);
       $("#cd-h").textContent = String(Math.floor(ms / 36e5)).padStart(2, "0"); $("#cd-m").textContent = String(Math.floor(ms % 36e5 / 6e4)).padStart(2, "0"); $("#cd-s").textContent = String(Math.floor(ms % 6e4 / 1e3)).padStart(2, "0"); };
-    tick(); setInterval(tick, 1000);
+    if (dealList.length) { tick(); setInterval(tick, 1000); }
     const none = t => `<p class="muted mk-none">${t}</p>`;
-    $("#row-deals").innerHTML = D.marketProducts.filter(p => p.deal).sort((a, b) => off(b) - off(a)).slice(0, 8).map(p => card(p)).join("") || none("No deals today. Approved listings with a discount show here.");
+    $("#row-deals").innerHTML = dealList.slice().sort((a, b) => off(b) - off(a)).slice(0, 8).map(p => card(p)).join("");
     $("#row-made").innerHTML = D.marketProducts.filter(p => p.made101).sort((a, b) => b.rating - a.rating).slice(0, 8).map(p => card(p)).join("") || none("No member listings yet. Members' approved apps, templates and services show here.");
     A.fetchAffiliates().then(a => $("#row-aff").innerHTML = a.map(affCard).join(""));
     // filters
