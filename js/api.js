@@ -39,7 +39,9 @@
      console noise on every page). The first /api request of a visit waits for ONE probe of /api/v1/health: a 404 that is
      not JSON (the host's 404.html) means "no backend here", remembered for 6 hours in localStorage. While it holds, every
      same-origin /api request is answered locally with a JSON 404, so callers behave exactly as before but nothing hits the
-     network. A JSON reply or any network error leaves the real fetch in place (the combined deploy, or an outage). */
+     network. A JSON reply or any network error leaves the real fetch in place (the combined deploy, or an outage).
+     credentials "same-origin" (not "omit"): on a protected Vercel preview the access cookie (_vercel_jwt) must ride along,
+     or the probe itself gets Vercel's 401 (round-8 report item 6; curl with the cookie got 200). */
   (function apiGuard() {
     if (STATIC || location.protocol === "file:" || !window.fetch) return;
     const base = API_BASE.replace(/\/$/, ""), KEY = "cc_api_absent", TTL = 6 * 3600e3, orig = window.fetch.bind(window);
@@ -47,7 +49,7 @@
     try { const t = +localStorage.getItem(KEY); if (t && Date.now() - t < TTL) absent = true; } catch (e) {}
     const isApi = u => { try { const x = new URL(u, location.href); return x.origin === location.origin && x.pathname.startsWith(base + "/"); } catch (e) { return false; } };
     const fake = () => Promise.resolve(new Response('{"error":{"code":"no_backend","message":"No 101 backend on this host"}}', { status: 404, headers: { "Content-Type": "application/json" } }));
-    const check = () => probe || (probe = orig(base + "/v1/health", { headers: { Accept: "application/json" }, credentials: "omit", cache: "no-store" }).then(r => {
+    const check = () => probe || (probe = orig(base + "/v1/health", { headers: { Accept: "application/json" }, credentials: "same-origin", cache: "no-store" }).then(r => {
       absent = r.status === 404 && !/json/i.test(r.headers.get("content-type") || "");
       try { absent ? localStorage.setItem(KEY, String(Date.now())) : localStorage.removeItem(KEY); } catch (e) {}
     }, () => { absent = false; }));

@@ -28,9 +28,26 @@
     const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
     try {
       const r = await fetch(BASE + path, { ...opts, credentials: "include", signal: ctl.signal, headers: { Accept: "application/json", ...(opts.body ? { "Content-Type": "application/json" } : {}), ...(opts.headers || {}) } });
-      if (!r.ok) throw new Error(r.status + " " + path); return await r.json();
+      if (!r.ok) throw new Error(r.status + " " + path); return unwrap(await r.json());
     } finally { clearTimeout(t); }
   }
+  /* Backend envelope (BUS Q1): { data } where data is an array, { rows, total } or { items }. Unwrap in ONE place so callers
+     always get the payload (an array for lists). Rows are snake_case from Postgres; the map* helpers below give the
+     page code its camelCase shape (bundled preview data is already camelCase and passes through unchanged). */
+  function unwrap(j) {
+    const d = j && typeof j === "object" && Object.prototype.hasOwnProperty.call(j, "data") ? j.data : j;
+    return d && !Array.isArray(d) && typeof d === "object" ? (Array.isArray(d.rows) ? d.rows : Array.isArray(d.items) ? d.items : d) : d;
+  }
+  const list = v => (Array.isArray(v) ? v : []);
+  const NEWS_TAB = { ai: "ai", africa_tech: "africa", startups_funding: "startups" };   // everything else shows under Dev
+  const NEWS_CAT = { ai: "ai", africa: "africa_tech", startups: "startups_funding", dev: "dev" };
+  const mapAnn = a => ({ ...a, pinned: a.pinned ?? !!a.is_pinned, publishedAt: a.publishedAt ?? a.published_at ?? null, expiresAt: a.expiresAt ?? a.expires_at ?? null });
+  const mapNews = n => ({ ...n, tab: n.tab ?? NEWS_TAB[n.category] ?? "dev", at: n.at ?? n.published_at ?? null, summary: n.summary ?? n.ai_summary ?? "" });
+  const mapOpp = o => ({ ...o, deadline: o.deadline ?? o.deadline_at ?? null, level: o.level ?? (Array.isArray(o.levels) ? o.levels.join(", ") : o.levels ?? "") });
+  const mapEvent = e => ({ ...e, start: e.start ?? e.starts_at, end: e.end ?? e.ends_at ?? e.starts_at, venue: e.venue ?? e.location ?? (e.is_online ? "Online" : ""),
+    region: e.region ?? (e.is_online ? "online" : e.city ? String(e.city).toLowerCase() : null), desc: e.desc ?? e.description ?? "",
+    price: e.price ?? e.price_ugx ?? 0, currency: e.currency ?? "UGX", going: e.going ?? e.registrations_count ?? 0, url: e.url ?? e.cal_com_url ?? null,
+    org: e.org ?? "community", type: e.type ?? e.mode ?? null, host101: e.host101 ?? !e.cal_com_url });
   const post = (p, body) => call(p, { method: "POST", body: JSON.stringify(body) });
   const DEMO_URL = /[?&]demo=1(&|$)/.test(location.search);
   const demoOK = () => STATIC || (DEMO_URL && !!(window.CCAccess && CCAccess.can && CCAccess.can("demo.view")));
@@ -40,9 +57,9 @@
 
   /* ---------- Announcements ---------- */
   async function fetchAnnouncements(q = {}) {
-    let list; try { list = await call("/announcements?" + new URLSearchParams(q)); } catch (e) { list = (await settle()) ? [...ls.get("cc_ann_local", []), ...D().announcements] : []; }
+    let rows; try { rows = list(await call("/announcements?" + new URLSearchParams(q))); } catch (e) { rows = (await settle()) ? [...ls.get("cc_ann_local", []), ...D().announcements] : []; }
     const now = Date.now();
-    return list.filter(a => (!a.expiresAt || Date.parse(a.expiresAt) > now) && (!a.publishedAt || Date.parse(a.publishedAt) <= now))
+    return rows.map(mapAnn).filter(a => (!a.expiresAt || Date.parse(a.expiresAt) > now) && (!a.publishedAt || Date.parse(a.publishedAt) <= now))
       .sort((a, b) => (b.pinned - a.pinned) || (Date.parse(b.publishedAt) - Date.parse(a.publishedAt)));
   }
   async function postAnnouncement(a) {
@@ -55,7 +72,7 @@
   /* ---------- News ---------- */
   const TAB_OF = { "Africa Tech": "africa", AI: "ai", Startups: "startups" };
   async function fetchNews(tab = "all") {
-    try { const v = await call("/news?" + new URLSearchParams({ date: new Date().toISOString().slice(0, 10), tab })); if (v && v.length) return v; } catch (e) { /* fall through */ }
+    try { const v = list(await call("/news" + (NEWS_CAT[tab] ? "?" + new URLSearchParams({ category: NEWS_CAT[tab] }) : ""))); if (v.length) { const items = v.map(mapNews); window.__ccFeedNews = items; return items; } } catch (e) { /* fall through */ }
     let items = (await settle()) ? D().news.slice() : [];
     /* live fallback: the existing HN + Dev.to fetch in js/api.js, mapped onto our tabs, after the curated items */
     if (!STATIC && window.CC_API && window.CC_API.fetchNews) {
@@ -71,8 +88,8 @@
 
   /* ---------- Opportunities ---------- */
   async function fetchOpportunities(q = {}) {
-    let list; try { list = await call("/opportunities?" + new URLSearchParams(q)); } catch (e) { list = (await settle()) ? D().opportunities.slice() : []; }
-    return list.filter(o => !o.status || o.status === "approved").sort((a, b) => Date.parse(a.deadline) - Date.parse(b.deadline));
+    let rows; try { rows = list(await call("/opportunities?" + new URLSearchParams(q))).map(mapOpp); } catch (e) { rows = (await settle()) ? D().opportunities.slice() : []; }
+    return rows.filter(o => !o.status || o.status === "approved" || o.status === "published").sort((a, b) => Date.parse(a.deadline) - Date.parse(b.deadline));
   }
   async function submitOpportunity(o) {
     try { return await post("/opportunities", o); }
@@ -90,9 +107,9 @@
   /* ---------- Events & Meetups ---------- */
   const ED = () => window.CC_EVENTS_DATA;
   async function fetchEvents(q = {}) {
-    let list; try { list = await call("/events?" + new URLSearchParams(q)); } catch (e) { list = (await settle()) ? ED().events.slice() : []; }
+    let rows; try { rows = list(await call("/events?" + new URLSearchParams(q))).map(mapEvent); } catch (e) { rows = (await settle()) ? ED().events.slice() : []; }
     const g = ls.get("cc_ev_going", {});
-    return list.filter(x => !x.status || x.status === "approved").map(x => ({ ...x, going: (x.going || 0) + (g[x.id] ? 1 : 0), me: !!g[x.id] })).sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+    return rows.filter(x => !x.status || x.status === "approved").map(x => ({ ...x, going: (x.going || 0) + (g[x.id] ? 1 : 0), me: !!g[x.id] })).sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
   }
   function toggleGoing(id) { const g = ls.get("cc_ev_going", {}); g[id] ? delete g[id] : g[id] = 1; ls.set("cc_ev_going", g); soft(post(`/events/${encodeURIComponent(id)}/going`, { going: !!g[id] })); return !!g[id]; }
   const tickets = () => ls.get("cc_ev_tickets", []);
@@ -104,7 +121,7 @@
     ls.set("cc_ev_tickets", [t, ...tickets().filter(x => x.eventId !== id)]); const g = ls.get("cc_ev_going", {}); g[id] = 1; ls.set("cc_ev_going", g); return t;
   }
   async function attendees(id) {
-    try { return await call(`/events/${encodeURIComponent(id)}/attendees`); } catch (e) { /* preview: placeholder list + this browser's tickets */ }
+    try { return list(await call(`/events/${encodeURIComponent(id)}/attendees`)); } catch (e) { /* preview: placeholder list + this browser's tickets */ }
     if (!(await settle())) return [];
     const demo = ["Amooti K.", "Nakato S.", "Okello J.", "Achieng M.", "Mugisha R."].map((n, i) => ({ name: n, code: `101-DEMO-${i + 1}`, level: ["University", "A-Level", "University", "Professional", "O-Level"][i], checkedIn: i < 2 }));
     return [...tickets().filter(t => t.eventId === id), ...demo];
@@ -120,5 +137,5 @@
   /* go.html lookup: news + opportunities ids → original source url */
   window.CC_FEED_GO = () => [...(D() ? D().news.concat(D().opportunities) : []), ...(ED() ? ED().events : []), ...(window.__ccFeedNews || [])];
 
-  window.CC_FEED_API = { fetchAnnouncements, postAnnouncement, readSet, markRead, fetchNews, explainNews, fetchOpportunities, submitOpportunity, pendingOpportunities, reviewOpportunity, remind, reminders, saved, toggleSave, fetchEvents, toggleGoing, tickets, rsvp, attendees, checkIn, submitEvent, pendingEvents, reviewEvent, STATIC, demoOK };
+  window.CC_FEED_API = { _unwrap: unwrap, _map: { mapAnn, mapNews, mapOpp, mapEvent }, fetchAnnouncements, postAnnouncement, readSet, markRead, fetchNews, explainNews, fetchOpportunities, submitOpportunity, pendingOpportunities, reviewOpportunity, remind, reminders, saved, toggleSave, fetchEvents, toggleGoing, tickets, rsvp, attendees, checkIn, submitEvent, pendingEvents, reviewEvent, STATIC, demoOK };
 })();
