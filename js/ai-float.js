@@ -12,9 +12,20 @@
   var API = ((window.CC_CONFIG && window.CC_CONFIG.apiBase) || "/api").replace(/\/$/, "") + "/v1/assistant";
   var WA = "https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", S = 56, M = 12, MAXQ = 4000;
   var STARTERS = ["What is 101 Codecrafts?", "Explain recursion with a Python example", "Help me plan a week of study", "How do I join?"];
-  var BUSY = "101 AI is busy right now. Please try again in a few minutes, or ask in the [WhatsApp community](" + WA + ").";
   var NOAPI = "101 AI isn't switched on for this version of the site yet. Meanwhile, ask in the [WhatsApp community](" + WA + ").";
   var OFFLINE = "I can't reach 101 AI from here. Check your internet connection, then tap **Try again**.";
+  var UNAVAIL = "101 AI can't answer right now. Try again in a minute.";
+  var QUOTA = "101 AI has used today's free AI allowance. It resets at 03:00 Kampala time. Until then, ask in the [WhatsApp community](" + WA + ").";
+  /* ai error text: maps a failed /v1/assistant response to what the user sees (round 12 QA). The "free AI allowance" copy
+     appears ONLY for the server's machine code ai_quota; any other 5xx is "can't answer right now" with Try again. */
+  function errInfo(status, j) {
+    var e = (j && j.error) || {}, code = typeof e === "string" ? e : e.code, m = typeof e === "string" ? "" : (e.message || "");
+    if (code === "ai_quota") return { text: m || QUOTA, retry: false, quota: true };
+    if (status === 404 || status === 405) return { text: NOAPI, retry: false };
+    if (status === 429 || (status >= 400 && status < 500 && code === "bad_request")) return { text: m || UNAVAIL, retry: true };
+    return { text: UNAVAIL, retry: true };
+  }
+  /* end ai error text */
   var rm = matchMedia("(prefers-reduced-motion: reduce)");
 
   var css = "#ai101{--a-bg:#f7f8f9;--a-card:#fff;--a-ink:#0B1236;--a-mut:#3e5d74;--a-line:#0B1236;--a-sh:#0B1236;--a-fsh:#fc8c0c;--a-fb:#0B1236;--a-link:#146c9f;--a-cy:#05e6f2;font:400 15px/1.5 var(--font-sans,\"CC Sans\",system-ui,sans-serif);color:var(--a-ink)}" +
@@ -277,21 +288,21 @@
     try {
       ctl = new AbortController(); var tm = setTimeout(function () { ctl.abort(); }, 60000);
       var r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", Accept: "text/plain" }, credentials: "same-origin", signal: ctl.signal, body: JSON.stringify({ messages: msgs.slice(-12) }) });
-      if (!r.ok || !r.body) { var em = ""; try { em = ((await r.json()).error || {}).message || ""; } catch (x) {} if (r.status === 404 || r.status === 405) em = NOAPI; throw new Error(em || BUSY); }
+      if (!r.ok || !r.body) { var ej = null; try { ej = await r.json(); } catch (x) {} var ei = errInfo(r.status, ej), er = new Error(ei.text); er.noRetry = !ei.retry; throw er; }
       var rd = r.body.getReader(), dec = new TextDecoder();
       for (;;) {
         var c = await rd.read(); if (c.done) break; var t = dec.decode(c.value, { stream: true }); out += t;
         if (t && hm && hm.__w !== box) { hm.__w = box; idleUnlessTalking(); }   /* first token: stop thinking */
         if (v && t) v.speak(t); if (!raf) raf = requestAnimationFrame(paint);
       }
-      clearTimeout(tm); out = out.trim(); if (!out) throw new Error(BUSY);
+      clearTimeout(tm); out = out.trim(); if (!out) throw new Error(UNAVAIL);
       if (v) v.speak("", { final: true });
       if (raf) cancelAnimationFrame(raf); md(out, box); msgs.push({ role: "assistant", content: out }); keep(); say(out); react(text, out, false);
     } catch (e) {
       if (raf) cancelAnimationFrame(raf); msgs.pop(); keep();
-      var net = !e || e.name === "TypeError" || /fetch|network|load failed/i.test(e.message || ""), t = e && e.name === "AbortError" ? "That took too long, so I stopped waiting. Tap **Try again**." : net ? (navigator.onLine === false ? OFFLINE : BUSY) : (e.message || BUSY);
+      var net = !e || e.name === "TypeError" || /fetch|network|load failed/i.test(e.message || ""), t = e && e.name === "AbortError" ? "That took too long, so I stopped waiting. Tap **Try again**." : net ? (navigator.onLine === false ? OFFLINE : UNAVAIL) : (e.message || UNAVAIL);
       box.classList.add("ai-e"); md(t, box); say(t);
-      var rt = el("button", "ai-retry", "Try again"); rt.type = "button"; rt.addEventListener("click", function () { if (busy) return; box.remove(); var ub = box.previousSibling; if (ub && ub.classList && ub.classList.contains("ai-u")) ub.remove(); ask(text); }); box.appendChild(rt);
+      if (!(e && e.noRetry)) { var rt = el("button", "ai-retry", "Try again"); rt.type = "button"; rt.addEventListener("click", function () { if (busy) return; box.remove(); var ub = box.previousSibling; if (ub && ub.classList && ub.classList.contains("ai-u")) ub.remove(); ask(text); }); box.appendChild(rt); }
       if (v) { v.stop(); v.speak(t, { final: true }); }
       if (hm) { idleUnlessTalking(); react(text, t, true); }
     } finally { box.classList.remove("ai-dots"); box.removeAttribute("aria-label"); setBusy(false); ctl = null; log.scrollTop = log.scrollHeight; idleUnlessTalking(); }

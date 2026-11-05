@@ -82,6 +82,7 @@
   }
   /* Round 12: the explain call gets its own fetch (an LLM answer can take 10-40 s; call()'s 6 s abort made every
      explain look "unreachable") and maps each failure to an honest message instead of one catch-all. */
+  const AI_UNAVAILABLE = "101 AI can't answer right now. Try again in a minute.";
   async function explainNews(n) {
     if (!STATIC && location.protocol !== "file:") {
       const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 50000);
@@ -89,10 +90,13 @@
         const r = await fetch(`${BASE}/news/${encodeURIComponent(n.id)}/explain`, { method: "POST", credentials: "include", signal: ctl.signal, headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify({ title: n.title, url: n.url }) });
         let j = null; try { j = await r.json(); } catch (e) { /* not JSON */ }
         if (r.ok && j && (j.explanation || (j.data && j.data.explanation))) return j.explanation ? j : j.data;
-        const msg = j && j.error && j.error.message;
+        const err = (j && j.error) || {}, code = typeof err === "string" ? err : err.code, msg = typeof err === "string" ? "" : err.message;
+        /* round 12 QA: the "free AI allowance" copy only for the server's machine code ai_quota (no retry until the reset) */
+        if (code === "ai_quota") return { offline: true, quota: true, retry: false, resetsAt: err.resets_at || null, explanation: msg || "101 AI has used today's free AI allowance (it resets at 03:00 Kampala time). Open the source to read the story." };
         if (r.status === 404 || r.status === 405) { if (await settle()) return previewExplain(n); return { offline: true, explanation: "Explain isn't switched on for this version of the site yet. Open the source to read the story, or ask 101 AI (the robot button) about it." }; }
         if (r.status === 429) return { offline: true, retry: true, explanation: msg || "You're asking a little fast. Wait a minute, then try Explain again." };
-        return { offline: true, retry: true, explanation: msg || "101 AI is busy right now. Open the source to read the story, or try Explain again in a minute." };
+        if (r.status === 400 && msg) return { offline: true, retry: true, explanation: msg };
+        return { offline: true, retry: true, explanation: AI_UNAVAILABLE };
       } catch (e) {
         if (await settle()) return previewExplain(n);
         return { offline: true, retry: true, explanation: e && e.name === "AbortError" ? "101 AI took too long to answer. Try Explain again, or open the source to read the story." : (navigator.onLine === false ? "You're offline. Reconnect, then try Explain again." : "101 AI can't be reached right now. Open the source to read the story, or try Explain again in a moment.") };
