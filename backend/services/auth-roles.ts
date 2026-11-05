@@ -25,6 +25,34 @@ import { rpc } from '@/repositories/rpc';
 import { ADULT_AGE, MIN_AGE, ageOn, contractRoleName, isRootEmail, limitsFor, redirectFor, resolveRole, type Plan, type Role } from '@/lib/access';
 import { CONSENT_VERSION, stripForMinor, type OnboardingDraft, type OnboardingSubmit } from '@/lib/onboarding';
 
+
+/* ---- pre-migration tolerance -------------------------------------------------------------------------------------
+ * The r11 migration (guest enum value, onboarding path/step/draft, consent evidence, tutor fields) is applied by the
+ * founder. Until then these helpers fall back to the legacy columns so the flow still works on the current staging DB.
+ * Only "schema not there yet" errors fall back; every other error is thrown. */
+const SCHEMA_GAP = new Set(['42703', 'PGRST204', '42P01', 'PGRST205', '22P02']);
+type PgErr = { code?: string; message?: string } | null;
+const isGap = (e: PgErr): boolean => Boolean(e && ((e.code && SCHEMA_GAP.has(e.code)) || /column .* does not exist|could not find the .* column|invalid input value for enum/i.test(e.message ?? '')));
+const LEGACY_ONBOARDING = new Set(['user_id', 'email_verified', 'intended_role', 'interests', 'experience_level', 'learning_path_id', 'goals', 'steps_completed', 'completed_at']);
+type Row = Record<string, unknown>;
+async function upsertOnboarding(row: Row): Promise<void> {
+  const db = serviceClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const t = db.from('onboarding_state') as any;
+  let { error } = await t.upsert(row, { onConflict: 'user_id' });
+  if (error && isGap(error)) ({ error } = await t.upsert(Object.fromEntries(Object.entries(row).filter(([k]) => LEGACY_ONBOARDING.has(k))), { onConflict: 'user_id' }));
+  if (error) throw error;
+}
+async function tolerantWrite(run: (r: Row) => PromiseLike<{ error: PgErr }>, row: Row, legacyKeys: string[] | null): Promise<boolean> {
+  let { error } = await run(row);
+  if (error && isGap(error)) {
+    if (!legacyKeys) return false;                                   // table not there yet: skip (logged by caller if needed)
+    ({ error } = await run(Object.fromEntries(Object.entries(row).filter(([k]) => legacyKeys.includes(k)))));
+  }
+  if (error) throw error;
+  return true;
+}
+
 export interface ClerkIdentity { email: string | null; emailVerified: boolean; name: string; image: string | null }
 
 export async function clerkIdentity(userId: string): Promise<ClerkIdentity> {
@@ -43,6 +71,7 @@ async function grant(userId: string, roles: DbRole[], by: string | null = null):
   const db = serviceClient();
   for (const role of roles) {
     const { error } = await db.from('user_roles').upsert({ user_id: userId, role, granted_by: by }, { onConflict: 'user_id,role', ignoreDuplicates: true });
+    if (error && role === 'guest' && isGap(error)) continue;          // pre-migration: no 'guest' enum value; no role row = guest anyway
     if (error) throw error;
   }
 }
@@ -55,7 +84,7 @@ async function mirrorClerkRole(userId: string, role: Role): Promise<void> {
 async function ensureRoot(userId: string, id: ClerkIdentity): Promise<void> {
   const db = serviceClient();
   await db.from('profile_private').upsert({ user_id: userId, email: id.email }, { onConflict: 'user_id' });
-  await db.from('onboarding_state').upsert({ user_id: userId, email_verified: true, path: 'admin', completed_at: new Date().toISOString() }, { onConflict: 'user_id' });
+  await upsertOnboarding({ user_id: userId, email_verified: true, path: 'admin', completed_at: new Date().toISOString() });
   await grant(userId, ['super_admin', 'admin']);
   await db.from('profiles').update({ account_status: 'active', joined_at: new Date().toISOString() }).eq('id', userId).neq('account_status', 'active');
 }
@@ -76,7 +105,8 @@ export async function sessionView(s: Session): Promise<SessionView> {
   if (isRootEmail(id.email, id.emailVerified) && !s.roles.includes('super_admin')) await ensureRoot(s.userId, id);
   const [rolesQ, ob, prof, consentQ, planQ] = await Promise.all([
     db.from('user_roles').select('role').eq('user_id', s.userId),
-    db.from('onboarding_state').select('path, step, draft, completed_at').eq('user_id', s.userId).maybeSingle(),
+    db.from('onboarding_state').select('path, step, draft, completed_at').eq('user_id', s.userId).maybeSingle()
+      .then(async (r) => (r.error && isGap(r.error) ? { data: { path: null, step: null, draft: null, ...((await db.from('onboarding_state').select('completed_at').eq('user_id', s.userId).maybeSingle()).data ?? {}) }, error: null } : r)),
     db.from('profiles').select('account_status, is_minor').eq('id', s.userId).maybeSingle(),
     db.from('guardian_consents').select('verified_at, revoked_at').eq('user_id', s.userId).order('created_at', { ascending: false }).limit(1),
     rpc(s.db, 'my_plan').catch(() => null),
@@ -108,6 +138,7 @@ export async function saveDraft(s: Session, d: OnboardingDraft): Promise<{ saved
   const looksMinor = minor || (dob !== null && (ageOn(dob) ?? 99) < ADULT_AGE);
   const draft = looksMinor ? stripForMinor(d) : d;
   const { error } = await db.from('onboarding_state').upsert({ user_id: s.userId, path: d.path, step: d.step, draft }, { onConflict: 'user_id' });
+  if (error && isGap(error)) return { saved: false, reason: 'pending_migration' } as unknown as { saved: true };   // the browser copy still resumes
   if (error) throw error;
   return { saved: true };
 }
@@ -135,7 +166,7 @@ export async function submitOnboarding(s: Session, input: OnboardingSubmit, ipHa
 
   if (input.path === 'guest') {
     await grant(s.userId, ['guest']);
-    await db.from('onboarding_state').upsert({ user_id: s.userId, path: 'guest', step: 'done', draft: null, completed_at: now, ...consentRow }, { onConflict: 'user_id' });
+    await upsertOnboarding({ user_id: s.userId, path: 'guest', step: 'done', draft: null, completed_at: now, ...consentRow });
     await db.from('profiles').update({ account_status: 'active', joined_at: now }).eq('id', s.userId).eq('account_status', 'pending');
     void mirrorClerkRole(s.userId, 'guest');
     return { role: 'guest' as Role, redirect: redirectFor('guest', true), guardian: 'not_needed' };
@@ -158,16 +189,16 @@ export async function submitOnboarding(s: Session, input: OnboardingSubmit, ipHa
     await db.from('profiles').update({ display_name: input.name }).eq('id', s.userId);
     const token = randomToken(32);
     const g = input.guardian;
-    const { data: row, error } = await db.from('guardian_consents').insert({
-      user_id: s.userId, guardian_name: g.name, guardian_email: g.email, relationship: g.relationship, token_hash: sha256(token),
-      token_expires_at: new Date(Date.now() + 7 * 864e5).toISOString(), consent_version: CONSENT_VERSION,
-      scope: ['account', 'learning', 'community_readonly'], requested_ip_hash: ipHash ?? null,
-    }).select('id').single();
+    const base = { user_id: s.userId, guardian_name: g.name, guardian_email: g.email, relationship: g.relationship, token_hash: sha256(token),
+      token_expires_at: new Date(Date.now() + 7 * 864e5).toISOString() };
+    let ins = await db.from('guardian_consents').insert({ ...base, consent_version: CONSENT_VERSION, scope: ['account', 'learning', 'community_readonly'], requested_ip_hash: ipHash ?? null }).select('id').single();
+    if (ins.error && isGap(ins.error)) ins = await db.from('guardian_consents').insert(base).select('id').single();
+    const { data: row, error } = ins;
     if (error) throw error;
     const e = env();
     await sendEmails(e.RESEND_API_KEY, e.RESEND_FROM, [{ to: g.email, ...templates.guardianConsent({ guardian: g.name, child: input.name, url: `${e.APP_URL}/api/v1/guardian/verify?token=${token}` }) }]);
     await grant(s.userId, ['learner']);
-    await db.from('onboarding_state').upsert({ user_id: s.userId, path: 'learner', step: 'guardian_pending', draft: null, completed_at: now, ...consentRow }, { onConflict: 'user_id' });
+    await upsertOnboarding({ user_id: s.userId, path: 'learner', step: 'guardian_pending', draft: null, completed_at: now, ...consentRow });
     void mirrorClerkRole(s.userId, 'learner');
     return { role: 'learner' as Role, redirect: redirectFor('learner', true), guardian: 'pending', consent_id: row.id };
   }
@@ -176,11 +207,11 @@ export async function submitOnboarding(s: Session, input: OnboardingSubmit, ipHa
 
   if (input.path === 'learner') {
     await grant(s.userId, ['learner']);
-    await db.from('onboarding_state').upsert({
+    await upsertOnboarding({
       user_id: s.userId, path: 'learner', step: 'done', draft: null, completed_at: now, intended_role: 'learner',
       interests: input.interests, goals: [input.goals.join(', '), input.goal_note].filter(Boolean).join(' — ').slice(0, 1000),
       experience_level: input.experience ?? null, gender: input.gender, heard_from: input.heard_from, ...consentRow,
-    }, { onConflict: 'user_id' });
+    });
     await db.from('profiles').update({ account_status: 'active', joined_at: now }).eq('id', s.userId).eq('account_status', 'pending');
     void mirrorClerkRole(s.userId, 'learner');
     return { role: 'learner' as Role, redirect: redirectFor('learner', true), guardian: 'not_needed' };
@@ -194,14 +225,17 @@ export async function submitOnboarding(s: Session, input: OnboardingSubmit, ipHa
     linkedin_url: input.linkedin_url ?? null, levels: input.levels, credentials: input.credentials,
     payout_network: input.payout_network, payout_phone_last4: msisdn.slice(-4),
   };
-  const pi = await db.from('tutor_payout_intents').upsert({ user_id: s.userId, network: input.payout_network, last4: msisdn.slice(-4),
-    ciphertext: e.PAYOUT_ENCRYPTION_KEY ? encryptSecret(msisdn, e.PAYOUT_ENCRYPTION_KEY, e.PAYOUT_ENCRYPTION_KEY_ID) : null }, { onConflict: 'user_id' });
-  if (pi.error) throw pi.error;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const intents = db.from('tutor_payout_intents') as any;
+  await tolerantWrite((r) => intents.upsert(r, { onConflict: 'user_id' }), { user_id: s.userId, network: input.payout_network, last4: msisdn.slice(-4),
+    ciphertext: e.PAYOUT_ENCRYPTION_KEY ? encryptSecret(msisdn, e.PAYOUT_ENCRYPTION_KEY, e.PAYOUT_ENCRYPTION_KEY_ID) : null }, null);
   const pending = (await db.from('tutor_applications').select('id').eq('user_id', s.userId).eq('status', 'pending').maybeSingle()).data;
-  const res = pending ? await db.from('tutor_applications').update(app).eq('id', pending.id) : await db.from('tutor_applications').insert(app);
-  if (res.error) throw res.error;
+  const legacyApp = ['user_id', 'bio', 'expertise', 'years_experience', 'linkedin_url'];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const apps = db.from('tutor_applications') as any;
+  await tolerantWrite((r) => (pending ? apps.update(r).eq('id', pending.id) : apps.insert(r)), app, legacyApp);
   await grant(s.userId, ['learner', 'tutor']);
-  await db.from('onboarding_state').upsert({ user_id: s.userId, path: 'tutor', step: 'done', draft: null, completed_at: now, intended_role: 'tutor', gender: input.gender, heard_from: input.heard_from, ...consentRow }, { onConflict: 'user_id' });
+  await upsertOnboarding({ user_id: s.userId, path: 'tutor', step: 'done', draft: null, completed_at: now, intended_role: 'tutor', gender: input.gender, heard_from: input.heard_from, ...consentRow });
   await db.from('profiles').update({ account_status: 'active', joined_at: now }).eq('id', s.userId).eq('account_status', 'pending');
   void mirrorClerkRole(s.userId, 'tutor');
   return { role: 'tutor' as Role, redirect: redirectFor('tutor', true), guardian: 'not_needed', tutor_verification: 'pending' };
@@ -213,7 +247,7 @@ export async function afterGuardianVerified(userId: string): Promise<void> {
   const g = (await db.from('guardian_consents').select('id, guardian_name, guardian_email').eq('user_id', userId).not('verified_at', 'is', null).is('revoked_at', null)
     .order('verified_at', { ascending: false }).limit(1).maybeSingle()).data;
   if (!g) return;
-  await db.from('guardian_consents').update({ guardian_email_verified: true, confirmation_sent_at: new Date().toISOString() }).eq('id', g.id);
+  await db.from('guardian_consents').update({ guardian_email_verified: true, confirmation_sent_at: new Date().toISOString() }).eq('id', g.id);   // no-op error before the migration
   const ob = (await db.from('onboarding_state').select('completed_at').eq('user_id', userId).maybeSingle()).data;
   if (ob?.completed_at) await db.from('profiles').update({ account_status: 'active', joined_at: new Date().toISOString() }).eq('id', userId).eq('account_status', 'pending');
   await db.from('onboarding_state').update({ step: 'done' }).eq('user_id', userId).eq('step', 'guardian_pending');
