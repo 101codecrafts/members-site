@@ -26,7 +26,7 @@ export async function createCheckout(s: Session, input: z.infer<typeof checkoutB
   await rateLimit(LIMITS.checkout, s.userId);
   assertFlutterwaveSandbox();   // r11: sandbox-only build — refuse live keys before anything is created
   if (input.purpose === 'course' && input.reference_id) {   // r11: tutor capacity / guest rules, readable before paying
-    const { data: v } = await (s.db.rpc as unknown as (n: string, a: object) => Promise<{ data: { ok?: boolean; reason?: string } | null }>)('can_enroll', { p_course: input.reference_id });
+    const v = (await rpc(s.db, 'can_enroll', { p_course: input.reference_id })) as { ok?: boolean; reason?: string } | null;
     if (v && v.ok === false && v.reason !== 'plan_limit') {
       throw new AppError(v.reason === 'tutor_full' ? 'unprocessable' : 'forbidden', v.reason === 'tutor_full' ? 'This tutor has no free student places on their plan right now' : 'Become a learner to buy courses', v);
     }

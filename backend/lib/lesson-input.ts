@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Json, TablesUpdate } from '@/types/database';
 
 /** Course builder input (r11). Shapes mirror the DB checks in 20261105020000_course_builder.sql. */
 
@@ -66,7 +67,7 @@ const LessonRaw = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('quiz'), ...base, questions: z.array(QuizQuestion).min(1).max(50), pass_pct: z.number().int().min(0).max(100).default(70) }),
 ]);
 type Row = { kind: 'video' | 'book' | 'text' | 'file' | 'quiz'; title: string; is_preview?: boolean; duration_minutes?: number;
-             content_md: string | null; payload: Record<string, unknown>; answers?: number[] };
+             content_md: string | null; payload: { [k: string]: Json | undefined }; answers?: number[] };
 export const LessonInput = LessonRaw.transform((x, ctx): Row => {
   const common = { title: x.title, is_preview: x.is_preview, duration_minutes: x.duration_minutes };
   switch (x.kind) {
@@ -112,9 +113,9 @@ export function slugify(t: string): string {
 }
 
 /** Map builder course input to DB columns (requested_price_ugx, never price_ugx / is_free). */
-export function courseColumns(c: z.output<typeof BuilderCoursePatch>): Record<string, unknown> {
+export function courseColumns(c: z.output<typeof BuilderCoursePatch>): TablesUpdate<'courses'> {
   const { pricing, ...rest } = c;
-  const out: Record<string, unknown> = { ...rest };
+  const out: TablesUpdate<'courses'> = { ...rest };
   if (pricing) out.requested_price_ugx = pricing.mode === 'free' ? 0 : pricing.price_ugx;
   return out;
 }

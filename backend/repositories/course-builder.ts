@@ -1,29 +1,24 @@
 import 'server-only';
 import type { Db } from '@/lib/supabase/user';
 import { fromPostgres, notFound } from '@/lib/errors';
+import { rpc, type RpcArgs } from '@/repositories/rpc';
+import type { Database } from '@/types/database';
 
 /**
- * Course builder data access (r11). The generated Database types predate
- * 20261105020000_course_builder.sql, so these calls go through a loosely
- * typed view of the same RLS-scoped client. Regenerate types/database.ts
- * after the migration is applied and drop the cast.
+ * Course builder data access (r11). types/database.ts now includes 20261105020000_course_builder.sql (regenerated from
+ * staging in round 12), so these calls are fully typed; `loose` stays as an identity helper so call sites read the same.
  */
 type Res<T = unknown> = { data: T; error: { code?: string; message: string } | null };
-interface Q extends PromiseLike<Res> {
-  select(c?: string): Q; insert(v: unknown): Q; update(v: unknown): Q; upsert(v: unknown, o?: unknown): Q; delete(): Q;
-  eq(c: string, v: unknown): Q; is(c: string, v: unknown): Q; in(c: string, v: unknown[]): Q; order(c: string, o?: unknown): Q;
-  limit(n: number): Q; single(): Q; maybeSingle(): Q;
-}
-type Loose = { from(t: string): Q; rpc(n: string, a?: object): PromiseLike<Res> };
-export const loose = (db: Db): Loose => db as unknown as Loose;
+type Fns = Database['public']['Functions'];
+export const loose = (db: Db): Db => db;
 
 export async function run<T = unknown>(p: PromiseLike<Res>): Promise<T> {
   const { data, error } = await p;
   if (error) throw fromPostgres(error);
   return data as T;
 }
-export async function rpcLoose<T = unknown>(db: Db, name: string, args: object = {}): Promise<T> {
-  return run<T>(loose(db).rpc(name, args));
+export async function rpcLoose<T = unknown, N extends keyof Fns = keyof Fns>(db: Db, name: N, args: RpcArgs<N> = {} as RpcArgs<N>): Promise<T> {
+  try { return (await rpc(db, name, args)) as T; } catch (e) { throw fromPostgres(e as { code?: string; message?: string }); }
 }
 
 export const COURSE_COLS = 'id, slug, title, summary, description, level, cover_url, status, review_note, is_free, price_ugx, requested_price_ugx, tags, tutor_id, updated_at, published_at';

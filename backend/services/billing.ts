@@ -2,6 +2,9 @@ import 'server-only';
 import type { z } from 'zod';
 import type { Session } from '@/lib/auth';
 import type { Db } from '@/lib/supabase/user';
+import { rpc, type RpcArgs } from '@/repositories/rpc';
+import type { Database } from '@/types/database';
+type Fns = Database['public']['Functions'];
 import { serviceClient } from '@/lib/supabase/admin';
 import { env } from '@/lib/env';
 import { AppError } from '@/lib/errors';
@@ -17,12 +20,9 @@ import type { adminCoursePricingBody, adminPlanBody, planCheckoutBody, priceRequ
  * and never fulfils anything (SR-16: only verified webhooks do).
  */
 
-/** New RPCs are not in the generated types yet: call them untyped, unwrap errors the same way rpc() does. */
-async function call<T>(db: Db, name: string, args: Record<string, unknown> = {}): Promise<T> {
-  const fn = db.rpc as unknown as (n: string, a?: object) => Promise<{ data: unknown; error: { code?: string; message: string } | null }>;
-  const { data, error } = await fn.call(db, name, args);
-  if (error) throw error;
-  return data as T;
+/** Typed RPC call (names + args checked against types/database.ts, regenerated from staging in round 12); T = the jsonb shape. */
+async function call<T, N extends keyof Fns = keyof Fns>(db: Db, name: N, args: RpcArgs<N> = {} as RpcArgs<N>): Promise<T> {
+  return (await rpc(db, name, args)) as T;
 }
 
 export function paymentEnv(): PaymentEnv {
@@ -51,7 +51,7 @@ export function assertFlutterwaveSandbox(): void {
 }
 
 async function enabledProviders(): Promise<EnabledProvider[]> {
-  const { data, error } = await serviceClient().from('payment_providers' as never).select('code, enabled, sort, methods');
+  const { data, error } = await serviceClient().from('payment_providers').select('code, enabled, sort, methods');
   if (error) throw error;
   return (data ?? []) as unknown as EnabledProvider[];
 }
@@ -95,7 +95,7 @@ export async function createPlanCheckout(s: Session, input: z.infer<typeof planC
   } catch (e) { paymentError(e); }
   const svc = serviceClient();
   if (result.url) await call(svc, 'set_payment_checkout_link', { p_tx_ref: row.tx_ref, p_link: result.url });
-  if (result.providerRef) await svc.from('payments').update({ provider_ref: result.providerRef } as never).eq('tx_ref', row.tx_ref);
+  if (result.providerRef) await svc.from('payments').update({ provider_ref: result.providerRef }).eq('tx_ref', row.tx_ref);
   return { status: 'pending' as const, tx_ref: row.tx_ref, payment_id: row.payment_id, amount_ugx: row.amount_ugx, currency: 'UGX' as const,
     provider: row.provider, method: row.method, plan: { audience: row.audience, tier: row.tier, interval: row.interval },
     kind: result.kind, checkout_url: result.url ?? null, instructions: result.instructions ?? null, sandbox: true as const };
@@ -112,14 +112,17 @@ export const requestCoursePrice = (s: Session, courseId: string, b: z.infer<type
   call<string>(s.db, 'request_course_price', { p_course: courseId, p_price_ugx: b.make_free ? null : b.price_ugx, p_make_free: b.make_free, p_note: b.note ?? null })
     .then((id) => ({ id, status: 'pending' as const }));
 export const decideCoursePrice = (s: Session, id: string, approve: boolean, note?: string) => call(s.db, 'decide_course_price', { p_request: id, p_approve: approve, p_note: note ?? null });
-export const priceRequestQueue = async (s: Session, status = 'pending') =>
-  (await s.db.from('course_price_requests' as never).select('id, course_id, tutor_id, make_free, price_ugx, note, status, created_at, decided_at, decision_note')
-    .eq('status', status).order('created_at', { ascending: true }).limit(100)).data ?? [];
+export const priceRequestQueue = async (s: Session, status: Database['public']['Enums']['review_status'] = 'pending') => {
+  const { data, error } = await s.db.from('course_price_requests').select('id, course_id, tutor_id, make_free, price_ugx, note, status, created_at, decided_at, decision_note')
+    .eq('status', status).order('created_at', { ascending: true }).limit(100);
+  if (error) throw error;   // was swallowed into [] (an outage looked like an empty queue)
+  return data ?? [];
+};
 // Admin console routes for these two live on r11/admin-api (PUT /admin/plans/{audience}/{tier}, POST /admin/courses/{id}/pricing,
 // with scope checks); they call the same RPCs. Kept here for callers on this branch.
 export const setCoursePricing = (s: Session, id: string, b: z.infer<typeof adminCoursePricingBody>) =>
   call(s.db, 'admin_set_course_pricing', { p_course: id, p_is_free: b.is_free, p_price_ugx: b.price_ugx, p_all_lessons_free: b.all_lessons_free ?? null });
-export const updatePlan = (s: Session, aud: string, t: string, b: z.infer<typeof adminPlanBody>) =>
+export const updatePlan = (s: Session, aud: string, t: Database['public']['Enums']['member_plan'], b: z.infer<typeof adminPlanBody>) =>
   call(s.db, 'admin_update_plan', { p_audience: aud, p_tier: t, p_name: b.name ?? null, p_tagline: b.tagline ?? null, p_limits: b.limits ?? null,
     p_features: b.features ?? null, p_monthly_ugx: b.monthly_ugx ?? null, p_yearly_ugx: b.yearly_ugx ?? null, p_confirm_prices: b.confirm_prices ?? null });
 export const setProvider = (s: Session, code: string, enabled: boolean, sort?: number) =>
@@ -134,12 +137,12 @@ export async function createRating(s: Session, b: z.infer<typeof ratingBody>) {
     // the unique index is on an expression (coalesce(course_id, …)), so no ON CONFLICT: update-or-insert
     const mine = (await s.db.from('tutor_reviews').select('id').eq('learner_id', s.userId).eq('tutor_id', c.tutor_id).eq('course_id', c.id).maybeSingle()).data;
     const { error } = mine
-      ? await s.db.from('tutor_reviews').update({ rating: b.rating, body: b.body ?? null } as never).eq('id', mine.id)
-      : await s.db.from('tutor_reviews').insert({ tutor_id: c.tutor_id, learner_id: s.userId, course_id: c.id, rating: b.rating, body: b.body ?? null } as never);
+      ? await s.db.from('tutor_reviews').update({ rating: b.rating, body: b.body ?? null }).eq('id', mine.id)
+      : await s.db.from('tutor_reviews').insert({ tutor_id: c.tutor_id, learner_id: s.userId, course_id: c.id, rating: b.rating, body: b.body ?? null });
     if (error) throw error;
     return { ok: true, kind: 'course' as const };
   }
-  const { error } = await s.db.from('item_ratings' as never).upsert({ user_id: s.userId, item_kind: b.item_kind, item_id: b.item_id, rating: b.rating, body: b.body ?? null } as never,
+  const { error } = await s.db.from('item_ratings').upsert({ user_id: s.userId, item_kind: b.item_kind, item_id: b.item_id, rating: b.rating, body: b.body ?? null },
     { onConflict: 'user_id,item_kind,item_id' });
   if (error) throw error;
   return { ok: true, kind: 'item' as const };

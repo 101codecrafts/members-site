@@ -1,12 +1,17 @@
 import 'server-only';
 import { clerkClient } from '@clerk/nextjs/server';
 import type { Session } from '@/lib/auth';
+import type { z } from 'zod';
+import type { queueQuery } from '@/lib/admin-validation';
 import { serviceClient } from '@/lib/supabase/admin';
 import { AppError, forbidden } from '@/lib/errors';
 import { env } from '@/lib/env';
 import { sendEmails, templates } from '@/lib/email';
 import { createLogger } from '@/lib/logger';
 import type { Db } from '@/lib/supabase/user';
+import { rpc, type RpcArgs } from '@/repositories/rpc';
+import type { Database } from '@/types/database';
+type Fns = Database['public']['Functions'];
 
 /**
  * Round 11 admin console services.
@@ -21,17 +26,13 @@ import type { Db } from '@/lib/supabase/user';
 const log = createLogger({ mod: 'admin-console' });
 export const ROOT_EMAIL = '101codecrafts@gmail.com';
 
-type AnyRpc = (n: string, a?: object) => Promise<{ data: unknown; error: { code?: string; message: string } | null }>;
-/** RPC by name (functions from other r11 branches are not in this branch's generated types). */
-export async function call<T = unknown>(db: Db, name: string, args: object = {}): Promise<T> {
-  const fn = db.rpc as unknown as AnyRpc;
-  const { data, error } = await fn.call(db, name, args);
-  if (error) throw error;
-  return data as T;
+/** Typed RPC call: the name and args are checked against types/database.ts (regenerated from staging, round 12). */
+export async function call<T = unknown, N extends keyof Fns = keyof Fns>(db: Db, name: N, args: RpcArgs<N> = {} as RpcArgs<N>): Promise<T> {
+  return (await rpc(db, name, args)) as T;
 }
 /** Same, but a missing function/table (migration of another branch not applied yet) returns `fallback`. */
-export async function callOptional<T>(db: Db, name: string, args: object, fallback: T): Promise<{ data: T; available: boolean }> {
-  try { return { data: await call<T>(db, name, args), available: true }; }
+export async function callOptional<T, N extends keyof Fns = keyof Fns>(db: Db, name: N, args: RpcArgs<N>, fallback: T): Promise<{ data: T; available: boolean }> {
+  try { return { data: await call<T, N>(db, name, args), available: true }; }
   catch (e) {
     const code = (e as { code?: string }).code;
     if (code === '42883' || code === 'PGRST202' || code === '42P01' || code === 'PGRST205') return { data: fallback, available: false };
@@ -89,12 +90,12 @@ export async function acceptInvite(s: Session, token: string) {
 }
 
 /** Queue = review_submissions + (when the plans branch is merged) pending course_price_requests as kind 'price_change'. */
-export async function approvalQueue(s: Session, p: { status: string; kind?: string; limit: number; offset: number }) {
+export async function approvalQueue(s: Session, p: z.infer<typeof queueQuery>) {
   const q = await call<{ total: number; counts: Record<string, number>; items: unknown[] }>(s.db, 'admin_review_queue',
     { p_status: p.status, p_kind: p.kind && p.kind !== 'price_change' ? p.kind : null, p_limit: p.limit, p_offset: p.offset });
   let prices: unknown[] = []; let pricesAvailable = false;
   if (p.status === 'pending' && (!p.kind || p.kind === 'price_change')) {
-    const r = await s.db.from('course_price_requests' as never).select('id, course_id, tutor_id, make_free, price_ugx, note, status, created_at').eq('status', 'pending').order('created_at').limit(100);
+    const r = await s.db.from('course_price_requests').select('id, course_id, tutor_id, make_free, price_ugx, note, status, created_at').eq('status', 'pending').order('created_at').limit(100);
     if (!r.error) {
       pricesAvailable = true;
       const rows = (r.data ?? []) as unknown as { id: string; course_id: string; tutor_id: string; make_free: boolean; price_ugx: number | null; note: string | null; created_at: string }[];

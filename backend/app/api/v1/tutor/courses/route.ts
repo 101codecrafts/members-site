@@ -11,6 +11,6 @@ export const GET = route(async () => {
 export const POST = route(async ({ req }) => {
   const s = await requireTutor();
   const c = await body(req, BuilderCourseInput);
-  return run(loose(s.db).from('courses').insert({ ...courseColumns(c), slug: slugify(c.title), tutor_id: s.userId, status: 'draft' }).select(COURSE_COLS).single());
+  return run(loose(s.db).from('courses').insert({ ...courseColumns(c), title: c.title, slug: slugify(c.title), tutor_id: s.userId, status: 'draft' }).select(COURSE_COLS).single());
 }, { rateLimit: LIMITS.write });
 export const OPTIONS = preflight;
