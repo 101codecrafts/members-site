@@ -123,21 +123,24 @@
     const local = ls.get("cc_orders", []); const o = local.find(x => x.id === id);
     if (o) { Object.assign(o, patch); ls.set("cc_orders", local); } else { const st = ls.get("cc_order_state", {}); st[id] = { ...(st[id] || {}), ...patch }; ls.set("cc_order_state", st); }
   }
-  const confirmDelivery = (id, track) => or(`/market/orders/${id}/confirm`, () => { patchOrder(id, { status: 5, track }); return { ok: true, released: true }; }, { method: "POST" });
-  const openDispute = (id, body) => or(`/market/orders/${id}/dispute`, () => { patchOrder(id, { dispute: { ...body, opened: new Date().toISOString().slice(0, 10), state: "Under review" } }); return { ok: true, ref: "DSP-" + String(Date.now()).slice(-4) }; }, { method: "POST", body: JSON.stringify(body) });
+  /* BUS L16: a money/seller mutation the server did not accept NEVER reports success; the local "it worked" path is demo-only. */
+  const NOT_SENT = () => ({ ok: false, offline: true, notSent: true, message: "Not sent: this isn't available yet. Nothing was changed." });
+  const demoOr = f => () => (demoOK() ? f() : NOT_SENT());
+  const confirmDelivery = (id, track) => or(`/market/orders/${id}/confirm`, demoOr(() => { patchOrder(id, { status: 5, track }); return { ok: true, released: true }; }), { method: "POST" });
+  const openDispute = (id, body) => or(`/market/orders/${id}/dispute`, demoOr(() => { patchOrder(id, { dispute: { ...body, opened: new Date().toISOString().slice(0, 10), state: "Under review" } }); return { ok: true, ref: "DSP-" + String(Date.now()).slice(-4) }; }), { method: "POST", body: JSON.stringify(body) });
 
   /* ---------- seller centre ---------- */
   const fetchSellerOverview = () => or("/market/seller/overview", () => demoOK() ? D().marketSeller : JSON.parse(JSON.stringify(ZERO_SELLER)));
   const saveProduct = body => or("/market/seller/products", () => { if (!demoOK()) return { ok: false, status: "not sent (offline). Your listing was not submitted; try again when you're online" }; ls.set("cc_seller_drafts", [body, ...ls.get("cc_seller_drafts", [])]); return { ok: true, id: "draft-" + Date.now(), status: "In review" }; }, { method: "POST", body: JSON.stringify(body) });
-  const updateOrderStatus = (id, status) => or(`/market/seller/orders/${id}/status`, { ok: true }, { method: "POST", body: JSON.stringify({ status }) });
-  const requestSellerPayout = (amount, to) => or("/market/seller/payouts", { ok: true, status: "pending" }, { method: "POST", body: JSON.stringify({ amount, to }) });
-  const replyReview = (i, text) => or(`/market/seller/reviews/${i}/reply`, { ok: true }, { method: "POST", body: JSON.stringify({ text }) });
+  const updateOrderStatus = (id, status) => or(`/market/seller/orders/${id}/status`, demoOr(() => ({ ok: true, demo: true })), { method: "POST", body: JSON.stringify({ status }) });
+  const requestSellerPayout = (amount, to) => or("/market/seller/payouts", demoOr(() => ({ ok: true, status: "pending", demo: true })), { method: "POST", body: JSON.stringify({ amount, to }) });
+  const replyReview = (i, text) => or(`/market/seller/reviews/${i}/reply`, demoOr(() => ({ ok: true, demo: true })), { method: "POST", body: JSON.stringify({ text }) });
 
   /* ---------- RFQ (request for quotation) ---------- */
   const fetchRFQ = () => or("/market/rfq", () => ({ mine: [...(demoOK() ? ls.get("cc_rfq", []) : []), ...D().marketRFQ.mine], open: D().marketRFQ.open }));
   const postRFQ = body => or("/market/rfq", () => { if (!demoOK()) throw Object.assign(new Error("Your request was not posted (offline). Try again when you're online."), { offline: true }); const r = { id: "RFQ-" + String(Date.now()).slice(-4), status: "Open", quotes: [], ...body }; ls.set("cc_rfq", [r, ...ls.get("cc_rfq", [])]); return r; }, { method: "POST", body: JSON.stringify(body) });
-  const acceptQuote = (rfq, sellerId) => or(`/market/rfq/${rfq}/accept`, { ok: true }, { method: "POST", body: JSON.stringify({ seller: sellerId }) });
-  const sendQuote = (rfq, body) => or(`/market/rfq/${rfq}/quotes`, { ok: true }, { method: "POST", body: JSON.stringify(body) });
+  const acceptQuote = (rfq, sellerId) => or(`/market/rfq/${rfq}/accept`, demoOr(() => ({ ok: true, demo: true })), { method: "POST", body: JSON.stringify({ seller: sellerId }) });
+  const sendQuote = (rfq, body) => or(`/market/rfq/${rfq}/quotes`, demoOr(() => ({ ok: true, demo: true })), { method: "POST", body: JSON.stringify(body) });
 
   window.MarketAPI = { ready, demoOK, product, seller, fetchCategories, fetchProducts, fetchProduct, fetchAffiliates, fetchReviews, fetchQA, askQuestion, suggest,
     getCart, setCart, addToCart, cartCount, getWishlist, toggleWish, tierPrice, checkout, fetchOrders, confirmDelivery, openDispute,
