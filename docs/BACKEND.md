@@ -165,3 +165,27 @@ Server code wraps any model call with `reserveAi(userId, feature, estTokens)` �
 - **Enforced in the DB:** lesson locks (`app.can_view_lesson` in the `lessons` / `course_media` RLS; first N lessons + previews free; `lessons.min_plan` override; bought courses fully open; `courses.all_lessons_free`; launch promo = Pro); `courses.active` + tutor `students.max` (`can_enroll` + `enrollments_plan_guard`); guests can't buy courses/sessions/plans (`payments_buyer_guard`); course prices only through `request_course_price` → `decide_course_price` (or `admin_set_course_pricing`); verified-only ratings (`tutor_reviews`, `mkt_reviews`, new `item_ratings` + `item_usage`); listings need admin approval and follow `listings.active`.
 - **Payments:** `backend/lib/payments` = provider interface + registry (Flutterwave active; Pesapal/DPO stubs; MTN/Airtel direct + Payway slots). `payment_providers` table = which are enabled (root only; stubs can't be enabled). `create_plan_checkout` prices plans in SQL (SR-17); `apply_provider_payment` is the service-only generic fulfilment (Flutterwave keeps `apply_flutterwave_payment`). **Sandbox only:** `PAYMENTS_MODE` must be `sandbox`, Flutterwave keys must be `FLWSECK_TEST-…`, DPO needs `DPO_SANDBOX=true`, payments rows are `mode='sandbox'`.
 - **Endpoints:** `GET /api/v1/plans`, `GET /api/v1/payments/providers`, `POST /api/v1/billing/checkout`, `GET /api/v1/me/entitlements`, `POST /api/v1/me/item-use`, `GET /api/v1/courses/{slug}/syllabus`, `POST /api/v1/tutor/courses/{id}/price-request`, `GET /api/v1/admin/price-requests`, `POST /api/v1/admin/price-requests/{id}`, `PUT /api/v1/admin/payment-providers/{code}` (root), `POST /api/v1/webhooks/payments/{provider}`. The admin console's plan and pricing routes live on r11/admin-api.
+
+## Course builder + dashboards (round 11, r11/dash-api)
+
+Migration `supabase/migrations/20261105020000_course_builder.sql` (NOT applied; tests: `supabase/tests/course_builder.test.mjs`, 7 cases; whole suite 71/71 via `node supabase/tests/local/pglite-run.mjs supabase` when no Postgres server is available).
+
+| Method | Path | Who | What |
+|---|---|---|---|
+| GET/POST | `/api/v1/tutor/courses` | verified tutor | list own courses / create a draft (`pricing: {mode:'free'} \| {mode:'paid', price_ugx>=1000}` is stored as `requested_price_ugx`) |
+| GET/PATCH/DELETE | `/api/v1/tutor/courses/:id` | owner | builder tree (modules → lessons, quiz keys, submission history) / edit details / soft-delete draft or rejected |
+| POST | `/api/v1/tutor/courses/:id/modules` | owner | add module |
+| PATCH/DELETE | `/api/v1/tutor/modules/:id` | owner | rename / delete (cascades lessons) |
+| POST | `/api/v1/tutor/modules/:id/lessons` | owner | add lesson: `kind` = `video` (`youtube` url or id → `payload.youtube_id`, played via youtube-nocookie), `book` (`isbn` with check digit and/or https `url`), `text` (`content_md`), `file` (https `url`), `quiz` (`questions[{q, options[], answer}]`; answers stored in `lesson_quiz_keys`) |
+| PATCH/DELETE | `/api/v1/tutor/lessons/:id` | owner | replace / delete lesson |
+| POST | `/api/v1/tutor/courses/:id/reorder` | owner | `{modules:[ids], lessons:{moduleId:[ids]}}` |
+| POST | `/api/v1/tutor/courses/:id/submit` | owner | Submit for review → checklist + link report → `course_submissions` (kind new/update/price) |
+| POST | `/api/v1/tutor/courses/:id/withdraw` | owner | withdraw pending submission (in-review course → Draft) |
+| POST | `/api/v1/lessons/:id/quiz` | can see lesson | server-side grading `{answers:[i...]}` |
+| GET | `/api/v1/admin/course-submissions?status=` | admin | approval queue with checklist + link report |
+| GET/POST | `/api/v1/admin/course-submissions/:id` | admin | snapshot preview / `{decision, reason (required for reject), price_ugx?}` |
+| POST | `/api/v1/admin/courses/:id/price` | admin | make any course free (0) or paid (≥1000) |
+| GET | `/api/v1/learner/dashboard` | signed in | `learner_dashboard()` — enrolments + progress + next lesson, counts, certificates, saved, sessions, streak, plan |
+| GET | `/api/v1/tutor/dashboard` | verified tutor | extended `tutor_dashboard()` — adds `kpis`, `learners`, `payouts`, per-course review state |
+
+Rules in the database: tutors never set `is_free`/`price_ugx` or move a course into/out of review by hand; content is locked while in review; tutor edits set `approved=false` and learners only see approved lessons/modules, so updates to a live course stay hidden until approved; a rejection needs a reason (≥5 chars) and notifies the tutor.
