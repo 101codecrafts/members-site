@@ -1444,6 +1444,9 @@ html:not(.static) .cc-toolbar.in-foot .cc-tb-toggle{width:44px;min-width:44px;he
 @media (max-width:380px){html:not(.static) .shell .topbar{column-gap:3px;padding-left:6px;padding-right:8px}html:not(.static) .tb-btn{padding:0 9px}}
 html:not(.static) .cc-toolbar.in-drawer select{background:transparent;color:inherit}
 
+/* r11: anything CCAccess hides ([hidden]) must disappear even where a rule sets display (sidebar links/sections, gated buttons) */
+.sbar [hidden],[data-can][hidden]{display:none!important}
+
 /* =====================================================================================
    101 Codecrafts — touch layer (live site only for anything that paints; ?static=1 untouched)
    1. touch-action: no double-tap zoom delay on controls; drag/pinch surfaces own their gestures

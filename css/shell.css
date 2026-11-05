@@ -224,3 +224,6 @@ html:not(.static) .cc-toolbar.in-foot .cc-tb-toggle{width:44px;min-width:44px;he
 /* integrate3: 360-380px phones keep the 44px targets without overflowing the top bar */
 @media (max-width:380px){html:not(.static) .shell .topbar{column-gap:3px;padding-left:6px;padding-right:8px}html:not(.static) .tb-btn{padding:0 9px}}
 html:not(.static) .cc-toolbar.in-drawer select{background:transparent;color:inherit}
+
+/* r11: anything CCAccess hides ([hidden]) must disappear even where a rule sets display (sidebar links/sections, gated buttons) */
+.sbar [hidden],[data-can][hidden]{display:none!important}

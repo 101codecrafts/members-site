@@ -151,7 +151,7 @@
     function renderPricing(p) {
       const c = tree.course, req = c.requested_price_ugx, paidReq = req != null && req > 0;
       const live = c.status === "published" ? (c.is_free ? "Free" : ugx(c.price_ugx)) : "Not live yet";
-      p.innerHTML = `<form class="card ed" id="b-pricing" style="max-width:720px">
+      p.innerHTML = `<form class="card ed" id="b-pricing" novalidate style="max-width:720px">
         <p><b>Live price:</b> ${esc(live)}${req != null ? ` · <b>Requested:</b> ${req ? esc(ugx(req)) : "Free"}${c.status === "published" && req !== c.price_ugx ? " (needs approval)" : ""}` : ""}</p>
         <div class="price-opts"><label><input type="radio" name="mode" value="free"${!paidReq ? " checked" : ""}>Free</label><label><input type="radio" name="mode" value="paid"${paidReq ? " checked" : ""}>Paid</label></div>
         <label class="field" id="b-pp"${paidReq ? "" : " hidden"}>Price you're asking for (UGX)<input name="price" type="number" min="1000" max="100000000" step="500" value="${paidReq ? req : ""}" placeholder="e.g. 25000"></label>
@@ -246,7 +246,7 @@
         : `<div class="card">${empty({ key: "editor", examples: [["M1 · Getting started", "3 lessons"], ["M2 · Your first project", "5 lessons"]], title: "Add your first module", body: "Modules are the sections of your course. Add one on the left, then fill it with lessons." })}</div>`;
       if (sel.type === "module") {
         const m = mods.find(x => x.id === sel.id); if (!m) { sel = null; return editorHtml(); }
-        return `<form class="card ed" id="b-modform"><div class="sec-title"><h2>MODULE</h2></div>
+        return `<form class="card ed" id="b-modform" novalidate><div class="sec-title"><h2>MODULE</h2></div>
           <label class="field">Title<input name="title" maxlength="140" value="${esc(m.title)}" required></label>
           <label class="field">Summary <span class="help">(optional)</span><textarea name="summary" rows="3" maxlength="1000" style="min-height:80px;font-family:inherit">${esc(m.summary || "")}</textarea></label>
           <p class="ferr" role="alert" id="b-mf-err"></p>

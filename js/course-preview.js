@@ -43,7 +43,7 @@
   const price = course.status === "published" ? (course.is_free ? "Free" : ugx(course.price_ugx)) : (course.requested_price_ugx ? "Asking " + ugx(course.requested_price_ugx) : "Free");
   $("#c-meta").innerHTML = `<span class="tagx">${esc((course.level || "beginner").replace(/^./, s => s.toUpperCase()))}</span><span class="tagx">${num(mods.length)} modules</span><span class="tagx">${num(flat.length)} lessons</span><span class="tagx">${esc(price)}</span>`;
   // preview shows lesson content in Overview; notes/books/discussion belong to enrolled learners
-  const tabs = document.querySelector("[role=tablist]"); if (tabs) tabs.hidden = true;
+  const tabs = document.querySelector("[role=tablist]"); if (tabs) { tabs.hidden = true; tabs.style.display = "none"; }
   ["#p-no", "#p-bk", "#p-di"].forEach(s => { const el = $(s); if (el) el.hidden = true; });
   const done = $("#c-done"); if (done) { done.disabled = true; done.title = "Learners mark lessons complete"; done.lastChild.textContent = "Learners mark complete"; }
 

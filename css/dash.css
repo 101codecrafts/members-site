@@ -2,6 +2,9 @@
    Brutalist only: flat fills, 2px outlines, hard offset shadows (no blur), square corners, no gradients or glows.
    Colours come from the role tokens in css/theme.css, so light and dark both work without tools/theme.py. */
 
+/* gated controls (CCAccess "hide" mode sets [hidden]) must really disappear even when .btn sets display */
+[data-can][hidden],.dash-empty [hidden],.row-acts [hidden]{display:none!important}
+
 /* ---------- banners ---------- */
 .dash-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border:2px solid var(--border-strong);background:var(--surface-2);color:var(--text);font:600 var(--step--1) var(--body);margin:0 0 16px}
 .dash-bar svg{width:18px;height:18px;flex:none}

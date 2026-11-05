@@ -1744,6 +1744,9 @@ html:not(.static) .cc-toolbar.in-foot .cc-tb-toggle{width:44px;min-width:44px;he
 @media (max-width:380px){html:not(.static) .shell .topbar{column-gap:3px;padding-left:6px;padding-right:8px}html:not(.static) .tb-btn{padding:0 9px}}
 html:not(.static) .cc-toolbar.in-drawer select{background:transparent;color:inherit}
 
+/* r11: anything CCAccess hides ([hidden]) must disappear even where a rule sets display (sidebar links/sections, gated buttons) */
+.sbar [hidden],[data-can][hidden]{display:none!important}
+
 /* ==== Recent activity: like / comment / share (js/activity.js). Live dashboard only; existing tokens only. ==== */
 html:not(.static) .app.dz .act.act-live{grid-template-areas:"img b b" "img who who" "q q q" "ago ago ago" "bar bar bar" "gate gate gate" "thr thr thr";grid-template-rows:auto auto 1fr auto auto auto auto}
 html:not(.static) .app.dz .act.act-live .meta{display:none!important}
