@@ -28,6 +28,306 @@
     }
   },
   "paths": {
+    "/api/v1/activities/{id}/comments": {
+      "get": {
+        "tags": [
+          "activities"
+        ],
+        "summary": "Comments on an activity-feed item (a community post). GET: any signed-in user (post_comments_select). POST: active members, own rows only (post_comments_insert; author_id is stamped by the guard_ugc t",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "activities"
+        ],
+        "summary": "Comments on an activity-feed item (a community post). GET: any signed-in user (post_comments_select). POST: active members, own rows only (post_comments_insert; author_id is stamped by the guard_ugc t",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/activities/{id}/like": {
+      "post": {
+        "tags": [
+          "activities"
+        ],
+        "summary": "Like / unlike an activity-feed item (a community post). POST adds the caller's 'like' reaction (idempotent), DELETE removes it. Both answer { liked, likes } so the client can reconcile its optimistic ",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "activities"
+        ],
+        "summary": "Like / unlike an activity-feed item (a community post). POST adds the caller's 'like' reaction (idempotent), DELETE removes it. Both answer { liked, likes } so the client can reconcile its optimistic ",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/admins/{id}": {
+      "patch": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Root only: change scopes or suspend/reinstate. Root itself can never be changed (DB guard).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Root only: change scopes or suspend/reinstate. Root itself can never be changed (DB guard).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/admins": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Root only (enforced in admin_invite). Emails the accept link; returns it to root only when email is not configured.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Root only (enforced in admin_invite). Emails the accept link; returns it to root only when email is not configured.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/admin/analytics": {
       "get": {
         "tags": [
@@ -234,6 +534,119 @@
         }
       }
     },
+    "/api/v1/admin/approvals/{id}/recheck": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Re-run the link checks for one submission (scope: approvals).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/approvals/{id}": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "approve | reject (reason) | request_changes (reason + fixes). The submitter is notified in-app by the DB.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/approvals": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Scope: approvals (admin_review_queue). Riskiest first, then oldest.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/admin/articles/{id}/review": {
       "post": {
         "tags": [
@@ -250,6 +663,37 @@
             }
           }
         ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/audit-log": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Scope: audit. Who, what, before → after, newest first. The log itself is append-only in SQL.",
         "security": [
           {
             "clerkSession": []
@@ -363,6 +807,78 @@
             }
           }
         ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/courses/{id}/pricing": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Make any course free or paid (scope: plans). admin_set_course_pricing is the r11 plans branch RPC.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/courses/pricing": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Courses with their free/paid state for the pricing toggle (scope: plans).",
         "security": [
           {
             "clerkSession": []
@@ -609,6 +1125,138 @@
         }
       }
     },
+    "/api/v1/admin/flags": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Scope: flags (admin_set_flag); before→after lands in the audit log.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Scope: flags (admin_set_flag); before→after lands in the audit log.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/invites/{id}": {
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "DELETE /api/v1/admin/invites/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/invites/accept": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Any signed-in user with the invite token; the DB matches the invite email to the Clerk-VERIFIED email.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/admin/launch-promo": {
       "put": {
         "tags": [
@@ -697,6 +1345,37 @@
             }
           }
         ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/me": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Console bootstrap: role (root_admin | admin) + scopes. Binds root from the Clerk-verified email.",
         "security": [
           {
             "clerkSession": []
@@ -903,6 +1582,158 @@
           "admin"
         ],
         "summary": "GET /api/v1/admin/payouts",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/people/{id}": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Scope: users. Role (learner/tutor), status (suspend/ban/restore), plan override, guardian consent. All audited in SQL.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/people": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Scope: users. Search by name / username / email / id; filter role (incl. guest, root_admin), status, minors.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/plans/{audience}/{tier}": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Scope: plans. Edits a tier's limits/features/prices (admin_update_plan, r11 plans branch); audited there + here.",
+        "parameters": [
+          {
+            "name": "audience",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/plans": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Plans + prices + limits as stored in the database (r11 plans branch: plan_tiers + subscription_plans).",
         "security": [
           {
             "clerkSession": []
@@ -1225,6 +2056,148 @@
           "admin"
         ],
         "summary": "POST /api/v1/admin/social",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/stats": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Real counts from the database (zeros when empty). Scope: stats (or approvals).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/support-view/{id}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Snapshot (every read is audited). No user token is ever minted: the admin keeps their own session.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Snapshot (every read is audited). No user token is ever minted: the admin keeps their own session.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/support-view": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Start a 30-minute READ-ONLY view of a user's dashboard (scope: support_view). Reason required; the user is notified.",
         "security": [
           {
             "clerkSession": []
@@ -1897,6 +2870,33 @@
           }
         ],
         "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/assistant": {
+      "post": {
+        "tags": [
+          "assistant"
+        ],
+        "summary": "POST /api/v1/assistant: the floating \"101 AI\" site assistant. Public (no sign-in), answers only about 101 Codecrafts from lib/assistant/knowledge.ts. Free OpenRouter models only. Streams text/plain de",
+        "security": [],
+        "x-auth": "public",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"
@@ -2880,7 +3880,7 @@
         "tags": [
           "go"
         ],
-        "summary": "Outbound redirect: only to URLs stored in our DB (no open redirect), click logged, rel=noopener on the card.",
+        "summary": "Outbound redirect: only to URLs stored in our DB (no open redirect), click logged, rel=noopener on the card. - DB id (uuid) found  -> 302 straight to the stored https URL (no interstitial, works witho",
         "parameters": [
           {
             "name": "id",
@@ -5827,6 +6827,107 @@
         "summary": "GET /api/v1/social",
         "security": [],
         "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/submissions/{id}": {
+      "delete": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "DELETE /api/v1/submissions/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/submissions": {
+      "get": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "My submissions (RLS: own rows).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "My submissions (RLS: own rows).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"

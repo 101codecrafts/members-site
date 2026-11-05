@@ -61,7 +61,10 @@ const schema = z.object({
   JUDGE0_URL: z.string().url().optional(),
   JUDGE0_AUTH_TOKEN: z.string().optional(),
   EXPO_ACCESS_TOKEN: z.string().optional(),
-  SENTRY_DSN: z.string().url().optional(),   // Sentry free tier or self-hosted GlitchTip
+  SENTRY_DSN: z.string().url().optional(),
+  // Round 11 admin link checks: Google Web Risk (commercial) first, Safe Browsing v4 (non-commercial) second; unset = 'not_scanned' flag.
+  WEB_RISK_API_KEY: z.string().optional(),
+  SAFE_BROWSING_API_KEY: z.string().optional(),   // Sentry free tier or self-hosted GlitchTip
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
 });
 

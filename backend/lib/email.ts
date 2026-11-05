@@ -24,6 +24,12 @@ ${cta ? `<tr><td style="padding-top:24px"><a href="${esc(cta.url)}" style="backg
 }
 
 export const templates = {
+  adminInvite: (p: { inviter: string; url: string; scopes: string[]; expires: string }): Omit<Email, 'to'> => ({
+    subject: 'You are invited to be a 101 Codecrafts admin',
+    html: layout('Admin invite', `<p>${esc(p.inviter)} invited you to help run 101 Codecrafts as an admin.</p><p>Permissions: <b>${esc(p.scopes.join(', '))}</b></p>`
+      + `<p>Sign in with this email address to accept. The link expires ${esc(p.expires)}. If you did not expect this, ignore this email.</p>`, { label: 'Accept the invite', url: p.url }),
+    text: `${p.inviter} invited you to be a 101 Codecrafts admin (${p.scopes.join(', ')}). Accept (sign in with this email): ${p.url} — expires ${p.expires}.`,
+  }),
   welcome: (name: string, appUrl: string): Omit<Email, 'to'> => ({
     subject: 'Welcome to 101 Codecrafts 👋',
     html: layout(`Welcome, ${name}!`, `<p>Your account is ready. Pick a learning path, join a group and ship your first project.</p>`, { label: 'Open your dashboard', url: `${appUrl}/dashboard.html` }),

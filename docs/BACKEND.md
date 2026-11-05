@@ -29,7 +29,7 @@ client (web / PWA / Expo) ──► /api/v1/* route handler
 "Enforced twice": `lib/rbac.ts` (route level) **and** Postgres RLS + SECURITY DEFINER RPCs (row level). The service-role client may only be imported from `services/` (ESLint `no-restricted-imports`).
 
 ### Migrations (apply in order)
-`foundation → identity → learning → projects_catalog_news → events_sessions_groups → community → commerce_ledger → growth_engagement → levels_safety_launchpad → course_media_errors → platform_admin → analytics → rls_policies_grants → external_courses → ads_settings → launch_promo → storage_realtime → security_hardening → practice_articles → marketplace_v2 → ai_tools_usage → community_platform`
+`foundation → identity → learning → projects_catalog_news → events_sessions_groups → community → commerce_ledger → growth_engagement → levels_safety_launchpad → course_media_errors → platform_admin → analytics → rls_policies_grants → external_courses → ads_settings → launch_promo → storage_realtime → security_hardening → practice_articles → marketplace_v2 → ai_tools_usage → community_platform → activity_reactions → (r11) auth_roles → plan_tiers_enum → plans_access → admin_console`
 
 Rules every migration follows (checked in CI):
 - RLS enabled in the **same** migration that creates a table; `select app.enable_rls_all()` at the end; a test fails if any table in `public/app/analytics` lacks RLS (and a meta-test proves the guard catches one).
@@ -74,6 +74,16 @@ Rules every migration follows (checked in CI):
 | Announcements | public, published | targeted, published | same | drafts, schedule | same |
 | Roles | — | — | — | — | grant/revoke admin |
 | Email domain rules, security events | — | — | — | manage / read | same |
+
+## Round 11 · Admin console (`20261105001200_admin_console.sql`, branch r11/admin-api)
+- **Root (`root_admin`) = only 101codecrafts@gmail.com.** `backend_bind_root(user, verified_email)` (service role, called by `GET /api/v1/admin/me` after Clerk confirms the verified email; also auto-binds on the first privileged `super_admin` grant to the verified root-email account) stores the Clerk id in `app.root_identity`. DB triggers stop anyone (admins, service role, postgres, cascades) from demoting, suspending, deleting or removing root. Break-glass rebind: SQL editor only, `set local app.break_glass = 'rebind-root'`.
+- **Scoped admins:** `admin_grants(user_id, scopes[], status)`. Scopes: approvals, users, plans, flags, audit, stats, support_view, payments, moderation, content, settings. `app.require_scope()` in every new admin RPC. Suspended admins fail `app.is_admin()` everywhere. Admins without a grant row (legacy) keep every non-root scope. Root-only: `admin_invite` (sha256-hashed token, 7 days) → `backend_accept_admin_invite` (verified email must match; adults only), `admin_set_scopes`, `admin_set_admin_status`, `admin_remove_admin`.
+- **Approval queue:** `review_submissions` (kinds: course, lesson, book, link, video, project, campaign, event, listing). `submit_for_review` (learners/tutors, owner-checked) → `services/link-check.ts` (static checks, YouTube oEmbed, Google Web Risk / Safe Browsing when keyed, else `not_scanned`) → `admin_review_queue` / `admin_decide_submission(approve | reject | request_changes)` with a required reason, fixes list, submitter notification and before→after audit. A blocked link can't be approved; high/unchecked links need an override note; no self-review. `is_approved(kind, ref)` is the "public only after approval" check for other areas. Price changes come from the plans branch's `course_price_requests` and are merged into the same queue.
+- **Users:** `admin_search_users` (roles incl. guest/root_admin, plan, minor, guardian state), `admin_set_user_role` (learner/tutor only), `admin_set_user_status`, `admin_set_user_plan` (profiles.plan / tutor_plan), `admin_revoke_guardian`.
+- **Audit:** `audit_log` is append-only for every caller (trigger). `app.audit_change()` writes old→new. `admin_audit_search` (scope audit).
+- **Support view:** `admin_start_support_view(target, reason)` → 30-min session, user notified. `admin_support_snapshot(session)` is a read-only snapshot and every read is audited. Root can't be viewed, and admins only by root. No user token is ever minted.
+- Env (optional): `WEB_RISK_API_KEY`, `SAFE_BROWSING_API_KEY`.
+- Routes: `/api/v1/admin/{me,stats,admins,admins/[id],invites/[id],invites/accept,approvals,approvals/[id],approvals/[id]/recheck,people,people/[id],plans,plans/[audience]/[tier],courses/pricing,courses/[id]/pricing,flags,audit-log,support-view,support-view/[id]}`, `/api/v1/submissions[/id]`.
 
 ## Environment variables
 
