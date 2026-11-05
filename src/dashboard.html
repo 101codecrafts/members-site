@@ -1,192 +1,39 @@
 <!doctype html>
 <html lang="en">
 <head>
-{{HEAD title="Dashboard · 101 Codecrafts" desc="Your 101 Codecrafts member space: learning paths, community tools, projects, events and daily tech news." path="dashboard.html" noindex}}
+{{HEAD title="My learning · 101 Codecrafts" desc="Your 101 Codecrafts learner dashboard: continue learning, your courses and progress, plan limits, certificates, saved items and sessions." path="dashboard.html" noindex}}
 <link rel="stylesheet" href="css/brutal.css">
 <link rel="stylesheet" href="css/app.css">
-<link rel="stylesheet" href="css/dashboard.css">
-<link rel="stylesheet" href="css/feed.css">
-<link rel="stylesheet" id="fitcss" href="css/dashboard.fit.css">
+<link rel="stylesheet" href="css/dash.css">
 </head>
-<body data-page="dashboard" data-role="member">
+<body class="flow" data-role="learner" data-page="dashboard">
 <a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
-<div class="shell dash-shell">
+<div class="shell">
 {{SIDEBAR role="learner" active="Home"}}
 <div class="main">
-{{TOPBAR role="learner"}}
-<div class="ann-slot" data-ann-slot aria-hidden="true"></div>
-<main class="app" id="main">
-
-<!-- ============ SIDEBAR ============ -->
-<aside class="side">
-  <img class="brand-logo" src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="101">
-  <div class="brand-name">101 <br>Codecrafts</div>
-  <div class="brand-tag">Build. Learn. Grow.</div>
-  <svg class="i side-arrow"><use href="#i-arrow"/></svg>
-  <nav class="nav" style="top:0">
-    <a class="active" href="dashboard.html" style="top:91px"><svg><use href="#i-home"/></svg><span>Home</span></a>
-    <a href="profile.html" style="top:131px"><svg><use href="#i-users"/></svg><span>Community</span></a>
-    <a href="courses.html" style="top:172px"><svg><use href="#i-learning"/></svg><span>Learning</span></a>
-    <a href="projects.html" style="top:212px"><svg><use href="#i-code"/></svg><span>Projects</span></a>
-    <a href="resources.html" style="top:253px"><svg><use href="#i-folder"/></svg><span>Resources</span></a>
-    <a href="marketplace.html" style="top:293px"><svg><use href="#i-store"/></svg><span>Marketplace</span></a>
-    <a href="events.html" style="top:334px"><svg><use href="#i-calendar"/></svg><span>Events</span></a>
-    <a aria-disabled="true" style="top:376px"><svg><use href="#i-chat"/></svg><span>Messages</span><i class="badge">3</i></a>
-    <a href="announcements.html" style="top:415px"><svg><use href="#i-bell"/></svg><span>Notifications</span><i class="badge">5</i></a>
-  </nav>
-  <div class="side-rule" style="top:468px"></div>
-  <div class="side-h">YOUR SPACE</div>
-  <nav class="nav" style="top:0">
-    <a href="courses.html" style="top:517px"><svg><use href="#i-cap"/></svg><span>My Courses</span></a>
-    <a href="projects.html" style="top:557px"><svg><use href="#i-codebox"/></svg><span>My Projects</span></a>
-    <a href="resources.html" style="top:597px"><svg><use href="#i-download"/></svg><span>My Downloads</span></a>
-    <a href="profile.html" style="top:638px"><svg><use href="#i-user"/></svg><span>My Profile</span></a>
-    <a href="settings-apps.html" style="top:681px"><svg><use href="#i-gear"/></svg><span>Settings</span></a>
-  </nav>
-  <div class="side-rule" style="top:724px"></div>
-  <div class="invite">
-    <img src="assets/img/better-tech-art.webp" alt="" width="104" height="96">
-    <div class="t">Better <br>Tech <br>Together</div>
-    <a class="inv-btn hov on-dark" href="#" data-wa-share="Join me on 101 Codecrafts — learn, build and collaborate in tech:"><svg class="i"><use href="#i-userplus"/></svg>Invite Friends</a>
+{{TOPBAR role="learner" label="Learner"}}
+<main id="main" class="content">
+  <div id="l-bars"></div>
+  <div class="page-h">
+    <div><div class="kicker">Learner space</div><h1 id="l-hello">WELCOME</h1><p>Pick up where you left off, and keep an eye on what your plan includes.</p></div>
+    <div class="row"><a class="btn or" href="courses.html" id="l-browse"><svg aria-hidden="true"><use href="#i-cap"/></svg>Browse courses</a><a class="btn" href="practice.html">Practice</a></div>
   </div>
-</aside>
-<div class="copy">© 2025 101 Codecrafts. All rights reserved.</div>
-
-<!-- ============ TOP BAR ============ -->
-<label class="search"><svg><use href="#i-search"/></svg><span>Search courses, projects, people, or resources...</span></label>
-<svg class="i tb-ic" style="left:1162px;top:22px"><use href="#i-bell"/></svg>
-<i class="dot" style="left:1177px;top:20px"></i>
-<svg class="i tb-ic" style="left:1209px;top:22px"><use href="#i-msg"/></svg>
-<div class="vrule"></div>
-<img class="me-av" src="assets/img/avatar-member.webp" alt="">
-<div class="me-name">Guest</div>
-<div class="me-role">Member</div>
-<a class="role-switch abs" href="admin.html" aria-label="Switch view: Learner, Tutor or Admin" style="left:1494px;top:24px;width:18px;height:18px;color:#1d2328"><svg class="i" style="width:18px;height:18px"><use href="#i-chev"/></svg></a>
-<div class="toprule"></div>
-
-<!-- ============ HERO ============ -->
-<img class="hero-photo heavy-hero" fetchpriority="high" decoding="async" src="assets/img/dash-hero-photo.webp" srcset="assets/img/dash-hero-photo.webp 545w, assets/img/dash-hero-photo-800.webp 800w" sizes="(max-width:1099px) 100vw, 545px" alt="Member coding on a 101 Codecrafts laptop">
-<section class="hero">
-  <canvas class="fx-canvas" data-fx="grid"></canvas>
-  <div class="kick">WELCOME TO 101 CODECRAFTS</div>
-  <h1 class="split">LEARN  BUILD
-COLLABORATE</h1>
-  <p>A global technology community for learners, creators, <br>and problem-solvers. Level up your skills, work on real <br>projects, and grow your career in tech.</p>
-  <a class="cta hov" href="signup.html">Join Community <svg class="i" style="width:18px;height:18px"><use href="#i-arrow"/></svg></a>
-</section>
-<section class="cyanp">
-  <div class="t">Build <br>the <br>Future <br>Together</div>
-  <i class="abs blk o" style="left:15px;top:128px;width:10px;height:21px"></i>
-  <i class="abs blk" style="left:38px;top:152px;width:19px;height:19px"></i>
-  <i class="abs blk o" style="left:15px;top:173px;width:22px;height:30px"></i>
-  <i class="abs blk" style="left:37px;top:203px;width:50px;height:60px"></i>
-  <i class="abs blk o" style="left:63px;top:236px;width:24px;height:27px"></i>
-</section>
-
-<div class="stat s1 ck-skin"><svg style="left:16px;color:var(--or)"><use href="#i-people"/></svg><b style="left:72px;top:10px" data-count="10" data-suffix="K+" data-site-stat="members" data-fmt="short">10K+</b><small style="left:72px;top:33px">Active Members</small></div>
-<div class="stat s2 ck-skin"><svg style="left:14px;color:#0B1236"><use href="#i-code"/></svg><b style="left:68px;top:10px" data-count="500" data-suffix="+">500+</b><small style="left:68px;top:33px">Projects &amp; Resources</small></div>
-<div class="stat s3 ck-skin"><svg style="left:14px;color:#0B1236"><use href="#i-book"/></svg><b style="left:68px;top:10px" data-count="100" data-suffix="+">100+</b><small style="left:68px;top:33px">Learning Paths</small></div>
-
-<!-- ============ FEATURED ============ -->
-<div class="rule" style="top:433px"></div>
-<i class="sec-ic" style="left:261px;top:450px"></i>
-<h2 class="sec-h" style="left:282px;top:446px">FEATURED SOFTWARE &amp; TOOLS</h2>
-<div class="sec-sub" style="left:281px;top:469px">Access our community-built tools, software and services.</div>
-<a class="viewall" href="ai-tools.html" style="left:1137px;top:450px">View All <svg class="i"><use href="#i-arrow"/></svg></a>
-
-<!-- TODO(founder): SecureScan, DataInsight Pro, CloudDeploy and TaskFlow are mockup tools with no page yet; on the live site they show without an arrow (.tool-soon). Link each one when it exists. -->
-<article class="tool hov on-dark ck-skin ck--inv" style="left:261px"><div class="ib bg-or"><svg><use href="#i-code"/></svg></div><h3><a class="tool-a ck-link" href="ide.html">CodeCraft IDE</a></h3><p>A lightweight IDE for <br>modern developers.</p><span class="tag">Development Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:457px"><div class="ib bg-cy"><svg><use href="#i-shield"/></svg></div><h3>SecureScan</h3><p>Scan and assess your <br>web applications.</p><span class="tag">Security Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:652px"><div class="ib bg-or"><svg><use href="#i-bars"/></svg></div><h3>DataInsight Pro</h3><p>Analyze your data <br>with ease.</p><span class="tag">Data Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:846px"><div class="ib bg-cy"><svg><use href="#i-cloud"/></svg></div><h3>CloudDeploy</h3><p>Deploy your apps <br>in minutes.</p><span class="tag">Cloud Service</span><svg class="go"><use href="#i-arrow"/></svg></article>
-<article class="tool on-dark tool-soon ck-skin ck--inv is-disabled" style="left:1039px"><div class="ib bg-or"><svg><use href="#i-list"/></svg></div><h3>TaskFlow</h3><p>Manage your projects <br>and teams.</p><span class="tag">Productivity Tool</span><svg class="go"><use href="#i-arrow"/></svg></article>
-
-<!-- ============ LEARNING PATHS ============ -->
-<div class="rule" style="top:655px"></div>
-<i class="abs" style="left:261px;top:671px;width:17px;height:5px;background:var(--or)"></i>
-<h2 class="sec-h" style="left:282px;top:664px">LEARNING PATHS</h2>
-<div class="sec-sub" style="left:260px;top:685px">Structured paths to help you gain skills and achieve your goals.</div>
-<a class="viewall" href="courses.html" style="left:1147px;top:670px">View All <svg class="i"><use href="#i-arrow"/></svg></a>
-
-<a class="lp o hov" style="left:261px;width:177px"><div class="ib"><svg><use href="#i-code"/></svg></div><h4>Software Engineering</h4><small>12 courses • Beginner</small></a>
-<a class="lp c hov" style="left:447px;width:162px"><div class="ib"><svg><use href="#i-chart"/></svg></div><h4>Data Science &amp; Analytics</h4><small>10 courses • Beginner</small></a>
-<a class="lp d hov on-dark" style="left:618px;width:150px"><div class="ib"><svg><use href="#i-shieldc"/></svg></div><h4 style="font-size:10.5px">Cybersecurity &amp; Ethical Hacking</h4><small>8 courses • Intermediate</small></a>
-<a class="lp o hov" style="left:777px;width:147px"><div class="ib" style="background:none;color:#0B1236"><svg style="width:30px;height:30px"><use href="#i-brain"/></svg></div><h4>AI &amp; Machine Learning</h4><small>12 courses • Intermediate</small></a>
-<a class="lp c hov" style="left:933px;width:142px"><div class="ib" style="background:none;color:#0B1236"><svg style="width:32px;height:32px"><use href="#i-cloud"/></svg></div><h4>Cloud &amp; DevOps</h4><small>10 courses • Intermediate</small></a>
-<a class="lp d hov on-dark" style="left:1084px;width:140px"><div class="ib" style="background:#06e6f1;color:#0B1236"><svg><use href="#i-network"/></svg></div><h4 style="font-size:10px">IT Infrastructure &amp; Networking</h4><small>8 courses • Beginner</small></a>
-
-<!-- ============ RECENT ACTIVITY ============ -->
-<div class="rule" style="top:826px"></div>
-<i class="abs" style="left:261px;top:837px;width:14px;height:8px;background:linear-gradient(var(--or) 0 2px,transparent 2px 5px,var(--or) 5px)"></i>
-<h2 class="sec-h" style="left:282px;top:834px;font-family:var(--body);font-weight:700;font-size:14px;top:832px;letter-spacing:.4px">RECENT ACTIVITY</h2>
-
-<article class="act hov ck-skin" style="left:260px;width:221px"><img src="assets/img/avatar-sarah.webp" alt=""><b>Sarah N.</b><span class="who">Software Engineer</span><q>"Just finished the React basics module. <br>This is amazing!"</q><span class="ago">2h ago</span><span class="meta" style="left:140px"><svg><use href="#i-heart"/></svg>24 <svg style="margin-left:8px"><use href="#i-comment"/></svg>6</span></article>
-<article class="act hov ck-skin" style="left:497px;width:209px"><img src="assets/img/avatar-david.webp" alt=""><b>David K.</b><span class="who">Shared a project</span><q>"Check out my new open-source tool <br>for log analysis. Feedback welcome!"</q><span class="ago">4h ago</span><span class="meta" style="left:127px"><svg><use href="#i-heart"/></svg>18 <svg style="margin-left:8px"><use href="#i-comment"/></svg>12</span></article>
-<article class="act hov ck-skin" style="left:722px;width:208px"><img src="assets/img/avatar-grace.webp" alt=""><b>Grace M.</b><span class="who">Joined the community</span><q>"Excited to be here! Looking forward <br>to learning and collaborating."</q><span class="ago">5h ago</span><span class="meta" style="left:127px"><svg><use href="#i-heart"/></svg>32 <svg style="margin-left:8px"><use href="#i-comment"/></svg>4</span></article>
-
-<section class="study hov on-dark ck-skin ck--inv">
-  <img src="assets/img/study-corner.webp" alt="" style="left:164px;top:28px;width:112px;height:76px">
-  <svg style="left:20px;top:18px;width:56px;height:52px;color:#06e6f1"><use href="#i-people"/></svg>
-  <b style="left:94px;top:12px;font-size:15px;font-weight:600">Join a Study Group</b>
-  <span style="left:94px;top:33px;font-size:10.5px;line-height:14px;color:#e2e8ec">Find peers, share knowledge, <br>and solve problems together.</span>
-  <a class="hov" href="groups.html" style="left:94px;top:69px;width:112px;height:23px;background:var(--or);color:#0B1236;font-size:10px;font-weight:600;display:flex;align-items:center;gap:10px;padding-left:12px">Explore Groups <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
-</section>
-
-<!-- ============ RIGHT COLUMN ============ -->
-<div class="panel" style="top:80px;height:238px"></div>
-<div class="qa-h abs"><svg class="i abs" style="left:13px;top:11px;width:17px;height:17px"><use href="#i-grid"/></svg><span class="abs" style="left:43px;top:10px">Quick Access</span></div>
-<a class="qa hov" style="left:1256px;top:129px;height:86px;background:var(--or);color:#0B1236"><svg style="top:15px;width:34px;height:34px"><use href="#i-people"/></svg><span style="top:54px">Join Community</span></a>
-<a class="qa hov" style="left:1390px;top:129px;height:86px;width:123px;background:#ebeced;color:#0B1236"><svg style="top:15px"><use href="#i-plusc"/></svg><span style="top:54px">Create Project</span></a>
-<a class="qa hov" style="left:1256px;top:224px;height:80px;background:#05e7f2;color:#0B1236"><svg style="top:14px"><use href="#i-cap"/></svg><span style="top:49px">Browse Courses</span></a>
-<a class="qa hov on-dark" style="left:1390px;top:224px;height:80px;width:123px;background:#191e24;color:#fff"><svg style="top:14px;width:26px;height:26px;color:#fff"><use href="#i-doc"/></svg><span style="top:49px">Read Docs</span></a>
-
-<div class="panel" style="top:331px;height:265px"></div>
-<svg class="i abs" style="left:1252px;top:341px;width:18px;height:18px;color:#0B1236"><use href="#i-chat"/></svg>
-<b class="abs" style="left:1284px;top:342px;font-size:14px;font-weight:600">Latest from Community</b>
-<a class="abs" href="announcements.html" style="left:1468px;top:347px;font-size:10.5px;font-weight:600;color:#0B1236">View All →</a>
-<div class="feed" style="top:372px"><span class="ci" style="background:#06e2ee;color:#0B1236"><svg><use href="#i-chat"/></svg></span><b>New message from David K.</b><small>About the project you shared...</small><i>2m ago</i></div>
-<div class="feed" style="top:424px"><span class="ci" style="background:var(--or);color:#0B1236"><svg><use href="#i-star"/></svg></span><b>Your project got 5 new stars</b><small>Web App Portfolio</small><i>12m ago</i></div>
-<div class="feed" style="top:479px"><span class="ci" style="background:#06e2ee;color:#0B1236"><svg><use href="#i-chat"/></svg></span><b>Grace M. commented on your post</b><small>"This is really helpful!"</small><i>1h ago</i></div>
-<div class="feed" style="top:535px"><span class="ci" style="background:#0B1236;color:#fff"><svg><use href="#i-info"/></svg></span><b>System update</b><small>New resources are now available</small><i>3h ago</i></div>
-
-<div class="panel" style="top:604px;height:244px"></div>
-<svg class="i abs" style="left:1252px;top:614px;width:19px;height:19px;color:#0B1236"><use href="#i-calendar"/></svg>
-<b class="abs" style="left:1284px;top:615px;font-size:13.5px;font-weight:600">Upcoming Events</b>
-<a class="abs cal-book" href="events.html" data-cal="101codecrafts" style="left:1463px;top:620px;font-size:10.5px;font-weight:500;color:#1b8acb">View All →</a>
-<div class="ev" style="top:646px"><div class="d"><small>NOV</small><b>16</b></div><i class="bar"></i><h5>Web Development Workshop</h5><span class="tm">10:00 AM – 12:00 PM</span><span class="on">Online</span></div>
-<div class="ev" style="top:714px"><div class="d"><small>NOV</small><b>18</b></div><i class="bar"></i><h5>Ethical Hacking Webinar</h5><span class="tm">6:00 PM – 8:00 PM</span><span class="on">Online</span></div>
-<div class="ev" style="top:783px"><div class="d"><small>NOV</small><b>22</b></div><i class="bar"></i><h5>Hackathon 2025</h5><span class="tm">All Day</span><span class="on">Online</span></div>
-
-<a class="brandcard hov on-dark" href="index.html"><img src="assets/img/logo-101-brandcard.webp" alt="101" style="left:10px;top:10px;width:68px;height:36px"><b style="left:86px;top:10px;font-family:var(--disp2);font-weight:400;font-size:15.5px">101 Codecrafts</b><small style="left:86px;top:30px;font-size:10.5px;color:#dbe2e7">Build. Learn. Grow</small><svg class="i" style="left:232px;top:19px;width:16px;height:16px"><use href="#i-arrow"/></svg></a>
-
-<!-- ============ FOOTER ============ -->
-<footer class="foot">
-  <a href="index.html" style="left:926px">Home</a><a href="courses.html" style="left:986px">Learn</a><a href="index.html#community" style="left:1045px">Community</a><a href="resources.html" style="left:1127px">Resources</a><a href="index.html#about" style="left:1207px">About</a>
-  <div class="socials" data-socials><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on YouTube" style="left:1326px;width:20px;height:20px"><svg><use href="#i-yt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Instagram" style="left:1360px"><svg><use href="#i-ig"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on TikTok" style="left:1389px"><svg><use href="#i-tt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on X" style="left:1421px"><svg><use href="#i-x"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on LinkedIn" style="left:1454px"><svg><use href="#i-in"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Discord" style="left:1488px;width:20px;height:20px"><svg><use href="#i-discord"/></svg></a></div>
-</footer>
+  <section id="l-kpis" class="dash-kpis" aria-label="Key numbers" aria-busy="true">{{LOADER label="your numbers"}}</section>
+  <section class="grid g2" style="align-items:start">
+    <div class="card" id="continue"><div class="sec-title"><h2>CONTINUE LEARNING</h2></div><div id="l-continue">{{LOADER label="your next lesson"}}</div></div>
+    <div class="card" id="plan"><div class="sec-title"><h2>YOUR PLAN</h2></div><div id="l-plan">{{LOADER label="your plan"}}</div></div>
+  </section>
+  <section class="card" id="my-courses"><div class="sec-title"><h2>MY COURSES</h2><a class="viewall" href="courses.html">Find more →</a></div><div id="l-courses">{{LOADER label="your courses"}}</div></section>
+  <section class="grid g3" style="align-items:start">
+    <div class="card" id="certificates"><div class="sec-title"><h2>CERTIFICATES</h2></div><div id="l-certs">{{LOADER label="certificates"}}</div></div>
+    <div class="card" id="saved"><div class="sec-title"><h2>SAVED</h2></div><div id="l-saved">{{LOADER label="saved items"}}</div></div>
+    <div class="card" id="sessions"><div class="sec-title"><h2>SESSIONS</h2></div><div id="l-sessions">{{LOADER label="sessions"}}</div></div>
+  </section>
 </main>
-<script src="js/dash-layout.js"></script>
-
-<!-- ============ BELOW THE MOCKUP (not part of the 1v1 comparison) ============ -->
-<section id="below-fold" class="below" aria-label="More for you">
-  <div class="below-col fwidget" id="feed-widget">
-    <div class="sec-title"><div class="ftabs sm" id="fw-tabs" aria-label="Today in tech, opportunities and events"></div></div>
-    <div id="fw-tit" role="tabpanel" aria-labelledby="tab-tit"><div class="fw-h"><b>TODAY IN TECH</b> <small id="tit-date"></small><a class="viewall" href="news.html">All news <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="tit-list">{{LOADER label="today in tech" tag="li"}}</ol></div>
-    <div id="fw-dopp" role="tabpanel" aria-labelledby="tab-dopp" hidden><div class="fw-h"><b>OPEN NOW</b> <small>Deadlines in EAT</small><a class="viewall" href="opportunities.html">All opportunities <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dopp-list"></ol></div>
-    <div id="fw-dev" role="tabpanel" aria-labelledby="tab-dev" hidden><div class="fw-h"><b>COMING UP</b> <small>Times in EAT</small><a class="viewall" href="events.html">All events <svg class="i"><use href="#i-arrow"/></svg></a></div><ol class="fw-list" id="dev-list"></ol></div>
-  </div>
-  <div class="below-col">
-    <div class="sec-title"><h2>FROM THE LIBRARY</h2><a class="viewall" href="resources.html">Open Library <svg class="i"><use href="#i-arrow"/></svg></a></div>
-    <div id="library-row" class="rgrid">{{LOADER label="the library"}}</div>
-  </div>
-</section>
+{{FOOTER}}
 </div></div>
 {{SCRIPTS}}
-<script src="js/feed-data.js" defer></script>
-<script src="js/events-data.js" defer></script>
-<script src="js/feed-api.js" defer></script>
-<script src="js/feed.js" defer></script>
-<script src="js/activity.js" defer></script>
-</body>
-</html>
+<script src="js/dash-common.js" defer></script>
+<script src="js/learner.js" defer></script>
+</body></html>

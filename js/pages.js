@@ -367,6 +367,7 @@
     },
     /* ---------------- Course player ---------------- */
     async course() {
+      if (q.has("preview")) return;   // tutor/admin preview of a draft: js/course-preview.js renders it (round 11)
       const c = await API.fetchCourse(q.get("id") || "web-basics"); const done = new Set(JSON.parse(localStorage.getItem("cc_done_" + c.id) || "null") || c.lessons.filter(l => l.done).map(l => l.id));
       let cur = Math.max(0, c.lessons.findIndex(l => l.id === q.get("lesson")) ); if (!q.get("lesson")) cur = Math.max(0, c.lessons.findIndex(l => !done.has(l.id)));
       $("#c-path").textContent = c.path; $("#c-title").textContent = c.title.toUpperCase();
