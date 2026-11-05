@@ -175,10 +175,16 @@
     $("#org-csv").onclick = async () => { const list = await F.attendees($("#org-ev").value); const csv = "name,level,code,checked_in\n" + list.map(a => [a.name, a.level || "", a.code, a.checkedIn ? "yes" : "no"].map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
       const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "attendees.csv"; a.click(); };
 
-    /* submit an event */
+    /* submit an event: signed-in members only (r12 QA fix 3). Visitors see "Sign in to submit an event" (→ auth, back here).
+       CCAccess.onChange also fires when the server's answer arrives late, so a member never stays on the sign-in prompt.
+       ?static=1 design shots keep the form as drawn. */
+    const evGate = () => { const f = $("#ev-form"), p = $("#ev-signin"); if (!f || !p) return;
+      const inn = document.documentElement.classList.contains("static") || !!(window.CCAccess && CCAccess.resolved && CCAccess.role && CCAccess.role !== "visitor");
+      f.hidden = !inn; p.hidden = inn; };
+    evGate(); if (window.CCAccess && CCAccess.onChange) CCAccess.onChange(evGate);
     $("#ev-form").onsubmit = async e => { e.preventDefault(); const f = e.target; if (!f.checkValidity()) { f.reportValidity(); return; }
       const o = Object.fromEntries(new FormData(f)); o.start = new Date(o.start + ":00+03:00").toISOString(); o.end = new Date((o.end || f.start.value) + ":00+03:00").toISOString(); o.price = Number(o.price || 0);
-      const r = await F.submitEvent(o); $("#ev-msg").textContent = r.notSent ? r.message : r.offline ? "Thanks! Saved for admin review (offline preview — syncs when the backend is live)." : "Thanks! An admin will review it before it appears."; f.reset(); };
+      const r = await F.submitEvent(o); $("#ev-msg").textContent = r.notSent ? r.message : r.offline ? "Thanks! Saved for admin review (offline preview — syncs when the backend is live)." : "Thanks! An admin will review it before it appears."; if (!r.notSent) f.reset(); };
 
     bindCard($("#ev-list")); draw(); drawTickets(); if (hosted.length) drawOrg();
     if (location.hash && all.some(e => e.id === location.hash.slice(1))) setTimeout(() => { const el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }, 50);

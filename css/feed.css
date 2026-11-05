@@ -179,3 +179,6 @@ body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:
 .isave:hover{border-color:var(--ink)}
 .isave[aria-pressed=true]{background:var(--color-orange);border-color:var(--ink)}
 .isave[aria-pressed=true] svg{fill:var(--ink)}
+/* r12 QA fix 3: event submissions are for signed-in members; the honeypot field is off-screen for people (bots fill it) */
+#ev-form[hidden],#ev-signin[hidden]{display:none!important}
+.ev-hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}

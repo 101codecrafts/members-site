@@ -151,9 +151,25 @@
     return [...tickets().filter(t => t.eventId === id), ...demo];
   }
   function checkIn(code) { const t = tickets(); const hit = t.find(x => x.code === code.trim().toUpperCase()); if (hit) { hit.checkedIn = true; ls.set("cc_ev_tickets", t); } soft(post("/events/checkin", { code })); return hit || (demoOK() && /^101-DEMO-\d$/.test(code.trim().toUpperCase()) ? { code, name: "Demo attendee", checkedIn: true } : null); }
+  /* r12 QA fix 3: member submissions go to POST /v1/events/external (sign-in required, honeypot "website", 5 per user per day).
+     The form's org keys map to the backend enum; region "online" → mode online. Each refusal gets an honest message. */
+  const EV_ORG = { gdg: "google_gdg", microsoft: "microsoft", openai: "openai", anthropic: "anthropic", huggingface: "hugging_face", alibaba: "alibaba_cloud", aws: "aws", mlh: "mlh", "101": "101" };
+  const eventBody = o => { const b = { title: o.title, organiser: EV_ORG[o.org] || "other", mode: o.region === "online" ? "online" : "physical", starts_at: o.start, source_url: o.url, website: o.website || "" };
+    if (o.end) b.ends_at = o.end; if (o.venue) b.venue = String(o.venue).slice(0, 200); if (o.region === "kampala") b.city = "Kampala"; return b; };
   async function submitEvent(o) {
-    try { return await post("/events", o); }
-    catch (e) { if (!(await settle())) return { ...NOT_SENT }; const q = ls.get("cc_ev_pending", []); const item = { id: "evs" + Date.now(), status: "pending", submittedAt: new Date().toISOString(), ...o }; q.unshift(item); ls.set("cc_ev_pending", q); return { ...item, offline: true }; }
+    if (!STATIC && location.protocol !== "file:") {
+      let r = null, j = null;
+      try { r = await fetch(`${BASE}/events/external`, { method: "POST", credentials: "include", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(eventBody(o)) }); try { j = await r.json(); } catch (e) { /* not JSON */ } }
+      catch (e) { r = null; }
+      if (r && r.ok) return (j && j.data) || { status: "pending_review" };
+      const m = j && j.error && j.error.message;
+      if (r && (r.status === 401 || r.status === 403)) return { offline: true, notSent: true, message: "Not sent: sign in to submit an event." };
+      if (r && r.status === 429) return { offline: true, notSent: true, message: m || "Not sent: you can submit up to 5 events a day. Please try again tomorrow." };
+      if (r && (r.status === 400 || r.status === 422)) return { offline: true, notSent: true, message: "Not sent: check the details. The official link must start with https:// and the start time must be a real date." };
+      if (r && r.status === 409) return { offline: true, notSent: true, message: "Not sent: that event link has already been submitted." };
+    }
+    if (!(await settle())) return { ...NOT_SENT };
+    const q = ls.get("cc_ev_pending", []); const item = { id: "evs" + Date.now(), status: "pending", submittedAt: new Date().toISOString(), ...o }; q.unshift(item); ls.set("cc_ev_pending", q); return { ...item, offline: true };
   }
   const pendingEvents = () => ls.get("cc_ev_pending", []);
   function reviewEvent(id, approve) { ls.set("cc_ev_pending", pendingEvents().filter(o => o.id !== id)); return soft(post(`/events/${encodeURIComponent(id)}/${approve ? "approve" : "reject"}`, {})); }
@@ -170,5 +186,5 @@
     if (!role || role === "visitor" || role === "guest") return [];
     return hosted.filter(e => e.organiser === true);
   }
-  window.CC_FEED_API = { organiserEvents, _unwrap: unwrap, _map: { mapAnn, mapNews, mapOpp, mapEvent }, fetchAnnouncements, postAnnouncement, readSet, markRead, fetchNews, explainNews, fetchOpportunities, submitOpportunity, pendingOpportunities, reviewOpportunity, remind, reminders, saved, toggleSave, fetchEvents, toggleGoing, tickets, rsvp, attendees, checkIn, submitEvent, pendingEvents, reviewEvent, STATIC, demoOK };
+  window.CC_FEED_API = { organiserEvents, _unwrap: unwrap, _map: { mapAnn, mapNews, mapOpp, mapEvent }, fetchAnnouncements, postAnnouncement, readSet, markRead, fetchNews, explainNews, fetchOpportunities, submitOpportunity, pendingOpportunities, reviewOpportunity, remind, reminders, saved, toggleSave, fetchEvents, toggleGoing, tickets, rsvp, attendees, checkIn, submitEvent, _eventBody: eventBody, pendingEvents, reviewEvent, STATIC, demoOK };
 })();

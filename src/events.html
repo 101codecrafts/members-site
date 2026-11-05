@@ -58,7 +58,8 @@
 <section class="card" id="submit-event" aria-labelledby="h-sev">
  <div class="sec-title"><h2 id="h-sev">SUBMIT AN EVENT</h2><span class="tagx">Goes to admin review</span></div>
  <p class="muted">Running a meetup, hackathon or workshop? Share the official page. An admin checks it before it goes live.</p>
- <form class="grid g2 sub-form" id="ev-form" style="margin-top:12px">
+ <p id="ev-signin" class="ev-signin" style="margin-top:12px"><a class="btn or" href="/auth.html?next=/events.html">Sign in to submit an event</a></p>
+ <form class="grid g2 sub-form" id="ev-form" style="margin-top:12px" hidden>
   <label class="field">Event title<input name="title" required maxlength="140"></label>
   <label class="field">Official link (RSVP page)<input name="url" type="url" required inputmode="url" placeholder="https://…"></label>
   <label class="field">Organiser<select name="org" id="es-org"></select></label>
@@ -71,6 +72,7 @@
   <label class="field">Currency<select name="currency"><option>UGX</option><option>USD</option><option>KES</option></select></label>
   <label class="field span2">Short description<textarea name="desc" rows="2" required maxlength="400"></textarea></label>
   <label class="field span2">Your email (so we can follow up)<input name="contact" type="email" autocomplete="email"></label>
+  <div class="ev-hp" aria-hidden="true"><label>Website (leave this empty)<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
   <div class="row span2"><button class="btn ink" type="submit">Submit for review</button><span id="ev-msg" role="status" class="muted"></span></div>
  </form>
 </section>
