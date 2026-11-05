@@ -45,6 +45,7 @@
     ".ai-b pre{margin:6px 0;position:relative;background:#0B1236;color:#F3F5FA;border:2px solid var(--a-line);overflow-x:auto;max-width:100%}.ai-b pre code{display:block;padding:10px 12px;font:500 12.5px/1.5 var(--font-mono,\"CC Mono\",monospace);white-space:pre;color:inherit}.ai-cp{position:absolute;top:4px;right:4px;min-height:28px;padding:2px 8px;font:700 11px var(--font-mono,\"CC Mono\",monospace);background:#05e6f2;color:#0B1236;border:2px solid #0B1236;cursor:pointer}.ai-lang{display:block;padding:4px 12px 0;font:700 10px var(--font-mono,\"CC Mono\",monospace);letter-spacing:1px;text-transform:uppercase;color:#05e6f2}" +
     ".ai-b h4{margin:8px 0 4px;font-size:15px;font-weight:700}.ai-b blockquote{margin:6px 0;padding-left:10px;border-left:3px solid var(--a-cy)}.ai-tw{overflow-x:auto;margin:6px 0}.ai-b table{border-collapse:collapse;font-size:13.5px}.ai-b th,.ai-b td{border:1px solid var(--a-line);padding:4px 8px;text-align:left;vertical-align:top}.ai-b th{font-weight:700}.ai-b hr{border:0;border-top:2px solid var(--a-line);margin:8px 0}.ai-math{font-family:\"Cambria Math\",\"STIX Two Math\",serif;white-space:nowrap}" +
     ".ai-retry{display:inline-block;margin-top:8px;min-height:36px;padding:4px 12px;font:700 13px inherit;background:var(--a-card);color:var(--a-ink);border:2px solid var(--a-line);box-shadow:2px 2px 0 var(--a-sh);cursor:pointer}" +
+    ".ai-note{margin:0;padding:4px 12px 8px;font-size:11.5px;line-height:1.35;color:var(--a-mut);background:var(--a-bg)}.ai-note a{color:var(--a-link);text-decoration:underline}" +
     ".ai-e{border-style:dashed}.ai-dots::after{content:\"\";display:inline-block;width:8px;height:8px;margin-left:4px;background:var(--a-ink);animation:aiblink 1s steps(2) infinite}@keyframes aiblink{50%{opacity:0}}" +
     ".ai-form{display:flex;gap:8px;padding:10px;border-top:2px solid var(--a-line);background:var(--a-bg)}" +
     ".ai-form textarea{flex:1;min-height:44px;max-height:120px;resize:none;padding:10px 12px;border:2px solid var(--a-line);background:var(--a-card);color:var(--a-ink);font-weight:400;font-size:16px;line-height:1.4;font-family:inherit;border-radius:0}.ai-form textarea::placeholder{color:var(--a-mut);opacity:1}" +
@@ -62,10 +63,11 @@
   var root = d.createElement("div"); root.id = "ai101";
   root.innerHTML = '<button type="button" class="ai-fab" aria-label="Open 101 AI assistant" aria-haspopup="dialog" aria-expanded="false" aria-controls="ai-panel"><span class="ai-bot" aria-hidden="true"></span><span class="ai-face" aria-hidden="true" hidden><span class="ai-n">101</span><span class="ai-t">AI</span></span><span class="ai-fx" aria-hidden="true">' + I.x + '</span></button>' +
     '<div class="ai-scrim" hidden></div><section id="ai-panel" class="ai-panel" role="dialog" aria-modal="true" aria-labelledby="ai-title" hidden>' +
-    '<div class="ai-head"><div class="ai-bot-h" aria-hidden="true" hidden></div><div class="ai-h"><h2 id="ai-title">101 <span>AI</span></h2><p>Ask about 101 Codecrafts</p></div>' +
+    '<div class="ai-head"><div class="ai-bot-h" aria-hidden="true" hidden></div><div class="ai-h"><h2 id="ai-title">101 <span>AI</span></h2><p>AI helper · not a person</p></div>' +
     '<button type="button" class="ai-ib ai-side">' + I.sw + '</button><button type="button" class="ai-ib ai-clr" aria-label="Clear the chat">' + I.clr + '</button><button type="button" class="ai-ib ai-x" aria-label="Close 101 AI">' + I.x + '</button></div>' +
     '<div class="ai-log" role="log" aria-label="Conversation with 101 AI" tabindex="0"></div><div class="ai-sr" aria-live="polite"></div>' +
     '<form class="ai-form"><label class="ai-sr" for="ai-in">Your question for 101 AI</label><textarea id="ai-in" rows="1" maxlength="' + MAXQ + '" placeholder="Ask a question…" enterkeyhint="send"></textarea><button type="submit" class="ai-send" aria-label="Send">' + I.go + '</button></form>' +
+    '<p class="ai-note">You\'re chatting with an AI, not a person. It can make mistakes, so check important answers. Don\'t share personal details. <a href="ai-notice.html">AI notice</a></p>' +
     '<p class="ai-note">Free AI: answers can be wrong. Don\'t share personal details.</p></section>';
   b.appendChild(root);
   var q = function (s) { return root.querySelector(s); };
@@ -190,7 +192,7 @@
   function keep() { try { SS.cc_ai_msgs = JSON.stringify(msgs.slice(-20)); } catch (e) {} }
   function el(t, c, txt) { var e = d.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; }
   function intro() {
-    var w = el("div", "ai-intro"); w.appendChild(el("p", "", "Hi! I'm 101 AI. Ask me anything you're learning: coding, maths, science, writing, study plans, or about 101 Codecrafts. Paste a link and I can summarise it. I can make mistakes, so check important answers."));
+    var w = el("div", "ai-intro"); w.appendChild(el("p", "", "Hi! I'm 101 AI. Ask me anything you're learning: coding, maths, science, writing, study plans, or about 101 Codecrafts. Paste a link and I can summarise it."));
     if (!msgs.length) { var c = el("div", "ai-chips"); STARTERS.forEach(function (s) { var x = el("button", "ai-chip", s); x.type = "button"; x.addEventListener("click", function () { ask(s); }); c.appendChild(x); }); w.appendChild(c); } log.appendChild(w); msgs.forEach(function (m) { bubble(m.role, m.content); });
   }
   function bubble(role, text, err) { var m = el("div", "ai-m " + (role === "user" ? "ai-u" : "ai-b") + (err ? " ai-e" : "")); if (role === "user") m.textContent = text; else md(text, m); log.appendChild(m); log.scrollTop = log.scrollHeight; return m; }
