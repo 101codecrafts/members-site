@@ -95,7 +95,7 @@ Required: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE
 | Flutterwave | `FLW_PUBLIC_KEY`, `FLW_SECRET_KEY`, `FLW_SECRET_HASH` (webhook verif-hash), `FLW_PAYOUT_CALLBACK_URL` |
 | Payout encryption | `PAYOUT_ENCRYPTION_KEY` (32-byte base64), `PAYOUT_ENCRYPTION_KEY_ID` |
 | Resend | `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_AUDIENCE_ID` |
-| AI | `AI_GATEWAY_API_KEY`, `AI_MODEL`, `OPENROUTER_API_KEY`, `OPENROUTER_FREE_MODEL`, `GROQ_API_KEY`, `GROQ_MODEL`, `GEMINI_API_KEY`, `GEMINI_MODEL` |
+| AI | `OPENROUTER_API_KEY` (free `:free` models only), optional `ASSISTANT_MODELS` (comma list, non-free ids dropped), optional `NEWS_AI_SUMMARIES=1`. Gemini, Groq and the Vercel AI Gateway were removed in round 12 (Gemini terms bar under-18 services; the gateway default model was paid). |
 | Judge | `JUDGE0_URL` (self-hosted Judge0 CE — never a public shared instance), `JUDGE0_AUTH_TOKEN` |
 | Meetings (TODO) | `JITSI_DOMAIN` (default `meet.jit.si`), `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (scope `calendar.events`), `ZOOM_CLIENT_ID`/`ZOOM_CLIENT_SECRET`/`ZOOM_WEBHOOK_SECRET`, `MS_CLIENT_ID`/`MS_CLIENT_SECRET` (`OnlineMeetings.ReadWrite`), `MEETING_TOKEN_KEY` (32-byte base64) |
 | Events | `TICKET_HMAC_SECRET` (≥32 chars) |
@@ -126,7 +126,7 @@ Generate keys: `openssl rand -base64 32`.
 ### 4. Vercel
 1. Import the repo, **Root directory `backend/`**, framework Next.js. Add all env vars (Production + Preview).
 2. Crons are in `backend/vercel.json` (daily, news, event-reminders, link-check, practice, marketplace, community at 06:00 EAT). Hobby allows daily crons only; sub-daily jobs (15-min meeting reminders, judge retries) need Pro, Supabase `pg_cron`, or a GitHub Actions schedule calling the cron URL with `CRON_SECRET`.
-3. Optional: Vercel AI Gateway key → `AI_GATEWAY_API_KEY`.
+3. AI: set `OPENROUTER_API_KEY` only. Do not add Gemini, Groq or AI Gateway keys (round 12 legal LG3; free models only).
 
 ## Sign-up email guard (temp-mail blocking)
 Defence in depth behind Clerk's restrictions:

@@ -27,7 +27,7 @@ export async function ingestNews(light: boolean, log: Logger) {
       const dupe = (await db.from('news_items').select('id').eq('url_hash', hash).maybeSingle()).data;
       if (dupe || (await rpc(db, 'news_title_exists', { p_title: n.title }))) { skipped++; continue; }
       const image = await enrichImage(n, hash);
-      const summary = await aiSummary(e.AI_GATEWAY_API_KEY, e.AI_MODEL, n.title, n.summary);
+      const summary = await aiSummary(e.NEWS_AI_SUMMARIES === '1' && !!e.OPENROUTER_API_KEY, n.title, n.summary);
       const { error } = await db.from('news_items').insert({ source: n.source, url: canonical, url_hash: hash, title: n.title.slice(0, 300),
         summary: n.summary?.slice(0, 1000) ?? null, ai_summary: summary, image_url: image, author: n.author?.slice(0, 200) ?? null,
         category: n.category, score: n.score, published_at: n.published_at });
