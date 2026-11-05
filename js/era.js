@@ -33,14 +33,20 @@
   }
 
   function latest() {
-    /* round 11: the placeholder announcements (js/feed-data.js) dress these cards only in ?static=1 design shots */
-    const host = document.querySelector("[data-latest]"); const F = window.CC_FEED_DATA; if (!host || !F || !F.announcements || !/[?&]static(=|&|$)/.test(location.search)) return;
-    const items = F.announcements.filter(a => !a.audience || !a.audience.roles.length || a.audience.roles.includes("learner"))
-      .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)).slice(0, 3);
-    const cards = host.querySelectorAll(".e-ncard");
-    items.forEach((a, i) => { const c = cards[i]; if (!c) return; const d = new Date(a.publishedAt);
-      const t = c.querySelector("time"); t.dateTime = d.toISOString(); t.textContent = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Africa/Kampala" });
-      const l = c.querySelector("a"); l.textContent = a.title; l.href = a.link || "news.html"; });
+    /* round 11: no hard-coded cards. The real feed is GET /api/v1/announcements (published rows, RLS-targeted); with no rows
+       or no backend the honest empty state in the HTML stays. ?static=1 design shots dress the cards from js/feed-data.js. */
+    const host = document.querySelector("[data-latest]"); if (!host) return;
+    const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const safe = u => /^(https?:\/\/|[a-z0-9-]+\.html)/i.test(u || "") ? u : "news.html";
+    const render = items => { if (!items || !items.length) return;
+      host.innerHTML = items.slice(0, 3).map(a => { const d = new Date(a.published_at || a.publishedAt);
+        const when = isNaN(d) ? "" : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Africa/Kampala" });
+        return `<article class="e-card e-ncard ck"><time class="e-date ck-eyebrow"${isNaN(d) ? "" : ` datetime="${d.toISOString()}"`}>${esc(when)}</time><h3 class="ck-title"><a class="e-stretch ck-link" href="${esc(safe(a.link))}">${esc(a.title)}</a></h3><span class="e-more ck-foot" aria-hidden="true">Read more <svg><use href="#i-arrow"/></svg></span></article>`; }).join(""); };
+    if (/[?&]static(=|&|$)/.test(location.search)) { const F = window.CC_FEED_DATA; if (F && F.announcements) render(F.announcements.filter(a => !a.audience || !a.audience.roles.length || a.audience.roles.includes("learner")).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))); return; }
+    if (location.protocol === "file:" || !window.fetch) return;
+    const base = ((window.CC_CONFIG && window.CC_CONFIG.apiBase) || "/api").replace(/\/$/, "");
+    fetch(base + "/v1/announcements", { headers: { Accept: "application/json" }, credentials: "include" }).then(r => r.ok ? r.json() : null)
+      .then(j => { const d = j && Object.prototype.hasOwnProperty.call(j, "data") ? j.data : j; render(Array.isArray(d) ? d : d && d.items); }).catch(() => {});
   }
 
   /* footer © year: always the current year (the HTML carries the build year as the no-JS fallback) */

@@ -161,3 +161,6 @@ html:not(.static) .page .lfoot .socials a,html:not(.static) :is(.flow-foot,.lfoo
 html:not(.static) :is(.flow-foot,.lfoot) .socials a svg{width:18px!important;height:18px!important}
 @media (hover:hover){html:not(.static) :is(.flow-foot,.lfoot) .socials a:hover{background:var(--accent);color:var(--brand-navy);border-color:var(--accent);translate:0 -2px}}
 html:not(.static) :is(.flow-foot,.lfoot) .socials a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+/* r11: honest empty state for "Latest updates" until the real announcements feed has rows (js/era.js latest()) */
+html:not(.static) .e92 .e-latest-empty{grid-column:1/-1;margin:0;padding:var(--s-4,24px);border:var(--bw,2px) dashed var(--border-strong);color:var(--text-muted,var(--text));font-size:var(--step-0,1rem)}
+html:not(.static) .e92 .e-latest-empty a{color:var(--text);font-weight:700;text-decoration:underline}
