@@ -1,22 +1,50 @@
 <!doctype html>
 <html lang="en">
 <head>
-{{HEAD title="Member profile · 101 Codecrafts" desc="A 101 Codecrafts member profile." path="profile.html"}}
-<link rel="stylesheet" href="css/brutal.css">
-<link rel="stylesheet" href="css/app.css">
+{{HEAD title="Profile · 101 Codecrafts" desc="A 101 Codecrafts member profile: skills, education, links, badges and certificates." path="profile.html"}}
+{{CSS}}
+<link rel="stylesheet" href="css/account.css">
 </head>
 <body class="flow" data-role="learner" data-page="profile" data-abs>
 <a class="skip" href="#main">Skip to content</a>
 {{ICONS}}
 <div class="shell">
-{{SIDEBAR role="learner" active="Community"}}
+{{SIDEBAR role="learner" active="My Profile"}}
 <div class="main">
-{{TOPBAR role="learner" name="Guest" label="Learner"}}
-<main id="main" class="content">
-<section id="pf" class="grid" style="gap:20px"></section>
+{{TOPBAR role="learner"}}
+<main id="main" class="content st-page">
+<div id="pf" aria-live="polite">{{LOADER label="profile"}}</div>
 </main>
 {{FOOTER}}
 </div></div>
+<dialog class="pf-dlg" id="pf-share" aria-labelledby="pf-share-h">
+  <div class="pf-dlg-h"><h2 id="pf-share-h">SHARE PROFILE</h2><button type="button" data-close aria-label="Close">×</button></div>
+  <div class="pf-dlg-b">
+    <div class="pf-tabs" role="tablist" aria-label="Share as">
+      <button type="button" role="tab" id="pt-img" aria-controls="pp-img" aria-selected="true">Image</button>
+      <button type="button" role="tab" id="pt-pdf" aria-controls="pp-pdf" aria-selected="false" tabindex="-1">PDF</button>
+      <button type="button" role="tab" id="pt-link" aria-controls="pp-link" aria-selected="false" tabindex="-1">Link</button>
+    </div>
+    <div role="tabpanel" id="pp-img" aria-labelledby="pt-img">
+      <canvas class="pf-prev" id="pf-canvas" width="1080" height="1350" role="img" aria-label="Preview of your profile card"></canvas>
+      <div class="row" style="margin-top:12px"><button type="button" class="btn or" data-share-img><svg aria-hidden="true"><use href="#i-share"/></svg>Share image</button><button type="button" class="btn" data-dl-img><svg aria-hidden="true"><use href="#i-download"/></svg>Download PNG</button></div>
+    </div>
+    <div role="tabpanel" id="pp-pdf" aria-labelledby="pt-pdf" hidden>
+      <fieldset class="pf-secs"><legend class="sr-only">Sections to include</legend>
+        <label><input type="checkbox" value="about" checked> About</label><label><input type="checkbox" value="skills" checked> Skills</label>
+        <label><input type="checkbox" value="education" checked> Education</label><label><input type="checkbox" value="links" checked> Links</label>
+        <label><input type="checkbox" value="badges" checked> Badges</label><label><input type="checkbox" value="certificates" checked> Certificates</label></fieldset>
+      <div class="row" style="margin-top:12px"><button type="button" class="btn or" data-dl-pdf><svg aria-hidden="true"><use href="#i-pdf"/></svg>Download PDF</button><button type="button" class="btn" data-share-pdf><svg aria-hidden="true"><use href="#i-share"/></svg>Share PDF</button></div>
+      <p class="st-hint">Made on your phone: nothing is uploaded. A4, 101 branded.</p>
+    </div>
+    <div role="tabpanel" id="pp-link" aria-labelledby="pt-link" hidden>
+      <div class="pf-link-row"><input id="pf-url" readonly aria-label="Public profile link"><button type="button" class="btn or" data-copy>Copy</button></div>
+      <div class="row" style="margin-top:12px"><a class="btn" data-wa target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a><a class="btn" data-li target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-in"/></svg>LinkedIn</a><a class="btn" data-xs target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-x"/></svg>X</a></div>
+      <p class="st-hint" data-link-note></p>
+    </div>
+    <p class="st-msg" id="pf-share-msg" role="status" aria-live="polite"></p>
+  </div>
+</dialog>
 {{SCRIPTS}}
-<script src="js/pages.js" defer></script>
+<script src="js/profile.js" defer></script>
 </body></html>
