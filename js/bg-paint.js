@@ -10,7 +10,7 @@
   var GC = [["#05e6f2", .55, .10, .24], ["#fc8c0c", .30, .10, .25], ["#EEF1F8", .15, .08, .18]];
   var XC = [["#05e6f2", .45, .22, .38], ["#EEF1F8", .35, .20, .35], ["#fc8c0c", .20, .18, .30]];
   /* page types: glyph density x, glyph alpha x, speed px/s, marks on majors only, mark alpha x */
-  var TYPES = { landing: [1, 1, 4, 9, 0, 1], mkt: [.7, .8, 3, 7, 0, 1], app: [.5, .6, 3, 6, 1, .6], auth: [.6, .7, 3, 6, 0, 1], err: [.8, .9, 4, 8, 0, 1] };
+  var TYPES = { landing: [1, 1, 4, 9, 0, 1], mkt: [.7, .8, 3, 7, 0, 1], app: [.5, .6, 3, 6, 1, .6], auth: [.6, .7, 3, 6, 0, 1], err: [.8, .9, 4, 8, 0, 1], quiet: [.3, .5, 2, 4, 1, .5] };
   function rng(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   function pick(r, L) { var x = r(); for (var i = 0; i < L.length - 1; i++) if ((x -= L[i][1]) < 0) return L[i]; return L[L.length - 1]; }
   function alpha(r, c) { var u = r(), v = r(); return c[2] + (c[3] - c[2]) * (u < .6 ? v / 3 : 1 / 3 + v * 2 / 3); }   /* 60% in the lower third */

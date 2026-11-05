@@ -229,6 +229,8 @@ for f in (root / 'src').glob('*.html'):
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
     s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1)), name), s)
     s = re.sub(r'\{\{LOADER(.*?)\}\}', lambda m: loader(attrs(m.group(1))), s)
+    # round 11: the site background (bg.css via THEME_LINK + js/bg.js) is on EVERY built page, whatever template it uses
+    if 'js/bg.js' not in s: s = s.replace('</body>', '<script src="js/bg.js" defer></script>\n</body>', 1)
     if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')
