@@ -85,7 +85,7 @@ export const tests = [
     assert.deepEqual(me.scopes, ['approvals', 'audit']); assert.equal(me.role, 'admin');
     await q(db, `select public.admin_review_queue()`);
     await q(db, `select public.admin_audit_search()`);
-    await fails(db, `select public.admin_upsert_plan('learner','pro','Pro',1,1,'{}'::jsonb)`, [], /scope "plans"/);
+    await fails(db, `select public.admin_set_user_plan($1,'learner','pro','nope')`, [U.alice], /scope "users"/);
     await fails(db, `select public.admin_search_users()`, [], /scope "users"/);
     await fails(db, `select public.admin_set_flag('x.y', true)`, [], /scope "flags"/);
     await fails(db, `select public.admin_set_scopes($1, '{audit}')`, [U.admin], /root admin only/);
@@ -159,8 +159,7 @@ export const tests = [
     await as(db, U.admin);
     await fails(db, `select public.admin_decide_submission($1, 'reject', 'too late')`, [s.id], /approved/);
   }),
-  t('approvals: request changes, blocked links, self-review, price changes and listings', async (db) => {
-    const cid = await draftCourse(db, U.tutorA, 'r11-admin-price');
+  t('approvals: request changes, blocked links, resubmission, self-review', async (db) => {
     await as(db, U.tutorA);
     const link = await one(db, `select * from public.submit_for_review('link', 'link-1', 'Cool tool', null, '{}'::jsonb, '{http://bit.ly/abc}')`);
     await as(db, 'service');
@@ -171,14 +170,6 @@ export const tests = [
     await as(db, U.tutorA);
     const again = await one(db, `select * from public.submit_for_review('link', 'link-1', 'Cool tool', null, '{}'::jsonb, '{https://example.org/tool}')`);
     assert.equal(again.status, 'pending'); assert.equal(again.risk_level, 'unchecked');
-    // price change: tutor asks, admin approves, the course price changes
-    const pc = await one(db, `select * from public.submit_for_review('price_change', $1, 'Price: UGX 5,000', null, '{"is_free":false,"price_ugx":5000}'::jsonb)`, [cid]);
-    await fails(db, `select public.submit_for_review('price_change', $1, 'bad', null, '{"is_free":false,"price_ugx":10}'::jsonb)`, [cid], /at least UGX 1,000/);
-    await as(db, U.root);
-    await q(db, `select public.admin_decide_submission($1, 'approve')`, [pc.id]);
-    await as(db, 'postgres');
-    const c = await one(db, `select is_free, price_ugx from public.courses where id=$1`, [cid]);
-    assert.equal(c.is_free, false); assert.equal(Number(c.price_ugx), 5000);
     // self review
     await inviteAndAccept(db, U.tutorB, 'brian@example.com', ['approvals']);
     await as(db, U.tutorB);
@@ -186,36 +177,25 @@ export const tests = [
     await fails(db, `select public.admin_decide_submission($1, 'approve')`, [own.id], /your own submission/);
   }),
   // ---------------------------------------------------------------- plans ----
-  t('plans: stored as data, public sees published only, limits validated, policy reads them, course free/paid', async (db) => {
-    await as(db, 'anon');
-    const pub = await q(db, `select audience, plan from public.plan_catalog order by 1, 2`);
-    assert.deepEqual(pub.map((r) => r.audience + ':' + r.plan), ['learner:free', 'tutor:free']);
-    assert.equal(Number((await one(db, `select app.plan_limit($1,'tutor','tutor.students_max') v`, [U.tutorA])).v), 2, 'tutor free = max 2 students');
-    assert.equal(Number((await one(db, `select app.plan_limit($1,'learner','learner.courses_max') v`, [U.alice])).v), 1);
-    await as(db, U.admin);
-    await fails(db, `select public.admin_upsert_plan('learner','pro','Pro',60000,600000,'{"bogus.key":1}'::jsonb)`, [], /unknown limit key/);
-    await fails(db, `select public.admin_upsert_plan('learner','pro','Pro',60000,600000,'{"learner.courses_max":"lots"}'::jsonb)`, [], /must be a number/);
-    await fails(db, `select public.admin_upsert_plan('learner','free','Free',5000,0,'{}'::jsonb)`, [], /plan_catalog_check|violates check/);
-    await q(db, `select public.admin_upsert_plan('learner','pro','Pro',55000,550000,'{"learner.courses_max":-1,"learner.locked_lessons":false}'::jsonb,'{Unlimited}','published')`);
-    await q(db, `select public.admin_set_user_plan($1,'learner','pro','scholarship', now() + interval '30 days')`, [U.alice]);
+  t('plans: admin per-user override is scoped, needs a reason, audited before→after, notifies; users cannot self-upgrade', async (db) => {
     await as(db, U.alice);
-    const mp = (await one(db, `select public.my_plan_limits() j`)).j;
-    assert.equal(mp.learner.plan, 'pro'); assert.equal(mp.learner.limits['learner.courses_max'], -1);
-    await fails(db, `insert into public.user_plans (user_id, learner_plan) values ($1,'pro') on conflict (user_id) do update set learner_plan='pro'`, [U.bob], '42501');
-    await as(db, 'postgres');
-    const a = await one(db, `select old_data, new_data from public.audit_log where action='admin.plan_upsert' and record_id='learner:pro' order by id desc limit 1`);
-    assert.equal(Number(a.old_data.price_ugx_month), 60000); assert.equal(Number(a.new_data.price_ugx_month), 55000);
-    // course free/paid toggle
-    const cid = await draftCourse(db, U.tutorA, 'r11-admin-toggle');
-    await as(db, U.alice);
-    await fails(db, `select public.admin_set_course_pricing($1, false, 20000)`, [cid], '42501');
+    await fails(db, `select public.admin_set_user_plan($1,'learner','pro','gift')`, [U.alice], '42501');
+    await fails(db, `update public.profiles set plan='pro' where id=$1`, [U.alice], '42501');
     await as(db, U.admin);
-    await fails(db, `select public.admin_set_course_pricing($1, false, 500)`, [cid], /at least UGX 1,000/);
-    await q(db, `select public.admin_set_course_pricing($1, false, 20000, 'premium track')`, [cid]);
-    await q(db, `select public.admin_set_course_pricing($1, true, 0)`, [cid]);
+    await fails(db, `select public.admin_set_user_plan($1,'learner','pro','')`, [U.alice], /reason/);
+    await fails(db, `select public.admin_set_user_plan($1,'learner','gold','x y z')`, [U.alice], /bad audience or plan/);
+    const r = (await one(db, `select public.admin_set_user_plan($1,'learner','pro','scholarship') j`, [U.alice])).j;
+    assert.equal(r.plan, 'pro');
+    // standard/plus/tutor plans exist once the r11 plans migration is merged; before that a clear error
+    await q(db, `savepoint p`);
+    try { await q(db, `select public.admin_set_user_plan($1,'tutor','standard','pilot tutor')`, [U.tutorA]); }
+    catch (e) { assert.match(e.message, /needs the r11 plans migration/); await q(db, `rollback to savepoint p`); }
     await as(db, 'postgres');
-    assert.equal((await one(db, `select is_free from public.courses where id=$1`, [cid])).is_free, true);
-    assert.equal((await one(db, `select count(*)::int n from public.audit_log where action='admin.course_pricing' and record_id=$1`, [cid])).n, 2);
+    const a = await one(db, `select old_data, new_data from public.audit_log where action='admin.set_user_plan' and record_id=$1 order by id limit 1`, [U.alice]);
+    assert.equal(a.old_data.plan, 'free'); assert.equal(a.new_data.plan, 'pro');
+    assert.ok(await one(db, `select 1 from public.notifications where user_id=$1 and type='account.plan'`, [U.alice]));
+    await as(db, U.admin);
+    assert.equal((await one(db, `select public.admin_search_users('alice')->'items'->0->>'learner_plan' p`)).p, 'pro');
   }),
   // ---------------------------------------------------------- audit + stats --
   t('audit: append-only for everyone; flags write before→after; stats are real numbers with zeros when empty', async (db) => {

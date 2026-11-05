@@ -5,6 +5,75 @@ export type Database = {
   __InternalSupabase: { PostgrestVersion: "12" };
   public: {
     Tables: {
+      admin_grants: {
+        Row: {
+          user_id: string;
+          scopes: string[];
+          status: string;
+          status_reason: string | null;
+          granted_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          scopes?: string[];
+          status?: string;
+          status_reason?: string | null;
+          granted_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          scopes?: string[];
+          status?: string;
+          status_reason?: string | null;
+          granted_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      admin_invites: {
+        Row: {
+          id: string;
+          email: string;
+          scopes: string[];
+          token_hash: string;
+          status: string;
+          invited_by: string | null;
+          expires_at: string;
+          accepted_by: string | null;
+          accepted_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          scopes?: string[];
+          token_hash: string;
+          status?: string;
+          invited_by?: string | null;
+          expires_at?: string;
+          accepted_by?: string | null;
+          accepted_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          scopes?: string[];
+          token_hash?: string;
+          status?: string;
+          invited_by?: string | null;
+          expires_at?: string;
+          accepted_by?: string | null;
+          accepted_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       ai_moderation_events: {
         Row: {
           id: number;
@@ -4313,6 +4382,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      plan_catalog: {
+        Row: {
+          audience: string;
+          plan: string;
+          name: string;
+          tagline: string | null;
+          price_ugx_month: number;
+          price_ugx_year: number;
+          limits: Json;
+          features: string[];
+          status: string;
+          sort: number;
+          updated_by: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          audience: string;
+          plan: string;
+          name: string;
+          tagline?: string | null;
+          price_ugx_month?: number;
+          price_ugx_year?: number;
+          limits?: Json;
+          features?: string[];
+          status?: string;
+          sort?: number;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          audience?: string;
+          plan?: string;
+          name?: string;
+          tagline?: string | null;
+          price_ugx_month?: number;
+          price_ugx_year?: number;
+          limits?: Json;
+          features?: string[];
+          status?: string;
+          sort?: number;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       post_comments: {
         Row: {
           id: string;
@@ -5246,6 +5360,72 @@ export type Database = {
         };
         Relationships: [];
       };
+      review_submissions: {
+        Row: {
+          id: string;
+          kind: Database["public"]["Enums"]["review_item_kind"];
+          entity_ref: string;
+          submitter_id: string;
+          title: string;
+          summary: string | null;
+          payload: Json;
+          urls: string[];
+          status: Database["public"]["Enums"]["review_item_status"];
+          risk_level: string;
+          risk_flags: Json;
+          checked_at: string | null;
+          version: number;
+          decision_reason: string | null;
+          required_fixes: Json;
+          decided_by: string | null;
+          decided_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          kind: Database["public"]["Enums"]["review_item_kind"];
+          entity_ref: string;
+          submitter_id: string;
+          title: string;
+          summary?: string | null;
+          payload?: Json;
+          urls?: string[];
+          status?: Database["public"]["Enums"]["review_item_status"];
+          risk_level?: string;
+          risk_flags?: Json;
+          checked_at?: string | null;
+          version?: number;
+          decision_reason?: string | null;
+          required_fixes?: Json;
+          decided_by?: string | null;
+          decided_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          kind?: Database["public"]["Enums"]["review_item_kind"];
+          entity_ref?: string;
+          submitter_id?: string;
+          title?: string;
+          summary?: string | null;
+          payload?: Json;
+          urls?: string[];
+          status?: Database["public"]["Enums"]["review_item_status"];
+          risk_level?: string;
+          risk_flags?: Json;
+          checked_at?: string | null;
+          version?: number;
+          decision_reason?: string | null;
+          required_fixes?: Json;
+          decided_by?: string | null;
+          decided_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       rubric_criteria: {
         Row: {
           id: string;
@@ -5705,6 +5885,42 @@ export type Database = {
           started_at?: string | null;
           created_at?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      support_view_sessions: {
+        Row: {
+          id: string;
+          admin_id: string;
+          target_id: string;
+          reason: string;
+          ticket: string | null;
+          started_at: string;
+          expires_at: string;
+          ended_at: string | null;
+          views: number;
+        };
+        Insert: {
+          id?: string;
+          admin_id: string;
+          target_id: string;
+          reason: string;
+          ticket?: string | null;
+          started_at?: string;
+          expires_at?: string;
+          ended_at?: string | null;
+          views?: number;
+        };
+        Update: {
+          id?: string;
+          admin_id?: string;
+          target_id?: string;
+          reason?: string;
+          ticket?: string | null;
+          started_at?: string;
+          expires_at?: string;
+          ended_at?: string | null;
+          views?: number;
         };
         Relationships: [];
       };
@@ -6215,6 +6431,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_plans: {
+        Row: {
+          user_id: string;
+          learner_plan: string;
+          tutor_plan: string;
+          source: string;
+          expires_at: string | null;
+          set_by: string | null;
+          reason: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          learner_plan?: string;
+          tutor_plan?: string;
+          source?: string;
+          expires_at?: string | null;
+          set_by?: string | null;
+          reason?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          learner_plan?: string;
+          tutor_plan?: string;
+          source?: string;
+          expires_at?: string | null;
+          set_by?: string | null;
+          reason?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       user_roles: {
         Row: {
           user_id: string;
@@ -6385,32 +6634,56 @@ export type Database = {
     Functions: {
       admin_analytics: { Args: { p_metric: string; p_from?: string; p_to?: string; p_limit?: number }; Returns: Json };
       admin_approve_external_course: { Args: { p_id: string; p_approve: boolean; p_featured?: boolean }; Returns: undefined };
+      admin_audit_search: { Args: { p_actor?: string; p_action?: string; p_table?: string; p_from?: string; p_to?: string; p_limit?: number; p_offset?: number }; Returns: Json };
       admin_bulk_review_membership: { Args: { p_ids: string[]; p_decision: Database["public"]["Enums"]["application_status"]; p_note?: string }; Returns: number };
+      admin_console_stats: { Args: Record<PropertyKey, never>; Returns: Json };
+      admin_decide_submission: { Args: { p_id: string; p_decision: string; p_reason?: string; p_fixes?: Json }; Returns: Database["public"]["Tables"]["review_submissions"]["Row"] };
+      admin_end_support_view: { Args: { p_id: string }; Returns: undefined };
       admin_expiring_external_courses: { Args: { p_days?: number }; Returns: Database["public"]["Tables"]["external_courses"]["Row"][] };
       admin_feature: { Args: { p_entity: string; p_id: string; p_featured: boolean }; Returns: undefined };
+      admin_invite: { Args: { p_email: string; p_scopes: string[] }; Returns: Json };
       admin_issue_refund: { Args: { p_payment_id: string; p_amount_ugx?: number; p_reason?: string; p_refund_id?: string }; Returns: Database["public"]["Tables"]["refunds"]["Row"] };
+      admin_list_admins: { Args: Record<PropertyKey, never>; Returns: Json };
+      admin_me: { Args: Record<PropertyKey, never>; Returns: Json };
       admin_moderate: { Args: { p_flag_id: string; p_action: string; p_note?: string }; Returns: Database["public"]["Tables"]["moderation_flags"]["Row"] };
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      admin_remove_admin: { Args: { p_user: string; p_reason?: string }; Returns: undefined };
       admin_reorder_social_links: { Args: { p_ids: string[] }; Returns: undefined };
       admin_resolve_dispute: { Args: { p_dispute: string; p_outcome: string; p_refund_ugx?: number; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_disputes"]["Row"] };
       admin_review_article: { Args: { p_article: string; p_decision: string; p_note?: string }; Returns: Database["public"]["Tables"]["articles"]["Row"] };
       admin_review_membership: { Args: { p_application_id: string; p_decision: Database["public"]["Enums"]["application_status"]; p_note?: string }; Returns: Database["public"]["Tables"]["membership_applications"]["Row"] };
       admin_review_payout: { Args: { p_payout_id: string; p_decision: string; p_note?: string }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
       admin_review_placement: { Args: { p_id: string; p_approve: boolean }; Returns: undefined };
+      admin_review_queue: { Args: { p_status?: Database["public"]["Enums"]["review_item_status"]; p_kind?: Database["public"]["Enums"]["review_item_kind"]; p_limit?: number; p_offset?: number }; Returns: Json };
       admin_review_tutor: { Args: { p_application_id: string; p_decision: Database["public"]["Enums"]["application_status"]; p_note?: string; p_commission_pct?: number }; Returns: Database["public"]["Tables"]["tutor_applications"]["Row"] };
+      admin_revoke_guardian: { Args: { p_consent_id: string; p_reason: string }; Returns: undefined };
+      admin_revoke_invite: { Args: { p_id: string }; Returns: undefined };
+      admin_search_users: { Args: { p_q?: string; p_role?: string; p_status?: string; p_minor?: boolean; p_limit?: number; p_offset?: number }; Returns: Json };
       admin_set_account_status: { Args: { p_user: string; p_status: Database["public"]["Enums"]["account_status"]; p_reason?: string; p_until?: string }; Returns: Database["public"]["Tables"]["profiles"]["Row"] };
+      admin_set_admin_status: { Args: { p_user: string; p_status: string; p_reason?: string }; Returns: Json };
       admin_set_content_status: { Args: { p_entity: string; p_id: string; p_status: string; p_note?: string }; Returns: undefined };
+      admin_set_course_pricing: { Args: { p_course: string; p_is_free: boolean; p_price_ugx: number; p_reason?: string }; Returns: Json };
       admin_set_flag: { Args: { p_key: string; p_enabled: boolean; p_rollout_pct?: number; p_roles?: Database["public"]["Enums"]["app_role"][] }; Returns: undefined };
       admin_set_launch_promo: { Args: { p_enabled: boolean; p_starts_at?: string; p_ends_at?: string; p_banner_text?: string }; Returns: Json };
       admin_set_role: { Args: { p_user: string; p_role: Database["public"]["Enums"]["app_role"]; p_grant: boolean }; Returns: undefined };
+      admin_set_scopes: { Args: { p_user: string; p_scopes: string[] }; Returns: Json };
       admin_set_setting: { Args: { p_key: string; p_value: Json; p_is_public?: boolean }; Returns: undefined };
       admin_set_store_kyc: { Args: { p_store: string; p_status: Database["public"]["Enums"]["mkt_kyc_status"]; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_stores"]["Row"] };
+      admin_set_user_plan: { Args: { p_user: string; p_audience: string; p_plan: string; p_reason: string; p_expires_at?: string }; Returns: Database["public"]["Tables"]["user_plans"]["Row"] };
+      admin_set_user_role: { Args: { p_user: string; p_role: string; p_grant: boolean; p_reason?: string }; Returns: undefined };
+      admin_set_user_status: { Args: { p_user: string; p_status: Database["public"]["Enums"]["account_status"]; p_reason?: string; p_until?: string }; Returns: Database["public"]["Tables"]["profiles"]["Row"] };
+      admin_start_support_view: { Args: { p_target: string; p_reason: string; p_ticket?: string }; Returns: Database["public"]["Tables"]["support_view_sessions"]["Row"] };
+      admin_support_snapshot: { Args: { p_session: string }; Returns: Json };
+      admin_upsert_plan: { Args: { p_audience: string; p_plan: string; p_name: string; p_price_month: number; p_price_year: number; p_limits: Json; p_features?: string[]; p_status?: string; p_tagline?: string }; Returns: Database["public"]["Tables"]["plan_catalog"]["Row"] };
       admin_verify_guardian: { Args: { p_consent_id: string }; Returns: undefined };
       ai_commit: { Args: { p_usage: string; p_status: string; p_provider?: string; p_model?: string; p_input_tokens?: number; p_output_tokens?: number; p_latency_ms?: number }; Returns: undefined };
       ai_log_moderation: { Args: { p_user: string; p_feature: string; p_is_minor: boolean; p_category: string; p_action: string }; Returns: undefined };
       ai_reserve: { Args: { p_user: string; p_feature: string; p_est_tokens?: number }; Returns: Json };
       apply_flutterwave_payment: { Args: { p_tx_ref: string; p_flw_id: number; p_status: string; p_amount: number; p_currency: string; p_payment_type?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["payments"]["Row"] };
       attach_referral: { Args: { p_referred: string; p_code: string }; Returns: undefined };
+      backend_accept_admin_invite: { Args: { p_user: string; p_verified_email: string; p_token: string }; Returns: Json };
+      backend_bind_root: { Args: { p_user: string; p_verified_email: string }; Returns: Json };
+      backend_set_submission_risk: { Args: { p_id: string; p_level: string; p_flags: Json }; Returns: undefined };
       claim_promo_reminder: { Args: Record<PropertyKey, never>; Returns: string };
       claim_referral: { Args: { p_code: string }; Returns: boolean };
       complete_payout: { Args: { p_reference: string; p_success: boolean; p_failure?: string; p_raw?: Json }; Returns: Database["public"]["Tables"]["payouts"]["Row"] };
@@ -6430,6 +6703,7 @@ export type Database = {
       fanout_announcement: { Args: { p_announcement_id: string }; Returns: number };
       finalize_competition: { Args: { p_comp: string }; Returns: number };
       flag_plagiarism: { Args: { p_contest: string; p_threshold?: number }; Returns: number };
+      is_approved: { Args: { p_kind: Database["public"]["Enums"]["review_item_kind"]; p_entity_ref: string }; Returns: boolean };
       join_group: { Args: { p_group: string; p_invite_code?: string; p_message?: string }; Returns: string };
       judge_payload: { Args: { p_submission: string }; Returns: Json };
       judge_record_result: { Args: { p_submission: string; p_verdict: Database["public"]["Enums"]["submission_verdict"]; p_passed: number; p_total: number; p_score?: number; p_runtime_ms?: number; p_memory_kb?: number; p_compile_output?: string; p_judge_ref?: string }; Returns: Database["public"]["Tables"]["submissions"]["Row"] };
@@ -6450,6 +6724,7 @@ export type Database = {
       my_access: { Args: Record<PropertyKey, never>; Returns: Json };
       my_ai_quota: { Args: Record<PropertyKey, never>; Returns: Json };
       my_plan: { Args: Record<PropertyKey, never>; Returns: Json };
+      my_plan_limits: { Args: Record<PropertyKey, never>; Returns: Json };
       my_practice_progress: { Args: Record<PropertyKey, never>; Returns: Json };
       my_referral_code: { Args: Record<PropertyKey, never>; Returns: string };
       my_wallet: { Args: Record<PropertyKey, never>; Returns: Json };
@@ -6472,11 +6747,13 @@ export type Database = {
       session_join_info: { Args: { p_session: string }; Returns: Json };
       set_payment_checkout_link: { Args: { p_tx_ref: string; p_link: string }; Returns: undefined };
       start_direct_conversation: { Args: { p_other: string }; Returns: string };
+      submit_for_review: { Args: { p_kind: Database["public"]["Enums"]["review_item_kind"]; p_entity_ref: string; p_title: string; p_summary?: string; p_payload?: Json; p_urls?: string[] }; Returns: Database["public"]["Tables"]["review_submissions"]["Row"] };
       submit_quiz: { Args: { p_quiz: string; p_answers: Json }; Returns: Json };
       submit_solution: { Args: { p_problem: string; p_language: string; p_code: string; p_contest?: string }; Returns: Database["public"]["Tables"]["submissions"]["Row"] };
       touch_last_seen: { Args: Record<PropertyKey, never>; Returns: undefined };
       tutor_dashboard: { Args: Record<PropertyKey, never>; Returns: Json };
       verify_certificate: { Args: { p_code: string }; Returns: Json };
+      withdraw_submission: { Args: { p_id: string }; Returns: undefined };
       write_audit: { Args: { p_actor: string; p_action: string; p_table: string; p_record: string; p_context?: Json }; Returns: undefined };
     };
     Enums: {
@@ -6524,6 +6801,8 @@ export type Database = {
       refund_status: "requested" | "processing" | "completed" | "failed" | "rejected";
       registration_status: "registered" | "waitlisted" | "cancelled" | "attended" | "refunded";
       resource_kind: "article" | "video" | "doc" | "repo" | "dataset" | "template" | "course" | "other";
+      review_item_kind: "course" | "lesson" | "book" | "link" | "video" | "project" | "campaign" | "event" | "listing" | "price_change";
+      review_item_status: "pending" | "approved" | "rejected" | "changes_requested" | "withdrawn";
       review_status: "pending" | "approved" | "rejected";
       session_kind: "one_on_one" | "group";
       session_status: "scheduled" | "cancelled" | "completed";

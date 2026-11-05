@@ -10,9 +10,10 @@
 --   B. Scoped admins: invite by email → accept (verified email must match),
 --      per-admin scopes, suspend / reinstate / remove (root only).
 --   C. Approval queue for everything learners & tutors publish (courses,
---      lessons, books, links, videos, projects, campaigns, events, listings,
---      price changes) with link-risk flags. Nothing is public until approved.
---   D. Plans & pricing as DATA (plan_catalog, user_plans) + course free/paid.
+--      lessons, books, links, videos, projects, campaigns, events, listings)
+--      with link-risk flags. Nothing is public until approved. Price changes
+--      are the plans branch's course_price_requests (shown in the same queue).
+--   D. Plans/prices/limits = plans branch data; here only a per-user override.
 --   E. Feature flags (scope-gated), F. append-only audit with before→after,
 --   G. stats from real tables (zeros when empty), H. read-only support view.
 -- =============================================================================
@@ -449,7 +450,7 @@ $$;
 -- ================================================ C. APPROVAL QUEUE =========
 do $$ begin
   if not exists (select 1 from pg_type where typname = 'review_item_kind') then
-    create type public.review_item_kind as enum ('course','lesson','book','link','video','project','campaign','event','listing','price_change');
+    create type public.review_item_kind as enum ('course','lesson','book','link','video','project','campaign','event','listing');
   end if;
   if not exists (select 1 from pg_type where typname = 'review_item_status') then
     create type public.review_item_status as enum ('pending','approved','rejected','changes_requested','withdrawn');
@@ -500,7 +501,6 @@ declare v_id uuid := app.try_uuid(p_ref);
 begin
   case p_kind
     when 'course' then return exists (select 1 from public.courses where courses.id = v_id and tutor_id = p_user);
-    when 'price_change' then return exists (select 1 from public.courses where courses.id = v_id and tutor_id = p_user);
     when 'lesson' then return exists (select 1 from public.lessons l join public.courses c on c.id = l.course_id where l.id = v_id and c.tutor_id = p_user);
     when 'event' then return exists (select 1 from public.events where events.id = v_id and created_by = p_user);
     when 'project' then return exists (select 1 from public.projects where projects.id = v_id and owner_id = p_user);
@@ -523,14 +523,6 @@ begin
   end if;
   if p_kind = 'course' and not app.has_role('tutor') then raise exception 'only tutors publish courses' using errcode = '42501'; end if;
   if not app.submission_owner_ok(p_kind, p_entity_ref, me) then raise exception 'not your item' using errcode = '42501'; end if;
-  if p_kind = 'price_change' then
-    if jsonb_typeof(p_payload -> 'is_free') <> 'boolean' or jsonb_typeof(p_payload -> 'price_ugx') <> 'number' then
-      raise exception 'price change needs is_free and price_ugx' using errcode = '22023';
-    end if;
-    if not (p_payload ->> 'is_free')::boolean and (p_payload ->> 'price_ugx')::bigint < 1000 then
-      raise exception 'paid courses cost at least UGX 1,000' using errcode = '22023';
-    end if;
-  end if;
   u := array(select distinct btrim(x) from unnest(coalesce(p_urls, '{}')) x where btrim(x) ~ '^https?://' limit 50);
   select * into s from public.review_submissions where kind = p_kind and entity_ref = p_entity_ref and status in ('pending','changes_requested') for update;
   if found then
@@ -620,10 +612,6 @@ begin
            review_note = p_reason, reviewed_by = app.requesting_user_id(),
            published_at = case when st = 'approved' then coalesce(published_at, now()) else published_at end
      where id = cid;
-  elsif s.kind = 'price_change' and st = 'approved' then
-    update public.courses set is_free = (s.payload ->> 'is_free')::boolean,
-           price_ugx = case when (s.payload ->> 'is_free')::boolean then 0 else (s.payload ->> 'price_ugx')::bigint end
-     where id = cid;
   elsif s.kind = 'event' then
     update public.events set status = case when st = 'approved' then 'published' else 'draft' end::public.event_status where id = cid;
   elsif s.kind = 'listing' then
@@ -640,186 +628,32 @@ begin
 end;
 $$;
 
--- ================================================== D. PLANS AS DATA =========
-create table if not exists public.plan_catalog (
-  audience         text not null check (audience in ('learner','tutor')),
-  plan             text not null check (plan in ('free','standard','plus','pro')),
-  name             text not null check (char_length(name) between 2 and 40),
-  tagline          text check (char_length(tagline) <= 160),
-  price_ugx_month  bigint not null default 0 check (price_ugx_month between 0 and 10000000),
-  price_ugx_year   bigint not null default 0 check (price_ugx_year between 0 and 100000000),
-  limits           jsonb not null default '{}' check (jsonb_typeof(limits) = 'object'),
-  features         text[] not null default '{}' check (cardinality(features) <= 30),
-  status           text not null default 'draft' check (status in ('draft','published','archived')),
-  sort             smallint not null default 0,
-  updated_by       text references public.profiles(id) on delete set null,
-  updated_at       timestamptz not null default now(),
-  primary key (audience, plan),
-  check (plan <> 'free' or (price_ugx_month = 0 and price_ugx_year = 0))
-);
-drop trigger if exists plan_catalog_updated_at on public.plan_catalog;
-create trigger plan_catalog_updated_at before update on public.plan_catalog for each row execute function app.set_updated_at();
-
--- Limit keys (kept in sync with src/data/access-policy.json "limits"). -1 = unlimited.
-create or replace function app.plan_limit_spec()
-returns jsonb language sql immutable set search_path = '' as $$
-  select '{
-    "learner.courses_max":"int", "learner.locked_lessons":"bool", "learner.sessions_per_month":"int",
-    "tutor.students_max":"int", "tutor.courses_max":"int", "tutor.sessions_per_month":"int", "tutor.commission_pct":"num",
-    "market.sell":"bool", "market.listings_max":"int", "ai.daily_requests":"int", "projects.max":"int"
-  }'::jsonb
-$$;
-
-create or replace function app.validate_limits(p jsonb)
-returns jsonb language plpgsql immutable set search_path = '' as $$
-declare k text; v jsonb; t text; spec jsonb := app.plan_limit_spec();
-begin
-  if p is null or jsonb_typeof(p) <> 'object' then raise exception 'limits must be an object' using errcode = '22023'; end if;
-  for k, v in select * from jsonb_each(p) loop
-    t := spec ->> k;
-    if t is null then raise exception 'unknown limit key "%"', k using errcode = '22023'; end if;
-    if t = 'bool' and jsonb_typeof(v) <> 'boolean' then raise exception '% must be true/false', k using errcode = '22023'; end if;
-    if t in ('int','num') and jsonb_typeof(v) <> 'number' then raise exception '% must be a number', k using errcode = '22023'; end if;
-    if t = 'int' and ((v #>> '{}')::numeric <> trunc((v #>> '{}')::numeric) or (v #>> '{}')::numeric < -1) then
-      raise exception '% must be a whole number (-1 = unlimited)', k using errcode = '22023';
-    end if;
-    if k = 'tutor.commission_pct' and ((v #>> '{}')::numeric < 0 or (v #>> '{}')::numeric > 100) then raise exception 'commission must be 0-100' using errcode = '22023'; end if;
-  end loop;
-  return p;
-end;
-$$;
-
--- Seeds: founder rules for Free; paid prices are DRAFT placeholders (not public)
--- until the founder sets them in the console.
-insert into public.plan_catalog (audience, plan, name, tagline, price_ugx_month, price_ugx_year, limits, features, status, sort) values
-  ('learner','free','Free','Start learning at 101', 0, 0,
-   '{"learner.courses_max":1,"learner.locked_lessons":true,"learner.sessions_per_month":0,"market.sell":true,"market.listings_max":2,"ai.daily_requests":20,"projects.max":2}',
-   '{"1 course (some lessons locked)","Free external courses","Marketplace: buy and sell"}', 'published', 0),
-  ('learner','standard','Standard','More courses, all lessons', 15000, 150000,
-   '{"learner.courses_max":3,"learner.locked_lessons":false,"learner.sessions_per_month":1,"market.sell":true,"market.listings_max":10,"ai.daily_requests":60,"projects.max":10}',
-   '{"3 courses, every lesson","1 tutor session a month"}', 'draft', 1),
-  ('learner','plus','Plus','For serious learners', 30000, 300000,
-   '{"learner.courses_max":10,"learner.locked_lessons":false,"learner.sessions_per_month":4,"market.sell":true,"market.listings_max":30,"ai.daily_requests":150,"projects.max":30}',
-   '{"10 courses","4 tutor sessions a month"}', 'draft', 2),
-  ('learner','pro','Pro','Everything, no limits', 60000, 600000,
-   '{"learner.courses_max":-1,"learner.locked_lessons":false,"learner.sessions_per_month":8,"market.sell":true,"market.listings_max":-1,"ai.daily_requests":400,"projects.max":-1}',
-   '{"Unlimited courses","8 tutor sessions a month"}', 'draft', 3),
-  ('tutor','free','Free','Start teaching', 0, 0,
-   '{"tutor.students_max":2,"tutor.courses_max":1,"tutor.sessions_per_month":4,"tutor.commission_pct":30,"market.sell":true,"market.listings_max":2,"ai.daily_requests":40,"projects.max":5}',
-   '{"Up to 2 students","1 course"}', 'published', 0),
-  ('tutor','standard','Standard','Grow a class', 20000, 200000,
-   '{"tutor.students_max":25,"tutor.courses_max":3,"tutor.sessions_per_month":20,"tutor.commission_pct":25,"market.sell":true,"market.listings_max":10,"ai.daily_requests":100,"projects.max":20}',
-   '{"Up to 25 students","3 courses"}', 'draft', 1),
-  ('tutor','plus','Plus','Run a school', 50000, 500000,
-   '{"tutor.students_max":100,"tutor.courses_max":10,"tutor.sessions_per_month":60,"tutor.commission_pct":20,"market.sell":true,"market.listings_max":30,"ai.daily_requests":250,"projects.max":50}',
-   '{"Up to 100 students","10 courses"}', 'draft', 2),
-  ('tutor','pro','Pro','No limits', 100000, 1000000,
-   '{"tutor.students_max":-1,"tutor.courses_max":-1,"tutor.sessions_per_month":-1,"tutor.commission_pct":15,"market.sell":true,"market.listings_max":-1,"ai.daily_requests":500,"projects.max":-1}',
-   '{"Unlimited students and courses","Lowest commission"}', 'draft', 3)
-on conflict (audience, plan) do nothing;
-
-create table if not exists public.user_plans (
-  user_id       text primary key references public.profiles(id) on delete cascade,
-  learner_plan  text not null default 'free' check (learner_plan in ('free','standard','plus','pro')),
-  tutor_plan    text not null default 'free' check (tutor_plan in ('free','standard','plus','pro')),
-  source        text not null default 'default' check (source in ('default','admin','subscription','promo')),
-  expires_at    timestamptz,
-  set_by        text references public.profiles(id) on delete set null,
-  reason        text check (char_length(reason) <= 500),
-  updated_at    timestamptz not null default now()
-);
-drop trigger if exists user_plans_updated_at on public.user_plans;
-create trigger user_plans_updated_at before update on public.user_plans for each row execute function app.set_updated_at();
-create or replace function app.guard_user_plans()
-returns trigger language plpgsql set search_path = '' as $$
-begin
-  if not app.is_privileged() then raise exception 'plans change only via checkout or admin RPCs' using errcode = '42501'; end if;
-  return coalesce(new, old);
-end;
-$$;
-drop trigger if exists user_plans_guard on public.user_plans;
-create trigger user_plans_guard before insert or update or delete on public.user_plans for each row execute function app.guard_user_plans();
-
-create or replace function app.user_plan(p_user text, p_audience text)
-returns text language sql stable security definer set search_path = '' as $$
-  select coalesce((select case when up.expires_at is not null and up.expires_at < now() then 'free'
-                               when p_audience = 'tutor' then up.tutor_plan else up.learner_plan end
-                     from public.user_plans up where up.user_id = p_user), 'free')
-$$;
-
--- The policy reads limits from data: app.plan_limit(user, 'learner', 'learner.courses_max').
-create or replace function app.plan_limit(p_user text, p_audience text, p_key text)
-returns jsonb language sql stable security definer set search_path = '' as $$
-  select pc.limits -> p_key from public.plan_catalog pc where pc.audience = p_audience and pc.plan = app.user_plan(p_user, p_audience)
-$$;
-
-create or replace function public.my_plan_limits()
-returns jsonb language sql stable security definer set search_path = '' as $$
-  select jsonb_build_object(
-    'learner', jsonb_build_object('plan', app.user_plan(app.requesting_user_id(), 'learner'),
-                                  'limits', (select limits from public.plan_catalog where audience = 'learner' and plan = app.user_plan(app.requesting_user_id(), 'learner'))),
-    'tutor',   jsonb_build_object('plan', app.user_plan(app.requesting_user_id(), 'tutor'),
-                                  'limits', (select limits from public.plan_catalog where audience = 'tutor' and plan = app.user_plan(app.requesting_user_id(), 'tutor'))),
-    'expires_at', (select expires_at from public.user_plans where user_id = app.requesting_user_id()))
-$$;
-
-create or replace function public.admin_upsert_plan(p_audience text, p_plan text, p_name text, p_price_month bigint, p_price_year bigint,
-                                                    p_limits jsonb, p_features text[] default '{}', p_status text default 'draft', p_tagline text default null)
-returns public.plan_catalog language plpgsql security definer set search_path = '' as $$
-declare before public.plan_catalog; r public.plan_catalog;
-begin
-  perform app.require_scope('plans');
-  perform app.validate_limits(p_limits);
-  select * into before from public.plan_catalog where audience = p_audience and plan = p_plan;
-  insert into public.plan_catalog (audience, plan, name, tagline, price_ugx_month, price_ugx_year, limits, features, status, updated_by, sort)
-  values (p_audience, p_plan, p_name, p_tagline, p_price_month, p_price_year, p_limits, coalesce(p_features, '{}'), p_status, app.requesting_user_id(),
-          array_position(array['free','standard','plus','pro'], p_plan) - 1)
-  on conflict (audience, plan) do update set name = excluded.name, tagline = excluded.tagline, price_ugx_month = excluded.price_ugx_month,
-     price_ugx_year = excluded.price_ugx_year, limits = excluded.limits, features = excluded.features, status = excluded.status, updated_by = excluded.updated_by
-  returning * into r;
-  perform app.audit_change('admin.plan_upsert', 'plan_catalog', p_audience || ':' || p_plan, to_jsonb(before), to_jsonb(r));
-  return r;
-end;
-$$;
-
-create or replace function public.admin_set_user_plan(p_user text, p_audience text, p_plan text, p_reason text, p_expires_at timestamptz default null)
-returns public.user_plans language plpgsql security definer set search_path = '' as $$
-declare before public.user_plans; r public.user_plans;
+-- ====================================================== D. PLANS ============
+-- Plans, prices, limits and course pricing are DATA owned by the r11 plans
+-- branch (plan_tiers + subscription_plans, admin_update_plan, plans_catalogue,
+-- admin_set_course_pricing, course_price_requests/decide_course_price). The
+-- console calls those RPCs; this file only adds the per-user override below.
+-- Written against profiles.plan (learner) / profiles.tutor_plan (plans branch);
+-- dynamic SQL so it compiles before that branch is merged.
+create or replace function public.admin_set_user_plan(p_user text, p_audience text, p_plan text, p_reason text)
+returns jsonb language plpgsql security definer set search_path = '' as $$
+declare col text; before jsonb; after jsonb;
 begin
   perform app.require_scope('users');
   if p_audience not in ('learner','tutor') or p_plan not in ('free','standard','plus','pro') then raise exception 'bad audience or plan' using errcode = '22023'; end if;
   if coalesce(char_length(btrim(p_reason)), 0) < 3 then raise exception 'a reason is required' using errcode = '22023'; end if;
-  if not exists (select 1 from public.profiles where id = p_user) then raise exception 'user not found' using errcode = 'P0002'; end if;
-  select * into before from public.user_plans where user_id = p_user;
-  insert into public.user_plans (user_id, learner_plan, tutor_plan, source, expires_at, set_by, reason)
-  values (p_user, case when p_audience = 'learner' then p_plan else 'free' end, case when p_audience = 'tutor' then p_plan else 'free' end,
-          'admin', p_expires_at, app.requesting_user_id(), p_reason)
-  on conflict (user_id) do update set
-    learner_plan = case when p_audience = 'learner' then p_plan else public.user_plans.learner_plan end,
-    tutor_plan   = case when p_audience = 'tutor' then p_plan else public.user_plans.tutor_plan end,
-    source = 'admin', expires_at = p_expires_at, set_by = excluded.set_by, reason = excluded.reason
-  returning * into r;
-  perform app.audit_change('admin.set_user_plan', 'user_plans', p_user, to_jsonb(before), to_jsonb(r));
+  col := case when p_audience = 'tutor' then 'tutor_plan' else 'plan' end;
+  select to_jsonb(p) -> col into before from public.profiles p where p.id = p_user;
+  if not found then raise exception 'user not found' using errcode = 'P0002'; end if;
+  begin
+    execute format('update public.profiles set %I = $1::public.member_plan where id = $2', col) using p_plan, p_user;
+  exception when undefined_column or invalid_text_representation then
+    raise exception 'plan "%" for % needs the r11 plans migration', p_plan, p_audience using errcode = 'P0001';
+  end;
+  select to_jsonb(p) -> col into after from public.profiles p where p.id = p_user;
+  perform app.audit_change('admin.set_user_plan', 'profiles', p_user, jsonb_build_object(col, before), jsonb_build_object(col, after), jsonb_build_object('reason', p_reason, 'audience', p_audience));
   perform app.notify(p_user, 'account.plan', 'Your ' || p_audience || ' plan is now ' || initcap(p_plan), p_reason, '/settings-apps.html#plan');
-  return r;
-end;
-$$;
-
--- Admin makes any course free or paid (tutor price changes go through the queue).
-create or replace function public.admin_set_course_pricing(p_course uuid, p_is_free boolean, p_price_ugx bigint, p_reason text default null)
-returns jsonb language plpgsql security definer set search_path = '' as $$
-declare c public.courses;
-begin
-  if not (app.admin_has('plans') or app.admin_has('content')) then raise exception 'admin scope "plans" or "content" required' using errcode = '42501'; end if;
-  if not p_is_free and coalesce(p_price_ugx, 0) < 1000 then raise exception 'paid courses cost at least UGX 1,000' using errcode = '22023'; end if;
-  select * into c from public.courses where id = p_course for update;
-  if not found then raise exception 'course not found' using errcode = 'P0002'; end if;
-  update public.courses set is_free = p_is_free, price_ugx = case when p_is_free then 0 else p_price_ugx end where id = p_course;
-  perform app.audit_change('admin.course_pricing', 'courses', p_course::text,
-                           jsonb_build_object('is_free', c.is_free, 'price_ugx', c.price_ugx),
-                           jsonb_build_object('is_free', p_is_free, 'price_ugx', case when p_is_free then 0 else p_price_ugx end), jsonb_build_object('reason', p_reason));
-  perform app.notify(c.tutor_id, 'course.pricing', '"' || c.title || '" is now ' || case when p_is_free then 'free' else 'UGX ' || p_price_ugx end, p_reason, '/tutor.html#courses');
-  return jsonb_build_object('course_id', p_course, 'is_free', p_is_free, 'price_ugx', case when p_is_free then 0 else p_price_ugx end);
+  return jsonb_build_object('user_id', p_user, 'audience', p_audience, 'plan', after);
 end;
 $$;
 
@@ -870,9 +704,9 @@ begin
     'decided_7d', (select count(*) from public.review_submissions where decided_at > now() - interval '7 days'),
     'guardian_pending', (select count(*) from public.guardian_consents where verified_at is null and revoked_at is null),
     'plans', coalesce((select jsonb_object_agg(k, n) from (
-               select 'learner:' || app.user_plan(p.id, 'learner') k, count(*) n from public.profiles p where p.deleted_at is null group by 1
+               select 'learner:' || coalesce(to_jsonb(p) ->> 'plan', 'free') k, count(*) n from public.profiles p where p.deleted_at is null group by 1
                union all
-               select 'tutor:' || app.user_plan(ur.user_id, 'tutor'), count(*) from public.user_roles ur where ur.role = 'tutor' group by 1) x), '{}'::jsonb),
+               select 'tutor:' || coalesce(to_jsonb(p) ->> 'tutor_plan', 'free'), count(*) from public.profiles p join public.user_roles ur on ur.user_id = p.id and ur.role = 'tutor' group by 1) x), '{}'::jsonb),
     'courses_published', (select count(*) from public.courses where status = 'published' and deleted_at is null),
     'courses_paid', (select count(*) from public.courses where status = 'published' and not is_free and deleted_at is null),
     'enrollments_total', (select count(*) from public.enrollments),
@@ -908,7 +742,7 @@ begin
         'guardian', (select jsonb_build_object('id', g.id, 'state', case when g.revoked_at is not null then 'revoked' when g.verified_at is not null then 'verified' else 'pending' end,
                             'relationship', g.relationship, 'created_at', g.created_at)
                        from public.guardian_consents g where g.user_id = f.id order by g.created_at desc limit 1),
-        'learner_plan', app.user_plan(f.id, 'learner'), 'tutor_plan', app.user_plan(f.id, 'tutor'),
+        'learner_plan', coalesce(to_jsonb(f) ->> 'plan', 'free'), 'tutor_plan', coalesce(to_jsonb(f) ->> 'tutor_plan', 'free'),
         'joined_at', f.joined_at, 'created_at', f.created_at, 'last_seen_at', f.last_seen_at) order by f.created_at desc)
       from (select * from f order by f.created_at desc limit least(greatest(p_limit, 1), 100) offset greatest(p_offset, 0)) f), '[]'::jsonb)));
 end;
@@ -1042,7 +876,7 @@ begin
                  'joined_at', p.joined_at, 'last_seen_at', p.last_seen_at,
                  'email_masked', (select regexp_replace(pp.email, '^(.).*(@.*)$', '\1•••\2') from public.profile_private pp where pp.user_id = p.id))
                 from public.profiles p where p.id = t),
-    'plans', jsonb_build_object('learner', app.user_plan(t, 'learner'), 'tutor', app.user_plan(t, 'tutor')),
+    'plans', (select jsonb_build_object('learner', coalesce(to_jsonb(p) ->> 'plan', 'free'), 'tutor', coalesce(to_jsonb(p) ->> 'tutor_plan', 'free')) from public.profiles p where p.id = t),
     'enrollments', coalesce((select jsonb_agg(jsonb_build_object('course', c.title, 'status', e.status, 'progress_pct', e.progress_pct, 'enrolled_at', e.enrolled_at) order by e.enrolled_at desc)
                      from public.enrollments e join public.courses c on c.id = e.course_id where e.user_id = t), '[]'::jsonb),
     'courses_taught', coalesce((select jsonb_agg(jsonb_build_object('title', c.title, 'status', c.status, 'is_free', c.is_free, 'price_ugx', c.price_ugx, 'learners', c.enrollments_count) order by c.created_at desc)
@@ -1062,8 +896,6 @@ $$;
 alter table public.admin_grants enable row level security;
 alter table public.admin_invites enable row level security;
 alter table public.review_submissions enable row level security;
-alter table public.plan_catalog enable row level security;
-alter table public.user_plans enable row level security;
 alter table public.support_view_sessions enable row level security;
 
 drop policy if exists admin_grants_read on public.admin_grants;
@@ -1073,27 +905,21 @@ create policy admin_invites_root on public.admin_invites for select to authentic
 drop policy if exists review_sub_read on public.review_submissions;
 create policy review_sub_read on public.review_submissions for select to authenticated
   using (submitter_id = (select app.requesting_user_id()) or (select app.admin_has('approvals')));
-drop policy if exists plan_catalog_public on public.plan_catalog;
-create policy plan_catalog_public on public.plan_catalog for select to anon, authenticated using (status = 'published' or (select app.is_admin()));
-drop policy if exists user_plans_read on public.user_plans;
-create policy user_plans_read on public.user_plans for select to authenticated using (user_id = (select app.requesting_user_id()) or (select app.is_admin()));
 drop policy if exists support_view_read on public.support_view_sessions;
 create policy support_view_read on public.support_view_sessions for select to authenticated
   using (admin_id = (select app.requesting_user_id()) or target_id = (select app.requesting_user_id()) or (select app.admin_has('audit')));
 
 -- ============================================================= grants ========
-revoke all on public.admin_grants, public.admin_invites, public.review_submissions, public.plan_catalog, public.user_plans, public.support_view_sessions from anon, authenticated;
-grant select on public.admin_grants, public.admin_invites, public.review_submissions, public.user_plans, public.support_view_sessions to authenticated;
-grant select on public.plan_catalog to anon, authenticated;
-grant select, insert, update, delete on public.admin_grants, public.admin_invites, public.review_submissions, public.plan_catalog, public.user_plans, public.support_view_sessions to service_role;
+revoke all on public.admin_grants, public.admin_invites, public.review_submissions, public.support_view_sessions from anon, authenticated;
+grant select on public.admin_grants, public.admin_invites, public.review_submissions, public.support_view_sessions to authenticated;
+grant select, insert, update, delete on public.admin_grants, public.admin_invites, public.review_submissions, public.support_view_sessions to service_role;
 
 revoke execute on function public.backend_bind_root(text, text), public.backend_accept_admin_invite(text, text, text),
   public.backend_set_submission_risk(uuid, text, jsonb) from public, anon, authenticated;
 grant execute on function public.backend_bind_root(text, text), public.backend_accept_admin_invite(text, text, text),
   public.backend_set_submission_risk(uuid, text, jsonb) to service_role;
 
-grant execute on function app.root_email(), app.root_user_id(), app.is_root(text), app.admin_has(text), app.admin_scope_list(),
-  app.user_plan(text, text), app.plan_limit(text, text, text) to anon, authenticated, service_role;
+grant execute on function app.root_email(), app.root_user_id(), app.is_root(text), app.admin_has(text), app.admin_scope_list() to anon, authenticated, service_role;
 revoke execute on function public.is_approved(public.review_item_kind, text) from public, anon;
 grant execute on function public.is_approved(public.review_item_kind, text) to authenticated, service_role;
 grant execute on function public.admin_me(), public.admin_list_admins(), public.admin_invite(text, text[]), public.admin_revoke_invite(uuid),
@@ -1101,8 +927,7 @@ grant execute on function public.admin_me(), public.admin_list_admins(), public.
   public.admin_set_role(text, public.app_role, boolean),
   public.submit_for_review(public.review_item_kind, text, text, text, jsonb, text[]), public.withdraw_submission(uuid),
   public.admin_review_queue(public.review_item_status, public.review_item_kind, int, int), public.admin_decide_submission(uuid, text, text, jsonb),
-  public.my_plan_limits(), public.admin_upsert_plan(text, text, text, bigint, bigint, jsonb, text[], text, text),
-  public.admin_set_user_plan(text, text, text, text, timestamptz), public.admin_set_course_pricing(uuid, boolean, bigint, text),
+  public.admin_set_user_plan(text, text, text, text),
   public.admin_set_flag(text, boolean, int, public.app_role[]), public.admin_audit_search(text, text, text, timestamptz, timestamptz, int, int),
   public.admin_console_stats(), public.admin_search_users(text, text, text, boolean, int, int), public.admin_set_user_role(text, text, boolean, text),
   public.admin_set_user_status(text, public.account_status, text, timestamptz), public.admin_revoke_guardian(uuid, text),
