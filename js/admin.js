@@ -108,7 +108,7 @@
   $$("[data-qa]").forEach(b => b.onclick = () => { const k = b.dataset.qa; if (k === "announce") { $("#announce-form [name=title]").focus(); return; } toast({ course: "New course draft opened", event: "New event form opened", invite: "Invite sent form opened" }[k]); });
   $("#commission-form").onsubmit = async e => { e.preventDefault(); const v = +$("#commission").value; await API.adminAction.setCommission(v); toast(`Commission set to ${v}%`); };
   $("#announce-form").onsubmit = async e => { e.preventDefault(); const f = Object.fromEntries(new FormData(e.target)); await API.adminAction.broadcast(f); toast("Announcement queued for " + f.aud); e.target.reset(); };
-  $("#flw-test").onclick = () => API.flutterwaveCheckout({ amount: 150000, email: "test@101codecrafts.org", name: "Test Learner", title: "Software Engineering Path (test)" });
+  $("#flw-test").onclick = () => { location.href = "upgrade.html?audience=learner&tier=standard&interval=monthly"; };   // r11: test the sandbox checkout through the real server-priced flow
 
   /* ---- add resource by link ---- */
   let draft = null;

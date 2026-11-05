@@ -1,7 +1,7 @@
 /* 101 Marketplace — every marketplace network call lives here (stubs).
    Each function tries the backend (API_BASE + endpoint) and falls back to the placeholders in js/market-data.js.
    Cart, wishlist, placed orders and RFQs are kept in localStorage until the backend exists.
-   Payments: MTN MoMo / Airtel Money / card all go through Flutterwave (CC_API.flutterwaveCheckout stub).
+   Payments: MTN MoMo / Airtel Money / card all go through Flutterwave; the server prices every order and returns the checkout URL (SR-17).
    Escrow: the buyer's money is held by 101 until "Confirm delivery" (or auto-release 72 h after delivered); disputes freeze it.
    Backend endpoints expected (TODO):
      GET  /market/products?q=&cat=&min=&max=&rating=&seller=&delivery=&condition=&sort=&page=
@@ -74,7 +74,7 @@
       ls.set("cc_orders", [order, ...ls.get("cc_orders", [])]); return { orderId: id, txRef: "cc-mk-" + id, total };
     }, { method: "POST", body: JSON.stringify({ lines, delivery, pickupPoint, pay, phone, name, district }) });
     // Real payment: Flutterwave (mobilemoneyuganda for MTN/Airtel, card). Stubbed; set CC_CONFIG.flwPublicKey for the test modal.
-    if (window.CC_API && window.CC_CONFIG && window.CC_CONFIG.flwPublicKey) window.CC_API.flutterwaveCheckout({ amount: total, title: "101 Marketplace order " + res.orderId, txRef: res.txRef, name, email: "" });
+    if (window.CC_API && res && res.checkout_url) window.CC_API.flutterwaveCheckout({ checkoutUrl: res.checkout_url });   // r11: server-priced only (SR-17)
     ls.set("cc_cart", getCart().filter(l => l.saved));
     return res;
   }
