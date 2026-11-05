@@ -161,3 +161,5 @@ html.ac-lock { overflow: hidden; }
 .ac .btn.or { background: var(--ac-or); color: #0B1236; } .ac .btn.cy { background: var(--ac-cy); color: #0B1236; }
 @media (max-width: 640px) { .ac-tabs a { flex: 1 1 calc(50% - 8px); justify-content: center; } .ac-me { align-items: flex-start; } .ac-drawer { border-left: 0; box-shadow: none; } }
 @media (prefers-reduced-motion: reduce) { .ac-tabs a { transition: none; } }
+/* r11 finish: author display rules above must never beat the hidden attribute (drawer, demo/support bars, panels) */
+main.ac [hidden], .ac-drawer[hidden], .ac-demo-bar[hidden], .ac-support-bar[hidden], .ac-panel[hidden], .ac-gate[hidden] { display: none !important; }

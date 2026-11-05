@@ -69,7 +69,10 @@
     var w = A.why(action);
     if (!w) return null;
     if (w === "signin") return A.authUrl(next);
-    if (A.role === "guest") return A.authUrl(next, "upgrade=1");
+    if (A.role === "guest") {   // upgrade only when becoming a learner/tutor would actually unlock it; admin-only -> guest home
+      var gr = POLICY.actions[action], up = gr && gr.roles && (gr.roles.indexOf("learner") >= 0 || gr.roles.indexOf("tutor") >= 0);
+      return up ? A.authUrl(next, "upgrade=1") : null;
+    }
     if (w === "plan") return POLICY.plans_route || "/settings-apps.html#plan";
     if (w === "consent") return POLICY.guardian_route || "/settings-apps.html#guardian";
     return null;   // a role that will never have it: the element is hidden instead
