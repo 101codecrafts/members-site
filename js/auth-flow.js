@@ -184,7 +184,7 @@
         if (v && v.ok === false) { busy(btn, false); setErr("email", v.reason === "disposable" ? "Temporary or disposable email addresses aren't allowed. Please use your own email." : "This email address can't be used. Try another one."); return firstErrorFocus(); } } catch (x) { if (x.status === 429) throw x; }
       var c = await clerk(); if (!c) throw new Error("Sign-in is unavailable right now. Check your connection and try again.");
       await startCode(c, email);
-    } catch (err) { busy(btn, false); setErr("email", esc(clerkMsg(err, err.message || "Something went wrong."))); firstErrorFocus(); }
+    } catch (err) { busy(btn, false); setErr("email", clerkMsg(err, err.message || "Something went wrong.")); firstErrorFocus(); }
   }
   async function startCode(c, email) {
     try {
@@ -229,7 +229,7 @@
       if (S.mode === "signup") await S.flow.prepareEmailAddressVerification({ strategy: "email_code" });
       else { var f = (S.flow.supportedFirstFactors || []).find(function (x) { return x.strategy === "email_code"; }); await S.flow.prepareFirstFactor({ strategy: "email_code", emailAddressId: f && f.emailAddressId }); }
       S.resendAt = Date.now() + 30000; showCode("New code sent.");
-    } catch (err) { busy(e.currentTarget, false); setErr("code", esc(clerkMsg(err, "Couldn't send a new code."))); }
+    } catch (err) { busy(e.currentTarget, false); setErr("code", clerkMsg(err, "Couldn't send a new code.")); }
   }
   async function verify(kind) {
     var btn = $("[data-next]", root), code = ($("#f-code").value || "").trim();
@@ -256,7 +256,7 @@
       if (r.status !== "complete") throw { errors: [{ longMessage: "Sign-in isn't complete yet (" + esc(r.status) + ")." }] };
       await c.setActive({ session: r.createdSessionId });
       routeAfterAuth();
-    } catch (err) { busy(btn, false); setErr("code", esc(clerkMsg(err, "That didn't work. Try again."))); firstErrorFocus(); }
+    } catch (err) { busy(btn, false); setErr("code", clerkMsg(err, "That didn't work. Try again.")); firstErrorFocus(); }
   }
 
   /* ------------------------------------------------------------------ after sign-in: the server decides */
@@ -310,7 +310,7 @@
     view('<h1 class="af-h" id="af-h">' + (upgrade ? "Become a learner or tutor" : "How will you use 101?") + '</h1><p class="af-sub">' + (upgrade ? "Unlock your own dashboard, tutor courses, 1:1 sessions and selling on the marketplace." : "Pick one. You can upgrade from Guest later.") + "</p>" +
       '<div class="af-paths">' +
       card("guest", "user", "Guest", "Just your email. Browse, read the news, take free and external courses, buy on the marketplace.", "Fastest") +
-      card("learner", "cap", "Learner", "Your learner dashboard, tutor and premium courses, 1:1 sessions, projects, sell your work. Free plan available.", "8 quick steps") +
+      card("learner", "cap", "Learner", "Your learner dashboard, tutor and premium courses, 1:1 sessions, projects, sell your work. Free plan available.", "7–8 quick steps") +
       card("tutor", "teacher", "Tutor", "Teach courses, take on learners, run sessions and get paid by Mobile Money. 18+ only; an admin verifies you.", "7 steps") +
       '</div><div class="af-actions"><button type="button" class="af-link" data-signout>Not ' + esc(S.email || "you") + "? Sign out</button></div>");
     $$("[data-path]").forEach(function (b) { b.addEventListener("click", function () { if (b.disabled) return; var p = b.dataset.path; S.data = S.path === p ? S.data : (S.data.name ? { name: S.data.name, dob: S.data.dob } : {}); go(p, stepsFor(p)[0]); }); });

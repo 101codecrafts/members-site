@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 {{HEAD title="Sign in or join · 101 Codecrafts" desc="Sign in and sign up now live on one page." path="auth.html" noindex}}
-<script>/* r11: one auth route. This old page forwards to /auth.html and keeps ?next= (and other params). */(function(){var q=new URLSearchParams(location.search);if(!q.has(mode))q.set(mode,join);location.replace("/auth.html"+(q.toString()?"?"+q.toString():"")+location.hash)})()</script>
+<script>/* r11: one auth route. This old page forwards to /auth.html and keeps ?next= (and other params). */(function(){var q=new URLSearchParams(location.search);if(!q.has("mode"))q.set("mode","join");location.replace("/auth.html"+(q.toString()?"?"+q.toString():"")+location.hash)})()</script>
 <meta http-equiv="refresh" content="0; url=/auth.html">
 {{CSS}}
 <link rel="stylesheet" href="css/auth-flow.css">
