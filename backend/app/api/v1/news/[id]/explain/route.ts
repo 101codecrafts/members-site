@@ -40,7 +40,7 @@ export const POST = route<{ id: string }>(async ({ req, params, ip, log }) => {
   if (url) { try { checkUrl(url); } catch { url = ''; } }
   const key = url || 'title:' + title.toLowerCase();
   const hit = cache.get(key);
-  if (hit && Date.now() - hit.at < TTL) return { ...hit.v, cached: true };
+  if (hit && Date.now() - hit.at < TTL) return NextResponse.json({ data: { ...hit.v, cached: true }, ...hit.v, cached: true }, { headers: { 'x-assistant-model': hit.v.model, 'x-explain-cache': 'hit' } });
 
   if (!localLimit(ip, Date.now(), 'explain:')) return NextResponse.json({ error: { code: 'rate_limited', message: 'You are asking a little fast. Please wait a minute, then try Explain again.' } }, { status: 429, headers: { 'retry-after': '60' } });
   try { await rateLimit({ name: 'assistant', max: 30, windowSeconds: 600 }, ip); }
@@ -54,10 +54,10 @@ export const POST = route<{ id: string }>(async ({ req, params, ip, log }) => {
   const { block } = wrapUntrusted(article || '(The article could not be read. Only the headline is available.)', url || 'headline only');
   const user = `Headline: ${title}\nSource: ${url || 'unknown'}\n\n${block}\n\nExplain this story for a learner.`;
   const attempts: Array<{ model: string; status: number | string }> = [];
-  const out = await complete(buildMessages([{ role: 'user', content: user }], undefined, EXPLAIN_PROMPT), req.signal, attempts, { maxTokens: 900, temperature: 0.3, maxChars: 2500 });
+  const out = await complete(buildMessages([{ role: 'user', content: user }], undefined, EXPLAIN_PROMPT), req.signal, attempts, { maxTokens: 900, temperature: 0.3, maxChars: 2500, finalMarker: /In simple words:/i });
   const tried = attempts.map((a) => `${a.model.split('/').pop()}:${redact(String(a.status))}`).join(',').slice(0, 300);
   log.info('news_explain', { attempts: tried, read, why });
-  if (!out || out.text.length < 20) {
+  if (!out || out.text.length < 20 || (out.leak && (!/^In simple words:/i.test(out.text) || /2[–-]4 (short )?(sentences|bullets)|UNTRUSTED/i.test(out.text)))) {
     const dayCap = attempts.some((a) => String(a.status).includes('day-cap'));
     return NextResponse.json({ error: { code: dayCap ? 'quota' : 'busy', message: dayCap
       ? "101 AI has used today's free AI allowance (it resets at 03:00 Kampala time). Open the source to read the story."

@@ -26,7 +26,7 @@ test('each upstream request lists only free models in `models`, falls back past 
     const p = JSON.parse(init.body); const ms: string[] = p.models ?? [p.model]; seen.push(ms);
     assert.ok(ms.length <= 3 && ms.every(isFreeModel)); assert.equal(p.max_tokens, LIMITS.maxTokens); assert.equal(p.stream, true);
     assert.equal(init.headers.authorization, 'Bearer sk-or-v1-TESTKEY-not-real-0000');
-    if (seen.length === 1) return new Response('{"error":{"code":429,"message":"Rate limit exceeded: free-models-per-day"}}', { status: 429 });
+    if (seen.length === 1) return new Response('{"error":{"code":429,"message":"Provider returned error: rate limited upstream"}}', { status: 429 });
     if (seen.length === 2) return sse([': OPENROUTER PROCESSING\n\n', 'data: [DONE]\n\n']);
     return sse(['data: {"model":"google/gemma-4-26b-a4b-it:free","choices":[{"delta":{"content":"Hel"}}]}\n', '\ndata: {"choices":[{"delta":{"con', 'tent":"lo"}}]}\n\ndata: [DONE]\n\n']);
   }) as typeof fetch;
@@ -34,7 +34,7 @@ test('each upstream request lists only free models in `models`, falls back past 
   const r = await openStream(buildMessages([{ role: 'user', content: 'hi' }]), new AbortController().signal, att);
   globalThis.fetch = orig;
   assert.ok(r); assert.equal(await read(r!.stream), 'Hello'); assert.equal(att.length, 3);
-  assert.equal(att[0]!.status, '429:day-cap'); assert.equal(att[1]!.status, 'empty'); assert.equal(r!.model, 'google/gemma-4-26b-a4b-it:free');
+  assert.equal(att[0]!.status, '429:upstream'); assert.equal(att[1]!.status, 'empty'); assert.equal(r!.model, 'google/gemma-4-26b-a4b-it:free');
 });
 test('mid-stream upstream error ends the reply with a visible cut-off note', async () => {
   const orig = globalThis.fetch;
@@ -134,4 +134,34 @@ test('LG3: no Gemini, Groq or paid AI Gateway anywhere in the server AI code; en
     const s = fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
     assert.ok(!/generativelanguage\.googleapis|api\.groq\.com|ai-gateway\.vercel\.sh|GEMINI_|GROQ_|AI_GATEWAY_API_KEY|gpt-4o/.test(s), f);
   }
+});
+test('day-cap: after a 429 free-models-per-day, later ":free" groups are skipped and the free router answers', async () => {
+  const { _resetDayCap } = await import('../lib/assistant/chat.ts'); _resetDayCap();
+  const seen: string[][] = []; const orig = globalThis.fetch;
+  globalThis.fetch = (async (_u: unknown, init: Init) => {
+    const p = JSON.parse(init.body); const ms: string[] = p.models ?? [p.model]; seen.push(ms);
+    if (!ms.includes('openrouter/free')) return new Response('{"error":{"code":429,"message":"Rate limit exceeded: free-models-per-day. Add 10 credits"}}', { status: 429 });
+    return sse(['data: {"model":"x/y:free","choices":[{"delta":{"content":"OK answer"}}]}\n\ndata: [DONE]\n\n']);
+  }) as typeof fetch;
+  const att: Array<{ model: string; status: number | string }> = [];
+  const r = await openStream(buildMessages([{ role: 'user', content: 'hi' }]), new AbortController().signal, att);
+  assert.equal(await read(r!.stream), 'OK answer'); assert.equal(seen.length, 2);   // first group + router only
+  assert.ok(att.some((a) => a.status === 'skip:day-cap'));
+  const att2: Array<{ model: string; status: number | string }> = []; seen.length = 0;
+  await openStream(buildMessages([{ role: 'user', content: 'hi' }]), new AbortController().signal, att2);
+  globalThis.fetch = orig; _resetDayCap();
+  assert.equal(seen.length, 1); assert.deepEqual(seen[0], ['openrouter/free']);
+});
+test('leak guard: planning-as-answer is trimmed to the final answer or replaced; normal answers untouched', async () => {
+  const { looksLeaky, extractFinal } = await import('../lib/assistant/chat.ts');
+  const leak = '1.  Analyze the Request:\n    *   Role: 101 AI\n    *   Constraint 1 (Source Text): Use ONLY...\n2. Drafting the response...\n\n**Final Response:**\nRecursion is when a function calls itself.';
+  assert.ok(looksLeaky(leak)); assert.equal(extractFinal(leak), 'Recursion is when a function calls itself.');
+  assert.ok(!looksLeaky('Day 1: Cells\nTask: read chapter 1\nRole of the nucleus: ...'));
+  assert.equal(extractFinal('Analyze the request... In simple words: 2–4 sentences ... In simple words: A rocket company launched.', /In simple words:/i), 'In simple words: A rocket company launched.');
+  const orig = globalThis.fetch;
+  globalThis.fetch = (async () => sse(['data: {"choices":[{"delta":{"content":"1. Analyze the Request:\\n * Constraint 1: x\\n"}}]}\n\n', 'data: {"choices":[{"delta":{"content":"more planning with no final marker"}}]}\n\ndata: [DONE]\n\n'])) as typeof fetch;
+  const att: Array<{ model: string; status: number | string }> = [];
+  const r = await openStream(buildMessages([{ role: 'user', content: 'hi' }]), new AbortController().signal, att);
+  globalThis.fetch = orig;
+  assert.match(await read(r!.stream), /couldn't put together a clean answer/); assert.equal(att.at(-1)!.status, '200:leak-replaced');
 });

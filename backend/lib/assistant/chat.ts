@@ -35,11 +35,36 @@ export function freeModels(): string[] {
   const list = (env.length ? env : DEFAULT_MODELS).filter(isFreeModel);
   return list.length ? list : DEFAULT_MODELS;
 }
+/** ':free' ids in groups of GROUP; the free-only router always gets its own last group (see the day-cap jump). */
 export function modelGroups(list = freeModels()): string[][] {
-  const g: string[][] = [];
-  for (let i = 0; i < list.length; i += GROUP) g.push(list.slice(i, i + GROUP));
+  const g: string[][] = []; const ids = list.filter((m) => m !== ROUTER);
+  for (let i = 0; i < ids.length; i += GROUP) g.push(ids.slice(i, i + GROUP));
+  if (list.includes(ROUTER)) g.push([ROUTER]);
   return g;
 }
+export const ROUTER = 'openrouter/free';
+/* When OpenRouter answers "free-models-per-day" the account's free quota is spent until 00:00 UTC (03:00 EAT);
+   observed 2026-11-05 22:00 EAT: every ':free' group 429:day-cap while openrouter/free still answered. So after a
+   day-cap we skip straight to the router until the UTC day rolls over (saves ~1 s and a wasted request per group). */
+let dayCapUntil = 0;
+export const _resetDayCap = () => { dayCapUntil = 0; };
+const nextUtcMidnight = (now = Date.now()) => { const d = new Date(now); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1); };
+
+/* Some free models (seen: xing4.0 via openrouter/free) write their private planning as the answer
+   ("1. Analyze the Request: ... Constraint 1 ..."), which also echoes our instructions. Detect it on the first
+   chunk of text and, if found, buffer the whole reply and keep only the final answer, or replace it. */
+const LEAK = /(analy[sz]e the (user'?s? )?request|^\s*[*-]?\s*\**constraint\s*\d+\s*(\([^)]*\))?\s*:|self-correction|drafting the (response|answer)|internal monologue|let me (re)?read the (system|instructions))/im;
+const FINAL = /(?:^|\n)\s*(?:\*\*|#+\s*)?(?:final (?:response|answer|output)|response|answer|output)\s*:?\s*(?:\*\*)?\s*:?\s*\n/gi;
+export function looksLeaky(t: string) { return LEAK.test(t.slice(0, 600)); }
+export function extractFinal(t: string, marker?: RegExp): string | null {
+  if (marker) { const i = t.search(marker); if (i >= 0) { let last = i; let m: RegExpExecArray | null; const g = new RegExp(marker.source, marker.flags.includes('g') ? marker.flags : marker.flags + 'g'); while ((m = g.exec(t))) last = m.index; return t.slice(last).trim(); } }
+  let last = -1; let len = 0; let m: RegExpExecArray | null; FINAL.lastIndex = 0;
+  while ((m = FINAL.exec(t))) { last = m.index; len = m[0].length; }
+  if (last < 0) return null;
+  const out = t.slice(last + len).trim();
+  return out.length > 20 && !looksLeaky(out) ? out : null;
+}
+export const LEAK_FALLBACK = "Sorry, I couldn't put together a clean answer just now. Please ask again (rewording can help).";
 
 export interface Msg { role: 'user' | 'assistant'; content: string }
 export type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string };
@@ -93,7 +118,7 @@ export function classify(status: number, body: string): string {
 }
 
 type Attempt = { model: string; status: number | string };
-export interface OpenOpts { maxTokens?: number; temperature?: number }
+export interface OpenOpts { maxTokens?: number; temperature?: number; finalMarker?: RegExp }
 
 const CUT = '\n\n*(The reply was cut off. Please ask again.)*';
 
@@ -101,12 +126,13 @@ const CUT = '\n\n*(The reply was cut off. Please ask again.)*';
  * Opens a stream from the first model group that answers. Resolves with a ReadableStream of plain-text deltas
  * (already started: at least one text chunk arrived) and the model that served it, or null when every group failed.
  */
-export async function openStream(messages: ChatMessage[], signal: AbortSignal, attempts: Attempt[], opts: OpenOpts = {}): Promise<{ stream: ReadableStream<Uint8Array>; model: string } | null> {
+export async function openStream(messages: ChatMessage[], signal: AbortSignal, attempts: Attempt[], opts: OpenOpts = {}): Promise<{ stream: ReadableStream<Uint8Array>; model: string; leak?: boolean } | null> {
   const key = process.env.OPENROUTER_API_KEY;
   if (!key) { attempts.push({ model: '-', status: 'no_key' }); return null; }
   const deadline = Date.now() + LIMITS.totalMs;
   for (const group of modelGroups()) {
     if (signal.aborted || Date.now() > deadline - 4000) break;
+    if (Date.now() < dayCapUntil && !group.includes(ROUTER)) { attempts.push({ model: group.map((m) => m.split('/').pop()).join('|'), status: 'skip:day-cap' }); continue; }
     const label = group.map((m) => m.split('/').pop()).join('|');
     const ctl = new AbortController();
     const onAbort = () => ctl.abort();
@@ -126,7 +152,8 @@ export async function openStream(messages: ChatMessage[], signal: AbortSignal, a
       });
       if (!res.ok || !res.body) {
         let txt = ''; try { txt = (await res.text()).slice(0, 600); } catch { /* ignore */ }
-        attempts.push({ model: label, status: classify(res.status, txt) }); cleanup(); continue;
+        const st = classify(res.status, txt); if (st === '429:day-cap') dayCapUntil = nextUtcMidnight();
+        attempts.push({ model: label, status: st }); cleanup(); continue;
       }
       const reader = res.body.getReader();
       const dec = new TextDecoder();
@@ -159,9 +186,22 @@ export async function openStream(messages: ChatMessage[], signal: AbortSignal, a
       if (!queue.length) { attempts.push({ model: label, status: 'empty' }); cleanup(); continue; }
       const model = served || group[0]!;
       attempts.push({ model, status: 200 });
+      // leak guard: read a little more if the first chunk is tiny, then decide
+      let broke = false;
+      while (queue.join('').length < 120 && !done && Date.now() < deadline) { try { await pump(); } catch { broke = true; break; } }
+      if (looksLeaky(queue.join(''))) {
+        while (!done && Date.now() < deadline && queue.join('').length < 20_000) { try { await pump(); } catch { break; } }
+        const all = queue.splice(0).join('');
+        const fin = extractFinal(all, opts.finalMarker);
+        attempts[attempts.length - 1]!.status = fin ? '200:leak-trimmed' : '200:leak-replaced';
+        cleanup(); try { await reader.cancel(); } catch { /* ignore */ }
+        const text = fin ?? LEAK_FALLBACK;
+        return { model, leak: true, stream: new ReadableStream<Uint8Array>({ start(c) { c.enqueue(enc.encode(text)); c.close(); } }) };
+      }
       const stream = new ReadableStream<Uint8Array>({
         async pull(c) {
           try {
+            if (broke && !queue.length) { c.enqueue(enc.encode(CUT)); cleanup(); c.close(); return; }
             while (!queue.length && !done && Date.now() < deadline) await pump();
             if (queue.length) { c.enqueue(enc.encode(queue.splice(0).join(''))); return; }
             if (!done) c.enqueue(enc.encode(CUT));   // hit the overall deadline mid-reply
@@ -180,12 +220,12 @@ export async function openStream(messages: ChatMessage[], signal: AbortSignal, a
 }
 
 /** Non-streaming helper (used by Explain): collects the whole reply, max ~maxChars. */
-export async function complete(messages: ChatMessage[], signal: AbortSignal, attempts: Attempt[], opts: OpenOpts & { maxChars?: number } = {}): Promise<{ text: string; model: string } | null> {
+export async function complete(messages: ChatMessage[], signal: AbortSignal, attempts: Attempt[], opts: OpenOpts & { maxChars?: number } = {}): Promise<{ text: string; model: string; leak?: boolean } | null> {
   const opened = await openStream(messages, signal, attempts, opts);
   if (!opened) return null;
   const r = opened.stream.getReader(); const dec = new TextDecoder(); let out = '';
   for (;;) { const { value, done } = await r.read(); if (done) break; out += dec.decode(value, { stream: true }); if (out.length > (opts.maxChars ?? 4000)) { try { await r.cancel(); } catch { /* ignore */ } break; } }
-  return { text: out.trim(), model: opened.model };
+  return { text: out.trim(), model: opened.model, leak: opened.leak };
 }
 
 /* ------------------------------------------------------------------ rate limit (per IP, per instance) */
