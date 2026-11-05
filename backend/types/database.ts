@@ -4382,51 +4382,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      plan_catalog: {
-        Row: {
-          audience: string;
-          plan: string;
-          name: string;
-          tagline: string | null;
-          price_ugx_month: number;
-          price_ugx_year: number;
-          limits: Json;
-          features: string[];
-          status: string;
-          sort: number;
-          updated_by: string | null;
-          updated_at: string;
-        };
-        Insert: {
-          audience: string;
-          plan: string;
-          name: string;
-          tagline?: string | null;
-          price_ugx_month?: number;
-          price_ugx_year?: number;
-          limits?: Json;
-          features?: string[];
-          status?: string;
-          sort?: number;
-          updated_by?: string | null;
-          updated_at?: string;
-        };
-        Update: {
-          audience?: string;
-          plan?: string;
-          name?: string;
-          tagline?: string | null;
-          price_ugx_month?: number;
-          price_ugx_year?: number;
-          limits?: Json;
-          features?: string[];
-          status?: string;
-          sort?: number;
-          updated_by?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       post_comments: {
         Row: {
           id: string;
@@ -6431,39 +6386,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      user_plans: {
-        Row: {
-          user_id: string;
-          learner_plan: string;
-          tutor_plan: string;
-          source: string;
-          expires_at: string | null;
-          set_by: string | null;
-          reason: string | null;
-          updated_at: string;
-        };
-        Insert: {
-          user_id: string;
-          learner_plan?: string;
-          tutor_plan?: string;
-          source?: string;
-          expires_at?: string | null;
-          set_by?: string | null;
-          reason?: string | null;
-          updated_at?: string;
-        };
-        Update: {
-          user_id?: string;
-          learner_plan?: string;
-          tutor_plan?: string;
-          source?: string;
-          expires_at?: string | null;
-          set_by?: string | null;
-          reason?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       user_roles: {
         Row: {
           user_id: string;
@@ -6662,19 +6584,17 @@ export type Database = {
       admin_set_account_status: { Args: { p_user: string; p_status: Database["public"]["Enums"]["account_status"]; p_reason?: string; p_until?: string }; Returns: Database["public"]["Tables"]["profiles"]["Row"] };
       admin_set_admin_status: { Args: { p_user: string; p_status: string; p_reason?: string }; Returns: Json };
       admin_set_content_status: { Args: { p_entity: string; p_id: string; p_status: string; p_note?: string }; Returns: undefined };
-      admin_set_course_pricing: { Args: { p_course: string; p_is_free: boolean; p_price_ugx: number; p_reason?: string }; Returns: Json };
       admin_set_flag: { Args: { p_key: string; p_enabled: boolean; p_rollout_pct?: number; p_roles?: Database["public"]["Enums"]["app_role"][] }; Returns: undefined };
       admin_set_launch_promo: { Args: { p_enabled: boolean; p_starts_at?: string; p_ends_at?: string; p_banner_text?: string }; Returns: Json };
       admin_set_role: { Args: { p_user: string; p_role: Database["public"]["Enums"]["app_role"]; p_grant: boolean }; Returns: undefined };
       admin_set_scopes: { Args: { p_user: string; p_scopes: string[] }; Returns: Json };
       admin_set_setting: { Args: { p_key: string; p_value: Json; p_is_public?: boolean }; Returns: undefined };
       admin_set_store_kyc: { Args: { p_store: string; p_status: Database["public"]["Enums"]["mkt_kyc_status"]; p_note?: string }; Returns: Database["public"]["Tables"]["mkt_stores"]["Row"] };
-      admin_set_user_plan: { Args: { p_user: string; p_audience: string; p_plan: string; p_reason: string; p_expires_at?: string }; Returns: Database["public"]["Tables"]["user_plans"]["Row"] };
+      admin_set_user_plan: { Args: { p_user: string; p_audience: string; p_plan: string; p_reason: string }; Returns: Json };
       admin_set_user_role: { Args: { p_user: string; p_role: string; p_grant: boolean; p_reason?: string }; Returns: undefined };
       admin_set_user_status: { Args: { p_user: string; p_status: Database["public"]["Enums"]["account_status"]; p_reason?: string; p_until?: string }; Returns: Database["public"]["Tables"]["profiles"]["Row"] };
       admin_start_support_view: { Args: { p_target: string; p_reason: string; p_ticket?: string }; Returns: Database["public"]["Tables"]["support_view_sessions"]["Row"] };
       admin_support_snapshot: { Args: { p_session: string }; Returns: Json };
-      admin_upsert_plan: { Args: { p_audience: string; p_plan: string; p_name: string; p_price_month: number; p_price_year: number; p_limits: Json; p_features?: string[]; p_status?: string; p_tagline?: string }; Returns: Database["public"]["Tables"]["plan_catalog"]["Row"] };
       admin_verify_guardian: { Args: { p_consent_id: string }; Returns: undefined };
       ai_commit: { Args: { p_usage: string; p_status: string; p_provider?: string; p_model?: string; p_input_tokens?: number; p_output_tokens?: number; p_latency_ms?: number }; Returns: undefined };
       ai_log_moderation: { Args: { p_user: string; p_feature: string; p_is_minor: boolean; p_category: string; p_action: string }; Returns: undefined };
@@ -6724,7 +6644,6 @@ export type Database = {
       my_access: { Args: Record<PropertyKey, never>; Returns: Json };
       my_ai_quota: { Args: Record<PropertyKey, never>; Returns: Json };
       my_plan: { Args: Record<PropertyKey, never>; Returns: Json };
-      my_plan_limits: { Args: Record<PropertyKey, never>; Returns: Json };
       my_practice_progress: { Args: Record<PropertyKey, never>; Returns: Json };
       my_referral_code: { Args: Record<PropertyKey, never>; Returns: string };
       my_wallet: { Args: Record<PropertyKey, never>; Returns: Json };
@@ -6801,7 +6720,7 @@ export type Database = {
       refund_status: "requested" | "processing" | "completed" | "failed" | "rejected";
       registration_status: "registered" | "waitlisted" | "cancelled" | "attended" | "refunded";
       resource_kind: "article" | "video" | "doc" | "repo" | "dataset" | "template" | "course" | "other";
-      review_item_kind: "course" | "lesson" | "book" | "link" | "video" | "project" | "campaign" | "event" | "listing" | "price_change";
+      review_item_kind: "course" | "lesson" | "book" | "link" | "video" | "project" | "campaign" | "event" | "listing";
       review_item_status: "pending" | "approved" | "rejected" | "changes_requested" | "withdrawn";
       review_status: "pending" | "approved" | "rejected";
       session_kind: "one_on_one" | "group";
