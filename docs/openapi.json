@@ -3159,7 +3159,7 @@
         "tags": [
           "assistant"
         ],
-        "summary": "POST /api/v1/assistant: the floating \"101 AI\" site assistant. Public (no sign-in), answers only about 101 Codecrafts from lib/assistant/knowledge.ts. Free OpenRouter models only. Streams text/plain de",
+        "summary": "POST /api/v1/assistant: the floating \"101 AI\" assistant. Public (no sign-in). Round 12: a general learning assistant (coding, maths, study help, writing, explanations) that also knows 101 Codecrafts (",
         "security": [],
         "x-auth": "public",
         "responses": {
@@ -6406,6 +6406,43 @@
         }
       }
     },
+    "/api/v1/news/{id}/explain": {
+      "post": {
+        "tags": [
+          "news"
+        ],
+        "summary": "POST /api/v1/news/:id/explain  ←  {title, url}  →  {explanation, model, source, read} (\"Explain with 101 AI\" on the news page; contract in js/feed-api.js). Public, rate-limited, free models only. For ",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/news": {
       "get": {
         "tags": [
@@ -8810,7 +8847,7 @@
         "tags": [
           "webhooks"
         ],
-        "summary": "Zoom: meeting.started/ended + participant_joined/left → attendance. Signature verified (x-zm-signature).",
+        "summary": "Zoom: meeting.started/ended + participant_joined/left → attendance. Signature verified (x-zm-signature). r12 security (R12-SEC-03): the signature is checked BEFORE anything else, including endpoint.ur",
         "security": [],
         "x-auth": "webhook-signature",
         "responses": {
