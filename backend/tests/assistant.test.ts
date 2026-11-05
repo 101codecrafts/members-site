@@ -165,3 +165,24 @@ test('leak guard: planning-as-answer is trimmed to the final answer or replaced;
   globalThis.fetch = orig;
   assert.match(await read(r!.stream), /couldn't put together a clean answer/); assert.equal(att.at(-1)!.status, '200:leak-replaced');
 });
+test('aiFailure: ai_quota (+resets_at 00:00 UTC) only when every group hit the free daily cap; anything else is ai_unavailable', async () => {
+  const { aiFailure } = await import('../lib/assistant/chat.ts');
+  const now = Date.UTC(2026, 10, 5, 22, 30);   // 01:30 EAT 6 Nov
+  const q = aiFailure([{ model: 'a|b', status: '429:day-cap' }, { model: 'free', status: '429:day-cap' }], now);
+  assert.equal(q.code, 'ai_quota'); assert.equal((q as { resets_at: string }).resets_at, '2026-11-06T00:00:00.000Z');
+  assert.equal(aiFailure([{ model: 'a|b', status: 'skip:day-cap' }, { model: 'free', status: '429:day-cap' }], now).code, 'ai_quota');
+  // the reported bug: ':free' groups skipped for the day-cap, but the router then failed for another reason
+  assert.deepEqual(aiFailure([{ model: 'a|b', status: 'skip:day-cap' }, { model: 'free', status: 'timeout' }], now), { code: 'ai_unavailable' });
+  for (const st of ['429:upstream', '429:minute-cap', 500, 502, 'empty', 'stream_error', 'err:500', 'no_key', '402:credits'])
+    assert.deepEqual(aiFailure([{ model: 'a|b', status: '429:day-cap' }, { model: 'free', status: st }], now), { code: 'ai_unavailable' }, String(st));
+  assert.deepEqual(aiFailure([], now), { code: 'ai_unavailable' });
+});
+test('assistant + explain routes: 503 body carries the machine code; quota copy only on ai_quota', async () => {
+  const fs = await import('node:fs');
+  for (const f of ['app/api/v1/assistant/route.ts', 'app/api/v1/news/[id]/explain/route.ts']) {
+    const s = fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
+    assert.ok(s.includes('aiFailure(attempts)'), f);
+    assert.ok(!/code: dayCap \? 'quota' : 'busy'/.test(s), f + ' still uses the old quota/busy codes');
+    const i = s.indexOf("free AI allowance"); assert.ok(i > 0); assert.ok(s.lastIndexOf("f.code === 'ai_quota'", i) > 0, f + ': allowance copy must sit behind ai_quota');
+  }
+});

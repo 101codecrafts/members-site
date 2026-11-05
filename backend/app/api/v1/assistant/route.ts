@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { route, preflight, body } from '@/lib/http';
 import { rateLimit } from '@/lib/ratelimit';
 import { AppError } from '@/lib/errors';
-import { buildMessages, localLimit, openStream, LIMITS, redact } from '@/lib/assistant/chat';
+import { buildMessages, localLimit, openStream, LIMITS, redact, aiFailure, AI_UNAVAILABLE } from '@/lib/assistant/chat';
 import { WA_INVITE } from '@/lib/assistant/knowledge';
 import { fetchPage, firstUrl, wrapUntrusted, PageError } from '@/lib/assistant/fetch-page';
 import { riskNote, injectionLike } from '@/lib/assistant/safety';
@@ -16,7 +16,6 @@ const schema = z.object({
   messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1).max(8000) })).min(1).max(30),
 });
 
-const BUSY = `101 AI is busy right now: the free AI models are at their limit. Please try again in a few minutes, or ask in the [WhatsApp community](${WA_INVITE}).`;
 const SLOW_DOWN = 'You are sending messages a little fast. Please wait a minute and try again.';
 const SUMMARISE = /\b(summari[sz]e|summary|tl;?dr|explain|what does (this|it) say|read (this|it)|key points|about this (article|link|page))\b/i;
 
@@ -60,9 +59,12 @@ export const POST = route(async ({ req, ip, log }) => {
   // x-assistant-attempts: "models:status" per model group tried (statuses only, never the key) for ops debugging.
   const tried = attempts.map((a) => `${a.model.split('/').pop()}:${redact(String(a.status))}`).join(',').slice(0, 300);
   if (!opened) {
-    const dayCap = attempts.some((a) => String(a.status).includes('day-cap'));
-    const msg = dayCap ? `101 AI has used today's free AI allowance. It resets at 03:00 Kampala time. Until then, ask in the [WhatsApp community](${WA_INVITE}).` : BUSY;
-    return NextResponse.json({ error: { code: dayCap ? 'quota' : 'busy', message: msg } }, { status: 503, headers: { 'retry-after': '120', 'x-assistant-attempts': tried } });
+    // Machine codes (round 12 QA): 'ai_quota' (+ resets_at) only for the real free daily cap; 'ai_unavailable' otherwise.
+    const f = aiFailure(attempts);
+    const err = f.code === 'ai_quota'
+      ? { code: f.code, resets_at: f.resets_at, message: `101 AI has used today's free AI allowance. It resets at 03:00 Kampala time. Until then, ask in the [WhatsApp community](${WA_INVITE}).` }
+      : { code: f.code, message: AI_UNAVAILABLE };
+    return NextResponse.json({ error: err }, { status: 503, headers: { 'retry-after': f.code === 'ai_quota' ? String(Math.max(60, Math.ceil((Date.parse(f.resets_at) - Date.now()) / 1000))) : '60', 'x-assistant-attempts': tried } });
   }
   return new Response(opened.stream, {
     status: 200,

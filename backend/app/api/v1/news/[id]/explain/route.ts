@@ -4,7 +4,7 @@ import { route, preflight, body } from '@/lib/http';
 import { rateLimit } from '@/lib/ratelimit';
 import { AppError } from '@/lib/errors';
 import { anonClient } from '@/lib/supabase/user';
-import { buildMessages, complete, localLimit, redact } from '@/lib/assistant/chat';
+import { buildMessages, complete, localLimit, redact, aiFailure, AI_UNAVAILABLE } from '@/lib/assistant/chat';
 import { EXPLAIN_PROMPT } from '@/lib/assistant/knowledge';
 import { fetchPage, wrapUntrusted, PageError, checkUrl } from '@/lib/assistant/fetch-page';
 import { cleanExplanation } from '@/lib/assistant/safety';
@@ -58,11 +58,13 @@ export const POST = route<{ id: string }>(async ({ req, params, ip, log }) => {
   const tried = attempts.map((a) => `${a.model.split('/').pop()}:${redact(String(a.status))}`).join(',').slice(0, 300);
   log.info('news_explain', { attempts: tried, read, why });
   if (!out || out.text.length < 20 || (out.leak && (!/^In simple words:/i.test(out.text) || /2[–-]4 (short )?(sentences|bullets)|UNTRUSTED/i.test(out.text)))) {
-    const dayCap = attempts.some((a) => String(a.status).includes('day-cap'));
-    return NextResponse.json({ error: { code: dayCap ? 'quota' : 'busy', message: dayCap
-      ? "101 AI has used today's free AI allowance (it resets at 03:00 Kampala time). Open the source to read the story."
-      : `101 AI is busy right now (the free AI models are at their limit). Open the source to read the story, or try Explain again in a minute.` } },
-      { status: 503, headers: { 'retry-after': '60', 'x-assistant-attempts': tried } });
+    // Machine codes (round 12 QA): 'ai_quota' (+ resets_at) only for the real free daily cap; 'ai_unavailable' otherwise
+    // (including a reply rejected by the leak guard: a model answered, so the quota is not the reason).
+    const f = out ? { code: 'ai_unavailable' as const } : aiFailure(attempts);
+    const err = f.code === 'ai_quota'
+      ? { code: f.code, resets_at: f.resets_at, message: "101 AI has used today's free AI allowance (it resets at 03:00 Kampala time). Open the source to read the story." }
+      : { code: f.code, message: AI_UNAVAILABLE };
+    return NextResponse.json({ error: err }, { status: 503, headers: { 'retry-after': '60', 'x-assistant-attempts': tried } });
   }
   const v = { explanation: cleanExplanation(out.text, url), model: out.model, source: url, read };
   cache.set(key, { at: Date.now(), v });

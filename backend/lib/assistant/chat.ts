@@ -48,7 +48,19 @@ export const ROUTER = 'openrouter/free';
    day-cap we skip straight to the router until the UTC day rolls over (saves ~1 s and a wasted request per group). */
 let dayCapUntil = 0;
 export const _resetDayCap = () => { dayCapUntil = 0; };
-const nextUtcMidnight = (now = Date.now()) => { const d = new Date(now); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1); };
+export const nextUtcMidnight = (now = Date.now()) => { const d = new Date(now); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1); };
+/**
+ * Why every model group failed, as a machine code for the client (round 12 QA fix):
+ *  - 'ai_quota' only when the free daily quota is really spent: every group tried answered 429 free-models-per-day
+ *    (or was skipped because an earlier request saw that), so nothing could answer until 00:00 UTC (03:00 EAT);
+ *  - 'ai_unavailable' for anything else (timeouts, 5xx, per-minute 429s, empty streams, a missing key), even when
+ *    some ':free' groups were skipped for the day-cap but the free router then failed for another reason.
+ */
+export function aiFailure(attempts: Array<{ model: string; status: number | string }>, now = Date.now()): { code: 'ai_quota'; resets_at: string } | { code: 'ai_unavailable' } {
+  const quota = attempts.length > 0 && attempts.every((a) => String(a.status) === '429:day-cap' || String(a.status) === 'skip:day-cap');
+  return quota ? { code: 'ai_quota', resets_at: new Date(nextUtcMidnight(now)).toISOString() } : { code: 'ai_unavailable' };
+}
+export const AI_UNAVAILABLE = "101 AI can't answer right now. Try again in a minute.";
 
 /* Some free models (seen: xing4.0 via openrouter/free) write their private planning as the answer
    ("1. Analyze the Request: ... Constraint 1 ..."), which also echoes our instructions. Detect it on the first
