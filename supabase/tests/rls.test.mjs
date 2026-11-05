@@ -24,8 +24,7 @@ async function fixtures(db) {
     insert into public.profile_private (user_id, email, date_of_birth) values
       ('${U.root}','101codecrafts@gmail.com','1995-01-01'),   -- r11: super_admin is reserved for the verified root email
       ('${U.alice}','alice@example.com','2000-01-01'), ('${U.bob}','bob@example.com','2001-01-01'),
-      ('${U.kid}','kid@example.com', (now() - interval '11 years')::date), ('${U.tutorA}','amina@example.com','1990-05-05'),
-      ('${U.root}','101codecrafts@gmail.com','1995-01-01');
+      ('${U.kid}','kid@example.com', (now() - interval '11 years')::date), ('${U.tutorA}','amina@example.com','1990-05-05');
     select public.backend_bind_root('${U.root}', '101codecrafts@gmail.com');   -- round 11: root is bound server-side from the verified email
     insert into public.guardian_consents (user_id, guardian_name, guardian_phone, relationship, verified_at, verification_method)
       values ('${U.kid}','Parent Kid','+256700000000','parent',now(),'admin_manual');
