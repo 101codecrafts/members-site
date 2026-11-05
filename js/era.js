@@ -33,7 +33,8 @@
   }
 
   function latest() {
-    const host = document.querySelector("[data-latest]"); const F = window.CC_FEED_DATA; if (!host || !F || !F.announcements) return;
+    /* round 11: the placeholder announcements (js/feed-data.js) dress these cards only in ?static=1 design shots */
+    const host = document.querySelector("[data-latest]"); const F = window.CC_FEED_DATA; if (!host || !F || !F.announcements || !/[?&]static(=|&|$)/.test(location.search)) return;
     const items = F.announcements.filter(a => !a.audience || !a.audience.roles.length || a.audience.roles.includes("learner"))
       .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)).slice(0, 3);
     const cards = host.querySelectorAll(".e-ncard");

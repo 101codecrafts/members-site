@@ -59,9 +59,9 @@
       if (c) A.connect(c.getAttribute("data-conn")).then(function (r) {
         if (r.authorize_url && /^https:\/\//.test(r.authorize_url)) location.href = r.authorize_url; else toast(msg, r.message || "Connection started.");
       }, function (err) { toast(msg, err.message || "Couldn't connect.", true); });
-      if (d) A.disconnect(d.getAttribute("data-disc")).then(draw);
+      if (d) A.disconnect(d.getAttribute("data-disc")).then(draw, function (err) { toast(msg, err.message || "Couldn't disconnect.", true); });
     });
-    box.addEventListener("change", function (e) { if (e.target.name === "def") A.setDefault(e.target.value).then(function () { toast(msg, "Default video app saved."); }); });
+    box.addEventListener("change", function (e) { if (e.target.name === "def") A.setDefault(e.target.value).then(function (r) { if (r && r.ok === false) toast(msg, r.message || "Not saved.", true); else toast(msg, "Default video app saved."); }); });
     draw();
   }
 

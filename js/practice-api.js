@@ -1,4 +1,6 @@
-/* 101 Practice & Learn — API stubs. Every call tries the backend first, then falls back to js/practice-data.js mocks.
+/* 101 Practice & Learn — API client. Every call tries the backend. Round 11: js/practice-data.js mocks (fake problems, people,
+   scores, verdicts, AI answers) appear ONLY for ?static=1 or an admin's ?demo=1; a real visit gets the backend's answer or an
+   honest empty / unavailable value (no fake verdicts, no canned AI text, no fake success).
    Base: (window.CC_CONFIG.apiBase || "/api"). On file:// and ?static=1 nothing is fetched.
 
    Contract (JSON in/out):
@@ -42,7 +44,20 @@
     } finally { clearTimeout(t); }
   }
   const post = (path, body) => call(path, { method: "POST", body: JSON.stringify(body) }, 20000);
-  async function withMock(fn, mock) { try { return await fn(); } catch (e) { return typeof mock === "function" ? mock() : mock; } }
+  const demoOK = () => STATIC || (/[?&]demo=1(&|$)/.test(location.search) && !!(window.CCAccess && CCAccess.can && CCAccess.can("demo.view")));
+  /* empty: what a real visit gets when the backend can't answer (never the mock) */
+  async function withMock(fn, mock, empty) {
+    try { return await fn(); }
+    catch (e) {
+      if (/[?&]demo=1(&|$)/.test(location.search) && window.CCAccess && CCAccess.ready) { try { await CCAccess.ready; } catch (x) { /* empty */ } }
+      if (demoOK()) return typeof mock === "function" ? mock() : mock;
+      const v = typeof empty === "function" ? empty() : empty; return v === undefined ? null : v;
+    }
+  }
+  const NONE = () => ({ items: [], total: 0, offline: true });
+  const AI_OFF = "101 AI isn't reachable right now. Nothing was sent; try again in a moment.";
+  const JUDGE_OFF = () => ({ verdict: "Judge not connected", offline: true, cases: [], passed: 0, total: 0, runtimeMs: 0, memoryKb: 0, failedCase: null, scoreDelta: 0,
+    message: "The code judge isn't reachable right now. Nothing was run or scored." });
   const qs = o => { const s = new URLSearchParams(); Object.entries(o || {}).forEach(([k, v]) => { if (v != null && v !== "" && v !== "all") s.set(k, v); }); const t = s.toString(); return t ? "?" + t : ""; };
   const wait = ms => new Promise(r => setTimeout(r, STATIC ? 0 : ms));
 
@@ -63,40 +78,40 @@
   const endOfTodayEAT = () => { const d = new Date(Date.now() + 3 * 36e5); d.setUTCHours(23, 59, 59, 0); return new Date(d - 3 * 36e5).toISOString(); };
 
   window.CC_PAPI = {
-    STATIC, BASE,
+    STATIC, BASE, demoOK,
     articles: (f) => withMock(() => call("/articles" + qs(f)), () => {
       const s = (f && f.q || "").toLowerCase();
       const items = P().articles.filter(a => (!f.topic || f.topic === "all" || a.topic === f.topic) && (!f.sub || a.sub === f.sub) && (!f.level || f.level === "all" || a.level === f.level) && (!f.edu || f.edu === "all" || a.edu === f.edu) && (!s || (a.title + " " + a.desc + " " + a.sub).toLowerCase().includes(s)));
       return { items, total: items.length, mock: true };
-    }),
+    }, NONE),
     article: (slug) => withMock(() => call("/articles/" + encodeURIComponent(slug)), () => {
       const a = P().articles.find(x => x.slug === slug) || P().articles[0];
       const body = P().articleBody[a.slug] || { sections: [{ id: "intro", h: "Introduction", p: [a.desc, "Full article coming soon — this is placeholder content."] }] };
       return { ...a, ...body, mock: true };
-    }),
-    comments: (slug) => withMock(() => call(`/articles/${encodeURIComponent(slug)}/comments`), () => ({ items: P().comments, mock: true })),
-    addComment: (slug, text) => withMock(() => post(`/articles/${encodeURIComponent(slug)}/comments`, { text }), () => ({ id: Date.now(), user: "You", av: "ME", ago: "just now", text, likes: 0, mock: true })),
-    improve: (slug, body) => withMock(() => post(`/articles/${encodeURIComponent(slug)}/improve`, body), () => ({ id: "imp-" + Date.now(), status: "pending_review", mock: true })),
+    }, null),
+    comments: (slug) => withMock(() => call(`/articles/${encodeURIComponent(slug)}/comments`), () => ({ items: P().comments, mock: true }), NONE),
+    addComment: (slug, text) => withMock(() => post(`/articles/${encodeURIComponent(slug)}/comments`, { text }), () => ({ id: Date.now(), user: "You", av: "ME", ago: "just now", text, likes: 0, mock: true }), () => { throw new Error("Your comment wasn't posted (offline). Try again."); }),
+    improve: (slug, body) => withMock(() => post(`/articles/${encodeURIComponent(slug)}/improve`, body), () => ({ id: "imp-" + Date.now(), status: "pending_review", mock: true }), { status: "offline" }),
 
-    problems: (f) => withMock(() => call("/practice/problems" + qs(f)), () => ({ items: P().problems, total: P().problems.length, mock: true })),
-    problem: (id) => withMock(() => call("/practice/problems/" + encodeURIComponent(id)), () => ({ ...(P().problemDetail[id] || P().problemDetail["pair-sum-sorted"]), mock: true })),
-    run: async (id, lang, code) => withMock(() => post(`/practice/problems/${encodeURIComponent(id)}/run`, { lang, code }), async () => { await wait(600); return mockJudge(id, lang, code, false); }),
-    submit: async (id, lang, code) => withMock(() => post(`/practice/problems/${encodeURIComponent(id)}/submit`, { lang, code }), async () => { await wait(900); return mockJudge(id, lang, code, true); }),
+    problems: (f) => withMock(() => call("/practice/problems" + qs(f)), () => ({ items: P().problems, total: P().problems.length, mock: true }), NONE),
+    problem: (id) => withMock(() => call("/practice/problems/" + encodeURIComponent(id)), () => ({ ...(P().problemDetail[id] || P().problemDetail["pair-sum-sorted"]), mock: true }), null),
+    run: async (id, lang, code) => withMock(() => post(`/practice/problems/${encodeURIComponent(id)}/run`, { lang, code }), async () => { await wait(600); return mockJudge(id, lang, code, false); }, JUDGE_OFF),
+    submit: async (id, lang, code) => withMock(() => post(`/practice/problems/${encodeURIComponent(id)}/submit`, { lang, code }), async () => { await wait(900); return mockJudge(id, lang, code, true); }, JUDGE_OFF),
     execute: async (lang, code, stdin) => withMock(() => post("/practice/execute", { lang, code, stdin }), async () => {
       await wait(500);
       return { stdout: "", stderr: "Code runner is not connected yet (mock). On the live site this runs in the sandboxed judge.\nstdin received: " + (stdin ? stdin.length + " bytes" : "none"), exitCode: 0, runtimeMs: 0, memoryKb: 0, mock: true };
-    }),
-    potd: () => withMock(() => call("/practice/potd"), () => ({ ...P().potd, endsAt: endOfTodayEAT(), mock: true })),
-    progress: () => withMock(() => call("/practice/progress"), () => ({ ...P().progress, mock: true })),
-    contests: (status) => withMock(() => call("/practice/contests" + qs({ status })), () => ({ items: P().contests.map(rebase), mock: true })),
-    contest: (id) => withMock(() => call("/practice/contests/" + encodeURIComponent(id)), () => ({ ...rebase(P().contests.find(c => c.id === id) || P().contests[0]), problems: P().contestProblems, mock: true })),
-    leaderboard: (id) => withMock(() => call(`/practice/contests/${encodeURIComponent(id)}/leaderboard`), () => ({ items: P().leaderboard, updatedAt: new Date().toISOString(), mock: true })),
-    register: (id) => withMock(() => post(`/practice/contests/${encodeURIComponent(id)}/register`, {}), () => ({ registered: true, mock: true })),
-    companies: () => withMock(() => call("/practice/interview-sets"), () => ({ items: P().interview.companies, sets: P().interview.sets, mock: true })),
-    quiz: (id) => withMock(() => call("/practice/quizzes/" + encodeURIComponent(id)), () => ({ ...P().interview.quiz, mock: true })),
+    }, () => ({ stdout: "", stderr: "The code runner isn't reachable right now. Nothing was run.", exitCode: -1, runtimeMs: 0, memoryKb: 0, offline: true })),
+    potd: () => withMock(() => call("/practice/potd"), () => ({ ...P().potd, endsAt: endOfTodayEAT(), mock: true }), null),
+    progress: () => withMock(() => call("/practice/progress"), () => ({ ...P().progress, mock: true }), null),
+    contests: (status) => withMock(() => call("/practice/contests" + qs({ status })), () => ({ items: P().contests.map(rebase), mock: true }), NONE),
+    contest: (id) => withMock(() => call("/practice/contests/" + encodeURIComponent(id)), () => ({ ...rebase(P().contests.find(c => c.id === id) || P().contests[0]), problems: P().contestProblems, mock: true }), null),
+    leaderboard: (id) => withMock(() => call(`/practice/contests/${encodeURIComponent(id)}/leaderboard`), () => ({ items: P().leaderboard, updatedAt: new Date().toISOString(), mock: true }), () => ({ items: [], updatedAt: new Date().toISOString(), offline: true })),
+    register: (id) => withMock(() => post(`/practice/contests/${encodeURIComponent(id)}/register`, {}), () => ({ registered: true, mock: true }), { registered: false, offline: true }),
+    companies: () => withMock(() => call("/practice/interview-sets"), () => ({ items: P().interview.companies, sets: P().interview.sets, mock: true }), () => ({ items: [], sets: [], offline: true })),
+    quiz: (id) => withMock(() => call("/practice/quizzes/" + encodeURIComponent(id)), () => ({ ...P().interview.quiz, mock: true }), null),
 
-    aiHint: (body) => withMock(() => post("/ai/hint", body), () => { const d = P().problemDetail[body.problemId]; const h = d && d.hints[Math.min(body.level || 0, d.hints.length - 1)]; return { hint: h || "Think about what the constraints allow: n up to 10⁵ means O(n log n) or better.", mock: true }; }),
-    aiDebug: (body) => withMock(() => post("/ai/debug", body), () => ({ explanation: "101 AI (preview): your program prints a fixed answer and never compares arr[left] + arr[right] with x. " + (body.failedCase ? `On the failing case the expected output is "${body.failedCase.expected}".` : ""), suggestion: "Add a while (left < right) loop; move left when the sum is too small, right when it is too big.", mock: true })),
-    aiExplain: (body) => withMock(() => post("/ai/explain", body), () => ({ explanation: "101 AI (preview): this code keeps two indices. Each loop step compares their sum with the target and moves one index inward, so the whole array is scanned once — O(n) time, O(1) space.", mock: true }))
+    aiHint: (body) => withMock(() => post("/ai/hint", body), () => { const d = P().problemDetail[body.problemId]; const h = d && d.hints[Math.min(body.level || 0, d.hints.length - 1)]; return { hint: h || "Think about what the constraints allow: n up to 10⁵ means O(n log n) or better.", mock: true }; }, { hint: AI_OFF, offline: true }),
+    aiDebug: (body) => withMock(() => post("/ai/debug", body), () => ({ explanation: "101 AI (preview): your program prints a fixed answer and never compares arr[left] + arr[right] with x. " + (body.failedCase ? `On the failing case the expected output is "${body.failedCase.expected}".` : ""), suggestion: "Add a while (left < right) loop; move left when the sum is too small, right when it is too big.", mock: true }), { explanation: AI_OFF, suggestion: "", offline: true }),
+    aiExplain: (body) => withMock(() => post("/ai/explain", body), () => ({ explanation: "101 AI (preview): this code keeps two indices. Each loop step compares their sum with the target and moves one index inward, so the whole array is scanned once — O(n) time, O(1) space.", mock: true }), { explanation: AI_OFF, offline: true })
   };
 })();

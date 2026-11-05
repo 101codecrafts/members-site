@@ -25,6 +25,11 @@
     return `<article class="acard ck"><div class="atop ck-eyebrow"><span class="atopic">${esc(topicName(a.topic))}</span><span class="dpill ${a.level === "Beginner" ? "d-easy" : a.level === "Intermediate" ? "d-medium" : "d-hard"}">${esc(a.level)}</span></div>
       <h3 class="ck-title"><a class="ck-link" href="article.html?slug=${encodeURIComponent(a.slug)}">${esc(a.title)}</a></h3><p class="ck-body">${esc(a.desc)}</p><div class="ameta ck-meta ck-foot"><span>${esc(a.sub)}</span><span>${a.mins} min read</span><span>${esc(a.edu)}</span></div></article>`;
   }
+  /* round 11: when the backend has nothing (and no ?static / admin ?demo), say so instead of drawing mock content */
+  function unavailable(title, text, back) {
+    const m = document.querySelector("main") || document.body;
+    m.innerHTML = `<section class="wrap" style="padding:48px 0"><div class="card empty-state"><h1>${esc(title)}</h1><p class="muted">${esc(text)}</p><p><a class="btn or" href="${back[0]}">${esc(back[1])}</a></p></div></section>`;
+  }
   function toast(msg) { let t = $("#pr-toast"); if (!t) { t = document.createElement("div"); t.id = "pr-toast"; t.setAttribute("role", "status"); t.className = "sr-only"; document.body.appendChild(t); } t.textContent = ""; setTimeout(() => t.textContent = msg, 30); }
 
   /* =============================== LEARN =============================== */
@@ -54,9 +59,10 @@
   /* =============================== ARTICLE =============================== */
   const LNAME = { cpp: "C++", java: "Java", python: "Python", javascript: "JavaScript", c: "C" };
   async function article() {
-    const a = await API.article(Q.get("slug") || "two-pointer-technique");
+    const a = Q.get("slug") ? await API.article(Q.get("slug")) : null;
+    if (!a) { unavailable("Article not available", "This tutorial isn't published yet, or the library can't be reached right now.", ["learn.html", "Browse tutorials"]); return; }
     document.title = a.title + " · 101 Learn";
-    const same = D.articles.filter(x => x.topic === a.topic);
+    const same = API.demoOK() ? D.articles.filter(x => x.topic === a.topic) : [];
     $("#art-crumbs").innerHTML = `<a href="learn.html">Learn</a> / <a href="learn.html?topic=${a.topic}">${esc(topicName(a.topic))}</a> / <span aria-current="page">${esc(a.title)}</span>`;
     $("#art-nav").innerHTML = `<h2>${esc(topicName(a.topic))}</h2>` + same.map(x => `<a href="article.html?slug=${x.slug}"${x.slug === a.slug ? ' aria-current="page"' : ""}>${esc(x.title)}</a>`).join("");
     $("#art-toc").innerHTML = `<h2>On this page</h2>` + a.sections.map(s => `<a href="#${s.id}">${esc(s.h)}</a>`).join("");
@@ -86,30 +92,39 @@
     });
     const io = $("#imp-open"), f = $("#imp-form");
     io.onclick = () => { f.hidden = !f.hidden; io.setAttribute("aria-expanded", !f.hidden); if (!f.hidden) $("select", f).focus(); };
-    f.onsubmit = async e => { e.preventDefault(); const fd = Object.fromEntries(new FormData(f)); const r = await API.improve(a.slug, fd); $("#imp-msg").textContent = r.status === "pending_review" ? "Thanks! Sent to the editors for review." : "Saved."; f.reset(); };
+    f.onsubmit = async e => { e.preventDefault(); const fd = Object.fromEntries(new FormData(f)); const r = await API.improve(a.slug, fd); $("#imp-msg").textContent = r.status === "pending_review" ? "Thanks! Sent to the editors for review." : "Not sent (offline). Try again in a moment."; f.reset(); };
     $("#art-related").innerHTML = D.articles.filter(x => x.topic === a.topic && x.slug !== a.slug).concat(D.articles.filter(x => x.topic !== a.topic)).slice(0, 4).map(articleCard).join("");
     const cm = (await API.comments(a.slug)).items;
     const cHTML = c => `<div class="cmt"><span class="av" aria-hidden="true">${esc(c.av)}</span><div class="cb"><b>${esc(c.user)}</b> <small>· ${esc(c.ago)} ago</small><p>${esc(c.text)}</p>${c.likes != null ? `<button class="lbtn" type="button" aria-pressed="false">${ico("heart", "i")}<span class="sr-only">Like</span> ${c.likes}</button>` : ""}${c.reply ? `<div class="reply">${cHTML(c.reply)}</div>` : ""}</div></div>`;
     $("#cmt-list").innerHTML = cm.map(cHTML).join(""); $("#cmt-n").textContent = cm.length;
-    $("#cmt-form").onsubmit = async e => { e.preventDefault(); const AC = window.CCAccess; if (AC && !AC.can("community.post")) { location.href = AC.role === "visitor" ? AC.authUrl(location.pathname + location.search) : (AC.denyTarget && AC.denyTarget("community.post")) || AC.authUrl(location.pathname + location.search, "upgrade=1"); return; } const t = $("#cmt-text").value.trim(); if (!t) { $("#cmt-text").focus(); toast("Write a comment first."); return; } const c = await API.addComment(a.slug, t); $("#cmt-list").insertAdjacentHTML("afterbegin", cHTML(c)); $("#cmt-text").value = ""; toast("Comment posted"); };
+    $("#cmt-form").onsubmit = async e => { e.preventDefault(); const AC = window.CCAccess; if (AC && !AC.can("community.post")) { location.href = AC.role === "visitor" ? AC.authUrl(location.pathname + location.search) : (AC.denyTarget && AC.denyTarget("community.post")) || AC.authUrl(location.pathname + location.search, "upgrade=1"); return; } const t = $("#cmt-text").value.trim(); if (!t) { $("#cmt-text").focus(); toast("Write a comment first."); return; } let c; try { c = await API.addComment(a.slug, t); } catch (err) { toast(err.message); return; } $("#cmt-list").insertAdjacentHTML("afterbegin", cHTML(c)); $("#cmt-text").value = ""; toast("Comment posted"); };
     $("#cmt-list").addEventListener("click", e => { const b = e.target.closest(".lbtn"); if (!b) return; const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", on); const n = b.lastChild; n.textContent = " " + (parseInt(n.textContent) + (on ? 1 : -1)); });
     if ("IntersectionObserver" in window) { const links = $$("#art-toc a"); const ob = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) links.forEach(l => l.classList.toggle("on", l.getAttribute("href") === "#" + en.target.id)); }), { rootMargin: "-20% 0px -70% 0px" }); $$(".art section").forEach(s => ob.observe(s)); }
   }
 
   /* =============================== PRACTICE =============================== */
   async function practice() {
-    const [potd, pg, list] = await Promise.all([API.potd(), API.progress(), API.problems({})]);
+    const [potd0, pg0, list] = await Promise.all([API.potd(), API.progress(), API.problems({})]);
+    /* real zeros for a fresh account / unreachable backend: no fake streaks, ranks or scores */
+    const pg = pg0 || { rank: null, codingScore: 0, solved: 0, byDifficulty: {}, byTopic: [], empty: true };
+    const potd = potd0;
+    if (!potd) $("#potd").innerHTML = `<div class="kicker">Problem of the Day</div><h2>No problem of the day yet</h2><p class="muted">When the daily problem is published it shows here, with your streak.</p>`;
+    if (potd) {
     $("#potd").innerHTML = `<div class="kicker">Problem of the Day · ${esc(potd.date)}</div><h2>${esc(potd.title)}</h2>
       <div class="prow"><span class="dpill ${dcls(potd.difficulty)}">${esc(potd.difficulty)}</span><span>${esc(potd.topic)}</span><span class="cdown" id="potd-cd" aria-live="off"></span></div>
       <div class="prow" style="justify-content:space-between"><div class="flame">${FLAME}<div><b>${potd.streak}</b> <small>day streak<br>best ${potd.bestStreak}</small></div></div>
       <a class="btn or" href="problem.html?id=${encodeURIComponent(potd.problemId)}">${potd.solvedToday ? "Solved ✓ — view" : "Solve now"}${ico("arrow")}</a></div>
       <small style="color:#c9d3db">Solve before midnight EAT to keep your streak.</small>`;
     const cd = () => { const el = $("#potd-cd"); if (el) el.textContent = "Ends in " + hms(Date.parse(potd.endsAt) - Date.now()); }; cd(); ticking.push(cd);
+    }
+    if (pg.empty) { $("#cscore").innerHTML = `<div class="sec-title"><h2>Coding score</h2></div><p class="muted">0 points so far. Solve a problem to start your score and rank.</p>`; $("#rings").innerHTML = `<div class="sec-title"><h2>Progress by topic</h2></div><p class="muted">Nothing solved yet. Your progress by topic appears here.</p>`; }
+    else {
     const bd = pg.byDifficulty, clr = { Easy: "var(--color-success)", Medium: "var(--or)", Hard: "#b42318" };
     $("#cscore").innerHTML = `<div class="sec-title"><h2>Coding score</h2><span class="tagx">Rank #${num(pg.rank)}</span></div><div class="cscore"><div class="row" style="align-items:flex-end;gap:16px"><span class="big">${pg.codingScore}</span><span class="muted"><b style="color:var(--ink)">${pg.solved}</b> solved · ${pg.attempted} attempted<br>#${pg.institute.rank} at ${esc(pg.institute.name)}</span></div>
       <div class="dbars">${Object.entries(bd).map(([k, v]) => `<div class="dbar"><span class="${dcls(k)}">${k}</span><div class="prog" role="progressbar" aria-label="${k} solved" aria-valuemin="0" aria-valuemax="${v.total}" aria-valuenow="${v.solved}"><i style="width:${(v.solved / v.total * 100).toFixed(1)}%;background:${clr[k]}"></i></div><span>${v.solved}/${v.total}</span></div>`).join("")}</div></div>`;
     const C = 2 * Math.PI * 26;
     $("#rings").innerHTML = `<div class="sec-title"><h2>Progress by topic</h2></div><div class="rings">${pg.byTopic.map(t => { const p = t.solved / t.total; return `<div class="ring" role="img" aria-label="${esc(t.topic)}: ${t.solved} of ${t.total} solved"><svg viewBox="0 0 64 64"><circle class="bg" cx="32" cy="32" r="26" fill="none" stroke-width="7"/><circle class="fg" cx="32" cy="32" r="26" fill="none" stroke-width="7" stroke-dasharray="${(C * p).toFixed(1)} ${C.toFixed(1)}"/></svg><span class="pct">${Math.round(p * 100)}%</span><span>${esc(t.topic)}<br><small class="muted">${t.solved}/${t.total}</small></span></div>`; }).join("")}</div>`;
+    }
     const topics = [...new Set(list.items.map(p => p.topic))].sort();
     $("#pf-topic").innerHTML = `<option value="all">All topics</option>` + topics.map(t => `<option>${esc(t)}</option>`).join("");
     $("#pf-co").innerHTML = `<option value="all">All companies</option>` + D.COMPANIES.map(t => `<option>${esc(t)}</option>`).join("");
@@ -129,7 +144,8 @@
 
   /* =============================== PROBLEM =============================== */
   async function problem() {
-    const p = await API.problem(Q.get("id") || "pair-sum-sorted");
+    const p = Q.get("id") ? await API.problem(Q.get("id")) : null;
+    if (!p) { unavailable("Problem not available", "This problem isn't published yet, or the practice library can't be reached right now.", ["practice.html", "Back to practice"]); return; }
     document.title = p.title + " · 101 Practice";
     $("#p-title").textContent = p.title;
     $("#p-meta").innerHTML = `<span class="dpill ${dcls(p.difficulty)}">${p.difficulty}</span><span>${esc(p.topic)}</span><span>Accuracy ${p.accuracy}%</span><span>${num(p.submissions)} submissions</span><span>Score ${p.score}</span><span>${esc(p.timeLimit)} · ${esc(p.memoryLimit)}</span><div class="ctags">${p.companies.map(c => `<span>${esc(c)}</span>`).join("")}</div>`;
@@ -149,10 +165,10 @@
     const busy = on => $$("#run,#submit").forEach(b => b.disabled = on);
     const caseHTML = (c, i) => `<div class="case ${c.pass ? "pass" : "fail"}"><h4>${c.pass ? ico("check") : ico("xmark")} Case ${i + 1} — ${c.pass ? "passed" : "failed"}</h4><div class="kv"><b>Input</b><pre>${esc(c.input)}</pre><b>Expected</b><pre>${esc(c.expected)}</pre><b>Your output</b><pre>${esc(c.output)}</pre></div></div>`;
     $("#run").onclick = async () => { busy(true); $("#res").hidden = false; res.innerHTML = `<span class="verdict run">Running sample tests…</span>`;
-      const r = await API.run(p.id, langSel.value, ed.get()); busy(false); const ok = r.cases.every(c => c.pass); lastFail = ok ? null : r.cases.find(c => !c.pass);
+      const r = await API.run(p.id, langSel.value, ed.get()); busy(false); if (r.offline) { res.innerHTML = `<div class="verdict bad">${esc(r.verdict)}</div><p class="muted">${esc(r.message)}</p>`; return; } const ok = r.cases.length > 0 && r.cases.every(c => c.pass); lastFail = ok ? null : r.cases.find(c => !c.pass);
       res.innerHTML = `<div class="verdict ${ok ? "ok" : "bad"}">${esc(r.verdict)}</div><div class="vstats"><span>Runtime <b>${r.runtimeMs} ms</b></span><span>Memory <b>${(r.memoryKb / 1024).toFixed(1)} MB</b></span><span>${r.cases.filter(c => c.pass).length}/${r.cases.length} samples</span></div>${r.cases.map(caseHTML).join("")}${r.mock ? `<p class="mock-note">Preview judge (mock) — the live runner executes your code in a sandbox.</p>` : ""}`; };
     $("#submit").onclick = async () => { busy(true); $("#res").hidden = false; res.innerHTML = `<span class="verdict run">Judging against all tests…</span>`;
-      const r = await API.submit(p.id, langSel.value, ed.get()); busy(false); const ok = r.verdict === "Accepted"; lastFail = r.failedCase;
+      const r = await API.submit(p.id, langSel.value, ed.get()); busy(false); if (r.offline) { res.innerHTML = `<div class="verdict bad">${esc(r.verdict)}</div><p class="muted">${esc(r.message)}</p>`; return; } const ok = r.verdict === "Accepted"; lastFail = r.failedCase;
       res.innerHTML = `<div class="verdict ${ok ? "ok" : "bad"}">${esc(r.verdict)}${ok && r.scoreDelta ? ` <small style="font:700 var(--step--1) var(--body);color:var(--ink)">+${r.scoreDelta} coding score</small>` : ""}</div>
         <div class="vstats"><span>Tests <b>${r.passed}/${r.total}</b></span><span>Runtime <b>${r.runtimeMs} ms</b></span><span>Memory <b>${(r.memoryKb / 1024).toFixed(1)} MB</b></span></div>
         ${r.failedCase ? `<div class="case fail"><h4>${ico("xmark")} Failed on test ${r.failedCase.index}</h4><div class="kv"><b>Input</b><pre>${esc(r.failedCase.input)}</pre><b>Expected</b><pre>${esc(r.failedCase.expected)}</pre><b>Your output</b><pre>${esc(r.failedCase.output)}</pre></div></div>` : ""}${r.mock ? `<p class="mock-note">Preview judge (mock) — the live runner executes your code in a sandbox.</p>` : ""}`; };
@@ -204,10 +220,11 @@
     };
     ["live", "upcoming", "past"].forEach(s => { const l = items.filter(c => c.status === s); $("#ct-" + s).innerHTML = l.length ? l.map(card).join("") : `<p class="muted">Nothing here right now.</p>`; });
     const tick = () => $$(".timer[data-t]").forEach(t => t.textContent = hms(Date.parse(t.dataset.t) - Date.now())); tick(); ticking.push(tick);
-    document.addEventListener("click", async e => { const b = e.target.closest("[data-reg]"); if (!b) return; b.disabled = true; await API.register(b.dataset.reg); b.textContent = "Registered ✓"; toast("Registered for the contest"); });
+    document.addEventListener("click", async e => { const b = e.target.closest("[data-reg]"); if (!b) return; b.disabled = true; const rr = await API.register(b.dataset.reg); if (!rr || !rr.registered) { b.disabled = false; toast("Not registered (offline). Try again."); return; } b.textContent = "Registered ✓"; toast("Registered for the contest"); });
   }
   async function contest() {
-    const c = await API.contest(Q.get("id") || "weekly-48");
+    const c = Q.get("id") ? await API.contest(Q.get("id")) : null;
+    if (!c) { unavailable("Contest not available", "This contest isn't published, or contests can't be reached right now.", ["contests.html", "All contests"]); return; }
     document.title = c.name + " · 101 Contests";
     $("#c-name").textContent = c.name;
     $("#c-when").textContent = `${fmtEAT(c.start)} → ${fmtEAT(c.end)} · ${c.rated ? "Rated" : "Unrated"} · ICPC-style scoring with time penalty`;
@@ -231,6 +248,7 @@
       $("#sets").innerHTML = l.length ? l.map(s => `<article class="acard ck"><div class="atop ck-eyebrow"><span class="atopic">${esc((r.items.find(c => c.id === s.company) || {}).name)}</span><span class="dpill ${dcls(s.level)}">${s.level}</span></div><h3 class="ck-title"><a class="ck-link" href="practice.html?company=${encodeURIComponent(s.company)}">${esc(s.title)}</a></h3><div class="ameta ck-meta ck-foot"><span>${s.problems} questions</span><span>${s.mins} min</span></div></article>`).join("") : `<p class="muted">No sets for this company yet — the quiz below is a good warm-up.</p>`; };
     $("#co-grid").onclick = e => { const b = e.target.closest(".co"); if (b) { co = b.dataset.co; render(); } }; render();
     const qz = await API.quiz("dsa-basics-1"); let i = 0, score = 0;
+    if (!qz) { $("#qz-title").textContent = "Warm-up quiz"; $("#quiz").innerHTML = `<p class="muted">No quiz is published yet. Check back soon.</p>`; return; }
     $("#qz-title").textContent = qz.title;
     const show = () => {
       if (i >= qz.questions.length) { $("#quiz").innerHTML = `<div class="verdict ${score >= 4 ? "ok" : "run"}">You scored ${score}/${qz.questions.length}</div><p class="muted">${score >= 4 ? "Strong! Try a company set next." : "Read the linked tutorials and try again."}</p><div class="row"><button class="btn or" type="button" id="qz-again">Try again</button><a class="btn" href="learn.html?topic=dsa">DSA tutorials</a></div>`; $("#qz-again").onclick = () => { i = 0; score = 0; show(); }; $("#qz-again").focus(); return; }

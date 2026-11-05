@@ -153,7 +153,7 @@
           <label class="row"><input type="checkbox" name="photo" checked> OK to appear in event photos</label>
           <div class="row"><button class="btn ink" type="submit">Get my ticket</button></div></form>`;
       $("#rsvp-form").onsubmit = async ev => { ev.preventDefault(); const f = ev.target; if (!f.checkValidity()) { f.reportValidity(); return; }
-        const t = await F.rsvp(e.id, Object.fromEntries(new FormData(f))); if (!e.me) { e.me = true; e.going++; } ticketView(b, t, e); drawTickets(); draw(); };
+        let t; try { t = await F.rsvp(e.id, Object.fromEntries(new FormData(f))); } catch (err) { let m = f.querySelector(".rsvp-err"); if (!m) { m = document.createElement("p"); m.className = "rsvp-err"; m.setAttribute("role", "alert"); f.appendChild(m); } m.textContent = err.message; return; } if (!e.me) { e.me = true; e.going++; } ticketView(b, t, e); drawTickets(); draw(); };
     }
     function drawTickets() {
       const ts = F.tickets(); $("#my-tickets").hidden = !ts.length;
@@ -176,7 +176,7 @@
     /* submit an event */
     $("#ev-form").onsubmit = async e => { e.preventDefault(); const f = e.target; if (!f.checkValidity()) { f.reportValidity(); return; }
       const o = Object.fromEntries(new FormData(f)); o.start = new Date(o.start + ":00+03:00").toISOString(); o.end = new Date((o.end || f.start.value) + ":00+03:00").toISOString(); o.price = Number(o.price || 0);
-      const r = await F.submitEvent(o); $("#ev-msg").textContent = r.offline ? "Thanks! Saved for admin review (offline preview — syncs when the backend is live)." : "Thanks! An admin will review it before it appears."; f.reset(); };
+      const r = await F.submitEvent(o); $("#ev-msg").textContent = r.notSent ? r.message : r.offline ? "Thanks! Saved for admin review (offline preview — syncs when the backend is live)." : "Thanks! An admin will review it before it appears."; f.reset(); };
 
     bindCard($("#ev-list")); draw(); drawTickets(); drawOrg();
     if (location.hash && all.some(e => e.id === location.hash.slice(1))) setTimeout(() => { const el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }, 50);

@@ -9,8 +9,9 @@
  *   GET  /api/v1/integrations                   → { integrations: {provider, connected, account?}[] }
  *   POST /api/v1/integrations/:provider/connect → { authorize_url }  (OAuth: google_meet | zoom | teams)
  *   POST /api/v1/integrations/:provider/disconnect
- * If an endpoint is missing (404/501/network), the stub below keeps the UI usable
- * (data in localStorage, Jitsi room links generated client-side). Nothing secret
+ * Round 11: the localStorage stub (a seeded demo session, fake attendance) runs ONLY for ?static=1 or an admin's
+ * ?demo=1. A real visit whose endpoint is missing gets an honest empty list or a clear "not available" error;
+ * nothing is pretended to be scheduled, joined or connected. Nothing secret
  * ever lives in the browser: OAuth tokens stay on the server.
  */
 (function () {
@@ -52,14 +53,28 @@
         return r.json().then(function (j) { if (!r.ok) throw { stub: false, status: r.status, message: (j && (j.message || j.error)) || "Request failed" }; return j; });
       }, function () { throw { stub: true }; });
   }
-  function orStub(promise, stubFn) {
-    return promise.catch(function (e) { if (e && e.stub) return stubFn(); throw e; });
+  var STATIC = /[?&]static(=|&|$)/.test(location.search), DEMO_URL = /[?&]demo=1(&|$)/.test(location.search);
+  function demoOK() { return STATIC || (DEMO_URL && !!(window.CCAccess && CCAccess.can && CCAccess.can("demo.view"))); }
+  function accessReady() { return DEMO_URL && window.CCAccess && CCAccess.ready ? Promise.resolve(CCAccess.ready).catch(function () {}) : Promise.resolve(); }
+  var OFF = "Live sessions aren't available right now. Nothing was scheduled or joined.";
+  /* realFn: what a real (non-demo) visit gets when the endpoint is missing */
+  function orStub(promise, stubFn, realFn) {
+    if (STATIC) promise.catch(function () {});
+    var p = STATIC ? Promise.reject({ stub: true }) : promise;
+    return p.catch(function (e) {
+      if (!(e && e.stub)) throw e;
+      return accessReady().then(function () {
+        if (demoOK()) return stubFn();
+        if (realFn) return realFn();
+        throw { stub: false, status: 503, message: OFF };
+      });
+    });
   }
 
   window.SessionsAPI = {
-    PROVIDERS: PROVIDERS,
+    PROVIDERS: PROVIDERS, demoOK: demoOK,
     list: function () {
-      return orStub(api("/sessions"), function () { return { sessions: seed().sessions, stub: true }; });
+      return orStub(STATIC ? Promise.reject({ stub: true }) : api("/sessions"), function () { return { sessions: seed().sessions, stub: true }; }, function () { return { sessions: [], offline: true }; });
     },
     get: function (id) {
       return orStub(api("/sessions/" + encodeURIComponent(id)), function () {
@@ -92,18 +107,18 @@
       return orStub(api("/sessions/" + encodeURIComponent(id) + "/attendance"), function () {
         var s = seed().sessions.filter(function (x) { return x.id === id; })[0];
         return { attendance: (s && s.attendance) || [], stub: true };
-      });
+      }, function () { return { attendance: [], offline: true }; });
     },
     integrations: function () {
       return orStub(api("/integrations"), function () {
         var i = seed().integrations;
         return { integrations: Object.keys(PROVIDERS).map(function (p) { return { provider: p, connected: !!(i[p] && i[p].connected), default: !!(i[p] && i[p].default) }; }), stub: true };
-      });
+      }, function () { return { integrations: Object.keys(PROVIDERS).map(function (p) { return { provider: p, connected: false, default: false }; }), offline: true }; });
     },
     connect: function (provider) {
       return orStub(api("/integrations/" + provider + "/connect", { method: "POST", body: "{}" }), function () {
         return { authorize_url: null, stub: true, message: "OAuth for " + PROVIDERS[provider].label + " is enabled once the backend integration is live." };
-      });
+      }, function () { return { authorize_url: null, offline: true, message: "Connecting " + PROVIDERS[provider].label + " isn't available yet. Nothing was changed." }; });
     },
     disconnect: function (provider) {
       return orStub(api("/integrations/" + provider + "/disconnect", { method: "POST", body: "{}" }), function () {
@@ -111,6 +126,7 @@
       });
     },
     setDefault: function (provider) {
+      if (!demoOK()) return Promise.resolve({ ok: false, offline: true, message: OFF });
       var db = seed();
       Object.keys(db.integrations).forEach(function (p) { db.integrations[p].default = p === provider; });
       save(db);

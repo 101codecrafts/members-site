@@ -1,5 +1,5 @@
 /* 101 Marketplace pages: marketplace, product-item, cart, checkout, orders, seller, rfq.
-   Data comes from js/market-api.js (backend first, js/market-data.js placeholders as fallback). No ads are placed by this file;
+   Data comes from js/market-api.js (backend only on a real visit; js/market-data.js placeholders only for ?static=1 / admin ?demo=1). No ads are placed by this file;
    js/ads.js has no placements for these pages (cart/checkout/orders/seller must stay ad-free). */
 (function () {
   "use strict";
@@ -8,7 +8,8 @@
   const q = new URLSearchParams(location.search), page = document.body.dataset.page;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const ugx = n => "UGX " + Math.round(n).toLocaleString("en-UG");
-  const img = (k, v = "") => `assets/img/market/${k}${v ? "--" + v : ""}.svg`;
+  /* backend listings carry https image urls; a listing with no image gets the neutral placeholder */
+  const img = (k, v = "") => /^https:\/\//.test(k || "") ? k : `assets/img/market/${k || "chip-set"}${v ? "--" + v : ""}.svg`;
   const lite = () => html.classList.contains("lite") || html.classList.contains("static") || matchMedia("(prefers-reduced-motion: reduce)").matches;
   const stars = r => `<span class="mk-stars" aria-label="Rated ${r} out of 5"><span aria-hidden="true">${"★".repeat(Math.round(r))}${"☆".repeat(5 - Math.round(r))}</span></span>`;
   const off = p => p.compare > p.price ? Math.round((1 - p.price / p.compare) * 100) : 0;
@@ -153,8 +154,9 @@
     const tick = () => { const now = Date.now(), eat = now + 3 * 36e5, end = Math.ceil(eat / 864e5) * 864e5 - 3 * 36e5, ms = Math.max(0, end - now);
       $("#cd-h").textContent = String(Math.floor(ms / 36e5)).padStart(2, "0"); $("#cd-m").textContent = String(Math.floor(ms % 36e5 / 6e4)).padStart(2, "0"); $("#cd-s").textContent = String(Math.floor(ms % 6e4 / 1e3)).padStart(2, "0"); };
     tick(); setInterval(tick, 1000);
-    $("#row-deals").innerHTML = D.marketProducts.filter(p => p.deal).sort((a, b) => off(b) - off(a)).slice(0, 8).map(p => card(p)).join("");
-    $("#row-made").innerHTML = D.marketProducts.filter(p => p.made101).sort((a, b) => b.rating - a.rating).slice(0, 8).map(p => card(p)).join("");
+    const none = t => `<p class="muted mk-none">${t}</p>`;
+    $("#row-deals").innerHTML = D.marketProducts.filter(p => p.deal).sort((a, b) => off(b) - off(a)).slice(0, 8).map(p => card(p)).join("") || none("No deals today. Approved listings with a discount show here.");
+    $("#row-made").innerHTML = D.marketProducts.filter(p => p.made101).sort((a, b) => b.rating - a.rating).slice(0, 8).map(p => card(p)).join("") || none("No member listings yet. Members' approved apps, templates and services show here.");
     A.fetchAffiliates().then(a => $("#row-aff").innerHTML = a.map(affCard).join(""));
     // filters
     const fc = $("#f-cat"); fc.innerHTML = `<option value="">All categories</option>` + D.marketCategories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(""); fc.value = state.cat;
@@ -171,7 +173,10 @@
 
   /* ================= product-item.html ================= */
   async function productItem() {
-    const p = await A.fetchProduct(q.get("id") || "mk-hp-elitebook"); const s = A.seller(p.seller); const sel = {};
+    const p = q.get("id") ? await A.fetchProduct(q.get("id")) : null;
+    if (!p) { const main = document.querySelector("main") || document.body;
+      main.innerHTML = `<section class="wrap"><div class="mk-empty card"><h1>Listing not found</h1><p>This listing doesn't exist, isn't approved yet, or was removed.</p><p><a class="btn or" href="marketplace.html">Browse the marketplace</a></p></div></section>`; return; }
+    const s = A.seller(p.seller); const sel = {};
     document.title = p.title + " · 101 Marketplace";
     $("#pi-crumbs").innerHTML = `<a href="marketplace.html">Marketplace</a> › <a href="marketplace.html?cat=${p.cat}#browse">${esc(catName(p.cat))}</a> › <a href="marketplace.html?cat=${p.cat}&sub=${encodeURIComponent(p.sub)}#browse">${esc(p.sub)}</a>`;
     // gallery + zoom
@@ -230,7 +235,7 @@
     $("#p-desc").innerHTML = `<div class="prose"><p>${esc(p.desc || `${p.title}. Sold by ${s.name}, ${SELLER_T[s.type].toLowerCase()} in ${s.location}.`)}</p><ul><li>Category: ${esc(catName(p.cat))} › ${esc(p.sub)}</li><li>Condition: ${esc(p.condition)}</li><li>Delivery: ${p.delivery.map(x => DELIV_T[x]).join(", ")}</li><li>Covered by 101 Buyer Protection (escrow + 7-day returns)</li></ul></div>`;
     const specs = p.specs || { Category: catName(p.cat), Type: p.sub, Condition: p.condition, Seller: s.name };
     $("#p-specs").innerHTML = `<table class="t pi-specs"><caption class="sr-only">Specifications</caption><tbody>${Object.entries(specs).map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</tbody></table>`;
-    const revs = await A.fetchReviews(p.id); const dist = [5, 4, 3, 2, 1].map(n => [n, n === 5 ? 72 : n === 4 ? 19 : n === 3 ? 6 : n === 2 ? 2 : 1]);
+    const revs = await A.fetchReviews(p.id); const dist = [5, 4, 3, 2, 1].map(n => [n, revs.length ? Math.round(revs.filter(r => Math.round(r.stars) === n).length / revs.length * 100) : 0]);
     $("#p-rev").innerHTML = `<div class="pi-revtop"><div class="pi-avg"><b>${p.rating}</b>${stars(p.rating)}<small>${p.reviews} reviews</small></div><div class="pi-dist">${dist.map(([n, pc]) => `<div><span>${n}★</span><i><b style="width:${pc}%"></b></i><span>${pc}%</span></div>`).join("")}</div>
       <div class="filters" role="group" aria-label="Filter reviews"><button class="chip" type="button" aria-pressed="true" data-rf="all">All</button><button class="chip" type="button" aria-pressed="false" data-rf="photos">With photos</button><button class="chip" type="button" aria-pressed="false" data-rf="verified">Verified purchase</button></div></div><div class="list" id="rev-list"></div>`;
     const rl = f => $("#rev-list").innerHTML = revs.filter(r => f === "all" || (f === "photos" ? r.photos.length : r.verified)).map(r => `<article class="li pi-rev"><div class="grow"><div>${stars(r.stars)} <b>${esc(r.who)}</b> ${r.verified ? `<span class="mk-tag st-member">✓ Verified purchase</span>` : ""} <small>${esc(r.date)}</small></div><p>${esc(r.text)}</p>${r.photos.length ? `<div class="pi-rphotos">${r.photos.map(ph => `<img src="${img(ph.split("--")[0], ph.split("--")[1])}" alt="Buyer photo" width="64" height="64" loading="lazy">`).join("")}</div>` : ""}<button class="btn sm" type="button">Helpful</button></div></article>`).join("") || `<p class="muted">No reviews match.</p>`;
@@ -253,7 +258,7 @@
       $("#cart-lines").innerHTML = active.length ? active.map(l => row(l, c.indexOf(l))).join("") : `<div class="mk-empty"><h3>Your cart is empty</h3><p><a class="btn or" href="marketplace.html">Browse the marketplace</a></p></div>`;
       $("#cart-saved-wrap").hidden = !saved.length; $("#cart-saved").innerHTML = saved.map(l => row(l, c.indexOf(l))).join("");
       const sub = active.reduce((a, l) => a + l.price * l.qty, 0), n = active.reduce((a, l) => a + l.qty, 0);
-      const phys = active.some(l => A.product(l.id).delivery.some(d => d !== "digital"));
+      const phys = active.some(l => (A.product(l.id) || { delivery: [] }).delivery.some(d => d !== "digital"));
       $("#cart-sum").innerHTML = `<div><dt>Items (${n})</dt><dd>${ugx(sub)}</dd></div><div><dt>Delivery</dt><dd>${phys ? "From UGX 0 (pickup)" : "Free (digital)"}</dd></div><div class="tot"><dt>Subtotal</dt><dd>${ugx(sub)}</dd></div>`;
       const to = $("#to-checkout"); to.toggleAttribute("aria-disabled", !n); to.classList.toggle("dis", !n);
       $$("[data-q]").forEach(b => b.onclick = () => { const c2 = A.getCart(); const l = c2[b.dataset.q]; l.qty = Math.max(1, l.qty + +b.dataset.d); A.setCart(c2); draw(); });
@@ -267,7 +272,7 @@
 
   /* ================= checkout.html ================= */
   function checkout() {
-    const lines = A.getCart().filter(l => !l.saved), opts = D.marketDelivery.options;
+    const lines = A.getCart().filter(l => !l.saved && A.product(l.id)), opts = D.marketDelivery.options;
     const allDigital = lines.length && lines.every(l => A.product(l.id).delivery.join() === "digital");
     $("#co-deliv").innerHTML = allDigital ? `<p class="co-opt on"><span><b>Instant digital delivery</b><small>Download links and licence keys appear in My orders after payment. No delivery fee.</small></span></p>` :
       opts.map((o, i) => `<label class="co-opt"><input type="radio" name="delivery" value="${o.id}" ${i === 0 ? "checked" : ""}><span><b>${esc(o.name)} · ${o.fee ? ugx(o.fee) : "Free"}</b><small>${esc(o.eta)}${o.areas ? " · " + esc(o.areas) : ""}</small></span></label>`).join("");
@@ -286,7 +291,9 @@
       if (!/^(\+?256|0)7\d{8}$/.test(f.phone.value.replace(/\s/g, ""))) FE(f.phone, f.phone.value.trim() ? "That number doesn't look right. Use a Ugandan mobile number, e.g. 0772 123 456." : "Enter your mobile number, e.g. 0772 123 456.");
       const bad = f.querySelector("[aria-invalid=true]"); if (bad) { msg.textContent = "Check the details marked above."; bad.focus(); return; }
       $("#co-place").disabled = true; msg.textContent = f.pay.value === "Card (Flutterwave)" ? "Opening secure card payment…" : `Check your phone: approve the ${f.pay.value} prompt.`;
-      const res = await A.checkout({ lines, delivery: allDigital ? "digital" : f.delivery.value, pickupPoint: f.pickupPoint.value, pay: f.pay.value, phone: f.phone.value, name: f.name.value, district: dist.value });
+      let res; try { res = await A.checkout({ lines, delivery: allDigital ? "digital" : f.delivery.value, pickupPoint: f.pickupPoint.value, pay: f.pay.value, phone: f.phone.value, name: f.name.value, district: dist.value }); } catch (err) { msg.textContent = err.message || "Checkout failed. Nothing was charged."; $("#co-place").disabled = false; return; }
+      if (res && res.checkout_url) return;   // the payment page takes over
+      if (!res || !res.orderId) { msg.textContent = "Checkout failed. Nothing was charged."; $("#co-place").disabled = false; return; }
       location.href = "orders.html?placed=" + encodeURIComponent(res.orderId);
     };
     sum();
@@ -304,7 +311,7 @@
         const canConfirm = o.status === 4 && !o.dispute, canDispute = o.status >= 1 && !o.dispute;
         return `<article class="card ord" aria-labelledby="o-${o.id}"><header class="ord-h"><div><h2 id="o-${o.id}">${esc(o.id)}</h2><small>Placed ${esc(o.date)} · ${esc(o.pay)} · ${o.delivery === "digital" ? "Digital" : esc(DELIV_T[o.delivery === "boda" ? "kampala" : o.delivery === "courier" ? "upcountry" : o.delivery] || o.delivery)}${o.pickupPoint && o.delivery === "pickup" ? " · " + esc(o.pickupPoint) : ""}</small></div>
           <span class="pill ${o.dispute ? "suspended" : o.status >= 5 ? "paid" : "pending"}">${o.dispute ? "Dispute · " + esc(o.dispute.state) : o.status >= 5 ? "Completed" : esc(STEPS[o.status])}</span><b class="ord-tot">${ugx(o.total)}</b></header>
-          <div class="ord-items">${o.items.map(it => { const p = A.product(it.id); return `<a href="product-item.html?id=${it.id}"><img src="${img(p.img)}" alt="" width="56" height="56"><span>${esc(p.title)} <small>× ${it.qty}</small></span></a>`; }).join("")}</div>
+          <div class="ord-items">${o.items.map(it => { const p = A.product(it.id) || { img: "", title: it.title || it.id }; return `<a href="product-item.html?id=${it.id}"><img src="${img(p.img)}" alt="" width="56" height="56"><span>${esc(p.title)} <small>× ${it.qty}</small></span></a>`; }).join("")}</div>
           <ol class="ord-track" aria-label="Tracking for ${esc(o.id)}">${steps.map((x, i) => `<li class="${x.done ? "done" : ""}${i === o.status && o.status < 5 ? " now" : ""}"><b>${esc(x.s)}</b><small>${x.t ? esc(x.t) + " EAT" : x.done ? "✓" : "—"}</small></li>`).join("")}</ol>
           <div class="row ord-acts">${canConfirm ? `<button class="btn or" type="button" data-confirm="${o.id}">Confirm delivery</button><small class="muted">Releases ${ugx(o.total)} from escrow to the seller. Auto-release in 72 hours.</small>` : ""}
           ${o.status >= 5 ? `<span class="muted">Seller paid from escrow.</span> <a class="btn sm" href="product-item.html?id=${o.items[0].id}#p-rev">Write a review</a>` : ""}
@@ -328,7 +335,7 @@
   /* ================= seller.html ================= */
   async function seller() {
     const S = await A.fetchSellerOverview(), k = S.kpis;
-    $("#overview").innerHTML = [["Revenue · 30 days", ugx(k.revenue30), "or"], ["Orders · 30 days", k.orders30, ""], ["Conversion", k.conversion, "cy"], ["Shop rating", "★ " + k.rating, "ink"]].map(([l, v, c]) => `<div class="kpi ck-skin ${c}"><small>${l}</small><b>${v}</b></div>`).join("");
+    $("#overview").innerHTML = [["Revenue · 30 days", ugx(k.revenue30), "or"], ["Orders · 30 days", k.orders30, ""], ["Conversion", k.conversion, "cy"], ["Shop rating", S.empty ? "–" : "★ " + k.rating, "ink"]].map(([l, v, c]) => `<div class="kpi ck-skin ${c}"><small>${l}</small><b>${v}</b></div>`).join("");
     $("#sl-cat").innerHTML = D.marketCategories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join("");
     // images preview
     $("#sl-imgs").onchange = e => { const fs = [...e.target.files].slice(0, 8); $("#sl-prev").innerHTML = fs.map((f, i) => `<figure><img src="${URL.createObjectURL(f)}" alt="Upload ${i + 1}: ${esc(f.name)}" width="88" height="88">${i === 0 ? "<figcaption>Cover</figcaption>" : ""}</figure>`).join(""); };
@@ -339,24 +346,24 @@
       const r = await A.saveProduct(body); $("#sl-msg").textContent = `Submitted “${body.title}”. Status: ${r.status}.`; };
     // queue
     const NEXT = { "New": "Accept", "Paid · in escrow": "Send licence", "Shipped": "Mark delivered" };
-    $("#sl-queue tbody").innerHTML = S.queue.map((o, i) => `<tr><td><b>${esc(o.id)}</b></td><td>${esc(o.buyer)}</td><td>${esc(o.item)} × ${o.qty}</td><td>${ugx(o.total)}</td><td>${esc(o.delivery)}</td><td><span class="pill ${o.status === "Delivered" ? "paid" : "pending"}" data-st="${i}">${esc(o.status)}</span></td><td>${esc(o.due)}</td><td>${NEXT[o.status] ? `<button class="btn sm or" type="button" data-adv="${i}">${NEXT[o.status]}</button>` : `<span class="muted">Waiting</span>`}</td></tr>`).join("");
+    $("#sl-queue tbody").innerHTML = S.queue.map((o, i) => `<tr><td><b>${esc(o.id)}</b></td><td>${esc(o.buyer)}</td><td>${esc(o.item)} × ${o.qty}</td><td>${ugx(o.total)}</td><td>${esc(o.delivery)}</td><td><span class="pill ${o.status === "Delivered" ? "paid" : "pending"}" data-st="${i}">${esc(o.status)}</span></td><td>${esc(o.due)}</td><td>${NEXT[o.status] ? `<button class="btn sm or" type="button" data-adv="${i}">${NEXT[o.status]}</button>` : `<span class="muted">Waiting</span>`}</td></tr>`).join("") || `<tr><td colspan="8" class="muted">No orders yet. New orders for your listings appear here.</td></tr>`;
     const FLOW = { "New": "Shipped", "Paid · in escrow": "Delivered", "Shipped": "Delivered" };
     $$("[data-adv]").forEach(b => b.onclick = async () => { const o = S.queue[b.dataset.adv]; o.status = FLOW[o.status]; await A.updateOrderStatus(o.id, o.status); $(`[data-st="${b.dataset.adv}"]`).textContent = o.status; b.replaceWith(Object.assign(document.createElement("span"), { className: "muted", textContent: "Updated" })); });
     // payouts
     $("#sl-bal").innerHTML = `<div class="kpi ck-skin or"><small>Available to withdraw</small><b>${ugx(k.available)}</b></div><div class="kpi ck-skin"><small>Held in escrow</small><b>${ugx(k.escrow)}</b><i>Released when buyers confirm delivery</i></div>`;
-    const pl = () => $("#sl-plist").innerHTML = S.payouts.map(p => `<div class="li"><span class="date"><b>${p.date.slice(8)}</b>${new Date(p.date).toLocaleString("en", { month: "short" })}</span><div class="grow"><b>${ugx(p.amount)}</b><small>${esc(p.to)}</small></div><span class="pill ${p.status === "paid" ? "paid" : "pending"}">${p.status}</span></div>`).join(""); pl();
+    const pl = () => $("#sl-plist").innerHTML = S.payouts.map(p => `<div class="li"><span class="date"><b>${p.date.slice(8)}</b>${new Date(p.date).toLocaleString("en", { month: "short" })}</span><div class="grow"><b>${ugx(p.amount)}</b><small>${esc(p.to)}</small></div><span class="pill ${p.status === "paid" ? "paid" : "pending"}">${p.status}</span></div>`).join("") || `<p class="muted">No payouts yet.</p>`; pl();
     $("#sl-payout").onsubmit = async e => { e.preventDefault(); const a = +e.target.amount.value; if (a > k.available) { $("#sl-pmsg").textContent = "That is more than your available balance."; return; }
       await A.requestSellerPayout(a, e.target.to.value); k.available -= a; S.payouts.unshift({ date: new Date().toISOString().slice(0, 10), amount: a, to: e.target.to.value, status: "pending" }); pl();
       $("#sl-bal .kpi b").textContent = ugx(k.available); $("#sl-pmsg").textContent = "Payout requested. Mobile money payouts usually land within 1 hour."; e.target.reset(); };
     // charts (Chart.js when available; text alternative always)
-    $("#an-text").textContent = "Weekly sales: " + S.sales.labels.map((l, i) => `${l} ${ugx(S.sales.ugx[i])} (${S.sales.orders[i]} orders)`).join("; ") + ". Share by category: " + S.byCategory.labels.map((l, i) => `${l} ${S.byCategory.values[i]}%`).join(", ") + ".";
+    $("#an-text").textContent = !S.sales.labels.length ? "No sales yet. Your weekly sales and category share appear after your first order." : "Weekly sales: " + S.sales.labels.map((l, i) => `${l} ${ugx(S.sales.ugx[i])} (${S.sales.orders[i]} orders)`).join("; ") + ". Share by category: " + S.byCategory.labels.map((l, i) => `${l} ${S.byCategory.values[i]}%`).join(", ") + ".";
     const charts = () => { if (!window.Chart) return false; const OR = "#fc8c0c", INK = "#0B1236", CY = "#05e6f2"; const anim = lite() ? false : undefined;
       new Chart($("#ch-sales"), { type: "bar", data: { labels: S.sales.labels, datasets: [{ type: "bar", label: "Sales (UGX)", data: S.sales.ugx, backgroundColor: INK, yAxisID: "y" }, { type: "line", label: "Orders", data: S.sales.orders, borderColor: OR, backgroundColor: OR, borderWidth: 3, yAxisID: "y1" }] }, options: { animation: anim, maintainAspectRatio: false, scales: { y: { ticks: { callback: v => v / 1e6 + "M" } }, y1: { position: "right", grid: { display: false } } } } });
       new Chart($("#ch-cat"), { type: "doughnut", data: { labels: S.byCategory.labels, datasets: [{ data: S.byCategory.values, backgroundColor: [OR, CY, INK], borderColor: "#fff", borderWidth: 2 }] }, options: { animation: anim, maintainAspectRatio: false, plugins: { legend: { position: "right" } } } }); return true; };
     if (!charts()) { let n = 0; const t = setInterval(() => { if (charts() || ++n > 20) { clearInterval(t); if (!window.Chart) $$(".chart-box").forEach(b => b.outerHTML = `<p class="muted">${esc($("#an-text").textContent)}</p>`); } }, 250); }
     // reviews
     $("#sl-reviews").innerHTML = S.reviews.map((r, i) => `<article class="li sl-rev"><div class="grow"><div>${stars(r.stars)} <b>${esc(r.who)}</b> on <i>${esc(r.item)}</i></div><p>${esc(r.text)}</p>
-      ${r.reply ? `<p class="sl-reply"><b>Your reply:</b> ${esc(r.reply)}</p>` : `<form class="row" data-rv="${i}"><label class="field" style="flex:1;min-width:200px"><span class="sr-only">Reply to ${esc(r.who)}</span><input name="t" required placeholder="Write a public reply…"></label><button class="btn sm or" style="align-self:flex-end">Reply</button></form>`}</div></article>`).join("");
+      ${r.reply ? `<p class="sl-reply"><b>Your reply:</b> ${esc(r.reply)}</p>` : `<form class="row" data-rv="${i}"><label class="field" style="flex:1;min-width:200px"><span class="sr-only">Reply to ${esc(r.who)}</span><input name="t" required placeholder="Write a public reply…"></label><button class="btn sm or" style="align-self:flex-end">Reply</button></form>`}</div></article>`).join("") || `<p class="muted">No reviews yet. Only buyers who received an order can review it.</p>`;
     $$("[data-rv]").forEach(f => f.onsubmit = async e => { e.preventDefault(); const t = f.t.value; await A.replyReview(f.dataset.rv, t); f.outerHTML = `<p class="sl-reply"><b>Your reply:</b> ${esc(t)}</p>`; });
   }
 
@@ -376,9 +383,10 @@
       <form class="row" data-quote="${r.id}"><label class="field" style="flex:1;min-width:140px">Your price / unit (UGX)<input name="unit" type="number" min="0" required inputmode="numeric"></label><label class="field" style="flex:1;min-width:120px">Lead time<input name="lead" placeholder="e.g. 3 days" required></label><button class="btn sm or" style="align-self:flex-end">Send quote</button></form><p role="status" class="muted"></p></article>`).join("");
     $$("[data-quote]").forEach(fq => fq.onsubmit = async e => { e.preventDefault(); await A.sendQuote(fq.dataset.quote, { unit: +fq.unit.value, lead: fq.lead.value }); fq.nextElementSibling.textContent = "Quote sent. The buyer will see it in their request."; fq.reset(); });
     f.onsubmit = async e => { e.preventDefault(); const fd = new FormData(f); const body = Object.fromEntries([...fd].filter(([, v]) => !(v instanceof File))); body.qty = +body.qty; body.target = +body.target || 0;
-      const r = await A.postRFQ(body); data.mine.unshift(r); drawMine(); bind(); $("#rfq-msg").textContent = `Posted ${r.id}. Sellers have been notified.`; f.reset(); f.deadline.value = dl.toISOString().slice(0, 10); };
+      let r; try { r = await A.postRFQ(body); } catch (err) { $("#rfq-msg").textContent = err.message; return; } data.mine.unshift(r); drawMine(); bind(); $("#rfq-msg").textContent = `Posted ${r.id}. Sellers have been notified.`; f.reset(); f.deadline.value = dl.toISOString().slice(0, 10); };
   }
 
   marketBar();
-  ({ marketplace, "product-item": productItem, cart, checkout, orders, seller, rfq }[page] || (() => {}))();
+  /* round 11: draw only once the catalogue is known (backend / demo / empty) so seeded rows never flash */
+  (A.ready || Promise.resolve()).then(() => ({ marketplace, "product-item": productItem, cart, checkout, orders, seller, rfq }[page] || (() => {}))());
 })();

@@ -181,7 +181,7 @@
       bindOppActions(grid); draw(); tickCountdowns();
       $("#opp-form").onsubmit = async e => { e.preventDefault(); const f = e.target; if (!f.checkValidity()) { f.reportValidity(); return; }
         const o = Object.fromEntries(new FormData(f)); o.remote = !!o.remote; o.deadline = new Date(o.deadline + "T23:59:00+03:00").toISOString();
-        const r = await F.submitOpportunity(o); $("#opp-msg").textContent = r.offline ? "Thanks! Saved for admin review (offline preview — it will sync when the backend is live)." : "Thanks! An admin will review it before it appears."; f.reset(); };
+        const r = await F.submitOpportunity(o); $("#opp-msg").textContent = r.notSent ? r.message : r.offline ? "Thanks! Saved for admin review (offline preview — it will sync when the backend is live)." : "Thanks! An admin will review it before it appears."; f.reset(); };
     },
 
     async dashboard() {
@@ -206,7 +206,7 @@
         const fd = new FormData(f), all = k => fd.getAll(k);
         const a = { title: fd.get("title"), body: fd.get("body"), audience: { roles: all("roles"), levels: all("levels"), groups: all("groups") }, pinned: !!fd.get("pinned"), email: !!fd.get("email"), push: !!fd.get("push"),
           publishAt: fd.get("publishAt") ? new Date(fd.get("publishAt") + ":00+03:00").toISOString() : new Date().toISOString(), expiresAt: fd.get("expiresAt") ? new Date(fd.get("expiresAt") + ":00+03:00").toISOString() : null };
-        const r = await F.postAnnouncement(a); const who = [...a.audience.roles, ...a.audience.levels, ...a.audience.groups].join(", ") || "everyone";
+        const r = await F.postAnnouncement(a); if (r && r.notSent) { $("#an-msg").textContent = r.message; return; } const who = [...a.audience.roles, ...a.audience.levels, ...a.audience.groups].join(", ") || "everyone";
         $("#an-msg").textContent = `${fd.get("publishAt") ? "Scheduled" : "Published"} for ${who}${a.email ? " · email queued" : ""}${r.offline ? " (offline preview)" : ""}.`; toast("Announcement saved"); f.reset(); };
       /* opportunity review queue */
       const q = $("#opp-review"); if (!q) return;
