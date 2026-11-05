@@ -94,7 +94,7 @@
     ${avail > 0 ? "" : `<p class="muted">${known ? "Nothing to pay out yet. Payouts go to the Mobile Money number in your payout settings." : "Your balance shows here once live data is connected."}</p>`}</div>`;
   const ps = data.payouts || [];
   $("#t-payouts").innerHTML = ps.length
-    ? `<div class="dash-list">${ps.map(p => `<div class="dash-li" style="grid-template-columns:1fr auto"><div><b>${ugx(p.amount_ugx)}</b><small>Requested ${esc(fmtDate(p.created_at, { day: "numeric", month: "short", year: "numeric" }))}</small></div><span class="pill ${p.status === "paid" ? "paid" : "pending"}">${esc(p.status)}</span></div>`).join("")}</div>`
+    ? `<div class="dash-list">${ps.map(p => `<div class="dash-li" style="grid-template-columns:1fr auto"><div><b>${ugx(p.amount_ugx)}</b><small>Requested ${esc(fmtDate(p.created_at, { day: "numeric", month: "short", year: "numeric" }))}</small></div><span class="st ${p.status === "paid" ? "approved" : "review"}">${esc(p.status)}</span></div>`).join("")}</div>`
     : empty({ key: "payouts", examples: [["UGX —", "Requested"], ["UGX —", "Paid"]], title: "No payouts yet", body: "Each payout you request shows here with its status." });
 
   if (window.CCAccess && window.CCAccess.refresh) window.CCAccess.refresh();   // gate any data-can links just rendered

@@ -72,7 +72,7 @@
   perks.push(sessionsCap === 0 ? "No 1:1 sessions" : sessionsCap == null ? "1:1 sessions included" : `${num(sessionsCap)} 1:1 sessions a month`);
   perks.push("Free external courses (Coursera, freeCodeCamp…) always included");
   const isTop = plan === "pro";
-  $("#l-plan").innerHTML = `<div class="plan-card"><div class="row" style="justify-content:space-between"><b style="font:400 var(--step-2) var(--disp)">${esc(planName)}</b>${plan === "free" ? `<span class="pill pending">Free</span>` : `<span class="pill paid">Active</span>`}</div>
+  $("#l-plan").innerHTML = `<div class="plan-card"><div class="row" style="justify-content:space-between"><b style="font:400 var(--step-2) var(--disp)">${esc(planName)}</b>${plan === "free" ? `<span class="pill">Free</span>` : `<span class="pill paid">Active</span>`}</div>
     ${meter}<ul>${perks.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
     <div class="row">${isTop ? `<a class="btn" href="${esc(plansRoute)}">Manage plan</a>` : `<a class="btn or" href="${esc(plansRoute)}" id="l-upgrade" data-can="plan.upgrade">${ico("star")}Upgrade plan</a><a class="btn sm" href="${esc(plansRoute)}">Compare plans</a>`}</div>
     <small class="muted">Prices and limits are set by 101 Codecrafts and can change; your plan page always shows the current ones.</small></div>`;

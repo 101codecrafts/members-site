@@ -36,7 +36,8 @@
 .st{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border:2px solid currentColor;font:700 var(--step--2)/1.6 var(--body);white-space:nowrap}
 .st::before{content:"";width:8px;height:8px;background:currentColor}
 .st.draft{color:var(--text-muted)}
-.st.review{color:var(--accent-text)}
+.st.review{color:var(--on-accent);background:var(--accent);border-color:var(--on-accent)}
+.st.review::before{background:var(--on-accent)}
 .st.approved{color:var(--color-success)}
 .st.rejected{color:var(--color-danger)}
 .st.archived{color:var(--text-muted);border-style:dashed}
