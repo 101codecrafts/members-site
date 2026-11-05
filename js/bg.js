@@ -1,5 +1,5 @@
-/* Animated site background, DARK THEME ONLY (light shows the static CSS grid from css/bg.css and runs nothing here).
-   Canvas with "+" marks and drifting code glyphs: OffscreenCanvas in a Worker at 20fps (DPR <= 1.5), main-thread fallback.
+/* Animated site background, both themes (fix/bg-glyphs, 5 Nov 2026; light used to be the static CSS grid only).
+   Canvas with drifting code glyphs (navy ink in light; dark adds "+" marks): OffscreenCanvas in a Worker at 20fps (DPR <= 1.5), main-thread fallback.
    Starts after the load event; pauses while the tab is hidden; reduced motion, data saver / Lite or the "Reduced" setting = one still frame;
    "Off" (localStorage.cc_bg_motion) = no canvas. Live theme switches start/stop it without a reload. Never in ?static=1.
    Legal, /go and tool pages: grid only (no canvas). */
@@ -14,8 +14,8 @@
   var rm = matchMedia("(prefers-reduced-motion: reduce)"), cv = null, w = null, P = null, L = null, live = false, loaded = false;
   var mode = function () { var m = ""; try { m = localStorage.cc_bg_motion || ""; } catch (e) {} return m === "off" || m === "reduced" ? m : "on"; };
   var still = function () { var c = navigator.connection; return mode() === "reduced" || rm.matches || d.classList.contains("lite") || !!(c && c.saveData); };
-  var want = function () { return loaded && !!TYPE && d.dataset.theme === "dark" && mode() !== "off"; };
-  var size = function () { return { W: innerWidth, H: innerHeight, dpr: Math.min(devicePixelRatio || 1, 1.5), type: TYPE, still: still() }; };
+  var want = function () { return loaded && !!TYPE && mode() !== "off"; };
+  var size = function () { return { W: innerWidth, H: innerHeight, dpr: Math.min(devicePixelRatio || 1, 1.5), type: TYPE, still: still(), dark: d.dataset.theme === "dark" }; };
 
   /* text + occluder rects (viewport px). Text sitting straight on the page background is guarded (glyphs fade 20px before it);
      opaque cards/images only steer where glyphs respawn. Elements are picked on start and after DOM changes; rects re-read at <=10Hz on scroll. */
@@ -110,7 +110,7 @@
   }
   { cut(); addEventListener("load", function () { cut(); setTimeout(cut, 1500); }); }
   window.CC_BG = { info: function () { return { live: live, worker: !!w, text: rl(TXT, 0, 48, 1), occ: OCC.length }; }, sync: sync, mode: mode, set: function (m) { try { localStorage.cc_bg_motion = m; } catch (e) {} sync(); } };
-  new MutationObserver(function () { setTimeout(cut, 260); if (want() !== live) sync(); }).observe(d, { attributes: true, attributeFilter: ["data-theme"] });
+  new MutationObserver(function () { setTimeout(cut, 260); if (live || want()) sync(); }).observe(d, { attributes: true, attributeFilter: ["data-theme"] });
   (rm.addEventListener ? rm.addEventListener.bind(rm, "change") : rm.addListener.bind(rm))(function () { if (live) sync(); });
   addEventListener("storage", function (e) { if (e.key === "cc_bg_motion") sync(); });
   var boot = function () { loaded = true; (window.requestIdleCallback || setTimeout)(sync, { timeout: 1200 }); };
