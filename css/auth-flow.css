@@ -116,3 +116,4 @@ body.af-page{margin:0;min-height:100vh;min-height:100dvh;color:var(--color-ink,#
 [data-theme=dark] .gh-card{background:var(--surface-1,#121828);color:var(--text,#EEF1F8);border-color:var(--border-strong,#4A557A);box-shadow:5px 5px 0 #000}
 [data-theme=dark] .gh-card span{color:var(--text-muted,#AEB8CE)}
 [data-theme=dark] .gh-up{background:var(--surface-2,#192034);color:var(--text,#EEF1F8);border-color:var(--border-strong,#4A557A);box-shadow:5px 5px 0 #000}
+.af-list{margin:12px 0 18px;padding-left:20px;display:grid;gap:6px;line-height:1.5}

@@ -40,6 +40,8 @@
     });
     $$("[data-acct-tutor]").forEach(function (e) { e.hidden = !(window.CCAccess && CCAccess.can("account.payouts")); });
     $$("[data-acct-me]").forEach(function (a) { a.href = prof.username ? "/u/" + encodeURIComponent(prof.username) : "profile.html"; });
+    /* round 11 link registry: "Home" (footer, brand) = the role's home for every signed-in role, index for visitors */
+    $$("[data-home]").forEach(function (a) { a.href = signed && A.home ? String(A.home()).replace(/^\//, "") : "index.html"; });
   }
   function langName() { var l = "en"; try { l = localStorage.lang || "en"; } catch (e) {} return LANG[l] || "English"; }
 

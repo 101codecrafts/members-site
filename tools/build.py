@@ -71,8 +71,8 @@ def scripts(charts=False):
 
 # Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
 NAV = {
- 'learner': ["", ("Home", "home", "dashboard.html"), ("Community", "users", "profile.html"), ("Notifications", "bell", "announcements.html"),
-             "Learn", ("Learning", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"),
+ 'learner': ["", ("Home", "home", "dashboard.html"), ("Community", "users", "community.html"), ("Notifications", "bell", "announcements.html"),
+             "Learn", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"),
              "Build", ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"),
              "Community", ("Groups", "people", "groups.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
              "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Announcements", "megaphone", "announcements.html"), ("Library", "folder", "resources.html"),
@@ -162,7 +162,7 @@ def topbar(a, page=''):
 FOOTER = '''<footer class="flow-foot">
   <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
   <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
-  <nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="courses.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
+  <nav aria-label="Footer"><a href="index.html" data-home>Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="learn.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
   <div class="socials" data-socials>''' + ''.join(soc_icon(x) for x in SOCIAL_LIVE + SOCIAL_SOON) + '''</div>
 </footer>'''
 

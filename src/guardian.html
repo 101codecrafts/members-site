@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Guardian consent · 101 Codecrafts" desc="Confirm consent for a child's 101 Codecrafts account." path="guardian.html" noindex}}
+{{CSS}}
+<link rel="stylesheet" href="css/auth-flow.css">
+</head>
+<body class="af-page" data-page="guardian">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<header class="af-top">
+  <a class="af-logo" href="index.html"><img src="assets/img/logo-101-header.webp" srcset="assets/img/logo-101-header.webp 1x, assets/img/logo-101-header@3x.webp 3x" alt="" width="64" height="32"><b>101 Codecrafts</b><span class="sr-only"> home</span></a>
+  <nav class="af-nav" aria-label="Site"><a href="about.html">About</a><a href="news.html">News</a><a href="events.html">Events</a></nav>
+</header>
+<main id="main" class="af-main">
+  <section class="af-card" aria-labelledby="g-h">
+    <p class="af-kicker">Guardian consent</p>
+    <h1 class="af-h" id="g-h">A child wants to join 101 Codecrafts</h1>
+    <div data-g-form>
+      <p class="af-sub">You were named as the parent or guardian of a learner under 18. Under Uganda's Data Protection and Privacy Act 2019 (s.8), we need your consent before their account opens.</p>
+      <ul class="af-list">
+        <li>We keep only their name, date of birth and your contact until you agree.</li>
+        <li>Until you agree, their account can't buy, book 1:1 sessions, post, message or rate.</li>
+        <li>Selling, payouts and a public profile stay off for every learner under 18.</li>
+        <li>You can withdraw consent at any time from the link in the confirmation email.</li>
+      </ul>
+      <form data-g-confirm novalidate>
+        <label class="af-check"><input type="checkbox" name="ok" required><span>I am this learner's parent or legal guardian, and I consent to 101 Codecrafts processing their data as described in the <a href="privacy.html">privacy notice</a>.</span></label>
+        <p class="af-err" data-g-err role="alert" hidden></p>
+        <p style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px"><button class="af-btn" type="submit">I give consent</button><a class="af-btn ghost" href="index.html">I don't consent</a></p>
+      </form>
+    </div>
+    <div data-g-done hidden role="status"><p class="af-sub"><b>Thank you. Consent recorded.</b> The learner's account is now active. We've emailed you a confirmation with a link to review or withdraw consent.</p><p><a class="af-btn" href="index.html">Go to 101 Codecrafts</a></p></div>
+    <div data-g-bad hidden role="status"><p class="af-sub"><b>This consent link has expired or was already used.</b> Links work once, for 7 days. Ask the learner to send a new request from their account settings, or contact us.</p><p><a class="af-btn ghost" href="index.html">Go to 101 Codecrafts</a></p></div>
+  </section>
+</main>
+<script>
+/* round 11 (audit P1-11): opening the link records nothing; consent is a deliberate click on this page (POST). */
+(function () {
+  var q = new URLSearchParams(location.search), token = q.get("token") || "";
+  var show = function (k) { ["form", "done", "bad"].forEach(function (x) { document.querySelector("[data-g-" + x + "]").hidden = x !== k; }); };
+  if (q.has("invalid") || !/^[A-Za-z0-9_-]{30,64}$/.test(token)) { show("bad"); return; }
+  if (/[?&]static/.test(location.search)) return;
+  var f = document.querySelector("[data-g-confirm]"), err = document.querySelector("[data-g-err]");
+  f.addEventListener("submit", function (e) {
+    e.preventDefault(); err.hidden = true;
+    if (!f.ok.checked) { err.textContent = "Tick the box to confirm you are the parent or guardian."; err.hidden = false; f.ok.focus(); return; }
+    var b = f.querySelector("button"); b.disabled = true; b.setAttribute("aria-busy", "true");
+    fetch("/api/v1/guardian/verify", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ token: token, confirm: true }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (x) { var v = x.j && (x.j.data || x.j); if (x.ok && v && v.verified) { show("done"); history.replaceState(null, "", "guardian.html"); } else if (x.ok) show("bad"); else throw new Error(); })
+      .catch(function () { err.textContent = "We couldn't record your consent right now. Check your connection and try again."; err.hidden = false; })
+      .then(function () { b.disabled = false; b.removeAttribute("aria-busy"); });
+  });
+})();
+</script>
+<script src="js/bg.js" defer></script>
+</body></html>

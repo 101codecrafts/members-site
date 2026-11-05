@@ -17,6 +17,11 @@
   }
   const countdown = iso => { const ms = Date.parse(iso) - Date.now(); if (ms <= 0) return "Started"; const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `${d}d ${h}h ${m}m`; };
   window.CC_UI.levelBadge = levelBadge;
+  /* round 11: honest empty / unavailable states (never seeded people or numbers). Signed-out actions go to /auth with next=. */
+  const authUrl = () => (window.CCAccess && CCAccess.authUrl ? CCAccess.authUrl(location.pathname + location.search) : "auth.html?next=" + encodeURIComponent(location.pathname + location.search));
+  const signedIn = () => !!(window.CCAccess && CCAccess.role && CCAccess.role !== "visitor");
+  const emptyBox = (title, body, href, label) => `<div class="card dash-empty" role="status" style="padding:24px"><b class="h3" style="display:block;margin-bottom:6px">${esc(title)}</b><p class="muted">${esc(body)}</p>${href ? `<p><a class="btn or sm" href="${esc(href)}">${esc(label)}</a></p>` : ""}</div>`;
+  const offlineNote = what => API.lastStatus && (API.lastStatus() === 401 || API.lastStatus() === 403) ? `Sign in to see ${what}.` : `We couldn't load ${what} right now. Check your connection and try again.`;
 
   const R = {
     /* ---------------- Library ---------------- */
@@ -212,7 +217,7 @@
       $("#news-date").textContent = "Today · " + new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
       const all = await API.fetchNews(); let cat = "";
       $("#news-cats").innerHTML = ["", "AI", "Africa Tech", "Dev", "Security", "Cloud", "Startups", "Jobs"].map(c => `<button type="button" class="chip" aria-pressed="${!c}" data-c="${c}">${c || "All"}</button>`).join("");
-      const draw = () => { const r = all.filter(n => !cat || n.cat === cat); $("#news-grid").innerHTML = r.map((n, i) => window.CC_UI.newsCard(n, i < 2)).join("") || `<p class="muted">No ${esc(cat)} stories yet today.</p>`; };
+      const draw = () => { const r = all.filter(n => !cat || n.cat === cat); $("#news-grid").innerHTML = r.map((n, i) => window.CC_UI.newsCard(n, i < 2)).join("") || (all.length ? `<p class="muted">No ${esc(cat)} stories yet today.</p>` : emptyBox("No news loaded yet", offlineNote("today's stories"))); };
       $("#news-cats").onclick = e => { const b = e.target.closest("[data-c]"); if (!b) return; $$("[data-c]").forEach(x => x.setAttribute("aria-pressed", x === b)); cat = b.dataset.c; draw(); };
       draw();
     },
@@ -220,27 +225,29 @@
     async launchpad() {
       let level = "";
       const draw = async () => {
-        const ps = await API.fetchProducts(level); const feat = D.products.find(p => p.featured);
+        const ps = await API.fetchProducts(level); const feat = API.demoOK && API.demoOK() ? D.products.find(p => p.featured) : null;
         $("#lp-featured").innerHTML = feat ? `<a class="feat-slot hov" href="product.html?id=${feat.id}"><span class="badge-t">FEATURED</span><b>${esc(feat.name)}</b><span>${esc(feat.tagline)}</span><small>Sponsored slot · book it in Marketplace</small></a>` : "";
         $("#lp-list").innerHTML = ps.map((p, i) => `<li class="prod card ck ck--compact" data-id="${p.id}">
           <span class="rank">#${i + 1}</span><span class="plogo" aria-hidden="true">${esc(p.name.slice(0, 2).toUpperCase())}</span>
           <div class="grow ck-text"><h3 class="ck-title"><a class="ck-link" href="product.html?id=${p.id}">${esc(p.name)}</a></h3><p>${esc(p.tagline)}</p>
             <div class="row">${levelBadge(p.level)}<span class="stage s-${p.stage}">${p.stage}</span>${p.tags.map(t => `<span class="tagx">${esc(t)}</span>`).join("")}${avatars(p.makers)}<small>${ico("comment")} ${p.comments}</small></div></div>
-          <button class="vote" type="button" aria-pressed="false" aria-label="Upvote ${esc(p.name)}">▲<b>${p.votes}</b></button></li>`).join("");
+          <button class="vote" type="button" aria-pressed="false" aria-label="Upvote ${esc(p.name)}">▲<b>${p.votes}</b></button></li>`).join("") || `<li>${emptyBox("No launches yet today", "Projects that members promote to the Launchpad appear here after an admin approves them.", signedIn() ? "projects.html" : authUrl(), signedIn() ? "Go to your projects" : "Sign in to launch a project")}</li>`;
       };
       $("#lp-list").addEventListener("click", async e => { const v = e.target.closest(".vote"); if (!v) return; const on = v.getAttribute("aria-pressed") !== "true"; v.setAttribute("aria-pressed", on); const b = $("b", v); b.textContent = +b.textContent + (on ? 1 : -1); await API.upvoteProduct(v.closest("[data-id]").dataset.id); });
       $("#lp-date").textContent = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
       levelChips(l => { level = l; draw(); }); draw();
     },
     async product() {
-      const p = await API.fetchProduct(q.get("id") || "boda-safe"); document.title = p.name + " · Launchpad · 101 Codecrafts";
+      const p = await API.fetchProduct(q.get("id") || "");
+      if (!p) { $("#p-head").innerHTML = emptyBox("We couldn't find that launch", offlineNote("this launch"), "launchpad.html", "Back to the Launchpad"); ["#p-shots", "#p-log", "#p-comments"].forEach(x => { const el = $(x); if (el) el.innerHTML = ""; }); const cf = $("#p-cform"); if (cf) cf.hidden = true; return; }
+      document.title = p.name + " · Launchpad · 101 Codecrafts";
       $("#p-head").innerHTML = `<span class="plogo big" aria-hidden="true">${esc(p.name.slice(0, 2).toUpperCase())}</span><div class="grow"><div class="kicker">Launchpad</div><h1>${esc(p.name)}</h1><p>${esc(p.tagline)}</p><div class="row">${levelBadge(p.level)}<span class="stage s-${p.stage}">${p.stage}</span>${avatars(p.makers)}</div></div>
         <div class="row">${p.demo ? `<a class="btn or" href="${esc(p.demo)}" target="_blank" rel="noopener noreferrer">Live demo ↗</a>` : ""}${p.repo ? `<a class="btn ink" href="${esc(p.repo)}" target="_blank" rel="noopener noreferrer">${ico("gh")}Repo ↗</a>` : ""}<button class="vote big" type="button" aria-pressed="false">▲<b>${p.votes}</b></button><a class="btn" data-wa-share="Check out ${esc(p.name)} on 101 Launchpad:" href="#">${ico("wa")}Share</a></div>`;
       $("#p-shots").innerHTML = [1, 2, 3].map(i => `<figure class="shot" aria-label="Screenshot ${i}"><div class="thumb-ph">${ico(i === 2 ? "chart" : "code")}</div><figcaption>Screen ${i}</figcaption></figure>`).join("");
       $("#p-log").innerHTML = p.changelog.map(c => `<div class="li"><span class="date"><b style="font-size:var(--step--1)">${esc(c.v)}</b></span><div class="grow"><b>${esc(c.t)}</b><small>${esc(c.d)}</small></div></div>`).join("");
       const drawC = () => $("#p-comments").innerHTML = p.comments.map(c => `<div class="li"><span class="date">${esc(c.who.split(" ").map(w => w[0]).join(""))}</span><div class="grow"><b>${esc(c.who)}</b><small>${esc(c.t)} · ${esc(c.ago)} ago</small></div></div>`).join("");
       drawC();
-      $("#p-cform").onsubmit = async e => { e.preventDefault(); const t = e.target.text.value.trim(); if (!t) return; p.comments.unshift({ who: "You", t, ago: "now" }); drawC(); e.target.reset(); await API.commentProduct(p.id, t); };
+      $("#p-cform").onsubmit = async e => { e.preventDefault(); if (!signedIn()) { location.href = authUrl(); return; } const t = e.target.text.value.trim(); if (!t) { toast("Write a comment first."); return; } p.comments.unshift({ who: "You", t, ago: "now" }); drawC(); e.target.reset(); await API.commentProduct(p.id, t); };
       document.addEventListener("click", e => { const v = e.target.closest(".vote"); if (!v) return; const on = v.getAttribute("aria-pressed") !== "true"; v.setAttribute("aria-pressed", on); const b = $("b", v); b.textContent = +b.textContent + (on ? 1 : -1); API.upvoteProduct(p.id); });
     },
     /* ---------------- Beta testing ---------------- */
@@ -250,13 +257,13 @@
         $("#camp").innerHTML = cs.map(c => `<article class="card" data-id="${c.id}"><div class="row" style="justify-content:space-between"><b class="h3">${esc(c.product)}</b>${levelBadge(c.level)}</div><p>${esc(c.what)}</p>
           <div class="prog" role="progressbar" aria-valuenow="${c.taken}" aria-valuemax="${c.slots}" aria-label="Tester slots taken"><i style="width:${c.taken / c.slots * 100}%"></i></div>
           <div class="row" style="justify-content:space-between;margin-top:8px"><small><b>${c.slots - c.taken}</b> tester slots left · ends in ${countdown(c.ends)}</small><small>🎁 ${esc(c.reward)}</small></div>
-          <button class="btn or sm" data-join style="margin-top:10px" ${c.slots === c.taken ? "disabled" : ""}>Join this test</button></article>`).join("");
+          <button class="btn or sm" data-join style="margin-top:10px" ${c.slots === c.taken ? "disabled" : ""}>Join this test</button></article>`).join("") || emptyBox("No beta tests open right now", "When a member starts a beta test for their project it shows up here.", signedIn() ? "projects.html" : authUrl(), signedIn() ? "Start one from your projects" : "Sign in to take part");
         $("#bug-product").innerHTML = cs.map(c => `<option>${esc(c.product)}</option>`).join(""); };
       $("#camp").addEventListener("click", async e => { if (!e.target.closest("[data-join]")) return; const id = e.target.closest("[data-id]").dataset.id; await API.joinCampaign(id); e.target.textContent = "Joined ✓"; e.target.disabled = true; });
       $("#become").onclick = async () => { await API.becomeTester({}); toast("You're on the tester list. We'll match you to campaigns at your level."); };
       $("#bug-form").onsubmit = async e => { e.preventDefault(); const fd = new FormData(e.target); const r = await API.submitBugReport(fd); $("#bug-msg").textContent = r ? "Report sent to the makers." : `Saved: "${fd.get("title")}" (${fd.get("severity")}). The reports backend is not connected yet.`; e.target.reset(); };
       const tri = await API.fetchTriage();
-      $("#triage").innerHTML = Object.entries(tri).map(([col, items]) => `<div class="tcol" data-col="${esc(col)}"><h3>${esc(col)} <small>${items.length}</small></h3>${items.map(b => `<div class="bug sev-${b.sev}" draggable="true" data-id="${b.id}" tabindex="0"><b>${esc(b.t)}</b><small>${b.sev} · @${esc(b.who)}</small></div>`).join("")}</div>`).join("");
+      $("#triage").innerHTML = (Object.keys(tri).length ? "" : `<p class="muted">No bug reports to triage yet.</p>`) + Object.entries(tri).map(([col, items]) => `<div class="tcol" data-col="${esc(col)}"><h3>${esc(col)} <small>${items.length}</small></h3>${items.map(b => `<div class="bug sev-${b.sev}" draggable="true" data-id="${b.id}" tabindex="0"><b>${esc(b.t)}</b><small>${b.sev} · @${esc(b.who)}</small></div>`).join("")}</div>`).join("");
       let drag = null; $("#triage").addEventListener("dragstart", e => drag = e.target.closest(".bug")); $("#triage").addEventListener("dragover", e => e.preventDefault());
       $("#triage").addEventListener("drop", e => { const col = e.target.closest(".tcol"); if (col && drag) { col.appendChild(drag); API.moveBug(drag.dataset.id, col.dataset.col); } });
       levelChips(l => { level = l; draw(); }); draw();
@@ -264,32 +271,35 @@
     /* ---------------- Competitions ---------------- */
     async competitions() {
       const st = { level: "", track: "" };
-      $("#f-track").innerHTML = `<option value="">All tracks</option>` + [...new Set(D.competitions.map(c => c.track))].map(t => `<option>${esc(t)}</option>`).join("");
+      const allComps = await API.fetchCompetitions("", "");
+      $("#f-track").innerHTML = `<option value="">All tracks</option>` + [...new Set(allComps.map(c => c.track))].map(t => `<option>${esc(t)}</option>`).join("");
       const draw = async () => { const cs = await API.fetchCompetitions(st.level, st.track);
         $("#comp").innerHTML = cs.map(c => `<article class="card comp ck" data-id="${c.id}"><div class="row" style="justify-content:space-between">${levelBadge(c.level)}<span class="tagx">${esc(c.track)}</span></div>
           <h3 class="h3 ck-title">${esc(c.name)}</h3><div class="cd" data-starts="${c.starts}">${countdown(c.starts)}</div><small>Teams ${esc(c.team)} · ${c.registered} registered · Prize: <b>${esc(c.prize)}</b></small>
-          <div class="row ck-foot"><button class="btn sm or" data-reg="solo">Register solo</button><button class="btn sm ink" data-reg="team">Register a team</button><button class="btn sm" data-sub>Submit</button></div></article>`).join("") || `<p class="muted">No competitions for this filter yet.</p>`; };
+          <div class="row ck-foot"><button class="btn sm or" data-reg="solo">Register solo</button><button class="btn sm ink" data-reg="team">Register a team</button><button class="btn sm" data-sub>Submit</button></div></article>`).join("") || (allComps.length ? `<p class="muted">No competitions for this filter yet.</p>` : emptyBox("No competitions open yet", "Hackathons and coding contests appear here when they open for registration.", "events.html", "See events")); };
       setInterval(() => $$(".cd").forEach(el => el.textContent = countdown(el.dataset.starts)), 30000);
       $("#comp").addEventListener("click", async e => { const b = e.target.closest("button"); if (!b) return; const id = b.closest("[data-id]").dataset.id;
+        if (!signedIn()) { location.href = authUrl(); return; }
         if (b.dataset.reg) { const team = b.dataset.reg === "team" ? prompt("Team name?") : null; if (b.dataset.reg === "team" && !team) return; await API.registerCompetition(id, { mode: b.dataset.reg, team }); toast(`Registered ${team ? "team " + team : "solo"}.`); }
         if (b.hasAttribute("data-sub")) { const url = prompt("Link to your submission (repo, video or demo):"); if (url) { await API.submitEntry(id, { url }); toast("Submission received."); } } });
       $("#f-track").onchange = e => { st.track = e.target.value; draw(); };
-      const lb = await API.fetchLeaderboard("hack25");
-      $("#lb tbody").innerHTML = lb.map((r, i) => `<tr><td><b>${i + 1}</b></td><td>${esc(r.team)}</td><td>${r.members}</td><td><b>${r.pts}</b></td></tr>`).join("");
+      const lb = allComps[0] ? await API.fetchLeaderboard(allComps[0].id) : [];
+      $("#lb tbody").innerHTML = (lb.length ? "" : `<tr><td colspan="4" class="muted">No scores yet.</td></tr>`) + lb.map((r, i) => `<tr><td><b>${i + 1}</b></td><td>${esc(r.team)}</td><td>${r.members}</td><td><b>${r.pts}</b></td></tr>`).join("");
       levelChips(l => { st.level = l; draw(); }); draw();
     },
     /* ---------------- Groups ---------------- */
     async groups() {
       const id = q.get("id");
       if (id) { $("#g-list-wrap").hidden = true; $("#g-one").hidden = false; const g = await API.fetchGroup(id);
+        if (!g) { $("#g-one").innerHTML = emptyBox("We couldn't find that group", offlineNote("this group"), "groups.html", "All groups"); return; }
         $("#g-one").innerHTML = `<div class="page-h"><div><div class="kicker">${esc(g.kind)}</div><h1>${esc(g.name.toUpperCase())}</h1><p>${esc(g.desc)}</p><div class="row">${levelBadge(g.level)}<small>${g.members} members</small></div></div><button class="btn or" data-joing="${g.id}">${g.open ? "Join group" : "Request to join"}</button></div>
           <div class="grid g3"><div class="card" style="grid-column:span 2"><div class="sec-title"><h2>FEED</h2></div><div class="list">${g.feed.map(f => `<div class="li"><span class="date">${esc(f.who.split(" ").map(w => w[0]).join(""))}</span><div class="grow"><b>${esc(f.who)}</b><small>${esc(f.t)} · ${f.ago} ago</small></div></div>`).join("")}</div></div>
-          <div class="card"><div class="sec-title"><h2>MEMBERS</h2></div>${avatars(["SN", "DK", "GM", "IM", "EA", "PW"])}<div class="sec-title" style="margin-top:16px"><h2>PROJECTS</h2></div><div class="list">${g.projects.map(p => `<a class="li" href="projects.html#${p.id}"><div class="grow"><b>${esc(p.name)}</b><small>${p.progress}% done</small></div></a>`).join("")}</div></div></div>`;
+          <div class="card"><div class="sec-title"><h2>MEMBERS</h2></div><p class="muted">${g.members || 0} members</p><div class="sec-title" style="margin-top:16px"><h2>PROJECTS</h2></div><div class="list">${g.projects.map(p => `<a class="li" href="projects.html#${p.id}"><div class="grow"><b>${esc(p.name)}</b><small>${p.progress}% done</small></div></a>`).join("")}</div></div></div>`;
         return; }
       const st = { level: "", kind: "" };
       $("#f-kind").innerHTML = ["", "Study group", "Project team", "School chapter"].map(k => `<button type="button" class="chip" aria-pressed="${!k}" data-k="${k}">${k || "All"}</button>`).join("");
       const draw = async () => { const gs = await API.fetchGroups(st.level, st.kind);
-        $("#g-list").innerHTML = gs.map(g => `<article class="card"><div class="row" style="justify-content:space-between"><span class="tagx">${esc(g.kind)}</span>${levelBadge(g.level)}</div><h3 class="h3"><a href="groups.html?id=${g.id}">${esc(g.name)}</a></h3><p>${esc(g.desc)}</p><div class="row" style="justify-content:space-between;margin-top:8px"><small>${g.members} members</small><button class="btn sm ${g.open ? "or" : ""}" data-joing="${g.id}">${g.open ? "Join" : "Request"}</button></div></article>`).join(""); };
+        $("#g-list").innerHTML = gs.map(g => `<article class="card"><div class="row" style="justify-content:space-between"><span class="tagx">${esc(g.kind)}</span>${levelBadge(g.level)}</div><h3 class="h3"><a href="groups.html?id=${g.id}">${esc(g.name)}</a></h3><p>${esc(g.desc)}</p><div class="row" style="justify-content:space-between;margin-top:8px"><small>${g.members} members</small><button class="btn sm ${g.open ? "or" : ""}" data-joing="${g.id}">${g.open ? "Join" : "Request"}</button></div></article>`).join("") || emptyBox("No groups yet", "Study groups, project teams and school chapters appear here once they are created.", signedIn() ? "community.html" : authUrl(), signedIn() ? "Visit the community" : "Sign in to join a group"); };
       $("#f-kind").onclick = e => { const b = e.target.closest("[data-k]"); if (!b) return; $$("[data-k]").forEach(x => x.setAttribute("aria-pressed", x === b)); st.kind = b.dataset.k; draw(); };
       levelChips(l => { st.level = l; draw(); }); draw();
     },
@@ -299,76 +309,26 @@
       $("#pj").innerHTML = ps.map(p => `<article class="card" id="${p.id}" data-id="${p.id}"><div class="row" style="justify-content:space-between"><span class="tagx">${p.kind} project</span>${levelBadge(p.level)}</div>
         <h3 class="h3">${esc(p.name)}</h3><div class="row"><div class="prog" style="flex:1"><i style="width:${p.progress}%"></i></div><b>${p.progress}%</b></div>${avatars(p.team)}
         <ul class="ms">${p.milestones.map((m, i) => `<li><label class="row"><input type="checkbox" data-ms="${i}" ${m.done ? "checked" : ""}> ${esc(m.t)}</label></li>`).join("")}</ul>
-        <div class="row"><button class="btn sm or" data-promote>${ico("arrow")}Promote to Launchpad</button><a class="btn sm" href="testing.html">Start a beta test</a></div></article>`).join("");
+        <div class="row"><button class="btn sm or" data-promote>${ico("arrow")}Promote to Launchpad</button><a class="btn sm" href="testing.html">Start a beta test</a></div></article>`).join("") || emptyBox("No projects yet", "Create your first project with the form on this page. Your projects stay private until you promote one.");
       $("#pj").addEventListener("change", e => { const i = e.target.dataset.ms; if (i == null) return; API.toggleMilestone(e.target.closest("[data-id]").dataset.id, +i, e.target.checked); });
       $("#pj").addEventListener("click", async e => { if (!e.target.closest("[data-promote]")) return; await API.promoteToLaunchpad(e.target.closest("[data-id]").dataset.id); toast("Sent to Launchpad review. Admins check it before it goes live."); });
-      $("#new-project").onsubmit = e => { e.preventDefault(); toast(`Project “${e.target.name.value}” created (POST /api/projects).`); e.target.reset(); };
+      $("#new-project").onsubmit = e => { e.preventDefault(); toast("Projects can't be saved yet: the projects API isn't connected. Nothing was created."); };   // round 11: no fake success
     },
     /* ---------------- Profile / verify ---------------- */
-    async profile() {
-      const handle = (location.pathname.match(/\/u\/([^/]+)/) || [])[1] || q.get("u") || "sarah-n"; const p = await API.fetchProfile(handle);
-      $("#pf").innerHTML = `<div class="page-h"><div class="row"><span class="plogo big">${esc(p.name.split(" ").map(w => w[0]).join(""))}</span><div><div class="kicker">@${esc(p.handle)}</div><h1>${esc(p.name.toUpperCase())}</h1><p>${esc(p.bio)}</p><div class="row">${levelBadge(p.level)}<span class="tagx">${esc(p.role)}</span></div></div></div><div class="row"><a class="btn" data-wa-share="${esc(p.name)} on 101 Codecrafts:" href="#">${ico("wa")}Share profile</a><a class="btn or" href="/card.html">${ico("badge")}Make your member card</a></div></div>
-        <div class="grid g2"><div class="card"><div class="sec-title"><h2>BADGES</h2></div><div class="row">${p.badges.map(b => `<span class="badge-t" style="position:static">${esc(b)}</span>`).join("")}</div></div>
-        <div class="card"><div class="sec-title"><h2>PROJECTS</h2></div><div class="list">${p.projects.map(x => `<div class="li"><div class="grow"><b>${esc(x.name)}</b><small>${x.kind} · ${x.progress}% done</small></div></div>`).join("")}</div></div></div>`;
-    },
+    /* profile: rendered by js/profile.js (round 11; no placeholder person) */
     async verify() {
       const go = async code => { const r = await API.verifyCertificate(code.trim().toUpperCase());
-        $("#vr").innerHTML = r.valid ? `<div class="vok">${ico("check")}<div><b>Valid certificate</b><p>${esc(r.name)} completed <b>${esc(r.course)}</b> on ${esc(r.issued)}.</p></div></div>` : `<div class="vbad">${ico("xmark")}<div><b>${r.malformed ? "That code doesn't look right" : "No certificate found"}</b><p>Codes look like 101-XXXX-XXXX. Check for typos, or ask the holder for their verification link.</p></div></div>`; };
+        $("#vr").innerHTML = r.unavailable ? `<div class="vbad">${ico("xmark")}<div><b>We can't check certificates right now</b><p>The verification service didn't answer. Nothing is shown as valid unless 101 Codecrafts confirms it. Try again shortly.</p></div></div>` : r.valid ? `<div class="vok">${ico("check")}<div><b>Valid certificate</b><p>${esc(r.name)} completed <b>${esc(r.course)}</b> on ${esc(r.issued)}.</p></div></div>` : `<div class="vbad">${ico("xmark")}<div><b>${r.malformed ? "That code doesn't look right" : "No certificate found"}</b><p>Codes look like 101-XXXX-XXXX. Check for typos, or ask the holder for their verification link.</p></div></div>`; };
       $("#vf").onsubmit = e => { e.preventDefault(); go(e.target.code.value); };
       if (q.get("code")) { $("#vf").code.value = q.get("code"); go(q.get("code")); }
     },
     /* ---------------- Auth + onboarding ---------------- */
-    async signin() {
-      const f = $("#si"), msg = $("#si-msg"), btn = $("button.or", f) || $("button", f);
-      const say = (t, cls) => { msg.textContent = t; msg.className = "form-msg " + (cls || ""); };
-      f.noValidate = true;
-      f.onsubmit = async e => {
-        e.preventDefault();
-        const id = f.email.value.trim(), pw = f.password.value;
-        const FE = window.CC_UI.fieldError; FE(f.email, ""); FE(f.password, ""); say("");
-        if (!id) FE(f.email, "Enter your email or phone number.");
-        else if (id.includes("@") && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(id)) FE(f.email, "That email address doesn't look right. Check for a missing @ or dot.");
-        if (!pw) FE(f.password, "Enter your password.");
-        const bad = f.querySelector("[aria-invalid=true]"); if (bad) { bad.focus(); return; }
-        btn.disabled = true; const label = btn.textContent; btn.textContent = "Signing in…"; say("Checking your details…");
-        const r = await API.signIn(id, pw);
-        btn.disabled = false; btn.textContent = label;
-        if (r) { say("Signed in. Taking you to your dashboard…", "ok"); setTimeout(() => location.href = "dashboard.html", 600); }
-        else say("Sign-in opens when the 101 backend is live. This is the preview: you can explore the dashboard without an account.", "info");
-      };
-      const g = $("#si-google"); if (g) g.onclick = () => say("Google sign-in opens when the 101 backend is live.", "info");
-    },
-    async signup() {
-      const f = $("#su"); const age = () => { const d = Date.parse(f.dob.value); return d ? (Date.now() - d) / 31557600000 : 99; };
-      f.dob.onchange = () => { $("#guardian").hidden = age() >= 18; $$("#guardian input").forEach(i => i.required = age() < 18); };
-      f.onsubmit = async e => { e.preventDefault(); const sm = $("#su-msg"); if (!f.checkValidity()) { if (sm) { sm.className = "form-msg err"; sm.textContent = "Some details need fixing. Check the messages under the fields."; } return; } if (sm) sm.textContent = "";
-        if (sm) { sm.className = "form-msg info"; sm.textContent = "Accounts open when the 101 backend is live. Continuing to the onboarding preview…"; }
-        const data = Object.fromEntries(new FormData(f)); if (age() < 18) await API.requestGuardianConsent({ child: data.email, guardian: data.g_email, phone: data.g_phone });
-        await API.signUp(data); sessionStorage.setItem("cc_signup", JSON.stringify({ name: data.name, minor: age() < 18 })); location.href = "onboarding.html"; };
-    },
-    async onboarding() {
-      const steps = $$(".step"); let i = 0; const show = () => { steps.forEach((s, j) => s.hidden = j !== i); $("#ob-n").textContent = `Step ${i + 1} of ${steps.length}`; $("#ob-back").disabled = i === 0; $("#ob-next").textContent = i === steps.length - 1 ? "Finish" : "Next"; };
-      const pick = sel => $$(sel).forEach(b => b.onclick = () => { if (b.dataset.single !== undefined) $$(sel).forEach(x => x.setAttribute("aria-pressed", x === b)); else b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); if (b.dataset.role) { $("#tutor-levels").hidden = b.dataset.role !== "tutor"; $("#learner-level").hidden = b.dataset.role !== "learner"; } });
-      pick("[data-role]"); pick("[data-mylevel]"); pick("[data-teach]"); pick("[data-int]");
-      const s = JSON.parse(sessionStorage.getItem("cc_signup") || "{}"); if (s.minor) $("#minor-note").hidden = false;
-      $("#ob-back").onclick = () => { i--; show(); };
-      const FE = window.CC_UI.fieldError;
-      const stepOk = () => { const st = steps[i]; let grp = null, msg = "";
-        if (st.querySelector("[data-mylevel]") && !$("#learner-level").hidden && !$$("[data-mylevel][aria-pressed=true]").length) { grp = $("#learner-level .opts"); msg = "Pick the level that fits you best. You can change it later."; }
-        else if (st.querySelector("[data-teach]") && !$("#tutor-levels").hidden && !$$("[data-teach][aria-pressed=true]").length) { grp = $("#tutor-levels .opts"); msg = "Pick at least one level you teach."; }
-        $$(".opts[data-err-id]", st).forEach(o => { if (o !== grp) FE(o, ""); });
-        if (grp) { FE(grp, msg); (grp.querySelector(".opt") || grp).focus(); return false; } return true; };
-      $$(".opt").forEach(b => b.addEventListener("click", () => { const o = b.closest(".opts"); if (o && o.getAttribute("data-err-id")) FE(o, ""); }));
-      $("#ob-next").onclick = async () => { if (!stepOk()) return; if (i < steps.length - 1) { i++; show(); return; }
-        const val = sel => $$(sel + "[aria-pressed=true]").map(b => b.textContent.trim());
-        await API.saveOnboarding({ role: val("[data-role]")[0], level: val("[data-mylevel]")[0], teaches: val("[data-teach]"), interests: val("[data-int]") });
-        location.href = val("[data-role]")[0] === "Tutor" ? "tutor.html" : "dashboard.html"; };
-      show();
-    },
+    /* signin / signup / onboarding: moved to /auth.html (js/auth-flow.js). The old pages only redirect; no simulated accounts. */
     /* ---------------- Course player ---------------- */
     async course() {
       if (q.has("preview")) return;   // tutor/admin preview of a draft: js/course-preview.js renders it (round 11)
-      const c = await API.fetchCourse(q.get("id") || "web-basics");
+      const c = await API.fetchCourse(q.get("id") || "");
+      if (!c) { const m = $("#main"); if (m) m.innerHTML = emptyBox("We couldn't open this course", q.get("id") ? offlineNote("this course") : "Pick a course from the catalogue to start learning.", "courses.html", "Browse courses"); return; }
       /* r11 plans: lesson locks + rating gate (UI only; RLS on lessons is the authority). Never in ?static mockups. */
       const P = !STATIC && window.CC_PLANS;
       if (P) { await Promise.race([window.CCAccess && window.CCAccess.ready, new Promise(r => setTimeout(r, 2500))]); P.mergeSyllabus(c, await P.syllabus(c.id)); }

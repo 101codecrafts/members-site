@@ -1,7 +1,10 @@
 /* 101 Codecrafts — every network call lives here.
-   Each function tries the backend first (API_BASE + endpoint), then a free public API where one exists,
-   then falls back to the placeholders in js/data.js. No keys or secrets are stored in this repo.
-   In ?static=1 mode (used for the mockup screenshots) nothing is fetched and placeholders are returned. */
+   Each function tries the backend first (API_BASE + endpoint), then a free public API where one exists.
+   ROUND 11 RULE: the seeded people, numbers and activity in js/data.js are NEVER shown for a real visit. A 401/403, an
+   empty answer or an unreachable API gives the real empty / denied / sign-in state (null or []), never placeholders.
+   Seeded data appears only in ?static=1 (design screenshots, no auth, no fetch) and for an admin with ?demo=1.
+   The curated catalogue (real third-party course and resource links, no people or money) is the only offline fallback,
+   and only when the API cannot be reached (never on 401/403). No keys or secrets are stored in this repo. */
 (function () {
   const D = () => window.CC_DATA;
   const params = new URLSearchParams(location.search);
@@ -70,12 +73,19 @@
   }
   /* when the backend is not reachable (static preview) every call falls back to bundled demo data; tell the UI once */
   function markDemo() { if (STATIC || window.CC_DEMO) return; window.CC_DEMO = true; try { dispatchEvent(new CustomEvent("cc:demo")); } catch (e) {} }
+  let lastFail = 0;   // HTTP status of the most recent failed backend call (0 = unreachable / no endpoint)
   async function backend(path, opts) {
-    const v1 = toV1(path); if (!v1) throw new Error("no v1 endpoint for " + path);   // no request, demo data (not an outage)
+    const v1 = toV1(path); if (!v1) { lastFail = 0; throw new Error("no v1 endpoint for " + path); }   // never requested: real empty state
     try { return unwrap(await getJSON(API_BASE + v1, { credentials: "include", ...(opts || {}) })); }
-    catch (e) { if (!/^(401|403|404|409|422) /.test(e.message)) markDemo(); throw e; }   // demo banner only when the API is unreachable / erroring
+    catch (e) { const m = /^(\d{3}) /.exec(e.message); lastFail = m ? +m[1] : 0; if (!/^(401|403|404|409|422) /.test(e.message)) markDemo(); throw e; }
   }
   async function tryChain(...fns) { for (const f of fns) { try { const v = await f(); if (v != null) return v; } catch (e) { /* next */ } } return null; }
+  /* round 11: seeded js/data.js only for ?static=1 or an admin's explicit ?demo=1 (server-confirmed role via CCAccess). */
+  const demoOK = () => STATIC || (/[?&]demo=1(&|$)/.test(location.search) && !!(window.CCAccess && CCAccess.can && CCAccess.can("demo.view")));
+  const seeded = (v, demo, empty) => v != null ? v : (demoOK() ? demo() : empty);
+  /* curated catalogue: offline fallback only when the API is unreachable; a 401/403 shows the real (empty) answer */
+  const curated = (v, cat) => v != null ? v : (demoOK() || !(lastFail === 401 || lastFail === 403) ? cat() : []);
+  const lastStatus = () => lastFail;
 
   /* ---------- link-out helper: every external resource opens through /go/<id> ---------- */
   function goHref(id) {
@@ -122,11 +132,11 @@
       const out = [...(dv.value || []), ...(hn.value || [])];
       return out.length ? out : null;
     });
-    const news = v || D().news; window.__ccNewsCache = news; return news;
+    const news = seeded(v, () => D().news, []); window.__ccNewsCache = news; return news;
   }
 
   /* ---------- Library ---------- */
-  async function fetchResources(q = {}) { return (await tryChain(() => backend("/resources?" + new URLSearchParams(q)))) || D().resources; }
+  async function fetchResources(q = {}) { return curated(await tryChain(() => backend("/resources?" + new URLSearchParams(q))), () => D().resources); }
   /** Paste-a-link preview. Backend: POST /api/resources/unfurl {url} → {title, desc, thumb, site, favicon, type} */
   async function fetchUnfurl(url) {
     const v = await tryChain(() => backend("/resources/unfurl", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) }));
@@ -141,9 +151,9 @@
 
   /* ---------- Courses catalog ---------- */
   /** GET /api/courses → 101 courses taught on the platform [{id,title,tutor,level,category,rating,reviews,price,lessons,cover}] */
-  const fetchCourses101 = async () => (await tryChain(() => backend("/courses"))) || D().courses101;
+  const fetchCourses101 = async () => seeded(await tryChain(() => backend("/courses")), () => D().courses101, []);
   /** GET /api/courses/external → [{id,provider,title,url,level,category,access,free_until?,free_until_status?,certFree,aid?,desc}] */
-  const fetchExternalCourses = async () => (await tryChain(() => backend("/courses/external"))) || D().externalCourses;
+  const fetchExternalCourses = async () => curated(await tryChain(() => backend("/courses/external")), () => D().externalCourses);
   /** Paste-a-link preview for an external course. Backend: POST /api/courses/external/unfurl {url} → {title, desc, provider, ...}.
       Stub: reuses the generic unfurl and guesses the provider from the hostname. */
   const PROVIDER_HOSTS = [["coursera", /coursera\.org$/], ["edx", /edx\.org$/], ["freecodecamp", /freecodecamp\.org$/], ["google", /(google\.com|grow\.google|withgoogle\.com)$/], ["microsoft", /microsoft\.com$/], ["cisco", /netacad\.com$/], ["khan", /khanacademy\.org$/], ["alison", /alison\.com$/]];
@@ -187,18 +197,18 @@
 
   /* ---------- Admin ---------- */
   const A = () => D().admin;
-  const fetchAdminKpis = async () => (await tryChain(() => backend("/admin/kpis"))) || A().kpis;
-  const fetchAnalytics = async () => (await tryChain(() => backend("/admin/analytics"))) || { signups: A().signups, revenue: A().revenue, enrolments: A().enrolments, completion: A().completion, funnel: A().funnel };
-  const fetchUsers = async (role = "") => { const v = await tryChain(() => backend("/admin/users?role=" + role)); const all = v || A().users; return role ? all.filter(u => u.role === role) : all; };
-  const fetchPendingMembers = async () => (await tryChain(() => backend("/admin/approvals/members"))) || A().pendingMembers;
-  const fetchRecentSignups = async () => (await tryChain(() => backend("/admin/signups/recent"))) || A().recentSignups;
-  const fetchCourseApprovals = async () => (await tryChain(() => backend("/admin/approvals/courses"))) || A().courseApprovals;
-  const fetchPayouts = async () => (await tryChain(() => backend("/admin/payouts?status=pending"))) || A().payouts;
-  const fetchTransactions = async () => (await tryChain(() => backend("/admin/transactions"))) || A().transactions;
-  const fetchModerationQueue = async () => (await tryChain(() => backend("/admin/moderation"))) || A().moderation;
-  const fetchEventsAdmin = async () => (await tryChain(() => backend("/admin/events"))) || A().events;
-  const fetchAuditLog = async () => (await tryChain(() => backend("/admin/audit"))) || A().audit;
-  const fetchFlags = async () => (await tryChain(() => backend("/admin/flags"))) || A().flags;
+  const fetchAdminKpis = async () => seeded(await tryChain(() => backend("/admin/kpis")), () => A().kpis, null);
+  const fetchAnalytics = async () => seeded(await tryChain(() => backend("/admin/analytics")), () => ({ signups: A().signups, revenue: A().revenue, enrolments: A().enrolments, completion: A().completion, funnel: A().funnel }), null);
+  const fetchUsers = async (role = "") => { const v = await tryChain(() => backend("/admin/users?role=" + role)); const all = seeded(v, () => A().users, []); return role ? all.filter(u => u.role === role) : all; };
+  const fetchPendingMembers = async () => seeded(await tryChain(() => backend("/admin/approvals/members")), () => A().pendingMembers, null);
+  const fetchRecentSignups = async () => seeded(await tryChain(() => backend("/admin/signups/recent")), () => A().recentSignups, null);
+  const fetchCourseApprovals = async () => seeded(await tryChain(() => backend("/admin/approvals/courses")), () => A().courseApprovals, null);
+  const fetchPayouts = async () => seeded(await tryChain(() => backend("/admin/payouts?status=pending")), () => A().payouts, null);
+  const fetchTransactions = async () => seeded(await tryChain(() => backend("/admin/transactions")), () => A().transactions, null);
+  const fetchModerationQueue = async () => seeded(await tryChain(() => backend("/admin/moderation")), () => A().moderation, null);
+  const fetchEventsAdmin = async () => seeded(await tryChain(() => backend("/admin/events")), () => A().events, null);
+  const fetchAuditLog = async () => seeded(await tryChain(() => backend("/admin/audit")), () => A().audit, null);
+  const fetchFlags = async () => seeded(await tryChain(() => backend("/admin/flags")), () => A().flags, null);
   const post = (path, body) => tryChain(() => backend(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) }));
   const adminAction = {
     approveMember: id => post(`/admin/approvals/members/${id}/approve`), rejectMember: id => post(`/admin/approvals/members/${id}/reject`),
@@ -227,30 +237,30 @@
 
   /* ---------- Launchpad / testing / competitions / groups / projects ---------- */
   const lvl = (arr, level) => level ? arr.filter(x => x.level === level) : arr;
-  const fetchProducts = async (level = "") => lvl((await tryChain(() => backend("/launchpad/today?level=" + level))) || D().products, level).slice().sort((a, b) => b.votes - a.votes);
-  const fetchProduct = async id => (await tryChain(() => backend("/launchpad/" + id))) || { ...(D().products.find(p => p.id === id) || D().products[0]), changelog: D().changelog, comments: D().productComments };
+  const fetchProducts = async (level = "") => lvl(seeded(await tryChain(() => backend("/launchpad/today?level=" + level)), () => D().products, []), level).slice().sort((a, b) => b.votes - a.votes);
+  const fetchProduct = async id => seeded(await tryChain(() => backend("/launchpad/" + id)), () => ({ ...(D().products.find(p => p.id === id) || D().products[0]), changelog: D().changelog, comments: D().productComments }), null);
   const upvoteProduct = id => post(`/launchpad/${id}/upvote`);
   const commentProduct = (id, text) => post(`/launchpad/${id}/comments`, { text });
-  const fetchCampaigns = async (level = "") => lvl((await tryChain(() => backend("/testing/campaigns"))) || D().campaigns, level);
+  const fetchCampaigns = async (level = "") => lvl(seeded(await tryChain(() => backend("/testing/campaigns")), () => D().campaigns, []), level);
   const joinCampaign = id => post(`/testing/campaigns/${id}/join`);
   const becomeTester = profile => post("/testing/testers", profile);
   /** multipart: fields + optional screenshot file → POST /api/testing/reports */
   async function submitBugReport(formData) { return tryChain(() => getJSON(API_BASE + "/testing/reports", { method: "POST", body: formData })); }
-  const fetchTriage = async () => (await tryChain(() => backend("/testing/triage"))) || D().triage;
+  const fetchTriage = async () => seeded(await tryChain(() => backend("/testing/triage")), () => D().triage, {});
   const moveBug = (id, column) => post(`/testing/reports/${id}/move`, { column });
-  const fetchCompetitions = async (level = "", track = "") => { const all = (await tryChain(() => backend("/competitions"))) || D().competitions; return lvl(all, level).filter(c => !track || c.track === track); };
+  const fetchCompetitions = async (level = "", track = "") => { const all = seeded(await tryChain(() => backend("/competitions")), () => D().competitions, []); return lvl(all, level).filter(c => !track || c.track === track); };
   const registerCompetition = (id, entry) => post(`/competitions/${id}/register`, entry);
   const submitEntry = (id, entry) => post(`/competitions/${id}/submissions`, entry);
-  const fetchLeaderboard = async id => (await tryChain(() => backend(`/competitions/${id}/leaderboard`))) || D().leaderboard;
-  const fetchGroups = async (level = "", kind = "") => lvl((await tryChain(() => backend("/groups"))) || D().groups, level).filter(g => !kind || g.kind === kind);
-  const fetchGroup = async id => (await tryChain(() => backend("/groups/" + id))) || { ...(D().groups.find(g => g.id === id) || D().groups[0]), feed: D().groupFeed, projects: D().projects.slice(0, 2) };
+  const fetchLeaderboard = async id => seeded(await tryChain(() => backend(`/competitions/${id}/leaderboard`)), () => D().leaderboard, []);
+  const fetchGroups = async (level = "", kind = "") => lvl(seeded(await tryChain(() => backend("/groups")), () => D().groups, []), level).filter(g => !kind || g.kind === kind);
+  const fetchGroup = async id => seeded(await tryChain(() => backend("/groups/" + id)), () => ({ ...(D().groups.find(g => g.id === id) || D().groups[0]), feed: D().groupFeed, projects: D().projects.slice(0, 2) }), null);
   const joinGroup = id => post(`/groups/${id}/join`);
-  const fetchProjects = async () => (await tryChain(() => backend("/projects?mine=1"))) || D().projects;
+  const fetchProjects = async () => seeded(await tryChain(() => backend("/projects?mine=1")), () => D().projects, []);
   const toggleMilestone = (pid, i, done) => post(`/projects/${pid}/milestones/${i}`, { done });
   const promoteToLaunchpad = pid => post(`/projects/${pid}/promote`);
 
   /* ---------- Course player ---------- */
-  const fetchCourse = async id => (await tryChain(() => backend("/courses/" + id))) || D().course;
+  const fetchCourse = async id => seeded(await tryChain(() => backend("/courses/" + id)), () => D().course, null);
   const markLessonComplete = (courseId, lessonId, done = true) => { const k = "cc_done_" + courseId; const s = new Set(JSON.parse(localStorage.getItem(k) || "[]")); done ? s.add(lessonId) : s.delete(lessonId); localStorage.setItem(k, JSON.stringify([...s])); return post(`/courses/${courseId}/lessons/${lessonId}/complete`, { done }); };
   const saveNotes = (courseId, lessonId, text) => { localStorage.setItem(`cc_notes_${courseId}_${lessonId}`, text); return post(`/courses/${courseId}/lessons/${lessonId}/notes`, { text }); };
   const postDiscussion = (courseId, text) => post(`/courses/${courseId}/discussion`, { text });
@@ -273,13 +283,23 @@
   const addCourseBook = (courseId, book) => post(`/tutor/courses/${courseId}/books`, book);
 
   /* ---------- Auth, onboarding, profile, certificates ---------- */
-  const signIn = (email, password) => post("/auth/sign-in", { email, password });
-  const signUp = data => post("/auth/sign-up", data);
-  const saveOnboarding = data => post("/me/onboarding", data);
+  /* round 11: sign-in and sign-up happen only on /auth.html (Clerk email code / Google). The old custom forms are gone, so
+     these never simulate an account; they resolve null. */
+  const signIn = async () => null;
+  const signUp = async () => null;
+  /* round 11: onboarding answers are a DRAFT (PUT /v1/auth/onboarding/draft); the role is granted only by the server when
+     /auth.html completes a path (POST /v1/auth/onboarding, strict schema: any role/plan key is a 400). */
+  const saveOnboarding = data => { const { role, roles, plan, ...rest } = data || {}; return tryChain(() => backend("/v1/auth/onboarding/draft", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rest) })); };
   /** Guardian consent for under-18 sign-ups (Uganda DPPA 2019 s.8: personal data of a child needs a parent/guardian's consent). */
-  const requestGuardianConsent = data => post("/auth/guardian-consent", data);
-  const fetchProfile = async handle => (await tryChain(() => backend("/u/" + handle))) || { handle, name: "Sarah Namubiru", role: "Learner", level: "University", bio: "Software engineering student in Kampala. Building BodaSafe.", badges: ["Python Basics", "Hackathon 2025 Finalist", "Beta Tester"], projects: D().projects.slice(0, 2) };
-  const verifyCertificate = async code => (await tryChain(() => backend("/certificates/" + encodeURIComponent(code)))) || (/^101-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code) ? (code === "101-SE24-7Q3K" ? { valid: true, name: "Sarah Namubiru", course: "Software Engineering Path — Level 1", issued: "2025-10-30" } : { valid: false }) : { valid: false, malformed: true });
+  const requestGuardianConsent = data => tryChain(() => backend("/me/guardian", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data || {}) }));   // real route: PUT /v1/me/guardian
+  const fetchProfile = async handle => seeded(await tryChain(() => backend("/u/" + handle)), () => ({ handle, name: "Sample Member", role: "Learner", level: "University", bio: "Demo profile (admin ?demo=1).", badges: [], projects: D().projects.slice(0, 2) }), null);
+  /* round 11: the verifier trusts the API only. No hard-coded "valid" certificate; when the API can't answer we say so. */
+  const verifyCertificate = async code => {
+    if (!/^101-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) return { valid: false, malformed: true };
+    const r = await tryChain(() => backend("/certificates/" + encodeURIComponent(code)));
+    if (r) return r;
+    return lastFail === 404 ? { valid: false } : { valid: false, unavailable: true };
+  };
 
   /* ---------- Social links ---------- */
   /** GET /api/social → [{key,label,icon,url,active}] in display order. Fallback = mockup icons with '#'. */
@@ -300,5 +320,5 @@
     fetchProducts, fetchProduct, upvoteProduct, commentProduct, fetchCampaigns, joinCampaign, becomeTester, submitBugReport, fetchTriage, moveBug,
     fetchCompetitions, registerCompetition, submitEntry, fetchLeaderboard, fetchGroups, fetchGroup, joinGroup, fetchProjects, toggleMilestone, promoteToLaunchpad,
     fetchCourse, markLessonComplete, saveNotes, postDiscussion, youtubeId, fetchYouTubePreview, fetchBookPreview, addLessonVideo, addCourseBook,
-    signIn, signUp, saveOnboarding, requestGuardianConsent, fetchProfile, verifyCertificate };
+    signIn, signUp, saveOnboarding, requestGuardianConsent, fetchProfile, verifyCertificate, demoOK, lastStatus };
 })();

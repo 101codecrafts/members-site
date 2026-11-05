@@ -87,6 +87,9 @@
       else if (e.key === "Escape") close();
     };
     inp.onblur = () => setTimeout(close, 120);
+    /* round 11: an empty search says so instead of doing nothing */
+    $("#mk-sform").addEventListener("submit", e => { if (inp.value.trim()) return; e.preventDefault(); e.stopImmediatePropagation(); inp.setAttribute("aria-invalid", "true"); inp.placeholder = "Type what you're looking for first"; inp.focus(); }, true);
+    inp.addEventListener("input", () => inp.removeAttribute("aria-invalid"));
     if (page === "marketplace") $("#mk-sform").onsubmit = e => { e.preventDefault(); close(); state.q = inp.value.trim(); state.page = 1; render(); $("#browse").scrollIntoView({ behavior: lite() ? "auto" : "smooth" }); };
   }
   function updateCartCount() { const n = $("#mk-cartn"); if (n) n.textContent = A.cartCount(); }

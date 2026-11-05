@@ -92,8 +92,8 @@
     contest: (id) => withMock(() => call("/practice/contests/" + encodeURIComponent(id)), () => ({ ...rebase(P().contests.find(c => c.id === id) || P().contests[0]), problems: P().contestProblems, mock: true })),
     leaderboard: (id) => withMock(() => call(`/practice/contests/${encodeURIComponent(id)}/leaderboard`), () => ({ items: P().leaderboard, updatedAt: new Date().toISOString(), mock: true })),
     register: (id) => withMock(() => post(`/practice/contests/${encodeURIComponent(id)}/register`, {}), () => ({ registered: true, mock: true })),
-    companies: () => withMock(() => call("/practice/interview/companies"), () => ({ items: P().interview.companies, sets: P().interview.sets, mock: true })),
-    quiz: (id) => withMock(() => call("/practice/interview/quizzes/" + encodeURIComponent(id)), () => ({ ...P().interview.quiz, mock: true })),
+    companies: () => withMock(() => call("/practice/interview-sets"), () => ({ items: P().interview.companies, sets: P().interview.sets, mock: true })),
+    quiz: (id) => withMock(() => call("/practice/quizzes/" + encodeURIComponent(id)), () => ({ ...P().interview.quiz, mock: true })),
 
     aiHint: (body) => withMock(() => post("/ai/hint", body), () => { const d = P().problemDetail[body.problemId]; const h = d && d.hints[Math.min(body.level || 0, d.hints.length - 1)]; return { hint: h || "Think about what the constraints allow: n up to 10⁵ means O(n log n) or better.", mock: true }; }),
     aiDebug: (body) => withMock(() => post("/ai/debug", body), () => ({ explanation: "101 AI (preview): your program prints a fixed answer and never compares arr[left] + arr[right] with x. " + (body.failedCase ? `On the failing case the expected output is "${body.failedCase.expected}".` : ""), suggestion: "Add a while (left < right) loop; move left when the sum is too small, right when it is too big.", mock: true })),
