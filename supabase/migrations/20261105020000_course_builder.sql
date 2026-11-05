@@ -417,7 +417,7 @@ begin
     update public.course_submissions set status = 'approved', approved_price_ugx = price, reviewed_by = me, reviewed_at = now(), reason = p_reason where id = s.id;
     perform app.notify(s.submitted_by, 'tutor.course_approved', 'Course approved: ' || c.title,
       case when price = 0 then 'It is live and free.' else 'It is live at UGX ' || to_char(price, 'FM999,999,999') || '.' end,
-      'builder.html?id=' || c.id, jsonb_build_object('course_id', c.id));
+      '/builder.html?id=' || c.id, jsonb_build_object('course_id', c.id));
   elsif p_decision = 'rejected' then
     if char_length(coalesce(trim(p_reason), '')) < 5 then raise exception 'give the tutor a reason (5+ characters)' using errcode = '22023'; end if;
     if c.status = 'pending_review' then
@@ -425,7 +425,7 @@ begin
     end if;
     update public.course_submissions set status = 'rejected', reason = left(p_reason, 2000), reviewed_by = me, reviewed_at = now() where id = s.id;
     perform app.notify(s.submitted_by, 'tutor.course_rejected', 'Changes needed: ' || c.title, left(p_reason, 500),
-      'builder.html?id=' || c.id, jsonb_build_object('course_id', c.id));
+      '/builder.html?id=' || c.id, jsonb_build_object('course_id', c.id));
   else
     raise exception 'decision must be approved or rejected' using errcode = '22023';
   end if;
@@ -527,7 +527,8 @@ end;
 $$;
 
 -- -------------------------------------------------------------- grants ----
-revoke execute on function app.course_tree(uuid), app.course_checklist(uuid), app.course_link_report(uuid) from anon;
+revoke execute on function app.course_tree(uuid), app.course_checklist(uuid), app.course_link_report(uuid) from public, anon, authenticated;
+grant execute on function app.link_verdict(text) to authenticated, service_role;
 revoke execute on function public.submit_course_for_review(uuid, text), public.withdraw_course_submission(uuid),
   public.reorder_course(uuid, uuid[], jsonb), public.grade_lesson_quiz(uuid, jsonb),
   public.admin_review_course_submission(uuid, text, text, bigint), public.admin_set_course_price(uuid, bigint),
