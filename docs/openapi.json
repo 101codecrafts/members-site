@@ -832,6 +832,158 @@
         }
       }
     },
+    "/api/v1/admin/course-submissions/{id}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "GET: one submission with its snapshot (preview of exactly what was submitted).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "GET: one submission with its snapshot (preview of exactly what was submitted).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/course-submissions": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "GET ?status=pending|approved|rejected|withdrawn: the course approval queue (oldest first for pending).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/courses/{id}/price": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "POST {price_ugx}: admin makes any course free (0) or paid (>= UGX 1,000). Audited.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/admin/courses/{id}/pricing": {
       "post": {
         "tags": [
@@ -1535,6 +1687,47 @@
         }
       }
     },
+    "/api/v1/admin/payment-providers/{code}": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "ROOT admin switches a provider on/off or reorders it. Stubs and slots can never be enabled (DB check).",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/admin/payouts/{id}": {
       "post": {
         "tags": [
@@ -1734,6 +1927,78 @@
           "admin"
         ],
         "summary": "Plans + prices + limits as stored in the database (r11 plans branch: plan_tiers + subscription_plans).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/price-requests/{id}": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Approve or reject a tutor's price request; approval sets the course price. Scope: approvals (also enforced in SQL, 20261105040000).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/price-requests": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Tutor price requests waiting for review (?status=pending|approved|rejected; anything else = pending).",
         "security": [
           {
             "clerkSession": []
@@ -2943,6 +3208,130 @@
         }
       }
     },
+    "/api/v1/auth/onboarding/draft": {
+      "put": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Save-and-resume for the multi-step /auth flow (minors: only the minimum is kept server-side before consent).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/onboarding": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Finish the /auth flow for the chosen path (guest | learner | tutor). Strict schema: any extra key (e.g. \"role\") is rejected with 400, and the server alone decides what the path grants. Disposable emai",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/session": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "The signed-in user's role, plan, minor/consent state, onboarding progress and where to land. The role is computed server-side from user_roles + the verified Clerk email (never from the request). 401 w",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/billing/checkout": {
+      "post": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Plan upgrade checkout. Body names plan + interval + method only; the DB computes the amount (SR-17).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/certificates/verify/{code}": {
       "get": {
         "tags": [
@@ -3169,6 +3558,47 @@
         ],
         "security": [],
         "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/courses/{slug}/syllabus": {
+      "get": {
+        "tags": [
+          "courses"
+        ],
+        "summary": "Lesson list with lock state for the caller (titles only for locked lessons) + can_enroll verdict. Signed-in only.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"
@@ -3500,6 +3930,47 @@
         "summary": "POST /api/v1/errors",
         "security": [],
         "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/events/{id}/attendees": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Organiser view: who registered for an event and who checked in. The event's creator or an admin only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"
@@ -3958,7 +4429,32 @@
         "tags": [
           "guardian"
         ],
-        "summary": "GET /api/v1/guardian/verify",
+        "summary": "Guardian consent (Uganda DPPA 2019 s.8). Round 11 integrate (audit P1-11):  - GET (the link in the guardian's email) changes NOTHING. Mail scanners and link previews fetch links on their own,    so it",
+        "security": [],
+        "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "guardian"
+        ],
+        "summary": "Guardian consent (Uganda DPPA 2019 s.8). Round 11 integrate (audit P1-11):  - GET (the link in the guardian's email) changes NOTHING. Mail scanners and link previews fetch links on their own,    so it",
         "security": [],
         "x-auth": "public",
         "responses": {
@@ -3988,6 +4484,37 @@
         "summary": "GET /api/v1/health",
         "security": [],
         "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/integrations": {
+      "get": {
+        "tags": [
+          "integrations"
+        ],
+        "summary": "Meeting providers for live sessions: Jitsi always available; Google Meet / Zoom / Teams show whether an account is linked (connecting is not built yet).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"
@@ -4065,6 +4592,37 @@
         }
       }
     },
+    "/api/v1/learner/dashboard": {
+      "get": {
+        "tags": [
+          "learner"
+        ],
+        "summary": "GET: the signed-in learner's own dashboard (enrolments + progress, certificates, saved, sessions, plan). Real rows only.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/lessons/{id}/complete": {
       "post": {
         "tags": [
@@ -4087,6 +4645,47 @@
           }
         ],
         "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/lessons/{id}/quiz": {
+      "post": {
+        "tags": [
+          "lessons"
+        ],
+        "summary": "POST {answers:[optionIndex,...]}: graded in the database; answer keys never reach the browser.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"
@@ -4954,6 +5553,37 @@
         }
       }
     },
+    "/api/v1/me/badges": {
+      "get": {
+        "tags": [
+          "me"
+        ],
+        "summary": "Your own badges (shown on your private profile even when the profile is not public). RLS: user_badges_select.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/me/certificates": {
       "get": {
         "tags": [
@@ -5017,11 +5647,69 @@
       }
     },
     "/api/v1/me/delete": {
+      "get": {
+        "tags": [
+          "me"
+        ],
+        "summary": "DPPA 2019 right to erasure. POST queues the request (processed by the daily job after a 24 h cool-off), GET shows the  open request, DELETE cancels it during the cool-off. Secured (round 11):   - type",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
       "post": {
         "tags": [
           "me"
         ],
-        "summary": "DPPA 2019 right to erasure: queued, processed by the daily job after a 24 h cool-off.",
+        "summary": "DPPA 2019 right to erasure. POST queues the request (processed by the daily job after a 24 h cool-off), GET shows the  open request, DELETE cancels it during the cool-off. Secured (round 11):   - type",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "me"
+        ],
+        "summary": "DPPA 2019 right to erasure. POST queues the request (processed by the daily job after a 24 h cool-off), GET shows the  open request, DELETE cancels it during the cool-off. Secured (round 11):   - type",
         "security": [
           {
             "clerkSession": []
@@ -5107,6 +5795,37 @@
         }
       }
     },
+    "/api/v1/me/entitlements": {
+      "get": {
+        "tags": [
+          "me"
+        ],
+        "summary": "The caller's round-11 role, learner + tutor plans, live limits, usage and subscriptions.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/me/export": {
       "get": {
         "tags": [
@@ -5150,6 +5869,37 @@
           }
         ],
         "x-auth": "user",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/me/item-use": {
+      "post": {
+        "tags": [
+          "me"
+        ],
+        "summary": "Records that the caller opened a book/resource/external course through 101 (the evidence item ratings need).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"
@@ -5886,12 +6636,66 @@
         }
       }
     },
+    "/api/v1/payments/providers": {
+      "get": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Secret-free provider list (code, name, status, methods, enabled, mode=sandbox).",
+        "security": [],
+        "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/payments/return": {
       "get": {
         "tags": [
           "payments"
         ],
         "summary": "Flutterwave redirect target. We never trust its query string: if a transaction id is present we re-verify server-side (same idempotent path as the webhook), then send the user back to the dashboard.",
+        "security": [],
+        "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/plans": {
+      "get": {
+        "tags": [
+          "plans"
+        ],
+        "summary": "Public plan catalogue: admin-edited UGX prices + limits, enabled providers/methods. Sandbox mode only.",
         "security": [],
         "x-auth": "public",
         "responses": {
@@ -6536,6 +7340,37 @@
         }
       }
     },
+    "/api/v1/ratings": {
+      "post": {
+        "tags": [
+          "ratings"
+        ],
+        "summary": "Rate a course (enrolled learners only) or a book/resource/external course (recorded use only). One per user per item, editable.",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/recommendations": {
       "get": {
         "tags": [
@@ -6729,7 +7564,7 @@
         "tags": [
           "sessions"
         ],
-        "summary": "GET /api/v1/sessions/{id}/join",
+        "summary": "GET (legacy): the private link for the tutor / a confirmed booker. POST (sessions.html): { provider, url, embed } via the meeting when one exists.",
         "parameters": [
           {
             "name": "id",
@@ -6740,6 +7575,117 @@
             }
           }
         ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "GET (legacy): the private link for the tutor / a confirmed booker. POST (sessions.html): { provider, url, embed } via the meeting when one exists.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/sessions/{id}": {
+      "get": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "One live session (RLS-scoped), same shape as a GET /api/v1/sessions item.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "member",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/sessions": {
+      "get": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Live sessions the caller can see (upcoming or live now), with the meeting provider, the caller's role and booking. Real rows only.",
         "security": [
           {
             "clerkSession": []
@@ -7032,12 +7978,213 @@
         }
       }
     },
+    "/api/v1/tutor/courses/{id}/modules": {
+      "post": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "POST: add a module at the end of the course. Ownership + in-review lock enforced by RLS and the DB guard.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/courses/{id}/price-request": {
+      "post": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "Tutor asks for a price (or free). Goes to the admin approval queue; the course price changes only on approval.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/courses/{id}/reorder": {
+      "post": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "POST {modules:[ids], lessons:{moduleId:[ids]}}: reorder modules and move/reorder lessons in one transaction.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/tutor/courses/{id}": {
+      "get": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "GET: full builder tree (course, modules -> lessons, quiz keys, submission history). Owner only (RLS).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
       "patch": {
         "tags": [
           "tutor"
         ],
-        "summary": "PATCH /api/v1/tutor/courses/{id}",
+        "summary": "GET: full builder tree (course, modules -> lessons, quiz keys, submission history). Owner only (RLS).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "GET: full builder tree (course, modules -> lessons, quiz keys, submission history). Owner only (RLS).",
         "parameters": [
           {
             "name": "id",
@@ -7078,7 +8225,48 @@
         "tags": [
           "tutor"
         ],
-        "summary": "POST /api/v1/tutor/courses/{id}/submit",
+        "summary": "POST: Submit for review. The DB runs the checklist + link report and adds the course to the admin queue.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/courses/{id}/withdraw": {
+      "post": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "POST: withdraw a pending submission; an in-review course goes back to Draft so it can be edited.",
         "parameters": [
           {
             "name": "id",
@@ -7119,7 +8307,7 @@
         "tags": [
           "tutor"
         ],
-        "summary": "GET /api/v1/tutor/courses",
+        "summary": "GET: the tutor's own courses (any status). POST: create a draft (price is a request; admins set the live price).",
         "security": [
           {
             "clerkSession": []
@@ -7148,7 +8336,7 @@
         "tags": [
           "tutor"
         ],
-        "summary": "POST /api/v1/tutor/courses",
+        "summary": "GET: the tutor's own courses (any status). POST: create a draft (price is a request; admins set the live price).",
         "security": [
           {
             "clerkSession": []
@@ -7180,6 +8368,207 @@
           "tutor"
         ],
         "summary": "GET /api/v1/tutor/dashboard",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/lessons/{id}": {
+      "patch": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "PATCH: replace a lesson's content (send the full lesson, same shape as create). Edits to a live course stay hidden until approved.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "PATCH: replace a lesson's content (send the full lesson, same shape as create). Edits to a live course stay hidden until approved.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/modules/{id}/lessons": {
+      "post": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "POST: add a lesson (video | book | text | file | quiz) to a module. Quiz answers go to lesson_quiz_keys, never the lesson.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/modules/{id}": {
+      "patch": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "DELETE: removes the module and its lessons (cascade).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "tutor",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tutor"
+        ],
+        "summary": "DELETE: removes the module and its lessons (cascade).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [
           {
             "clerkSession": []
@@ -7358,6 +8747,43 @@
           "webhooks"
         ],
         "summary": "POST /api/v1/webhooks/flutterwave",
+        "security": [],
+        "x-auth": "webhook-signature",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/webhooks/payments/{provider}": {
+      "post": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Generic provider webhook slot: /api/v1/webhooks/payments/{provider}. Flutterwave reuses the verified handler (signature + /verify re-fetch, SR-16). Other providers are stubs this round and answer 501 ",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [],
         "x-auth": "webhook-signature",
         "responses": {
