@@ -25,7 +25,7 @@ test('auth-flow field(): label holds only the name; hint + error outside it, lin
 });
 test('theme toggle keeps a 44 px touch target; organiser button respects [hidden]', () => {
   assert.ok(rd('css/app.css').includes('html:not(.static) .cc-toolbar #cc-theme{flex:none;min-width:var(--touch-min-target,44px)'));
-  assert.ok(rd('css/feed.css').includes('#org-btn[hidden]{display:none!important}'));
+  assert.ok(rd('css/feed.css').includes('html:not(.static) #org-btn[hidden]{display:none!important}'));
 });
 test('events.html carries the standard app footer like the other feed pages', () => {
   for (const f of ['events.html', 'news.html', 'opportunities.html']) assert.match(rd(f), /<footer class="flow-foot">/, f);
