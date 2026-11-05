@@ -63,6 +63,12 @@ export async function createProviderMeeting(provider: ProviderId, m: MeetingInpu
 }
 
 /** Zoom webhook signature: x-zm-signature = v0=HMAC_SHA256(secret, `v0:${ts}:${body}`), ts within 5 min. */
+/** Zoom url_validation plain tokens are short base64url strings. Anything else (e.g. containing ':') is refused so the
+ *  validation reply can never be used to sign a "v0:<ts>:<body>" message (R12-SEC-03). */
+export function zoomPlainTokenOk(t: unknown): t is string {
+  return typeof t === 'string' && /^[A-Za-z0-9_-]{8,128}$/.test(t);
+}
+
 export function verifyZoomSignature(body: string, ts: string | null, sig: string | null, secret: string | undefined, now = Date.now()): boolean {
   if (!secret || !ts || !sig) return false;
   if (Math.abs(now - Number(ts) * 1000) > 300_000) return false;

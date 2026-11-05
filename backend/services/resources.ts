@@ -16,9 +16,10 @@ export async function rehostImage(src: string | null, bucket: 'resource-thumbs',
     const res = await safeFetch(src, { accept: /^image\/(png|jpe?g|webp|gif)/i, maxBytes: 2 * 1024 * 1024 });
     const ext = res.contentType.includes('png') ? 'png' : res.contentType.includes('webp') ? 'webp' : res.contentType.includes('gif') ? 'gif' : 'jpg';
     const path = `${keyPrefix}.${ext}`;
-    const bytes = Buffer.from(res.body, 'binary');
-    // safeFetch decodes as utf8 for HTML; fetch raw bytes for images
-    const raw = await fetch(res.url, { signal: AbortSignal.timeout(5000) }).then((r) => r.arrayBuffer()).catch(() => bytes);
+    // r12 (R12-SEC-05): use the bytes safeFetch already read through the SSRF guard. The old second, unguarded
+    // fetch(res.url) followed redirects freely (e.g. to an internal address) and re-hosted whatever came back publicly.
+    const raw = res.bytes;
+    if (!raw.length) return null;
     const db = serviceClient();
     const up = await db.storage.from(bucket).upload(path, raw, { contentType: res.contentType.split(';')[0], upsert: true });
     if (up.error) return null;
