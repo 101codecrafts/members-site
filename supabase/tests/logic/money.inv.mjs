@@ -310,4 +310,35 @@ export const tests = [
     }
     must(bad.length === 0, `vendor allowed: ${bad.join(', ')} (paid->delivered starts the 7-day auto-release clock with no shipment; shipped->processing rewinds tracking).`);
   }),
+  // ---------------------------------------------------------------- M6 -----
+  inv('M6', 'a late "successful" webhook after a "failed" one never leaves captured money without a live order', async (db) => {
+    const s = await digitalShop(db);
+    await as(db, U.alice);
+    await q(db, `insert into public.mkt_cart_items (user_id, product_id, qty) values ($1,$2,1)`, [U.alice, s.product]);
+    const co = (await one(db, `select public.mkt_checkout('{}'::jsonb) c`)).c;
+    await as(db, 'service');
+    await q(db, `select public.apply_flutterwave_payment($1, null, 'failed', 0, 'UGX')`, [co.tx_ref]);
+    await q(db, `select public.apply_flutterwave_payment($1, $2, 'successful', $3, 'UGX', 'mobilemoneyug')`, [co.tx_ref, ++flw, co.amount_ugx]);
+    await as(db, 'postgres');
+    const p = await one(db, `select status from public.payments where tx_ref=$1`, [co.tx_ref]);
+    const o = await one(db, `select status from public.mkt_orders where group_id=$1`, [co.group_id]);
+    const esc = await accountBal(db, 'platform:escrow_marketplace');
+    must(!(p.status === 'successful' && !['paid', 'delivered', 'completed'].includes(o.status)),
+      `payment '${p.status}' (UGX ${co.amount_ugx} captured, escrow balance ${esc}) but the order stays '${o.status}': failed->successful is allowed by apply_payment_internal, `
+      + `while mkt_fulfil only advances orders still in 'pending_payment' (the failure already cancelled them). The money has no order to release or refund against.`);
+  }),
+  // ---------------------------------------------------------------- S5 -----
+  inv('S5', 'marketplace v2 order leaves pending_payment when its payment fails/abandons (no dead state)', async (db) => {
+    const s = await digitalShop(db);
+    await as(db, U.alice);
+    await q(db, `insert into public.mkt_cart_items (user_id, product_id, qty) values ($1,$2,1)`, [U.alice, s.product]);
+    const co = (await one(db, `select public.mkt_checkout('{}'::jsonb) c`)).c;
+    await as(db, 'service');
+    await q(db, `select public.apply_flutterwave_payment($1, null, 'failed', 0, 'UGX')`, [co.tx_ref]);
+    await as(db, 'postgres');
+    const o = await one(db, `select status from public.mkt_orders where group_id=$1`, [co.group_id]);
+    const cart = Number((await one(db, `select count(*) n from public.mkt_cart_items where user_id=$1`, [U.alice])).n);
+    must(o.status !== 'pending_payment', `payment failed but the v2 order is still '${o.status}' with no transition out (apply_payment_internal cancels only the legacy marketplace_orders row); `
+      + `the cart was already emptied (${cart} items) and any mkt_coupons.used increment is never returned.`);
+  }),
 ];
