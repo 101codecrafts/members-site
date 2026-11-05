@@ -179,9 +179,6 @@
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email) || email.length > 254) { setErr("email", "Enter a valid email address."); return firstErrorFocus(); }
     busy(btn, true); S.email = email;
     try {
-      // same backend temp-mail guard as the Clerk webhook (skipped silently if the API isn't reachable; Clerk blocks disposable domains too)
-      try { var v = await api("POST", "/auth/email-check", { email: email });
-        if (v && v.ok === false) { busy(btn, false); setErr("email", v.reason === "disposable" ? "Temporary or disposable email addresses aren't allowed. Please use your own email." : "This email address can't be used. Try another one."); return firstErrorFocus(); } } catch (x) { if (x.status === 429) throw x; }
       var c = await clerk(); if (!c) throw new Error("Sign-in is unavailable right now. Check your connection and try again.");
       await startCode(c, email);
     } catch (err) { busy(btn, false); setErr("email", clerkMsg(err, err.message || "Something went wrong.")); firstErrorFocus(); }
@@ -196,6 +193,10 @@
     } catch (err) {
       var code = err && err.errors && err.errors[0] && err.errors[0].code;
       if (code !== "form_identifier_not_found") throw err;
+      // NEW account: the same backend temp-mail guard as the Clerk webhook (skipped only if the API is unreachable; Clerk blocks disposable domains too)
+      try { var v = await api("POST", "/auth/email-check", { email: email });
+        if (v && v.ok === false) throw { errors: [{ code: "email_guard", longMessage: v.reason === "disposable" ? "Temporary or disposable email addresses aren't allowed. Please use your own email." : v.reason === "subaddress" ? "Use your plain email address, without a +tag." : "This email address can't be used. Try another one." }] };
+      } catch (x) { if (x && x.errors) throw x; if (x && x.status === 429) throw x; }
       var su;
       try { su = await c.client.signUp.create({ emailAddress: email }); }
       catch (e2) { var c2 = e2 && e2.errors && e2.errors[0]; if (c2 && /password/.test((c2.meta && c2.meta.paramName) || c2.code || "")) su = await c.client.signUp.create({ emailAddress: email, password: randomPassword() }); else throw e2; }
