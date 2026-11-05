@@ -148,3 +148,27 @@ Server code wraps any model call with `reserveAi(userId, feature, estTokens)` �
 - Opportunities / events feed ingestion (Opportunity Desk, Opportunities For Africans, After School Africa, BrighterMonday/Fuzu, GDG Bevy, Luma, Meetup, Eventbrite, MLH, Devpost): **TODO-CONFIRM** feed URLs and terms/robots; link out only.
 - Marketplace: Flutterwave refund execution for `refunds_payable`; affiliate tags once programmes approve; vendor payouts reuse `request_payout`.
 - AI: add a model-based moderation pass via the gateway (regex guard is the first line only).
+
+## Course builder + dashboards (round 11, r11/dash-api)
+
+Migration `supabase/migrations/20261105020000_course_builder.sql` (NOT applied; tests: `supabase/tests/course_builder.test.mjs`, 7 cases; whole suite 71/71 via `node supabase/tests/local/pglite-run.mjs supabase` when no Postgres server is available).
+
+| Method | Path | Who | What |
+|---|---|---|---|
+| GET/POST | `/api/v1/tutor/courses` | verified tutor | list own courses / create a draft (`pricing: {mode:'free'} \| {mode:'paid', price_ugx>=1000}` is stored as `requested_price_ugx`) |
+| GET/PATCH/DELETE | `/api/v1/tutor/courses/:id` | owner | builder tree (modules → lessons, quiz keys, submission history) / edit details / soft-delete draft or rejected |
+| POST | `/api/v1/tutor/courses/:id/modules` | owner | add module |
+| PATCH/DELETE | `/api/v1/tutor/modules/:id` | owner | rename / delete (cascades lessons) |
+| POST | `/api/v1/tutor/modules/:id/lessons` | owner | add lesson: `kind` = `video` (`youtube` url or id → `payload.youtube_id`, played via youtube-nocookie), `book` (`isbn` with check digit and/or https `url`), `text` (`content_md`), `file` (https `url`), `quiz` (`questions[{q, options[], answer}]`; answers stored in `lesson_quiz_keys`) |
+| PATCH/DELETE | `/api/v1/tutor/lessons/:id` | owner | replace / delete lesson |
+| POST | `/api/v1/tutor/courses/:id/reorder` | owner | `{modules:[ids], lessons:{moduleId:[ids]}}` |
+| POST | `/api/v1/tutor/courses/:id/submit` | owner | Submit for review → checklist + link report → `course_submissions` (kind new/update/price) |
+| POST | `/api/v1/tutor/courses/:id/withdraw` | owner | withdraw pending submission (in-review course → Draft) |
+| POST | `/api/v1/lessons/:id/quiz` | can see lesson | server-side grading `{answers:[i...]}` |
+| GET | `/api/v1/admin/course-submissions?status=` | admin | approval queue with checklist + link report |
+| GET/POST | `/api/v1/admin/course-submissions/:id` | admin | snapshot preview / `{decision, reason (required for reject), price_ugx?}` |
+| POST | `/api/v1/admin/courses/:id/price` | admin | make any course free (0) or paid (≥1000) |
+| GET | `/api/v1/learner/dashboard` | signed in | `learner_dashboard()` — enrolments + progress + next lesson, counts, certificates, saved, sessions, streak, plan |
+| GET | `/api/v1/tutor/dashboard` | verified tutor | extended `tutor_dashboard()` — adds `kpis`, `learners`, `payouts`, per-course review state |
+
+Rules in the database: tutors never set `is_free`/`price_ugx` or move a course into/out of review by hand; content is locked while in review; tutor edits set `approved=false` and learners only see approved lessons/modules, so updates to a live course stay hidden until approved; a rejection needs a reason (≥5 chars) and notifies the tutor.
