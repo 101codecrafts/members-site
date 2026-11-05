@@ -1753,6 +1753,7 @@ html.role-visitor .shell .sbar,html.role-visitor .sb-scrim,html.role-visitor .to
 .shell .sb-nav .sb-upgrade:hover{background:#fc8c0c;color:#0B1236;transform:translate(-1px,-1px)}
 html.sb-collapsed .shell .sb-nav .sb-upgrade span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .sbar [hidden],.role-tabs [hidden]{display:none!important}
+.shell .sb-nav .sb-upgrade span{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}
 
 /* ==== Recent activity: like / comment / share (js/activity.js). Live dashboard only; existing tokens only. ==== */
 html:not(.static) .app.dz .act.act-live{grid-template-areas:"img b b" "img who who" "q q q" "ago ago ago" "bar bar bar" "gate gate gate" "thr thr thr";grid-template-rows:auto auto 1fr auto auto auto auto}
