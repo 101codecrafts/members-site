@@ -166,6 +166,13 @@ create trigger profiles_root_guard before update or delete on public.profiles fo
 create or replace function app.guard_root_email()
 returns trigger language plpgsql set search_path = '' as $$
 begin
+  -- integrate r11 (superset of the auth migration's rule): root's email can't be changed away while it holds
+  -- super_admin, not even by the service role or postgres. Only the documented break-glass rebind may.
+  if tg_op = 'UPDATE' and lower(coalesce(old.email,'')) = app.root_email() and lower(coalesce(new.email,'')) <> app.root_email()
+     and coalesce(current_setting('app.break_glass', true), '') <> 'rebind-root'
+     and exists (select 1 from public.user_roles ur where ur.user_id = old.user_id and ur.role::text = 'super_admin') then
+    raise exception 'root account email is fixed' using errcode = '42501';
+  end if;
   if app.is_privileged() then return new; end if;
   if lower(coalesce(new.email, '')) = app.root_email() and new.user_id is distinct from app.root_user_id() then
     raise exception 'that email belongs to the root account' using errcode = '42501';

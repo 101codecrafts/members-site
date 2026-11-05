@@ -207,9 +207,9 @@ create policy course_modules_write on public.course_modules for all to authentic
 drop policy if exists lessons_select on public.lessons;
 create policy lessons_select on public.lessons for select to anon, authenticated using (
   (select app.is_admin()) or app.owns_course(course_id)
-  or (approved and exists (select 1 from public.courses c where c.id = course_id and c.status = 'published'
-                           and c.deleted_at is null and app.age_ok(c.age_rating))
-      and (is_preview or app.is_enrolled(course_id))));
+  -- integrate r11: approved lessons only, AND the plans branch's lock rule (app.can_view_lesson: published course,
+  -- age rating, preview / enrolment, plan tier vs lesson_min_plan, bought courses fully open)
+  or (approved and app.can_view_lesson(id)));
 
 drop policy if exists lesson_quiz_keys_owner on public.lesson_quiz_keys;
 create policy lesson_quiz_keys_owner on public.lesson_quiz_keys for all to authenticated
