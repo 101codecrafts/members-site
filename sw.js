@@ -1,7 +1,7 @@
 /* 101 Codecrafts service worker — cached app shell + offline fallback.
    Strategy: HTML = network-first (falls back to cache, then offline.html); static assets = stale-while-revalidate;
    API and cross-origin requests are never cached here (except CDN libraries pinned by version). Small cache for mobile data. */
-const VERSION = "cc-v25";   // r11 deploy QA: dark account-menu text readable; index latest = real feed or empty; access.js once
+const VERSION = "cc-v26-ai";   // r12 ai: 101 AI general assistant (code blocks, tables, maths, retry) + real Explain route; feed-api explain 50 s timeout
 const SHELL = ["./", "index.html", "dashboard.html", "offline.html", "404.html", "courses.html", "resources.html", "news.html", "course.html",
   "css/bundle-app.css", "css/bundle-dashboard.css", "css/bundle-landing.css", "css/bundle-theme.css", "css/courses.css", "css/dashboard.fit.css", "css/landing.fit.css",
   "js/data.js", "js/api.js", "js/shell.js", "js/dash-layout.js", "js/activity.js", "js/share.js", "js/ui.js", "js/motion.js", "js/era.js", "js/site-stats.js", "js/site-social.js", "js/pages.js", "js/access.js", "js/account.js", "js/bg.js", "js/bg-paint.js", "js/bg-worker.js", "js/ai.js", "js/ai-float.js", "js/ai-mascot.min.js", "js/ai-voice.min.js", "js/ai-voice-ui.min.js", "js/loops.js", "js/loops/tunnel.js", "js/loops/truchet.js", "js/loops/halftone.js", "js/loops/contour.js", "js/loops/cubes.js", "js/loops/bauhaus.js", "js/loaders.min.js",
