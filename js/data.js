@@ -289,35 +289,7 @@ window.CC_DATA = {
     { key: "whatsapp", label: "WhatsApp Channel / Group", icon: "wa", url: "", active: false },
     { key: "telegram", label: "Telegram", icon: "tg", url: "", active: false },
     { key: "github", label: "GitHub", icon: "gh", url: "https://github.com/101codecrafts", active: false }
-  ],
-
-  /* ---------------- Tutor ---------------- */
-  tutor: {
-    name: "Demo Tutor",
-    kpis: [
-      { label: "Active Learners", value: 312 }, { label: "Courses", value: 4 },
-      { label: "Earnings (UGX, Nov)", value: 1920000, money: true }, { label: "Avg. Rating", value: "4.8 ★" }
-    ],
-    courses: [
-      { title: "Deploying Next.js on Vercel", learners: 128, status: "Pending approval", completion: 0 },
-      { title: "Log Analysis with Python", learners: 96, status: "Published", completion: 54 },
-      { title: "Git & GitHub for Teams", learners: 64, status: "Published", completion: 71 },
-      { title: "REST APIs in Node.js", learners: 24, status: "Draft", completion: 0 }
-    ],
-    learners: [
-      { name: "Sarah Namubiru", course: "Log Analysis with Python", progress: 82, last: "2h ago" },
-      { name: "Ivan Mugisha", course: "Git & GitHub for Teams", progress: 45, last: "1d ago" },
-      { name: "Esther Akello", course: "Log Analysis with Python", progress: 23, last: "3d ago" },
-      { name: "Paul Wasswa", course: "Git & GitHub for Teams", progress: 100, last: "5h ago" }
-    ],
-    payouts: [
-      { id: "po1", amount: 850000, method: "MTN Mobile Money", status: "Pending", requested: "Nov 01" },
-      { id: "po-0007", amount: 640000, method: "MTN Mobile Money", status: "Paid", requested: "Oct 15" }
-    ],
-    sessions: [
-      { d: "04", m: "NOV", title: "1:1 — Ivan Mugisha", meta: "Git branching · 4:00 PM EAT" },
-      { d: "06", m: "NOV", title: "Group Q&A — Log Analysis", meta: "12 learners · 7:00 PM EAT" },
-      { d: "16", m: "NOV", title: "Web Development Workshop (co-host)", meta: "Online · 10:00 AM EAT" }
-    ]
-  }
+  ]
+  /* Tutor demo numbers were removed in round 11: the tutor dashboard shows real data only. The labelled demo set
+     (admins only, ?demo=1) lives in js/dash-demo.js. */
 };

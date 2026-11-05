@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tutor · 101 Codecrafts</title>
-<meta name="description" content="Your 101 Codecrafts tutor space: courses, learner progress, earnings, payouts and sessions.">
+<title>Tutor dashboard · 101 Codecrafts</title>
+<meta name="description" content="Your 101 Codecrafts tutor space: your courses and their review status, learners, sessions, earnings and payouts.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://101codecrafts.github.io/members-site/tutor.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="101 Codecrafts">
-<meta property="og:title" content="Tutor · 101 Codecrafts"><meta property="og:description" content="Your 101 Codecrafts tutor space: courses, learner progress, earnings, payouts and sessions.">
+<meta property="og:title" content="Tutor dashboard · 101 Codecrafts"><meta property="og:description" content="Your 101 Codecrafts tutor space: your courses and their review status, learners, sessions, earnings and payouts.">
 <meta property="og:url" content="https://101codecrafts.github.io/members-site/tutor.html"><meta property="og:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="theme-color" content="#0B1236">
@@ -19,6 +19,7 @@
 <link rel="preload" href="assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://101codecrafts.github.io/members-site/#org", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", "https://github.com/101codecrafts", "https://github.com/101codecrafts-ug"]}</script>
+<link rel="stylesheet" href="css/dash.css">
 <link rel="stylesheet" href="css/bundle-app.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
 </head>
@@ -102,7 +103,7 @@
     <a class="sb-logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="57" height="32"><span class="sb-word"><b>101 Codecrafts</b><small>Build. Learn. Grow.</small></span><span class="sr-only">101 Codecrafts home</span></a>
     <button type="button" class="sb-toggle" data-sb-toggle aria-controls="sbar" aria-expanded="true" aria-label="Collapse sidebar"><svg aria-hidden="true"><use href="#i-panel"/></svg></button>
   </div>
-  <nav class="sb-nav" aria-label="Main"><div class="sb-sec"><h2 class="sb-h">Teach</h2><a href="tutor.html" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Overview</span></a><a href="tutor.html#courses"><svg aria-hidden="true"><use href="#i-cap"/></svg><span>My Courses</span></a><a href="tutor.html#learners"><svg aria-hidden="true"><use href="#i-users"/></svg><span>My Learners</span></a><a href="sessions.html"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Sessions</span></a><a href="tutor.html#earnings"><svg aria-hidden="true"><use href="#i-cash"/></svg><span>Earnings &amp; Payouts</span></a></div><div class="sb-sec"><h2 class="sb-h">Explore</h2><a href="courses.html"><svg aria-hidden="true"><use href="#i-learning"/></svg><span>Courses</span></a><a href="learn.html"><svg aria-hidden="true"><use href="#i-openbook"/></svg><span>Learn</span></a><a href="practice.html"><svg aria-hidden="true"><use href="#i-codebox"/></svg><span>Practice</span></a><a href="ai-tools.html"><svg aria-hidden="true"><use href="#i-brain"/></svg><span>AI Tools</span></a><a href="resources.html"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Library</span></a></div><div class="sb-sec"><h2 class="sb-h">Stay updated</h2><a href="news.html"><svg aria-hidden="true"><use href="#i-doc"/></svg><span>Daily News</span></a><a href="opportunities.html"><svg aria-hidden="true"><use href="#i-briefcase"/></svg><span>Opportunities</span></a><a href="events.html"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Events &amp; Meetups</span></a><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a></div><div class="sb-sec"><h2 class="sb-h">Your space</h2><a href="card.html"><svg aria-hidden="true"><use href="#i-badge"/></svg><span>Member card</span></a><a href="settings-apps.html"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></a></div></nav>
+  <nav class="sb-nav" aria-label="Main"><div class="sb-sec"><h2 class="sb-h">Teach</h2><a href="tutor.html" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Overview</span></a><a href="tutor.html#courses"><svg aria-hidden="true"><use href="#i-cap"/></svg><span>My Courses</span></a><a href="builder.html"><svg aria-hidden="true"><use href="#i-plusc"/></svg><span>Course builder</span></a><a href="tutor.html#learners"><svg aria-hidden="true"><use href="#i-users"/></svg><span>My Learners</span></a><a href="sessions.html"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Sessions</span></a><a href="tutor.html#earnings"><svg aria-hidden="true"><use href="#i-cash"/></svg><span>Earnings &amp; Payouts</span></a></div><div class="sb-sec"><h2 class="sb-h">Explore</h2><a href="courses.html"><svg aria-hidden="true"><use href="#i-learning"/></svg><span>Courses</span></a><a href="learn.html"><svg aria-hidden="true"><use href="#i-openbook"/></svg><span>Learn</span></a><a href="practice.html"><svg aria-hidden="true"><use href="#i-codebox"/></svg><span>Practice</span></a><a href="ai-tools.html"><svg aria-hidden="true"><use href="#i-brain"/></svg><span>AI Tools</span></a><a href="resources.html"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Library</span></a></div><div class="sb-sec"><h2 class="sb-h">Stay updated</h2><a href="news.html"><svg aria-hidden="true"><use href="#i-doc"/></svg><span>Daily News</span></a><a href="opportunities.html"><svg aria-hidden="true"><use href="#i-briefcase"/></svg><span>Opportunities</span></a><a href="events.html"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Events &amp; Meetups</span></a><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a></div><div class="sb-sec"><h2 class="sb-h">Your space</h2><a href="card.html"><svg aria-hidden="true"><use href="#i-badge"/></svg><span>Member card</span></a><a href="settings-apps.html"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></a></div></nav>
   <div class="sb-foot"><a class="sb-wa" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>
 </div>
 <div class="sb-scrim" data-sb-scrim hidden></div>
@@ -131,39 +132,23 @@
   </div>
 </header>
 <main id="main" class="content">
+  <div id="t-bars"></div>
   <div class="page-h">
-    <div><div class="kicker">Tutor space</div><h1>WELCOME BACK, DAVID</h1><p>Your courses, your learners and what you have earned this month.</p></div>
-    <div class="row"><button class="btn or" id="new-course"><svg><use href="#i-plusc"/></svg>New course</button><a class="btn" href="#" data-wa-share="Learn with me on 101 Codecrafts:"><svg><use href="#i-wa"/></svg>Share profile</a></div>
+    <div><div class="kicker">Tutor space</div><h1 id="t-hello">WELCOME</h1><p>Build courses, send them for review, and follow your learners and earnings.</p></div>
+    <div class="row">
+      <a class="btn or" href="builder.html" id="t-create-course" data-can="course.build"><svg aria-hidden="true"><use href="#i-plusc"/></svg>Create course</a>
+      <a class="btn" href="builder.html?add=lesson" id="t-create-lesson" data-can="course.build"><svg aria-hidden="true"><use href="#i-doc"/></svg>Create lesson</a>
+    </div>
   </div>
-  <section id="t-kpis" class="grid g4" aria-label="Key numbers"></section>
+  <section id="t-kpis" class="dash-kpis" aria-label="Key numbers" aria-busy="true"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading your numbers…</span></div></section>
   <section class="grid g2">
-    <div class="card" id="courses"><div class="sec-title"><h2>MY COURSES</h2></div><div class="tbl-wrap"><table class="t" id="tb-tc"><thead><tr><th>Course</th><th>Learners</th><th>Status</th><th>Avg. completion</th></tr></thead><tbody></tbody></table></div></div>
-    <div class="card" id="sessions"><div class="sec-title"><h2>UPCOMING SESSIONS</h2><a class="btn sm cy" href="#" data-cal-link="101codecrafts">Open Cal.com</a></div><div class="list" id="ls-sessions"></div></div>
+    <div class="card" id="courses"><div class="sec-title"><h2>MY COURSES</h2><a class="viewall" href="builder.html" data-can="course.build">Open builder →</a></div><div id="t-courses"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading your courses…</span></div></div></div>
+    <div class="card" id="sessions"><div class="sec-title"><h2>UPCOMING SESSIONS</h2><a class="viewall" href="sessions.html">All sessions →</a></div><div id="t-sessions"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading sessions…</span></div></div></div>
   </section>
-  <section class="grid g2" id="add-content" aria-label="Add course content">
-    <div class="card"><div class="sec-title"><h2>ADD YOUTUBE LESSON</h2><a class="viewall" href="course.html">Open course player →</a></div>
-      <form id="yt-form" class="grid" style="gap:10px">
-        <label class="field">Course<select name="course"><option value="web-basics">Web Development Basics</option><option>Log Analysis with Python</option><option>Git &amp; GitHub for Teams</option></select></label>
-        <label class="field">YouTube link<input name="url" type="url" required placeholder="https://www.youtube.com/watch?v=…"></label>
-        <button class="btn or" type="submit">Preview video</button></form>
-      <div id="yt-prev" class="prev" hidden></div></div>
-    <div class="card"><div class="sec-title"><h2>ADD A BOOK</h2></div>
-      <form id="bk-form" class="grid" style="gap:10px">
-        <label class="field">ISBN or title<input name="q" required placeholder="9781593279509 or Eloquent JavaScript"></label>
-        <label class="field">Or a direct link (open textbook, PDF page)<input name="url" type="url" placeholder="https://…"></label>
-        <button class="btn or" type="submit">Find book</button></form>
-      <div id="bk-prev" class="prev" hidden></div></div>
-  </section>
-  <section class="card" id="learners"><div class="sec-title"><h2>MY LEARNERS' PROGRESS</h2></div><div class="tbl-wrap"><table class="t" id="tb-tl"><thead><tr><th>Learner</th><th>Course</th><th style="width:34%">Progress</th><th>Last active</th></tr></thead><tbody></tbody></table></div></section>
+  <section class="card" id="learners"><div class="sec-title"><h2>MY LEARNERS' PROGRESS</h2><span class="muted" id="t-cap"></span></div><div id="t-learners"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading learners…</span></div></div></section>
   <section class="grid g2" id="earnings">
-    <div class="card dark"><div class="sec-title"><h2 style="color:#fff">REQUEST A PAYOUT</h2></div>
-      <form class="grid" id="payout-form" style="gap:10px">
-        <p style="color:#d5dce2">Available balance: <b style="color:var(--or)" id="bal">UGX 1,070,000</b> · paid in 1–2 working days.</p>
-        <label class="field" style="color:#fff">Amount (UGX)<input type="number" name="amount" min="20000" step="1000" value="500000" required></label>
-        <label class="field" style="color:#fff">Method<select name="method"><option>MTN Mobile Money</option><option>Airtel Money</option><option>Bank transfer</option></select></label>
-        <button class="btn or">Request payout</button><p id="payout-msg" role="status" style="color:#d5dce2"></p>
-      </form></div>
-    <div class="card"><div class="sec-title"><h2>PAYOUT HISTORY</h2></div><div class="list" id="ls-payouts"></div></div>
+    <div class="card"><div class="sec-title"><h2>EARNINGS &amp; PAYOUTS</h2><a class="viewall" href="settings-apps.html">Payout settings →</a></div><div id="t-wallet"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading earnings…</span></div></div></div>
+    <div class="card"><div class="sec-title"><h2>PAYOUT HISTORY</h2></div><div id="t-payouts"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading payouts…</span></div></div></div>
   </section>
 </main>
 <footer class="flow-foot">
@@ -178,6 +163,7 @@
 <script src="js/site-stats.js" defer></script>
 <script src="js/api.js" defer></script>
 <script src="js/auth.js" defer></script>
+<script src="js/access.js" defer></script>
 <script src="js/share.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous" defer></script>
@@ -191,5 +177,7 @@
 <script src="js/bg.js" defer></script>
 <script src="js/ai.js" defer></script>
 <script src="js/loaders.min.js" defer></script>
+<script src="js/dash-common.js" defer></script>
+<script src="js/course-store.js" defer></script>
 <script src="js/tutor.js" defer></script>
 </body></html>

@@ -211,8 +211,8 @@
   };
 
   /* ---------- Tutor ---------- */
-  const T = () => D().tutor;
-  const fetchTutorOverview = async () => (await tryChain(() => backend("/tutor/overview"))) || T();
+  /* real data only (round 11): null when the API can't answer, never demo numbers. Dashboards use js/dash-common.js. */
+  const fetchTutorOverview = async () => tryChain(() => backend("/tutor/overview"));
   const requestPayout = (amount, method) => post("/tutor/payouts", { amount, method });
 
   /* ---------- Payments: Flutterwave Inline (test mode stub) ----------

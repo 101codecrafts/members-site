@@ -1,23 +1,101 @@
-/* Tutor view — data from CC_API.fetchTutorOverview(), payout requests via CC_API.requestPayout() */
+/* Tutor dashboard (round 11): real data only.
+   Sources: GET /api/v1/tutor/dashboard (kpis, courses, learners, wallet, payouts, upcoming_sessions);
+   the course list comes from CCCourses when the builder runs in local mode (no backend / QA), so a tutor always sees
+   the courses they built. Fresh account → zeros + empty states. ?demo=1 → labelled demo, admins only. */
 (async function () {
-  const { $, esc, ugx } = window.CC_UI, API = window.CC_API;
-  const t = await API.fetchTutorOverview(); const cls = ["or", "", "ink", "cy"];
-  $("#t-kpis").innerHTML = t.kpis.map((k, i) => `<div class="kpi ck-skin ${cls[i]}"><small>${esc(k.label)}</small><b>${k.money ? ugx(k.value) : esc(k.value)}</b></div>`).join("");
-  $("#tb-tc tbody").innerHTML = t.courses.map(c => `<tr><td><b>${esc(c.title)}</b></td><td>${c.learners}</td><td><span class="pill ${c.status.split(" ")[0]}">${esc(c.status)}</span></td><td>${c.completion ? c.completion + "%" : "—"}</td></tr>`).join("");
-  $("#tb-tl tbody").innerHTML = t.learners.map(l => `<tr><td><b>${esc(l.name)}</b></td><td>${esc(l.course)}</td><td><div class="row" style="flex-wrap:nowrap"><div class="prog" style="flex:1" role="progressbar" aria-valuenow="${l.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(l.name)} progress"><i style="width:${l.progress}%"></i></div><b>${l.progress}%</b></div></td><td>${esc(l.last)}</td></tr>`).join("");
-  $("#ls-sessions").innerHTML = t.sessions.map(s => `<div class="li"><span class="date"><span>${s.m}<br><b>${s.d}</b></span></span><div class="grow"><b>${esc(s.title)}</b><small>${esc(s.meta)}</small></div></div>`).join("");
-  $("#ls-payouts").innerHTML = t.payouts.map(p => `<div class="li"><div class="grow"><b>${ugx(p.amount)}</b><small>${esc(p.method)} · requested ${esc(p.requested)}</small></div><span class="pill ${p.status}">${esc(p.status)}</span></div>`).join("");
-  $("#payout-form").onsubmit = async e => { e.preventDefault(); const f = Object.fromEntries(new FormData(e.target)); const r = await API.requestPayout(+f.amount, f.method); $("#payout-msg").textContent = r ? "Payout requested." : `Request for ${ugx(+f.amount)} via ${f.method} saved — the payouts backend is not connected yet.`; };
-  $("#new-course").onclick = () => alert("Course builder opens here (POST /api/tutor/courses). Courses go to admin approval before publishing.");
-  /* ---- add YouTube lesson / book with live preview ---- */
-  $("#yt-form").onsubmit = async e => { e.preventDefault(); const f = e.target; const v = await API.fetchYouTubePreview(f.url.value.trim()); const box = $("#yt-prev"); box.hidden = false;
-    if (!v) { box.innerHTML = `<p class="vbad">That doesn't look like a YouTube link.</p>`; return; }
-    box.innerHTML = `<div class="li"><img src="${esc(v.thumb)}" alt="" width="160" height="90" style="object-fit:cover;border:2px solid var(--ink)" onerror="this.remove()"><div class="grow"><b>${esc(v.title)}</b><small>${esc(v.author || "YouTube")} · id ${esc(v.id)}</small></div></div>
-      <label class="field" style="margin-top:8px">Lesson title<input id="yt-title" value="${esc(v.title)}"></label><button class="btn ink" id="yt-add" style="margin-top:8px">Add to course</button><p role="status" id="yt-msg"></p>`;
-    $("#yt-add").onclick = async () => { const r = await API.addLessonVideo(f.course.value, { title: $("#yt-title").value, yt: v.id }); $("#yt-msg").textContent = r ? "Lesson added." : "Saved as draft — POST /api/tutor/courses/:id/lessons is not connected yet."; }; };
-  $("#bk-form").onsubmit = async e => { e.preventDefault(); const f = e.target; const box = $("#bk-prev"); box.hidden = false; box.innerHTML = "<p class='muted'>Looking up Open Library…</p>";
-    let b = await API.fetchBookPreview(f.q.value.trim()); if (!b && f.url.value) b = { title: f.q.value, author: "", cover: "", url: f.url.value, site: new URL(f.url.value).hostname };
-    if (!b) { box.innerHTML = `<p class="vbad">No match found. Paste a direct link instead.</p>`; return; }
-    box.innerHTML = `<div class="li">${b.cover ? `<img src="${esc(b.cover)}" alt="" width="64" height="96" style="object-fit:cover;border:2px solid var(--ink)">` : ""}<div class="grow"><b>${esc(b.title)}</b><small>${esc(b.author)} · ${esc(b.site)}</small></div><button class="btn ink sm" id="bk-add">Add</button></div><p role="status" id="bk-msg"></p>`;
-    $("#bk-add").onclick = async () => { const r = await API.addCourseBook("web-basics", b); $("#bk-msg").textContent = r ? "Book added." : "Saved as draft — the books endpoint is not connected yet."; }; };
+  const D = window.CCDash, C = window.CCCourses; if (!D) return;
+  const { $, esc, ico, ugx, num, empty, bar, kpi, fmtDate, ago } = D;
+  const A = await D.access();
+  if (!(await D.staffGuard())) return;
+  const first = ((A.user && (A.user.name || A.user.firstName)) || "").trim().split(/\s+/)[0];
+  $("#t-hello").textContent = first ? "WELCOME, " + first.toUpperCase() : "WELCOME";
+
+  const blank = () => ({ kpis: { active_learners: 0, courses: 0, earnings_month_ugx: 0, rating_avg: 0, rating_count: 0 }, wallet: { available_ugx: 0 }, courses: [], learners: [], payouts: [], upcoming_sessions: [] });
+  /* older tutor_dashboard() (before the r11 migration) has no kpis/learners/payouts: derive what we can, zero the rest */
+  function normalise(d) {
+    const out = Object.assign(blank(), d || {});
+    out.courses = (out.courses || []).map(c => ({ id: c.id, title: c.title, status: c.status, review_note: c.review_note, learners: c.enrollments || 0,
+      lessons: c.lessons, modules: c.modules, pending: !!c.pending_submission, avg: c.avg_progress }));
+    if (!d || !d.kpis) out.kpis = { active_learners: out.courses.reduce((a, c) => a + (c.learners || 0), 0), courses: out.courses.length, earnings_month_ugx: 0,
+      rating_avg: (d && d.rating && +d.rating.avg) || 0, rating_count: (d && d.rating && +d.rating.count) || 0 };
+    out.wallet = out.wallet || { available_ugx: 0 };
+    return out;
+  }
+  const fromLocal = list => list.map(c => ({ id: c.id, title: c.title, status: c.status, review_note: c.review_note, learners: 0, lessons: c._lessons, modules: c._modules, pending: c._pending, subs: c._subs }));
+
+  let data, source = "api", note = "";
+  const demo = await D.demo("tutor");
+  if (demo) { data = normalise(demo); source = "demo"; }
+  else {
+    const r = await D.getJSON("/tutor/dashboard");
+    if (r.state === "ok") data = normalise(r.data);
+    else { data = blank(); source = r.state; note = r.message || ""; }
+    // the builder's own store decides where courses live (api or this device)
+    try {
+      await C.adapter();
+      if (C.mode === "local") { const list = await C.list(); data.courses = fromLocal(list); data.kpis.courses = list.length; if (source === "api") source = "api+local"; }
+    } catch (e) { if (e.status === 401 || e.status === 403) { source = "auth"; note = e.message; } }
+  }
+
+  /* ---------- banners ---------- */
+  const bars = [];
+  if (source === "demo") bars.push(D.demoBar());
+  if (source === "offline") bars.push(bar("local", `${ico("info")}<span>Live data isn't connected on this page yet, so the numbers below show nothing. Courses you build are saved on this device until the server is connected.</span>`));
+  else if (source === "api+local") bars.push(bar("local", `${ico("info")}<span>Your numbers are live. Courses you build are saved on this device until the course server is connected.</span>`));
+  if (source === "error") bars.push(bar("err", `${ico("info")}<span>We couldn't load your dashboard (${esc(note)}). The numbers below are not your real totals.</span><span class="sp"></span><button class="btn sm" data-retry type="button">Try again</button>`));
+  if (source === "auth") bars.push(bar("err", `${ico("lock")}<span>Your tutor account couldn't be verified: ${esc(note || "sign in again")}.</span><span class="sp"></span><a class="btn sm" href="${esc(A.authUrl ? A.authUrl(location.pathname) : "signin.html")}">Sign in</a>`));
+  $("#t-bars").innerHTML = bars.join("");
+  const known = source === "api" || source === "api+local" || source === "demo";   // KPI values are real (or labelled demo)
+  const val = v => known ? v : "—";
+
+  /* ---------- KPIs ---------- */
+  const k = data.kpis, cap = A.limit ? A.limit("students.max") : null;
+  const inReview = data.courses.filter(c => c.status === "pending_review" || c.pending).length;
+  $("#t-kpis").innerHTML = [
+    kpi("Active learners", val(num(k.active_learners)), cap != null ? `Plan limit: ${cap} learners` : (known ? "" : "Not connected"), "or"),
+    kpi("Courses", num(data.courses.length), inReview ? `${inReview} in review` : (data.courses.length ? "" : "None yet")),
+    kpi("Earnings this month", val(ugx(k.earnings_month_ugx)), known ? `Available: ${ugx(data.wallet.available_ugx || 0)}` : "Not connected", "ink"),
+    kpi("Rating", val((+k.rating_avg || 0).toFixed(1)), known ? (k.rating_count ? `${num(k.rating_count)} ratings` : "No ratings yet") : "Not connected", "cy")
+  ].join("");
+  $("#t-kpis").removeAttribute("aria-busy");
+
+  /* ---------- courses ---------- */
+  const chip = c => { const s = C.statusOf(c, c.subs || (c.pending ? [{ status: "pending" }] : [])); return `<span class="st ${s.key}">${esc(s.label)}</span>${s.key === "rejected" && s.reason ? `<span class="st-reason">Reason: ${esc(s.reason)}</span>` : ""}`; };
+  const isDemo = source === "demo";
+  const acts = c => isDemo ? `<span class="muted">Demo</span>` : `<div class="row-acts"><a class="btn sm" href="builder.html?id=${encodeURIComponent(c.id)}">Edit</a><a class="btn sm" href="course.html?preview=${encodeURIComponent(c.id)}">Preview</a>${["draft", "rejected"].indexOf(c.status) >= 0 && !c.pending ? `<a class="btn sm or" href="builder.html?id=${encodeURIComponent(c.id)}&tab=review">Submit</a>` : ""}</div>`;
+  $("#t-courses").innerHTML = data.courses.length
+    ? `<div class="tbl-wrap"><table class="t dash-t"><thead><tr><th>Course</th><th>Lessons</th><th>Learners</th><th>Actions</th></tr></thead><tbody>${data.courses.map(c =>
+        `<tr><td><b>${esc(c.title)}</b><br>${chip(c)}</td><td>${c.lessons != null ? num(c.lessons) : "—"}</td><td>${num(c.learners || 0)}</td><td>${acts(c)}</td></tr>`).join("")}</tbody></table></div>`
+    : empty({ key: "courses", examples: [["Intro to Python · 3 modules", "Draft"], ["Git basics · 5 lessons", "In review"]],
+        title: "No courses yet", body: "Build a course from modules and lessons (YouTube videos, books, text, files and quizzes), then send it for review. Approved courses go live in the catalogue.",
+        action: { href: "builder.html", label: "Create your first course", icon: "plusc", id: "t-first-course" } });
+
+  /* ---------- sessions ---------- */
+  const ss = data.upcoming_sessions || [];
+  $("#t-sessions").innerHTML = ss.length
+    ? `<div class="dash-list">${ss.map(s => `<div class="dash-li"><span class="date"><span>${esc(fmtDate(s.starts_at, { month: "short" }))}<br><b>${esc(fmtDate(s.starts_at, { day: "2-digit" }))}</b></span></span><div><b>${esc(s.title)}</b><small>${esc(fmtDate(s.starts_at, { hour: "numeric", minute: "2-digit" }))} EAT · ${num(s.duration_minutes || 60)} min${s.kind === "group" ? " · group" : ""}</small></div><a class="btn sm" href="sessions.html">Open</a></div>`).join("")}</div>`
+    : empty({ key: "sessions", examples: [["1:1 · Git branching", "Thu 4 PM"], ["Group Q&A", "Sat 10 AM"]], title: "No sessions scheduled",
+        body: "Offer 1:1 or group sessions. Booked sessions show here with their time in EAT.", action: { href: "sessions.html", label: "Schedule a session", icon: "calendar" } });
+
+  /* ---------- learners ---------- */
+  const ls = data.learners || [];
+  if (cap != null) $("#t-cap").innerHTML = `Plan limit: ${cap} learners · <a href="${esc((A.policy && A.policy.plans_route) || "settings-apps.html#plan")}">Upgrade</a>`;
+  $("#t-learners").innerHTML = ls.length
+    ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>Learner</th><th>Course</th><th style="width:34%">Progress</th><th>Last active</th></tr></thead><tbody>${ls.map(l => { const p = Math.round(+l.progress || 0);
+        return `<tr><td><b>${esc(l.name)}</b></td><td>${esc(l.course)}</td><td><div class="row" style="flex-wrap:nowrap"><div class="prog" style="flex:1" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(l.name)} progress"><i style="width:${p}%"></i></div><b>${p}%</b></div></td><td>${esc(ago(l.last_activity_at))}</td></tr>`; }).join("")}</tbody></table></div>`
+    : empty({ key: "learners", examples: [["Learner name · Your course", "40%"], ["Learner name · Your course", "85%"]], title: "No learners yet",
+        body: "Learners appear here when they enrol in one of your approved courses, with their progress and when they were last active.",
+        action: data.courses.length ? { href: "builder.html", label: "Finish and submit a course" } : { href: "builder.html", label: "Create your first course" } });
+
+  /* ---------- wallet + payouts ---------- */
+  const avail = +(data.wallet && data.wallet.available_ugx) || 0;
+  $("#t-wallet").innerHTML = `<div class="dash-list"><div class="dash-li" style="grid-template-columns:1fr auto"><div><small>Available to withdraw</small><b style="font:400 var(--step-2) var(--disp)">${val(ugx(avail))}</b><small>Earnings from paid courses and sessions, after the refund window.</small></div>
+    ${avail > 0 && !isDemo ? `<a class="btn or" href="settings-apps.html" data-can="payout.manage">Request payout</a>` : `<button class="btn" type="button" disabled aria-disabled="true" title="Nothing to pay out yet">Request payout</button>`}</div>
+    ${avail > 0 ? "" : `<p class="muted">${known ? "Nothing to pay out yet. Payouts go to the Mobile Money number in your payout settings." : "Your balance shows here once live data is connected."}</p>`}</div>`;
+  const ps = data.payouts || [];
+  $("#t-payouts").innerHTML = ps.length
+    ? `<div class="dash-list">${ps.map(p => `<div class="dash-li" style="grid-template-columns:1fr auto"><div><b>${ugx(p.amount_ugx)}</b><small>Requested ${esc(fmtDate(p.created_at, { day: "numeric", month: "short", year: "numeric" }))}</small></div><span class="pill ${p.status === "paid" ? "paid" : "pending"}">${esc(p.status)}</span></div>`).join("")}</div>`
+    : empty({ key: "payouts", examples: [["UGX —", "Requested"], ["UGX —", "Paid"]], title: "No payouts yet", body: "Each payout you request shows here with its status." });
+
+  if (window.CCAccess && window.CCAccess.refresh) window.CCAccess.refresh();   // gate any data-can links just rendered
 })();
