@@ -93,3 +93,19 @@ language sql stable security definer set search_path = '' as $$
      and l.approved                                     -- r11 finish: unapproved (in-review) lessons are hidden, not shown locked
    order by l.position
 $$;
+
+-- C. Free-plan lock counts APPROVED lessons only. app.lesson_min_plan gave the
+--    first N lessons (N = learner free limit lessons.free_per_course) free by
+--    counting every earlier lesson, including a tutor's unapproved, hidden ones.
+--    A hidden in-review lesson therefore used up a free slot and pushed a visible
+--    lesson behind the paywall. Now only approved lessons are counted. Body is
+--    otherwise identical to 20261105001100_plans_access.sql (grants unchanged).
+create or replace function app.lesson_min_plan(p_lesson uuid)
+returns public.member_plan language sql stable security definer set search_path = '' as $$
+  select coalesce(l.min_plan,
+    case when (select count(*) from public.lessons x
+                where x.course_id = l.course_id and x.position < l.position and x.approved)
+              < coalesce(app.plan_limit('learner', 'free', 'lessons.free_per_course'), 2147483647)
+         then 'free'::public.member_plan else 'standard'::public.member_plan end)
+  from public.lessons l where l.id = p_lesson
+$$;

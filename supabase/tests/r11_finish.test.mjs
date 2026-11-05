@@ -89,4 +89,20 @@ export const tests = [
     const anon = await q(db, `select title from public.course_syllabus($1)`, [c.id]).catch(() => null);
     if (anon) assert.ok(!anon.some((r) => r.title === 'S2'));
   }),
+  t('r11 finish: free-plan lock counts approved lessons only (a hidden in-review lesson does not use up a free slot)', async (db) => {
+    await as(db, 'postgres');
+    const c = await one(db, `insert into public.courses (slug, title, level, status, is_free, price_ugx, tutor_id, published_at)
+                             values ('r11-lock-approved','Lock approved','beginner','published',true,0,$1,now()) returning id`, [U.tutorB]);
+    for (let i = 1; i <= 5; i++) {
+      await q(db, `insert into public.lessons (course_id, position, title, content_md) values ($1,$2,$3,'body')`, [c.id, i, `A${i}`]);
+    }
+    const n = Number((await one(db, `select app.plan_limit('learner','free','lessons.free_per_course') n`)).n);
+    assert.equal(n, 3, 'seeded learner free limit is 3 lessons per course');
+    await q(db, `update public.lessons set approved = (position <> 2) where course_id=$1`, [c.id]);   // A2 in review
+    await as(db, U.alice);
+    await q(db, `insert into public.enrollments (user_id, course_id) values ($1,$2)`, [U.alice, c.id]);
+    const syl = await q(db, `select title, locked from public.course_syllabus($1)`, [c.id]);
+    assert.deepEqual(syl.map((r) => [r.title, r.locked]), [['A1', false], ['A3', false], ['A4', false], ['A5', true]]);
+    assert.deepEqual((await q(db, `select title from public.lessons where course_id=$1 order by position`, [c.id])).map((r) => r.title), ['A1', 'A3', 'A4']);
+  }),
 ];
