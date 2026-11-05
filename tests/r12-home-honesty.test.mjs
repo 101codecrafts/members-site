@@ -24,7 +24,7 @@ test('every placeholder stat on index/about sits inside a data-stat-gate, and th
   assert.deepEqual(gatedEverywhere(index, 'data-site-stat'), []);
   assert.deepEqual(gatedEverywhere(index, 'data-stat'), []);
   assert.deepEqual(gatedEverywhere(about, 'data-site-stat'), []);
-  assert.ok(era.includes('html:not(.static) [data-stat-gate]:not(.stat-real){display:none!important}'));
+  assert.ok(era.includes('html:not(.static) body [data-stat-gate][data-stat-gate]:not(.stat-real){display:none!important}'));
   assert.ok(!/content="Join 10,000\+/.test(index), 'meta description still claims 10,000+');
 });
 test('site-stats: every value is marked real:false today, isReal() false, short() empty; apply() writes nothing for them', () => {
@@ -46,7 +46,7 @@ test('testimonials are mockup-only (data-legacy) and the empty Latest-updates ba
   assert.match(index, /<section class="band" data-legacy="testimonials">/);
   assert.match(index, /WHAT OUR MEMBERS SAY/); assert.match(index, /<h2 data-legacy="testimonials"[^>]*>WHAT OUR MEMBERS SAY/);
   assert.match(index, /<section class="e92 e-news" data-latest-section/);
-  assert.ok(era.includes('html:not(.static) [data-latest-section]:not(.has-items){display:none!important}'));
+  assert.ok(era.includes('html:not(.static) body [data-latest-section][data-latest-section]:not(.has-items){display:none!important}'));
   assert.ok(rd('js/era.js').includes('sec.classList.add("has-items")'));
 });
 test('marquees: loop copies are aria-hidden and untabbable (partner strip + Today in Tech), so headlines are read once', () => {

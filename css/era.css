@@ -166,5 +166,6 @@ html:not(.static) .e92 .e-latest-empty{grid-column:1/-1;margin:0;padding:var(--s
 html:not(.static) .e92 .e-latest-empty a{color:var(--text);font-weight:700;text-decoration:underline}
 /* r12 QA: no placeholder content on the live site. A stat (or its tile / section) shows only when js/site-stats.js marks one
    of its keys real:true (it adds .stat-real); the "Latest updates" band shows only once real announcements render. */
-html:not(.static) [data-stat-gate]:not(.stat-real){display:none!important}
-html:not(.static) [data-latest-section]:not(.has-items){display:none!important}
+/* (attribute doubled on purpose: must out-rank the mobile layout's `html:not(.static) body .page>.tile:has(b){display:flex!important}`) */
+html:not(.static) body [data-stat-gate][data-stat-gate]:not(.stat-real){display:none!important}
+html:not(.static) body [data-latest-section][data-latest-section]:not(.has-items){display:none!important}
