@@ -66,7 +66,7 @@ def scripts(charts=False):
     tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/access.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
     libs = LIBS + ([CHART] if charts else [])
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
-    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>', '<script src="js/ai.js" defer></script>', '<script src="js/loaders.min.js" defer></script>']   # loaders: round-9 route/inline/busy/empty loops   # ai.js: 101 AI floating assistant loader (round 7)
+    tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/access.js" defer></script>', '<script src="js/account.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>', '<script src="js/ai.js" defer></script>', '<script src="js/loaders.min.js" defer></script>']   # loaders: round-9 route/inline/busy/empty loops   # ai.js: 101 AI floating assistant loader (round 7)
     return '\n'.join(tags)
 
 # Sidebar navigation. A tuple is (label, icon, href); a str starts a section ("" = no heading).
@@ -76,15 +76,15 @@ NAV = {
              "Build", ("Projects", "code", "projects.html"), ("Launchpad", "trophy", "launchpad.html"), ("Testing", "clipboard", "testing.html"), ("Competitions", "star", "competitions.html"),
              "Community", ("Groups", "people", "groups.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
              "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Announcements", "megaphone", "announcements.html"), ("Library", "folder", "resources.html"),
-             "Your space", ("My Courses", "cap", "dashboard.html#my-courses"), ("Certificates", "badge", "dashboard.html#certificates"), ("My Projects", "codebox", "projects.html"), ("My Downloads", "download", "resources.html"), ("My Profile", "user", "profile.html"), ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
+             "Your space", ("My Courses", "cap", "dashboard.html#my-courses"), ("Certificates", "badge", "dashboard.html#certificates"), ("My Projects", "codebox", "projects.html"), ("My Downloads", "download", "resources.html"), ("My Profile", "user", "profile.html"), ("Member card", "badge", "card.html"), ("Settings", "gear", "settings.html")],
  'guest': ["", ("Home", "home", "guest.html"), ("Daily News", "doc", "news.html"), ("Events & Meetups", "calendar", "events.html"), ("Opportunities", "briefcase", "opportunities.html"),
            "Learn free", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
            "Shop", ("Marketplace", "store", "marketplace.html"), ("My orders", "list", "orders.html"),
-           "Your space", ("Settings", "gear", "settings-apps.html")],
+           "Your space", ("Settings", "gear", "settings.html")],
  'tutor': ["Teach", ("Overview", "home", "tutor.html"), ("My Courses", "cap", "tutor.html#courses"), ("Course builder", "plusc", "builder.html"), ("My Learners", "users", "tutor.html#learners"), ("Sessions", "calendar", "sessions.html"), ("Earnings & Payouts", "cash", "tutor.html#earnings"),
            "Explore", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
            "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
-           "Your space", ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
+           "Your space", ("My Profile", "user", "profile.html"), ("Member card", "badge", "card.html"), ("Settings", "gear", "settings.html"), ("Video apps", "link", "settings-apps.html")],
  'admin': ["Console", ("Overview", "home", "admin.html#overview"), ("Approvals", "clipboard", "admin.html#approvals"), ("Users & roles", "users", "admin.html#users"), ("Admins", "shield", "admin.html#admins"),
            "Business", ("Plans & pricing", "cash", "admin.html#plans"), ("Feature flags", "gear", "admin.html#flags"),
            "Trust & safety", ("Audit log", "list", "admin.html#audit"), ("Support view", "lock", "admin.html#support"),
@@ -134,14 +134,25 @@ def topbar(a, page=''):
   <a class="ib tb-bell" href="announcements.html" aria-label="Notifications"><svg aria-hidden="true"><use href="#i-bell"/></svg><i class="dot"></i></a>
   <div class="acct" data-acct aria-busy="true">
     <span class="acct-sk" aria-hidden="true"><i></i><b></b></span><span class="sr-only acct-loading">Loading account</span>
-    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="auth.html">Sign in</a><a class="tb-btn cta" href="auth.html?mode=join"><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
+    <div class="acct-guest" hidden><span class="acct-av is-guest" aria-hidden="true"><svg><use href="#i-user"/></svg></span><a class="tb-btn ghost" href="auth.html" data-return>Sign in</a><a class="tb-btn cta" href="auth.html?mode=join" data-return><svg class="tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Join</span></a></div>
     <div class="acct-user" hidden>
       <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu"><span class="acct-av" aria-hidden="true"></span><span class="acct-id"><b class="acct-name"></b><small class="acct-role">Member</small></span><svg class="acct-chev" aria-hidden="true"><use href="#i-chev"/></svg><span class="sr-only">account menu</span></button>
       <div class="acct-menu" id="acct-menu" role="menu" aria-label="Account" hidden>
-        <div class="am-head" role="none"><b class="acct-name"></b><small class="acct-email"></small></div>
-        <a role="menuitem" href="profile.html"><svg aria-hidden="true"><use href="#i-user"/></svg>Profile</a>
-        <a role="menuitem" href="settings-apps.html"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+        <div class="am-head" role="none"><span class="acct-av am-av" aria-hidden="true"></span><span class="am-who"><b class="acct-name"></b><small class="acct-email"></small><span class="am-chips"><i class="am-role acct-role">Member</i><i class="am-plan" data-acct-plan hidden></i></span></span></div>
+        <a role="menuitem" href="profile.html" data-acct-me><svg aria-hidden="true"><use href="#i-user"/></svg>View profile</a>
+        <a role="menuitem" href="settings.html#profile"><svg aria-hidden="true"><use href="#i-pen"/></svg>Edit profile</a>
+        <a role="menuitem" class="am-up" href="pricing.html" data-acct-upgrade><svg aria-hidden="true"><use href="#i-star"/></svg><span class="am-grow"><span data-acct-planline>Your plan</span></span><b class="am-up-tag">Upgrade</b></a>
+        <div class="am-sep" role="separator"></div>
+        <a role="menuitem" href="settings.html#billing"><svg aria-hidden="true"><use href="#i-card"/></svg>Billing &amp; payment methods</a>
+        <a role="menuitem" href="settings.html#payouts" data-acct-tutor hidden><svg aria-hidden="true"><use href="#i-cash"/></svg>Payouts</a>
+        <div class="am-sep" role="separator"></div>
+        <a role="menuitem" href="settings.html"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+        <a role="menuitem" href="settings.html#help"><svg aria-hidden="true"><use href="#i-help"/></svg>Help &amp; support</a>
+        <button type="button" role="menuitem" data-acct-theme><svg aria-hidden="true"><use href="#i-moon"/></svg><span class="am-grow">Theme</span><small class="am-val" data-acct-theme-val>System</small></button>
+        <a role="menuitem" href="settings.html#language"><svg aria-hidden="true"><use href="#i-globe"/></svg><span class="am-grow">Language</span><small class="am-val" data-acct-lang>English</small></a>
         <div class="role-tabs am-roles" role="group" aria-label="Switch role"><span class="am-label" aria-hidden="true">Switch role</span>{roles}</div>
+        <div class="am-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-acct-switch><svg aria-hidden="true"><use href="#i-swap"/></svg>Switch account</button>
         <button type="button" role="menuitem" class="am-out" data-signout><svg aria-hidden="true"><use href="#i-logout"/></svg>Sign out</button>
       </div>
     </div>
@@ -228,7 +239,7 @@ def loader(a):
 # Shared access contract: inline src/data/access-policy.json into js/access.js between /*POLICY*/ and /*END*/ (r11)
 _acc = root / 'js/access.js'
 if _acc.exists():
-    _pol = json.dumps(json.loads((root / 'src/data/access-policy.json').read_text()), separators=(',', ':'))
+    _pj = json.loads((root / 'src/data/access-policy.json').read_text()); _pj.pop('_note', None); _pol = json.dumps(_pj, separators=(',', ':'))
     _acc.write_text(re.sub(r'/\*POLICY\*/.*?/\*END\*/', lambda m: '/*POLICY*/' + _pol + '/*END*/', _acc.read_text(), count=1, flags=re.S))
 
 # Plans fallback catalogue (r11 plans): src/data/plans.json -> js/plans-data.js (the live catalogue comes from GET /api/v1/plans)
@@ -246,6 +257,10 @@ for f in (root / 'src').glob('*.html'):
     s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1)), name), s)
     s = re.sub(r'\{\{LOADER(.*?)\}\}', lambda m: loader(attrs(m.group(1))), s)
     s = s.replace('{{LOCK_ICON}}', '<svg aria-hidden="true"><use href="#i-shieldc"/></svg>')   # r11 plans: sandbox notes
+    # round 11: the site background (bg.css via THEME_LINK + js/bg.js) is on EVERY built page, whatever template it uses
+    if 'js/bg.js' not in s: s = s.replace('</body>', '<script src="js/bg.js" defer></script>\n</body>', 1)
+    # round 11: any page with the account chip gets the access policy + account menu runtime (hand-listed script pages too)
+    if 'data-acct' in s and 'js/account.js' not in s: s = s.replace('</body>', '<script src="js/access.js" defer></script>\n<script src="js/account.js" defer></script>\n</body>', 1)
     if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')

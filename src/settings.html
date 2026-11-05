@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Settings · 101 Codecrafts" desc="Your 101 Codecrafts account: profile, security, notifications, privacy, accessibility, language, data and account deletion." path="settings.html" noindex}}
+{{CSS}}
+<link rel="stylesheet" href="css/account.css">
+</head>
+<body class="flow" data-role="learner" data-page="settings">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Settings"}}
+<div class="main">
+{{TOPBAR role="learner"}}
+<main id="main" class="content st-page">
+  <div class="page-h"><div><div class="kicker">Your account</div><h1>SETTINGS</h1><p>Everything about your 101 account in one place. Changes save per section.</p></div></div>
+
+  <div class="st-signin card" data-st-visitor hidden>
+    <h2 class="st-h">Sign in to manage your account</h2>
+    <p>Profile, security, notifications and your data need you signed in. Accessibility and language below work on this device without an account.</p>
+    <div class="row"><a class="btn or" href="signin.html" data-return>Sign in</a><a class="btn" href="signup.html" data-return>Join 101 free</a></div>
+  </div>
+
+  <div class="st-wrap">
+  <nav class="st-nav" aria-label="Settings sections">
+    <a href="#profile" data-st-acct><svg aria-hidden="true"><use href="#i-user"/></svg>Profile</a>
+    <a href="#account" data-st-acct><svg aria-hidden="true"><use href="#i-gear"/></svg>Account</a>
+    <a href="#plan" data-st-acct><svg aria-hidden="true"><use href="#i-star"/></svg>Plan</a>
+    <a href="#billing" data-st-acct><svg aria-hidden="true"><use href="#i-card"/></svg>Billing</a>
+    <a href="#payouts" data-can="account.payouts" hidden><svg aria-hidden="true"><use href="#i-cash"/></svg>Payouts</a>
+    <a href="#security" data-st-acct><svg aria-hidden="true"><use href="#i-lock"/></svg>Security</a>
+    <a href="#notifications" data-st-acct><svg aria-hidden="true"><use href="#i-bell"/></svg>Notifications</a>
+    <a href="#privacy" data-st-acct><svg aria-hidden="true"><use href="#i-eye"/></svg>Privacy</a>
+    <a href="#accessibility"><svg aria-hidden="true"><use href="#i-motion"/></svg>Accessibility</a>
+    <a href="#language"><svg aria-hidden="true"><use href="#i-globe"/></svg>Language &amp; region</a>
+    <a href="#connected" data-st-acct><svg aria-hidden="true"><use href="#i-link"/></svg>Connected accounts</a>
+    <a href="#data" data-st-acct><svg aria-hidden="true"><use href="#i-download"/></svg>Your data</a>
+    <a href="#guardian" data-st-acct><svg aria-hidden="true"><use href="#i-guard"/></svg>Guardian</a>
+    <a href="#help"><svg aria-hidden="true"><use href="#i-help"/></svg>Help</a>
+    <a href="#delete" data-st-acct class="st-nav-danger"><svg aria-hidden="true"><use href="#i-trash"/></svg>Delete account</a>
+  </nav>
+
+  <div class="st-body">
+  <!-- PROFILE -->
+  <section class="card st-sec" id="profile" data-st-acct aria-labelledby="h-profile">
+    <div class="sec-title"><h2 id="h-profile">PROFILE</h2><a class="st-link" href="profile.html" data-st-viewprofile>View profile</a></div>
+    <form id="st-profile" class="st-form" novalidate>
+      <div class="st-avatar">
+        <span class="st-av" id="st-av" aria-hidden="true"></span>
+        <div><label class="btn sm" for="st-av-file"><svg aria-hidden="true"><use href="#i-image"/></svg>Upload photo</label>
+          <input id="st-av-file" type="file" accept="image/png,image/jpeg,image/webp" class="sr-only">
+          <button type="button" class="btn sm ghost" id="st-av-rm" hidden>Remove</button>
+          <p class="st-hint">PNG, JPG or WebP, up to 5 MB. Square works best.</p></div>
+      </div>
+      <div class="st-grid">
+        <label class="st-f"><span>Display name</span><input name="display_name" maxlength="80" autocomplete="name" placeholder="e.g. Aisha Nakato" required></label>
+        <label class="st-f"><span>Username</span><span class="st-pre"><i>@</i><input name="username" maxlength="30" pattern="[a-z0-9_]{3,30}" autocomplete="username" placeholder="aisha_codes"></span><small>3–30 lowercase letters, numbers or _. Your public link is /u/username.</small></label>
+        <label class="st-f st-wide"><span>Headline</span><input name="headline" maxlength="140" placeholder="e.g. Python learner · building a school fees app"></label>
+        <label class="st-f st-wide"><span>Bio</span><textarea name="bio" maxlength="2000" rows="4" placeholder="A few lines about you: what you're learning, what you've built, what you want to do next."></textarea></label>
+        <label class="st-f"><span>Location</span><input name="location" maxlength="80" autocomplete="address-level2" placeholder="e.g. Kampala, Uganda"></label>
+        <label class="st-f"><span>Education level</span><select name="education_level"><option value="">Choose…</option><option value="primary">Primary</option><option value="o_level">O-Level</option><option value="a_level">A-Level</option><option value="university">University / college</option><option value="professional">Professional</option></select></label>
+        <label class="st-f"><span>School or institution</span><input name="institution" maxlength="160" placeholder="e.g. Makerere University"></label>
+        <label class="st-f"><span>Class or year</span><input name="class_year" maxlength="40" placeholder="e.g. Year 2, BSc CS"></label>
+        <div class="st-f st-wide"><span id="sk-l">Skills</span>
+          <div class="st-chips" id="st-skills" role="list" aria-labelledby="sk-l"></div>
+          <input id="st-skill-in" maxlength="40" placeholder="Type a skill and press Enter, e.g. Python" aria-labelledby="sk-l"><small>Up to 30.</small></div>
+        <label class="st-f"><span>GitHub username</span><input name="github_username" maxlength="39" placeholder="octocat"></label>
+        <label class="st-f"><span>LinkedIn URL</span><input name="linkedin_url" type="url" placeholder="https://www.linkedin.com/in/your-name"></label>
+        <label class="st-f st-wide"><span>Website</span><input name="website_url" type="url" placeholder="https://your-site.dev"></label>
+      </div>
+      <div class="st-actions"><button class="btn or" type="submit">Save profile</button><p class="st-msg" role="status" aria-live="polite"></p></div>
+    </form>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section class="card st-sec" id="account" data-st-acct aria-labelledby="h-account">
+    <div class="sec-title"><h2 id="h-account">ACCOUNT</h2></div>
+    <dl class="st-dl">
+      <div><dt>Email</dt><dd data-st="email">—</dd></div>
+      <div><dt>Phone</dt><dd data-st="phone"><span class="st-empty">No phone added</span></dd></div>
+      <div><dt>Role</dt><dd data-st="role">—</dd></div>
+      <div><dt>Member since</dt><dd data-st="since">—</dd></div>
+    </dl>
+    <div class="row"><button type="button" class="btn" data-clerk-profile>Manage email and phone</button><a class="btn ghost" href="onboarding.html">Redo onboarding</a></div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="card st-sec" id="plan" data-st-acct aria-labelledby="h-plan">
+    <div class="sec-title"><h2 id="h-plan">PLAN</h2></div>
+    <div class="st-plan"><b data-st="plan">Free plan</b><span data-st="plan-until" class="st-hint"></span></div>
+    <p>Plans and prices are set by 101 and can change; you always see the current price before you pay. Payments are in test mode during the launch period.</p>
+    <div class="row"><a class="btn or" href="pricing.html" data-st-upgrade>See plans and upgrade</a></div>
+  </section>
+
+  <!-- BILLING -->
+  <section class="card st-sec" id="billing" data-st-acct aria-labelledby="h-billing">
+    <div class="sec-title"><h2 id="h-billing">BILLING &amp; PAYMENT METHODS</h2></div>
+    <p>You pay at checkout with <b>MTN Mobile Money</b>, <b>Airtel Money</b> or a <b>Visa / Mastercard</b> card. 101 never stores your card number or MoMo PIN.</p>
+    <h3 class="st-h3">Payment history</h3>
+    <div id="st-payments"><p class="st-empty">No payments yet. Receipts for courses, sessions and marketplace orders will appear here.</p></div>
+  </section>
+
+  <!-- PAYOUTS (tutors) -->
+  <section class="card st-sec" id="payouts" data-can="account.payouts" hidden aria-labelledby="h-payouts">
+    <div class="sec-title"><h2 id="h-payouts">PAYOUTS</h2></div>
+    <p>Earnings from your courses and sessions are paid to your Mobile Money number after 101 approves each payout. Your account number is encrypted; only the last 4 digits are shown.</p>
+    <div class="row"><a class="btn or" href="tutor.html#earnings">Open earnings &amp; payouts</a></div>
+  </section>
+
+  <!-- SECURITY -->
+  <section class="card st-sec" id="security" data-st-acct aria-labelledby="h-security">
+    <div class="sec-title"><h2 id="h-security">SECURITY</h2></div>
+    <div class="st-rows">
+      <div class="st-row"><div><b>Password</b><small data-st="pw">Change your password or add one if you sign in with Google.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Change password</button></div>
+      <div class="st-row"><div><b>Two-step verification</b><small data-st="mfa">Add an authenticator app so a stolen password isn't enough.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Set up</button></div>
+      <div class="st-row"><div><b>Passkeys</b><small>Sign in with your phone's fingerprint or face unlock.</small></div><button type="button" class="btn sm" data-clerk-profile="security">Manage</button></div>
+    </div>
+    <h3 class="st-h3">Active sessions and devices</h3>
+    <ul class="st-sessions" id="st-sessions"><li class="st-empty">Loading your sessions…</li></ul>
+    <p class="st-msg" id="st-sess-msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- NOTIFICATIONS -->
+  <section class="card st-sec" id="notifications" data-st-acct aria-labelledby="h-notif">
+    <div class="sec-title"><h2 id="h-notif">NOTIFICATIONS</h2></div>
+    <form id="st-notif" novalidate>
+      <div class="st-tablewrap"><table class="st-table"><caption class="sr-only">Notifications by event and channel</caption>
+        <thead><tr><th scope="col">Event</th><th scope="col">In the app</th><th scope="col">Email</th></tr></thead>
+        <tbody id="st-notif-rows"></tbody></table></div>
+      <div class="st-grid">
+        <label class="st-f"><span>Email digest</span><select name="digest_frequency"><option value="off">Off</option><option value="daily">Daily</option><option value="weekly">Weekly</option></select></label>
+        <label class="st-f"><span>WhatsApp number (optional)</span><input name="whatsapp_number" inputmode="tel" placeholder="+2567XXXXXXXX" pattern="\+[0-9]{7,15}"></label>
+        <label class="st-check st-wide"><input type="checkbox" name="whatsapp_opt_in"> Send me important updates on WhatsApp</label>
+      </div>
+      <div class="st-actions"><button class="btn or" type="submit">Save notifications</button><p class="st-msg" role="status" aria-live="polite"></p></div>
+    </form>
+  </section>
+
+  <!-- PRIVACY -->
+  <section class="card st-sec" id="privacy" data-st-acct aria-labelledby="h-privacy">
+    <div class="sec-title"><h2 id="h-privacy">PRIVACY &amp; VISIBILITY</h2></div>
+    <form id="st-privacy" novalidate>
+      <label class="st-check"><input type="checkbox" name="is_public"> <span><b>Public profile</b><small>Anyone with your link can see your name, headline, skills, badges and certificates. Off: only you and 101 admins.</small></span></label>
+      <label class="st-check"><input type="checkbox" name="email_opt_in"> <span><b>News and tips from 101 by email</b><small>At most one email a week. Unsubscribe any time.</small></span></label>
+      <label class="st-check"><input type="checkbox" data-local="cc_pv_badges" checked> <span><b>Show badges and certificates on my profile</b><small>Saved on this device.</small></span></label>
+      <div class="st-actions"><button class="btn or" type="submit">Save privacy</button><p class="st-msg" role="status" aria-live="polite"></p></div>
+    </form>
+    <p class="st-hint">Your email and phone are never shown on your profile. Read the <a href="privacy.html">privacy notice</a>.</p>
+  </section>
+
+  <!-- ACCESSIBILITY -->
+  <section class="card st-sec" id="accessibility" aria-labelledby="h-a11y">
+    <div class="sec-title"><h2 id="h-a11y">ACCESSIBILITY &amp; MOTION</h2></div>
+    <fieldset class="st-seg"><legend>Background animation</legend>
+      <label><input type="radio" name="bgm" value="on"> On</label><label><input type="radio" name="bgm" value="reduced"> Reduced (one still frame)</label><label><input type="radio" name="bgm" value="off"> Off</label></fieldset>
+    <p class="st-hint">The animated grid and code glyphs run in dark mode. Your device's "reduce motion" setting always wins.</p>
+    <fieldset class="st-seg"><legend>Theme</legend>
+      <label><input type="radio" name="theme" value="system"> System</label><label><input type="radio" name="theme" value="light"> Light</label><label><input type="radio" name="theme" value="dark"> Dark</label></fieldset>
+    <label class="st-check"><input type="checkbox" id="st-lite"> <span><b>Lite mode</b><small>Uses less data on mobile networks: no animations, smaller images, fewer requests.</small></span></label>
+    <label class="st-check"><input type="checkbox" data-local="cc_underline" data-class="a11y-underline"> <span><b>Underline all links</b><small>Easier to tell links from text.</small></span></label>
+    <p class="st-msg" id="st-a11y-msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- LANGUAGE -->
+  <section class="card st-sec" id="language" aria-labelledby="h-lang">
+    <div class="sec-title"><h2 id="h-lang">LANGUAGE &amp; REGION</h2></div>
+    <div class="st-grid">
+      <label class="st-f"><span>Language</span><select id="st-lang"><option value="en">English</option><option value="lg">Luganda</option><option value="sw">Kiswahili</option><option value="fr">Français</option></select></label>
+      <label class="st-f"><span>Time zone</span><select id="st-tz" data-local="cc_tz"><option value="Africa/Kampala">East Africa Time (Kampala, UTC+3)</option><option value="Africa/Nairobi">Nairobi (UTC+3)</option><option value="Africa/Kigali">Kigali (UTC+2)</option><option value="Africa/Lagos">Lagos (UTC+1)</option><option value="Europe/London">London</option><option value="UTC">UTC</option></select></label>
+      <label class="st-f"><span>Currency shown</span><select id="st-cur" data-local="cc_cur"><option value="UGX">UGX (Ugandan shilling)</option><option value="KES">KES</option><option value="USD">USD</option></select></label>
+      <label class="st-f"><span>Date format</span><select id="st-df" data-local="cc_df"><option value="dmy">5 Nov 2026</option><option value="iso">2026-11-05</option></select></label>
+    </div>
+    <p class="st-hint">Prices are always charged in UGX; other currencies are shown as estimates.</p>
+  </section>
+
+  <!-- CONNECTED -->
+  <section class="card st-sec" id="connected" data-st-acct aria-labelledby="h-conn">
+    <div class="sec-title"><h2 id="h-conn">CONNECTED ACCOUNTS</h2></div>
+    <ul class="st-conn" id="st-conn"><li class="st-empty">No connected accounts yet. Connect Google or GitHub for one-tap sign in.</li></ul>
+    <div class="row"><button type="button" class="btn" data-clerk-profile>Connect an account</button><a class="btn ghost" href="settings-apps.html" data-can="settings.connected_apps">Video apps for live sessions</a></div>
+  </section>
+
+  <!-- DATA -->
+  <section class="card st-sec" id="data" data-st-acct aria-labelledby="h-data">
+    <div class="sec-title"><h2 id="h-data">YOUR DATA</h2></div>
+    <p>Under Uganda's Data Protection and Privacy Act 2019 you can get a copy of the data 101 holds about you: profile, enrolments, progress, payments, posts and consents.</p>
+    <div class="row"><button type="button" class="btn or" id="st-export"><svg aria-hidden="true"><use href="#i-download"/></svg>Download my data (JSON)</button><button type="button" class="btn ghost" id="st-export-local">Download this device's settings</button></div>
+    <p class="st-msg" id="st-export-msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- GUARDIAN -->
+  <section class="card st-sec" id="guardian" data-st-acct aria-labelledby="h-guard">
+    <div class="sec-title"><h2 id="h-guard">GUARDIAN (UNDER 18)</h2></div>
+    <p>If you are under 18, a parent or guardian must agree before you can use paid features, 1:1 sessions or chat. We email them a secure link; nothing changes until they say yes.</p>
+    <p class="st-plan" data-st="guardian"><span class="st-empty">No guardian on file.</span></p>
+    <form id="st-guardian" class="st-grid" novalidate>
+      <label class="st-f"><span>Your date of birth</span><input type="date" name="date_of_birth" required></label>
+      <label class="st-f"><span>Guardian's full name</span><input name="guardian_name" minlength="2" maxlength="120" placeholder="e.g. Sarah Namuli" required></label>
+      <label class="st-f"><span>Guardian's email</span><input name="guardian_email" type="email" placeholder="parent@example.com"></label>
+      <label class="st-f"><span>Or guardian's phone</span><input name="guardian_phone" inputmode="tel" placeholder="+2567XXXXXXXX"></label>
+      <label class="st-f"><span>Relationship</span><select name="relationship"><option value="parent">Parent</option><option value="guardian">Guardian</option><option value="teacher">Teacher</option><option value="other">Other</option></select></label>
+      <div class="st-actions st-wide"><button class="btn or" type="submit">Send consent request</button><p class="st-msg" role="status" aria-live="polite"></p></div>
+    </form>
+  </section>
+
+  <!-- HELP -->
+  <section class="card st-sec" id="help" aria-labelledby="h-help">
+    <div class="sec-title"><h2 id="h-help">HELP &amp; SUPPORT</h2></div>
+    <ul class="st-help">
+      <li><a href="about.html#ab-faq">Frequently asked questions</a></li>
+      <li><a href="about.html#ab-find">Find and contact the 101 team</a></li>
+      <li><a href="mailto:privacy@101codecrafts.org">Privacy and data requests: privacy@101codecrafts.org</a></li>
+      <li><a href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer">Ask the community on WhatsApp<span class="sr-only"> (opens in a new tab)</span></a></li>
+      <li><a href="privacy.html">Privacy notice</a></li>
+      <li><a href="terms.html">Terms of use</a></li>
+      <li><a href="verify.html">Verify a certificate</a></li>
+    </ul>
+  </section>
+
+  <!-- DELETE -->
+  <section class="card st-sec st-danger" id="delete" data-st-acct aria-labelledby="h-del">
+    <div class="sec-title"><h2 id="h-del">DELETE ACCOUNT</h2></div>
+    <p>This erases your profile, messages, posts, notifications and settings, and closes your sign-in. Payment records the law requires us to keep are anonymised. <b>There is a 24-hour cool-off: you can cancel until then.</b></p>
+    <div id="st-del-status"></div>
+    <form id="st-delete" novalidate>
+      <label class="st-f"><span>Why are you leaving? (optional)</span><textarea name="details" maxlength="2000" rows="2" placeholder="Anything we could do better"></textarea></label>
+      <label class="st-f"><span>Type <b>DELETE MY ACCOUNT</b> to confirm</span><input name="confirm" autocomplete="off" spellcheck="false" placeholder="DELETE MY ACCOUNT"></label>
+      <div class="st-actions"><button class="btn st-btn-danger" type="submit" disabled>Delete my account</button><p class="st-msg" role="status" aria-live="polite"></p></div>
+    </form>
+  </section>
+  </div></div>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/settings.js" defer></script>
+</body></html>

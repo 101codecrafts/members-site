@@ -29,13 +29,16 @@ html[data-theme=dark]:not(.static) body:is([data-page=ide],[data-page=problem],[
 #ccbg{position:fixed;inset:0;z-index:-1;width:100%;height:100%;pointer-events:none;display:block}
 html:not([data-theme=dark]) #ccbg,html.static #ccbg{display:none}
 
-/* large wrappers that repaint the page colour over the layer: let it through (their colour = the body colour underneath) */
-html:not(.static) body .page,html:not(.static) body .page>.tit,html:not(.static) body .app.dz{background-color:transparent!important}
+/* ROOT CAUSE of "no background" pages (round 11): a full-page layout wrapper that paints its own colour sits above body::before
+   and hides the whole layer. Every such wrapper is listed HERE, once, and lets the layer through; the body carries its colour
+   instead, so nothing changes in ?static=1. New page layouts: add the wrapper class here or mark it [data-bg-through].
+   qa/bgprobe.py fails any page where an opaque viewport-sized layer still covers the background. */
+html:not(.static) body :is(.page,.page>.tit,.app.dz){background-color:transparent!important}
+html:not(.static) body :is(main.center,.auth-main,.solo-main,[data-bg-through]){background:transparent!important}
 html:not(.static) body[data-page=dashboard]{background-color:var(--surface-alt)}   /* .app.dz painted --surface-alt; the body takes it over */
 /* the landing hero's own 44px grid and opaque left-to-right gradient are replaced by the site grid (both themes) */
 html:not(.static) body .page>.lhero{background:none!important}
-/* /go, 404, whiteboard: their 32px main grid would sit on top of the 56px one */
-html:not(.static) body .solo-main{background:transparent!important}
+/* /go, 404, whiteboard: their 32px main grid would sit on top of the 56px one (covered by the wrapper list above) */
 
 /* label cut-out (set by js/bg.js on text that would fall under 4.5:1 / 3:1 where grid lines cross it): a patch of the page colour */
 /* background + sideways shadows only: no padding, margin or size change, so nothing moves */

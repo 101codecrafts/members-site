@@ -2,15 +2,15 @@
    Canvas with "+" marks and drifting code glyphs: OffscreenCanvas in a Worker at 20fps (DPR <= 1.5), main-thread fallback.
    Starts after the load event; pauses while the tab is hidden; reduced motion, data saver / Lite or the "Reduced" setting = one still frame;
    "Off" (localStorage.cc_bg_motion) = no canvas. Live theme switches start/stop it without a reload. Never in ?static=1.
-   Legal, /go and tool pages: grid only (no canvas). */
+   EVERY page gets the canvas (round 11, founder): legal, /go and tool pages use the "quiet" type (fewer, slower, fainter glyphs). */
 (function () {
   var d = document.documentElement, b = document.body;
   if (!b || d.classList.contains("static")) return;
   var page = b.dataset.page || "", src = (document.currentScript && document.currentScript.src) || "js/bg.js";
-  var NONE = /^(terms|privacy|cookies|article|go|ide|problem|admin|interview|contest|whiteboard)$/;
-  var TYPE = page === "landing" ? "landing" : /^(auth|signin|signup|onboarding|verify)$/.test(page) ? "auth" : /^(404|offline)$/.test(page) ? "err" :
-    /^(guest|dashboard|courses|course|learn|practice|sessions|session|groups|card|cart|checkout|launchpad|announcements|orders|seller|rfq|product-item|product|projects|profile|testing|tutor|settings-apps|aitools|contests|opportunities)$/.test(page) ? "app" : "mkt";
-  if (NONE.test(page)) TYPE = "";
+  var QUIET = /^(terms|privacy|cookies|article|go|ide|problem|admin|interview|contest|whiteboard)$/;
+  var TYPE = page === "landing" ? "landing" : /^(auth|signin|signup|onboarding|verify|join)$/.test(page) ? "auth" : /^(404|offline)$/.test(page) ? "err" :
+    /^(guest|dashboard|courses|course|learn|practice|sessions|session|groups|card|cart|checkout|launchpad|announcements|orders|seller|rfq|product-item|product|projects|profile|settings|testing|tutor|settings-apps|aitools|contests|opportunities)$/.test(page) ? "app" : "mkt";
+  if (QUIET.test(page)) TYPE = "quiet";
   var rm = matchMedia("(prefers-reduced-motion: reduce)"), cv = null, w = null, P = null, L = null, live = false, loaded = false;
   var mode = function () { var m = ""; try { m = localStorage.cc_bg_motion || ""; } catch (e) {} return m === "off" || m === "reduced" ? m : "on"; };
   var still = function () { var c = navigator.connection; return mode() === "reduced" || rm.matches || d.classList.contains("lite") || !!(c && c.saveData); };

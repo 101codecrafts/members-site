@@ -145,8 +145,7 @@
       if (!member || !u) return;
       $$(".acct-name", u).forEach(e => e.textContent = d.name);
       $$(".acct-email", u).forEach(e => { e.textContent = d.email || ""; e.hidden = !d.email; });
-      const av = $(".acct-av", u);
-      if (av) av.innerHTML = d.image ? `<img src="${esc(d.image)}" alt="" width="32" height="32" referrerpolicy="no-referrer">` : esc(d.initials || "?");
+      $$(".acct-av", u).forEach(av => { av.innerHTML = d.image ? `<img src="${esc(d.image)}" alt="" width="32" height="32" referrerpolicy="no-referrer">` : esc(d.initials || "?"); });
     });
   }
 
