@@ -146,7 +146,7 @@
   function cookieBanner() {
     if (localStorage.getItem("cookies")) return;
     const b = document.createElement("div"); b.className = "cc-cookie"; b.setAttribute("role", "dialog"); b.setAttribute("aria-label", "Cookie notice");
-    b.innerHTML = `<p><b>Cookies.</b> We use essential cookies to keep you signed in and, with your OK, anonymous analytics to improve 101 Codecrafts. See our <a href="privacy.html">Privacy Policy</a>.</p>
+    b.innerHTML = `<p><b>Cookies.</b> We use essential cookies and storage to keep you signed in and remember your settings. After our launch period, free accounts may see Google ads; "Accept all" allows ad cookies (never personalised for under-18s). See our <a href="cookies.html">Cookie Notice</a>.</p>
       <div><button type="button" data-v="essential" class="btn-line">Essential only</button><button type="button" data-v="all" class="btn-solid">Accept all</button></div>`;
     document.body.appendChild(b);
     b.addEventListener("click", e => { const v = e.target.dataset && e.target.dataset.v; if (v) { localStorage.setItem("cookies", v); b.remove(); dispatchEvent(new CustomEvent("cc:consent", { detail: v })); } });
