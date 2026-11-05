@@ -85,11 +85,10 @@ NAV = {
            "Explore", ("Courses", "learning", "courses.html"), ("Learn", "openbook", "learn.html"), ("Practice", "codebox", "practice.html"), ("AI Tools", "brain", "ai-tools.html"), ("Library", "folder", "resources.html"),
            "Stay updated", ("Daily News", "doc", "news.html"), ("Opportunities", "briefcase", "opportunities.html"), ("Events & Meetups", "calendar", "events.html"), ("Marketplace", "store", "marketplace.html"),
            "Your space", ("Member card", "badge", "card.html"), ("Settings", "gear", "settings-apps.html")],
- 'admin': ["Overview", ("Overview", "home", "admin.html"), ("Analytics", "chart", "admin.html#analytics"),
-           "People", ("Members", "users", "admin.html#users"), ("Learners", "cap", "admin.html#users"), ("Tutors", "teacher", "admin.html#users"), ("Approvals", "clipboard", "admin.html#approvals"),
-           "Content", ("Courses & Paths", "learning", "admin.html#courses"), ("Projects", "code", "projects.html"), ("Tools/Software", "toolbox", "ai-tools.html"), ("Library", "folder", "admin.html#add-resource"), ("Announcements", "megaphone", "admin.html#announcements"), ("Opportunity review", "briefcase", "admin.html#opp-queue"), ("Events", "calendar", "admin.html#events"),
-           "Money", ("Marketplace", "store", "marketplace.html"), ("Payments & Payouts", "cash", "admin.html#payments"),
-           "System", ("Reports", "report", "admin.html#moderation"), ("Audit Log", "list", "admin.html#audit"), ("Settings", "gear", "admin.html#settings")],
+ 'admin': ["Console", ("Overview", "home", "admin.html#overview"), ("Approvals", "clipboard", "admin.html#approvals"), ("Users & roles", "users", "admin.html#users"), ("Admins", "shield", "admin.html#admins"),
+           "Business", ("Plans & pricing", "cash", "admin.html#plans"), ("Feature flags", "gear", "admin.html#flags"),
+           "Trust & safety", ("Audit log", "list", "admin.html#audit"), ("Support view", "lock", "admin.html#support"),
+           "Tools", ("Announcements & links", "megaphone", "admin.html#tools"), ("Marketplace", "store", "marketplace.html"), ("News", "doc", "news.html")],
 }
 
 # The WhatsApp community invite (same url as the "whatsapp" entry in js/site-social.js). Sidebar link on every app page.

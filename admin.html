@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Admin · 101 Codecrafts</title>
-<meta name="description" content="101 Codecrafts admin console: members, tutors, approvals, payments, moderation and settings.">
+<title>Admin console · 101 Codecrafts</title>
+<meta name="description" content="101 Codecrafts admin console: approvals, users and roles, admins, plans and pricing, feature flags, audit log and support view.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://101codecrafts.github.io/members-site/admin.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="101 Codecrafts">
-<meta property="og:title" content="Admin · 101 Codecrafts"><meta property="og:description" content="101 Codecrafts admin console: members, tutors, approvals, payments, moderation and settings.">
+<meta property="og:title" content="Admin console · 101 Codecrafts"><meta property="og:description" content="101 Codecrafts admin console: approvals, users and roles, admins, plans and pricing, feature flags, audit log and support view.">
 <meta property="og:url" content="https://101codecrafts.github.io/members-site/admin.html"><meta property="og:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://101codecrafts.github.io/members-site/assets/og/og-default.png">
 <meta name="theme-color" content="#0B1236">
@@ -20,10 +20,11 @@
 <script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");var u=(document.cookie.match(/(?:^|; )__client_uat=(\d+)/)||[])[1];d.classList.add(u&&u!=="0"?"role-pending":"role-visitor");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://101codecrafts.github.io/members-site/#org", "name": "101 Codecrafts", "url": "https://101codecrafts.github.io/members-site/", "logo": "https://101codecrafts.github.io/members-site/assets/icons/icon-512.png", "slogan": "Start at 101. Craft your way up.", "sameAs": ["https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh", "https://github.com/101codecrafts", "https://github.com/101codecrafts-ug"]}</script>
 <link rel="stylesheet" href="css/feed.css">
+<link rel="stylesheet" href="css/admin-console.css">
 <link rel="stylesheet" href="css/bundle-app.css">
 <link rel="stylesheet" href="css/bundle-theme.css">
 </head>
-<body class="flow" data-role="admin" data-page="admin" data-charts>
+<body class="flow" data-role="admin" data-page="admin">
 <a class="skip" href="#main">Skip to content</a>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
 <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 1.5 11.5h3V21h5.5v-6h4v6H19.5v-9.5h3z"/></symbol>
@@ -103,7 +104,7 @@
     <a class="sb-logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="57" height="32"><span class="sb-word"><b>101 Codecrafts</b><small>Build. Learn. Grow.</small></span><span class="sr-only">101 Codecrafts home</span></a>
     <button type="button" class="sb-toggle" data-sb-toggle aria-controls="sbar" aria-expanded="true" aria-label="Collapse sidebar"><svg aria-hidden="true"><use href="#i-panel"/></svg></button>
   </div>
-  <nav class="sb-nav" aria-label="Main"><div class="sb-sec"><h2 class="sb-h">Overview</h2><a href="admin.html" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Overview</span></a><a href="admin.html#analytics"><svg aria-hidden="true"><use href="#i-chart"/></svg><span>Analytics</span></a></div><div class="sb-sec"><h2 class="sb-h">People</h2><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-users"/></svg><span>Members</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-cap"/></svg><span>Learners</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-teacher"/></svg><span>Tutors</span></a><a href="admin.html#approvals"><svg aria-hidden="true"><use href="#i-clipboard"/></svg><span>Approvals</span></a></div><div class="sb-sec"><h2 class="sb-h">Content</h2><a href="admin.html#courses"><svg aria-hidden="true"><use href="#i-learning"/></svg><span>Courses &amp; Paths</span></a><a href="projects.html"><svg aria-hidden="true"><use href="#i-code"/></svg><span>Projects</span></a><a href="ai-tools.html"><svg aria-hidden="true"><use href="#i-toolbox"/></svg><span>Tools/Software</span></a><a href="admin.html#add-resource"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>Library</span></a><a href="admin.html#announcements"><svg aria-hidden="true"><use href="#i-megaphone"/></svg><span>Announcements</span></a><a href="admin.html#opp-queue"><svg aria-hidden="true"><use href="#i-briefcase"/></svg><span>Opportunity review</span></a><a href="admin.html#events"><svg aria-hidden="true"><use href="#i-calendar"/></svg><span>Events</span></a></div><div class="sb-sec"><h2 class="sb-h">Money</h2><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a><a href="admin.html#payments"><svg aria-hidden="true"><use href="#i-cash"/></svg><span>Payments &amp; Payouts</span></a></div><div class="sb-sec"><h2 class="sb-h">System</h2><a href="admin.html#moderation"><svg aria-hidden="true"><use href="#i-report"/></svg><span>Reports</span></a><a href="admin.html#audit"><svg aria-hidden="true"><use href="#i-list"/></svg><span>Audit Log</span></a><a href="admin.html#settings"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></a></div></nav>
+  <nav class="sb-nav" aria-label="Main"><div class="sb-sec"><h2 class="sb-h">Console</h2><a href="admin.html#overview" aria-current=page><svg aria-hidden="true"><use href="#i-home"/></svg><span>Overview</span></a><a href="admin.html#approvals"><svg aria-hidden="true"><use href="#i-clipboard"/></svg><span>Approvals</span></a><a href="admin.html#users"><svg aria-hidden="true"><use href="#i-users"/></svg><span>Users &amp; roles</span></a><a href="admin.html#admins"><svg aria-hidden="true"><use href="#i-shield"/></svg><span>Admins</span></a></div><div class="sb-sec"><h2 class="sb-h">Business</h2><a href="admin.html#plans"><svg aria-hidden="true"><use href="#i-cash"/></svg><span>Plans &amp; pricing</span></a><a href="admin.html#flags"><svg aria-hidden="true"><use href="#i-gear"/></svg><span>Feature flags</span></a></div><div class="sb-sec"><h2 class="sb-h">Trust &amp; safety</h2><a href="admin.html#audit"><svg aria-hidden="true"><use href="#i-list"/></svg><span>Audit log</span></a><a href="admin.html#support"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Support view</span></a></div><div class="sb-sec"><h2 class="sb-h">Tools</h2><a href="admin.html#tools"><svg aria-hidden="true"><use href="#i-megaphone"/></svg><span>Announcements &amp; links</span></a><a href="marketplace.html"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Marketplace</span></a><a href="news.html"><svg aria-hidden="true"><use href="#i-doc"/></svg><span>News</span></a></div></nav>
   <div class="sb-foot"><a class="sb-wa" href="https://chat.whatsapp.com/LwXmmJK0ujN6hp4Zh6lhzh" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>
 </div>
 <div class="sb-scrim" data-sb-scrim hidden></div>
@@ -131,109 +132,123 @@
     </div>
   </div>
 </header>
-<main id="main" class="content"><div class="ann-slot" data-ann-slot aria-hidden="true"></div>
+<main id="main" class="content ac" aria-busy="true"><div class="ann-slot" data-ann-slot aria-hidden="true"></div>
 
-  <div class="page-h">
-    <div><div class="kicker">Admin console</div><h1>OVERVIEW</h1><p>Everything happening across learners, tutors, payments and content.</p></div>
-    <div class="row">
-      <button class="btn or" data-qa="course"><svg><use href="#i-plusc"/></svg>Add Course</button>
-      <button class="btn cy" data-qa="event"><svg><use href="#i-calendar"/></svg>Create Event</button>
-      <button class="btn" data-qa="announce"><svg><use href="#i-megaphone"/></svg>Post Announcement</button>
-      <button class="btn ink" data-qa="invite"><svg><use href="#i-userplus"/></svg>Invite Admin</button>
-    </div>
+  <div class="ac-support-bar" id="ac-support-bar" role="status" hidden></div>
+  <div class="ac-demo-bar" id="ac-demo-bar" role="status" hidden><b>DEMO DATA</b> Sample rows for training only (<code>?demo=1</code>). Nothing here is real and no action is saved. <a href="admin.html">Leave demo</a></div>
+
+  <div class="page-h ac-head">
+    <div><div class="kicker" id="ac-kicker">Admin console</div><h1 id="ac-title">ADMIN CONSOLE</h1>
+      <p id="ac-sub">Approvals, people, plans and safety for 101 Codecrafts.</p></div>
+    <div class="ac-me" id="ac-me" hidden><span class="ac-role" id="ac-role"></span><span class="ac-scopes" id="ac-scopes"></span></div>
   </div>
 
-  <section aria-label="Key numbers" id="kpis" class="grid g4"></section>
+  <nav class="ac-tabs" aria-label="Admin sections" id="ac-tabs">
+    <a href="#overview" data-tab="overview">Overview</a>
+    <a href="#approvals" data-tab="approvals" data-scope="approvals">Approvals <i class="ac-n" id="n-approvals" hidden></i></a>
+    <a href="#users" data-tab="users" data-scope="users">Users &amp; roles</a>
+    <a href="#admins" data-tab="admins">Admins</a>
+    <a href="#plans" data-tab="plans" data-scope="plans">Plans &amp; pricing</a>
+    <a href="#flags" data-tab="flags" data-scope="flags">Feature flags</a>
+    <a href="#audit" data-tab="audit" data-scope="audit">Audit log</a>
+    <a href="#support" data-tab="support" data-scope="support_view">Support view</a>
+    <a href="#tools" data-tab="tools">Tools</a>
+  </nav>
 
-  <section id="analytics" aria-labelledby="an-h">
-    <div class="sec-title"><h2 id="an-h">ANALYTICS</h2><button class="btn sm" data-csv="analytics"><svg><use href="#i-download"/></svg>Export CSV</button></div>
-    <div class="grid g3">
-      <div class="card"><h3 class="mini-h">Sign-ups over time</h3><div class="chart-box"><canvas id="ch-signups" aria-label="Sign-ups over time chart" role="img"></canvas></div></div>
-      <div class="card"><h3 class="mini-h">Revenue by month (UGX, millions)</h3><div class="chart-box"><canvas id="ch-revenue" aria-label="Revenue by month chart" role="img"></canvas></div></div>
-      <div class="card"><h3 class="mini-h">Funnel: visit → sign-up → enrol → pay</h3><div class="chart-box"><canvas id="ch-funnel" aria-label="Conversion funnel chart" role="img"></canvas></div></div>
-      <div class="card" style="grid-column:span 2"><h3 class="mini-h">Enrolments by learning path</h3><div class="chart-box"><canvas id="ch-enrol" aria-label="Enrolments by learning path chart" role="img"></canvas></div></div>
-      <div class="card" style="grid-column:span 2"><h3 class="mini-h">Learners by education level (under-18 need guardian consent)</h3><div class="chart-box"><canvas id="ch-level" aria-label="Learners by education level chart" role="img"></canvas></div></div>
-      <div class="card"><h3 class="mini-h">Completion rate by path (%)</h3><div class="chart-box"><canvas id="ch-complete" aria-label="Completion rate chart" role="img"></canvas></div></div>
+  <!-- gate: shown instead of the console when the session is not an admin / no backend -->
+  <section class="ac-gate card" id="ac-gate" hidden aria-live="polite"></section>
+
+  <!-- ============================================================ OVERVIEW -->
+  <section class="ac-panel" id="overview" data-panel="overview" aria-labelledby="ov-h" hidden>
+    <h2 class="ac-h" id="ov-h">OVERVIEW</h2>
+    <div class="ac-tiles" id="ov-tiles"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading numbers…</span></div></div>
+    <div class="ac-grid2">
+      <div class="card ac-card"><div class="sec-title"><h3>WAITING FOR REVIEW</h3><a class="viewall" href="#approvals">Open queue →</a></div><ul class="ac-kv" id="ov-queue"></ul></div>
+      <div class="card ac-card"><div class="sec-title"><h3>PEOPLE &amp; PLANS</h3><a class="viewall" href="#users">Open users →</a></div><ul class="ac-kv" id="ov-people"></ul></div>
     </div>
+    <p class="ac-foot muted" id="ov-generated"></p>
   </section>
 
-  <section id="approvals" class="grid g2" aria-label="Approvals">
-    <div class="card">
-      <div class="sec-title"><h2>PENDING MEMBER APPROVALS</h2></div>
-      <div class="tbl-wrap"><table class="t" id="tb-pending"><thead><tr><th>Name</th><th>Applying as</th><th>Applied</th><th>Action</th></tr></thead><tbody></tbody></table></div>
-    </div>
-    <div class="card">
-      <div class="sec-title"><h2>RECENT SIGN-UPS</h2></div>
-      <div class="list" id="ls-signups"></div>
-    </div>
+  <!-- =========================================================== APPROVALS -->
+  <section class="ac-panel" id="approvals" data-panel="approvals" aria-labelledby="ap-h" hidden>
+    <div class="ac-row"><h2 class="ac-h" id="ap-h">APPROVAL QUEUE</h2>
+      <div class="ac-filters" role="group" aria-label="Status">
+        <button class="chip" data-ap-status="pending" aria-pressed="true">Pending</button><button class="chip" data-ap-status="changes_requested" aria-pressed="false">Changes asked</button>
+        <button class="chip" data-ap-status="approved" aria-pressed="false">Approved</button><button class="chip" data-ap-status="rejected" aria-pressed="false">Rejected</button></div></div>
+    <div class="ac-filters ac-kinds" role="group" aria-label="Type" id="ap-kinds"></div>
+    <p class="muted ac-note">Nothing a learner or tutor sends is public until it is approved here. Links are checked automatically (static checks, YouTube oEmbed, Google Web Risk when configured). Riskiest first.</p>
+    <div class="ac-list" id="ap-list"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading queue…</span></div></div>
+    <div class="ac-pager" id="ap-pager"></div>
   </section>
 
-  <section id="users" class="card" aria-labelledby="us-h">
-    <div class="sec-title"><h2 id="us-h">USERS</h2>
-      <div class="filters" role="group" aria-label="Filter by role">
-        <button class="chip" aria-pressed="true" data-role-f="">All</button><button class="chip" aria-pressed="false" data-role-f="learner">Learners</button>
-        <button class="chip" aria-pressed="false" data-role-f="tutor">Tutors</button><button class="chip" aria-pressed="false" data-role-f="admin">Admins</button>
-        <button class="btn sm" data-csv="users"><svg><use href="#i-download"/></svg>CSV</button>
-      </div></div>
-    <div class="tbl-wrap"><table class="t" id="tb-users"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section id="courses" class="card" aria-labelledby="co-h">
-    <div class="sec-title"><h2 id="co-h">COURSE APPROVALS</h2></div>
-    <div class="tbl-wrap"><table class="t" id="tb-courses"><thead><tr><th>Course</th><th>Tutor</th><th>Path</th><th>Price</th><th>Action</th></tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section id="payments" class="grid g2" aria-label="Payments and payouts">
-    <div class="card">
-      <div class="sec-title"><h2>PAYOUTS QUEUE</h2></div>
-      <div class="tbl-wrap"><table class="t" id="tb-payouts"><thead><tr><th>Tutor</th><th>Amount</th><th>Method</th><th>Requested</th><th>Action</th></tr></thead><tbody></tbody></table></div>
-    </div>
-    <div class="card">
-      <div class="sec-title"><h2>TRANSACTIONS</h2><div class="row"><button class="btn sm or" id="flw-test"><svg><use href="#i-cash"/></svg>Test Flutterwave checkout</button><button class="btn sm" data-csv="transactions"><svg><use href="#i-download"/></svg>CSV</button></div></div>
-      <div class="tbl-wrap"><table class="t" id="tb-tx"><thead><tr><th>ID</th><th>Type</th><th>Item</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
-    </div>
-  </section>
-
-  <section class="grid g2" aria-label="Moderation and events">
-    <div class="card" id="moderation">
-      <div class="sec-title"><h2>MODERATION QUEUE</h2></div>
-      <div class="list" id="ls-mod"></div>
-    </div>
-    <div class="card" id="events">
-      <div class="sec-title"><h2>EVENTS MANAGER</h2><button class="btn sm cy" data-qa="event">+ New event</button></div>
-      <div class="list" id="ls-events"></div>
-    </div>
-  </section>
-
-  <section id="add-resource" class="card" aria-labelledby="ar-h">
-    <div class="sec-title"><h2 id="ar-h">ADD RESOURCE BY LINK</h2><a class="viewall" href="resources.html">Open Library →</a></div>
-    <form class="row" id="unfurl-form">
-      <label class="field" style="flex:1;min-width:240px"><span>Paste a URL (course, book, video, article or repo)</span><input type="url" id="unfurl-url" required placeholder="https://www.youtube.com/watch?v=…"></label>
-      <button class="btn or" type="submit" style="align-self:flex-end"><svg><use href="#i-link"/></svg>Fetch preview</button>
+  <!-- =============================================================== USERS -->
+  <section class="ac-panel" id="users" data-panel="users" aria-labelledby="us-h" hidden>
+    <h2 class="ac-h" id="us-h">USERS &amp; ROLES</h2>
+    <form class="ac-search" id="us-form" role="search">
+      <label class="field grow"><span>Search name, username, email or id</span><input type="search" name="q" placeholder="e.g. nakato or @gmail.com" autocomplete="off"></label>
+      <label class="field"><span>Role</span><select name="role"><option value="">Any</option><option value="guest">Guest</option><option value="learner">Learner</option><option value="tutor">Tutor</option><option value="admin">Admin</option><option value="root_admin">Root admin</option></select></label>
+      <label class="field"><span>Status</span><select name="status"><option value="">Any</option><option>active</option><option>pending</option><option>suspended</option><option>banned</option></select></label>
+      <label class="field"><span>Age</span><select name="minor"><option value="">Any</option><option value="true">Under 18</option><option value="false">18+</option></select></label>
+      <button class="btn ink" type="submit"><svg aria-hidden="true"><use href="#i-search"/></svg>Search</button>
     </form>
-    <div id="unfurl-out" class="grid g2" style="margin-top:16px" hidden>
-      <form id="unfurl-edit" class="grid" style="gap:10px">
-        <label class="field">Title<input name="title"></label>
-        <label class="field">Type<select name="type"><option>Course</option><option>Book</option><option>Video</option><option>Article</option><option>Repo</option></select></label>
-        <label class="field">Source site<input name="site"></label>
-        <label class="field">Description<textarea name="desc" rows="3"></textarea></label>
-        <label class="field">Learning path<select name="path"></select></label>
-        <label class="field">Tags (comma separated)<input name="tags"></label>
-        <label class="field">Thumbnail URL<input name="thumb"></label>
-        <button class="btn ink" type="submit">Publish to Library</button>
-        <p id="unfurl-msg" role="status"></p>
-      </form>
-      <div><h3 class="mini-h">Live preview</h3><div id="unfurl-card" style="max-width:320px"></div></div>
-    </div>
+    <div class="tbl-wrap"><table class="t ac-table" id="us-table"><caption class="sr-only">Users</caption>
+      <thead><tr><th scope="col">Person</th><th scope="col">Role</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col">Under 18</th><th scope="col">Joined</th><th scope="col"><span class="sr-only">Open</span></th></tr></thead><tbody></tbody></table></div>
+    <div class="ac-pager" id="us-pager"></div>
   </section>
 
-  <section id="settings" class="grid g2" aria-label="Settings and controls">
-    <div class="card">
-      <div class="sec-title"><h2>FEATURE FLAGS</h2></div>
-      <div class="list" id="ls-flags"></div>
-      <div class="sec-title" style="margin-top:18px"><h2>COMMISSION</h2></div>
-      <form class="row" id="commission-form"><label class="field" style="flex:1">Platform commission on paid courses and sessions (%)<input type="number" min="0" max="50" step="0.5" id="commission"></label><button class="btn or" style="align-self:flex-end">Save</button></form>
-    </div>
+  <!-- ============================================================== ADMINS -->
+  <section class="ac-panel" id="admins" data-panel="admins" aria-labelledby="ad-h" hidden>
+    <h2 class="ac-h" id="ad-h">ADMINS</h2>
+    <p class="muted ac-note">Root (<b>101codecrafts@gmail.com</b>) is fixed: nobody can remove, suspend or demote it. Only root invites admins and sets their permissions.</p>
+    <form class="card ac-card ac-invite" id="ad-invite" hidden>
+      <h3>INVITE AN ADMIN</h3>
+      <label class="field"><span>Email (they must sign in with this address to accept)</span><input type="email" name="email" required autocomplete="off" placeholder="name@example.com"></label>
+      <fieldset class="ac-scopes-fs"><legend>Permissions</legend><div class="ac-checks" id="ad-scope-checks"></div></fieldset>
+      <div class="ac-row"><button class="btn or" type="submit"><svg aria-hidden="true"><use href="#i-userplus"/></svg>Send invite</button><span class="ac-msg" id="ad-invite-msg" role="status"></span></div>
+    </form>
+    <div class="ac-list" id="ad-list"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading admins…</span></div></div>
+    <h3 class="ac-h3" id="ad-inv-h" hidden>INVITES</h3>
+    <div class="ac-list" id="ad-invites"></div>
+  </section>
+
+  <!-- =============================================================== PLANS -->
+  <section class="ac-panel" id="plans" data-panel="plans" aria-labelledby="pl-h" hidden>
+    <h2 class="ac-h" id="pl-h">PLANS &amp; PRICING</h2>
+    <p class="muted ac-note">Prices and limits live in the database and every gate reads them. Empty limit = unlimited. Prices marked <b>suggested</b> are not confirmed yet.</p>
+    <div class="ac-plans" id="pl-grid"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading plans…</span></div></div>
+    <h3 class="ac-h3">COURSE: FREE OR PAID</h3>
+    <form class="ac-search" id="pc-form" role="search"><label class="field grow"><span>Find a course</span><input type="search" name="q" placeholder="Course title"></label><button class="btn ink" type="submit">Find</button></form>
+    <div class="ac-list" id="pc-list"></div>
+  </section>
+
+  <!-- =============================================================== FLAGS -->
+  <section class="ac-panel" id="flags" data-panel="flags" aria-labelledby="fl-h" hidden>
+    <h2 class="ac-h" id="fl-h">FEATURE FLAGS</h2>
+    <form class="ac-search" id="fl-form"><label class="field grow"><span>New flag key</span><input name="key" pattern="[a-z0-9_.]{2,64}" placeholder="e.g. market.rfq" required></label>
+      <label class="field"><span>Rollout %</span><input name="rollout" type="number" min="0" max="100" value="100"></label><button class="btn ink" type="submit">Add flag (off)</button></form>
+    <div class="ac-list" id="fl-list"><div class="ccl ccl-in" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span><span class="ccl-t">Loading flags…</span></div></div>
+  </section>
+
+  <!-- =============================================================== AUDIT -->
+  <section class="ac-panel" id="audit" data-panel="audit" aria-labelledby="au-h" hidden>
+    <h2 class="ac-h" id="au-h">AUDIT LOG</h2>
+    <form class="ac-search" id="au-form"><label class="field"><span>Action starts with</span><input name="action" placeholder="admin.review"></label>
+      <label class="field"><span>Table</span><input name="table" placeholder="profiles"></label><label class="field"><span>Actor id</span><input name="actor" placeholder="user_…"></label>
+      <button class="btn ink" type="submit">Filter</button></form>
+    <p class="muted ac-note">Append-only. Every admin action is written with who, what and before → after.</p>
+    <div class="tbl-wrap"><table class="t ac-table" id="au-table"><caption class="sr-only">Audit log</caption><thead><tr><th scope="col">When (EAT)</th><th scope="col">Who</th><th scope="col">What</th><th scope="col">Before → after</th></tr></thead><tbody></tbody></table></div>
+    <div class="ac-pager" id="au-pager"></div>
+  </section>
+
+  <!-- ============================================================= SUPPORT -->
+  <section class="ac-panel" id="support" data-panel="support" aria-labelledby="sv-h" hidden>
+    <h2 class="ac-h" id="sv-h">SUPPORT VIEW (READ-ONLY)</h2>
+    <p class="muted ac-note">See a user's dashboard the way they see it, to help with a ticket. It is read-only, lasts 30 minutes, the user is told, and every look is in the audit log. Start one from <a href="#users">Users &amp; roles</a>.</p>
+    <div id="sv-body"></div>
+  </section>
+
+  <!-- =============================================================== TOOLS -->
+  <section class="ac-panel" id="tools" data-panel="tools" aria-label="Tools" hidden>
     <div class="card" id="announcements">
       <div class="sec-title"><h2>COMPOSE ANNOUNCEMENT</h2><a class="viewall" href="announcements.html">View all →</a></div>
       <form class="grid" id="announce-form" style="gap:10px">
@@ -249,26 +264,22 @@
         <div class="row"><button class="btn ink">Publish announcement</button><span id="an-msg" role="status" class="muted"></span></div>
       </form>
     </div>
+    <section id="social" class="card" aria-labelledby="so-h">
+      <div class="sec-title"><h2 id="so-h">SOCIAL LINKS</h2><button class="btn or" id="social-save">Save</button></div>
+      <p class="muted">Paste each profile URL, switch it on, and drag rows to set the order. Empty or inactive links are hidden on every page.</p>
+      <ol class="list" id="ls-social" aria-label="Social links, drag to reorder"></ol>
+      <div class="row" style="margin-top:14px"><b>Footer preview</b><div class="social-preview" id="social-preview"></div></div>
+      <p id="social-msg" role="status"></p>
+    </section>
   </section>
 
-  <section id="opp-queue" class="card" aria-labelledby="oq-h">
-    <div class="sec-title"><h2 id="oq-h">OPPORTUNITY &amp; EVENT SUBMISSIONS <i class="badge" id="opp-review-n">0</i></h2><a class="viewall" href="opportunities.html">Open Opportunities →</a></div>
-    <div class="list" id="opp-review"></div>
-    <div class="list" id="ev-review" style="margin-top:10px"></div>
-  </section>
-
-  <section id="social" class="card" aria-labelledby="so-h">
-    <div class="sec-title"><h2 id="so-h">SOCIAL LINKS</h2><button class="btn or" id="social-save">Save</button></div>
-    <p class="muted">Paste each profile URL, switch it on, and drag rows to set the order. Empty or inactive links are hidden on every page.</p>
-    <ol class="list" id="ls-social" aria-label="Social links, drag to reorder"></ol>
-    <div class="row" style="margin-top:14px"><b>Footer preview</b><div class="social-preview" id="social-preview"></div></div>
-    <p id="social-msg" role="status"></p>
-  </section>
-
-  <section id="audit" class="card" aria-labelledby="au-h">
-    <div class="sec-title"><h2 id="au-h">AUDIT LOG</h2><button class="btn sm" data-csv="audit"><svg><use href="#i-download"/></svg>CSV</button></div>
-    <div class="tbl-wrap"><table class="t" id="tb-audit"><thead><tr><th>When</th><th>Who</th><th>What</th></tr></thead><tbody></tbody></table></div>
-  </section>
+  <!-- detail drawer (preview / user / admin) -->
+  <div class="ac-scrim" id="ac-scrim" hidden></div>
+  <aside class="ac-drawer" id="ac-drawer" role="dialog" aria-modal="true" aria-labelledby="ac-drawer-h" hidden tabindex="-1">
+    <div class="ac-drawer-top"><h2 id="ac-drawer-h">DETAILS</h2><button class="btn sm" type="button" data-close aria-label="Close">✕</button></div>
+    <div class="ac-drawer-body" id="ac-drawer-body"></div>
+  </aside>
+  <div id="cc-toast" role="status" aria-live="polite"></div>
 </main>
 <footer class="flow-foot">
   <p class="ft-tag">Start at 101. <b>Craft your way up.</b></p>
@@ -278,13 +289,6 @@
 </footer>
 </div>
 </div>
-<!-- Chatwoot live chat (placeholder — fill websiteToken at deploy time, never commit secrets)
-<script>
-  window.chatwootSettings = { position: "right", type: "expanded_bubble", launcherTitle: "Chat with 101" };
-  (function(d,t){var BASE_URL="https://app.chatwoot.com";var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-  g.src=BASE_URL+"/packs/js/sdk.js";g.defer=true;g.async=true;s.parentNode.insertBefore(g,s);
-  g.onload=function(){window.chatwootSDK.run({websiteToken:"<WEBSITE_TOKEN>",baseUrl:BASE_URL})}})(document,"script");
-</script> -->
 <script src="js/data.js" defer></script>
 <script src="js/site-social.js" defer></script>
 <script src="js/site-stats.js" defer></script>
@@ -297,7 +301,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" integrity="sha384-xb96EMJeax+NLXMC88ZBa1xAeAW+kn+horHh/zFlbMLG2UPWhMJJSlv7fi57hS+Q" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js" integrity="sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu" crossorigin="anonymous" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" integrity="sha384-Sse/HDqcypGpyTDpvZOJNnG0TT3feGQUkF9H+mnRvic+LjR+K1NhTt8f51KIQ3v3" crossorigin="anonymous" defer></script>
 <script src="js/shell.js" defer></script>
 <script src="js/ui.js" defer></script>
 <script src="js/motion.js" defer></script>
@@ -306,6 +309,8 @@
 <script src="js/bg.js" defer></script>
 <script src="js/ai.js" defer></script>
 <script src="js/loaders.min.js" defer></script>
+<script src="js/access.js" defer></script>
+<script src="js/admin-console.js" defer></script>
 <script src="js/admin.js" defer></script>
 <script src="js/feed-data.js" defer></script>
 <script src="js/events-data.js" defer></script>
