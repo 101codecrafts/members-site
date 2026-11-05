@@ -9,7 +9,7 @@
   var page = b.dataset.page || "", src = (document.currentScript && document.currentScript.src) || "js/bg.js";
   var QUIET = /^(terms|privacy|cookies|article|go|ide|problem|admin|interview|contest|whiteboard)$/;
   var TYPE = page === "landing" ? "landing" : /^(auth|signin|signup|onboarding|verify|join)$/.test(page) ? "auth" : /^(404|offline)$/.test(page) ? "err" :
-    /^(dashboard|courses|course|learn|practice|sessions|session|groups|card|cart|checkout|launchpad|announcements|orders|seller|rfq|product-item|product|projects|profile|testing|tutor|settings-apps|aitools|contests|opportunities)$/.test(page) ? "app" : "mkt";
+    /^(guest|dashboard|courses|course|learn|practice|sessions|session|groups|card|cart|checkout|launchpad|announcements|orders|seller|rfq|product-item|product|projects|profile|settings|testing|tutor|settings-apps|aitools|contests|opportunities)$/.test(page) ? "app" : "mkt";
   if (QUIET.test(page)) TYPE = "quiet";
   var rm = matchMedia("(prefers-reduced-motion: reduce)"), cv = null, w = null, P = null, L = null, live = false, loaded = false;
   var mode = function () { var m = ""; try { m = localStorage.cc_bg_motion || ""; } catch (e) {} return m === "off" || m === "reduced" ? m : "on"; };

@@ -22,6 +22,7 @@
     gate: function (el, action) { if (!el) return; var ok = A.can(action); el.hidden = !ok; el.toggleAttribute("data-gated", !ok); return ok; },
     on: function (fn) { subs.push(fn); if (A._set) try { fn(A); } catch (e) {} }
   };
+  A.onChange = A.on;   /* the owner's name for it (r11/auth access.js) */
   window.CCAccess = A;
   /* server roles -> contract roles. super_admin is the backend's name for root_admin. */
   function roleOf(me, user) {

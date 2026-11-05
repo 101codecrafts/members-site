@@ -28,7 +28,7 @@
   window.CC_THEME = { set: applyTheme, name: themeName };
 
   function paint(A) {
-    var signed = !!A.user, me = A.me || {}, prof = me.profile || {};
+    var signed = !!(A.user || (window.CC_AUTH && CC_AUTH.user)), me = A.me || {}, prof = me.profile || A.profile || {};
     $$("[data-acct-plan]").forEach(function (e) { e.textContent = (PLAN[A.plan] || "Free") + " plan"; e.hidden = !signed; });
     $$(".acct-role").forEach(function (e) { if (signed) e.textContent = ROLE[A.role] || "Member"; });
     var staff = A.role === "admin" || A.role === "root_admin";
@@ -87,7 +87,7 @@
     $$("[data-acct-switch]").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); switchAccount(); }); });
     addEventListener("storage", function (e) { if (e.key === "theme") $$("[data-acct-theme-val]").forEach(function (x) { x.textContent = themeName(); }); if (e.key === "lang") $$("[data-acct-lang]").forEach(function (x) { x.textContent = langName(); }); });
     var lang = document.getElementById("cc-lang"); if (lang) lang.addEventListener("change", function () { $$("[data-acct-lang]").forEach(function (x) { x.textContent = langName(); }); });
-    if (window.CCAccess) CCAccess.on(paint); else document.addEventListener("cc:access", function (e) { paint(e.detail); });
+    if (window.CCAccess) (CCAccess.onChange || CCAccess.on).call(CCAccess, paint); else document.addEventListener("cc:access", function (e) { paint(e.detail); });
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", init) : init();
 })();

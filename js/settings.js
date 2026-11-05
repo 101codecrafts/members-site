@@ -243,7 +243,7 @@
     if (!window.CC_AUTH) { visitor(true); return; }
     var first = true;
     window.CC_AUTH.onChange(function (u) { if (!u) { visitor(true); USER = ME = null; return; } if (first || !USER || USER.id !== u.id) { first = false; signedIn(u); } });
-    if (window.CCAccess) CCAccess.on(function () { if (USER) fillAccount(); });
+    if (window.CCAccess) (CCAccess.onChange || CCAccess.on).call(CCAccess, function () { if (USER) fillAccount(); });
     // deep link: open the right section on load (sticky nav keeps the hash in sync while scrolling)
     var nav = $(".st-nav"), links = $$("a", nav), secs = links.map(function (a) { return document.getElementById(a.hash.slice(1)); });
     if ("IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (!en.isIntersecting) return; links.forEach(function (a) { a.toggleAttribute("aria-current", a.hash === "#" + en.target.id); }); }); }, { rootMargin: "-30% 0px -60% 0px" });
