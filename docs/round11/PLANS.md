@@ -16,13 +16,13 @@ Rank order: `free < standard < plus < pro`. "∞" means `null` in the data (no c
 |---|---|---|---|---|
 | Suggested price (UGX / month) | 0 | **15,000** | **35,000** | **75,000** |
 | Suggested price (UGX / year) | 0 | 150,000 | 350,000 | 750,000 |
-| Active 101 courses at once (`courses_active`) | **1** | 3 | 10 | ∞ |
-| Lessons open in each free-plan course (`lessons_free_per_course`) | **3** + previews | all | all | all |
+| Active 101 courses at once (`courses.active`) | **1** | 3 | 10 | ∞ |
+| Lessons open in each free-plan course (`lessons.free_per_course`) | **3** + previews | all | all | all |
 | External courses | ∞ | ∞ | ∞ | ∞ |
 | Certificates on 101 courses (`certificates`) | – | ✓ | ✓ | ✓ |
-| 101 AI messages per day (`ai_daily`) | 10 | 50 | 200 | 1,000 (fair use) |
+| 101 AI messages per day (`ai.daily`) | 10 | 50 | 200 | 1,000 (fair use) |
 | Paid 1:1 sessions with tutors (`session.book`) | pay per session | pay per session | 10% off | 1 × 30 min included / month, 15% off the rest |
-| Projects (`projects_active`) | 2 | 5 | 20 | ∞ |
+| Projects (`projects.active`) | 2 | 5 | 20 | ∞ |
 | Marketplace: buy | ✓ | ✓ | ✓ | ✓ |
 | Marketplace: sell (admin approves each listing) | 3 listings, 15% fee | 10 listings, 12% | 25 listings, 10% | 100 listings, 8% |
 | Offline downloads (`offline`) | – | – | ✓ | ✓ |
@@ -36,16 +36,16 @@ Paid courses a learner buys outright are fully unlocked whatever the plan (they 
 |---|---|---|---|---|
 | Suggested price (UGX / month) | 0 | **25,000** | **60,000** | **120,000** |
 | Suggested price (UGX / year) | 0 | 250,000 | 600,000 | 1,200,000 |
-| Students across all courses and 1:1s (`max_students`) | **2** | 25 | 150 | ∞ |
-| Published courses (`courses_published`) | 1 | 3 | 10 | ∞ |
-| 1:1 / group sessions per month (`sessions_monthly`) | 4 | 20 | 60 | ∞ |
-| 101 commission on course + session sales (`commission_pct`) | 30% | 20% | 15% | 10% |
+| Students across all courses and 1:1s (`students.max`) | **2** | 25 | 150 | ∞ |
+| Published courses (`courses.published`) | 1 | 3 | 10 | ∞ |
+| 1:1 / group sessions per month (`sessions.per_month`) | 4 | 20 | 60 | ∞ |
+| 101 commission on course + session sales (`commission.pct`) | 30% | 20% | 15% | 10% |
 | Course price range a tutor may *request* (admin approves) | UGX 1,000–50,000 | 1,000–150,000 | 1,000–300,000 | 1,000–500,000 |
 | Coupons (`coupons`) | – | ✓ | ✓ | ✓ |
 | Learner analytics | basic | basic | full | full + export |
 | Marketplace sell | 3 listings, 15% | 10, 12% | 25, 10% | 100, 8% |
-| Featured placement (`featured_monthly`) | – | – | 1 / month | 3 / month |
-| Payout minimum (`payout_min_ugx`) | 50,000 | 20,000 | 10,000 | 10,000 |
+| Featured placement (`featured.monthly`) | – | – | 1 / month | 3 / month |
+| Payout minimum (`payout.min_ugx`) | 50,000 | 20,000 | 10,000 | 10,000 |
 
 The commission falls as the plan rises (the Preply/Teachable pattern in RESEARCH.md). At 30% on Free, 101 earns more than Udemy's 37% organic share only through volume. A tutor earning about UGX 250k/month saves more on Standard (20%) than the plan costs.
 
@@ -71,7 +71,7 @@ The commission falls as the plan rises (the Preply/Teachable pattern in RESEARCH
 - An upgrade takes effect when the payment is verified by webhook (SR-16). The old subscription for the same audience is cancelled automatically, and the new period starts then. **No proration this round** (open question for the founder).
 - A downgrade or cancel takes effect at the end of the paid period (`cancel_at_period_end`).
 - Over the cap after a downgrade: nothing is deleted. Extra courses become read-only, and new enrolments are blocked until under the cap.
-- A Tutor over `max_students` keeps existing students. New enrolments in that tutor's courses are refused with a clear "this tutor is full" message.
+- A Tutor over `students.max` keeps existing students. New enrolments in that tutor's courses are refused with a clear "this tutor is full" message.
 
 ## Open questions for the founder
 1. Are the suggested UGX prices right, and should annual be 10× (2 months free)?
