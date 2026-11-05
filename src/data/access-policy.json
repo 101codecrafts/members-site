@@ -1,9 +1,24 @@
 {
-  "$comment": "101 Codecrafts shared access contract (owner: r11 auth). Front end reads it via js/access.js (CCAccess.can / .limit / .gate); the backend mirrors it in backend/data/access-policy.json + lib/access.ts and RLS. Action keys are <area>.<verb>. 'roles' = who may; 'plans' (optional) = plans a learner/tutor must hold (staff bypass plans); 'minor' = 'deny' blocks under-18s always, 'consent' blocks them until a guardian has verified. Limits are DEFAULTS only: the server overrides them from admin-edited plan settings (GET /api/v1/auth/session -> limits). null = unlimited/not set.",
-  "version": 1,
-  "roles": ["visitor", "guest", "learner", "tutor", "admin", "root_admin"],
-  "plans": ["free", "standard", "plus", "pro"],
-  "staff": ["admin", "root_admin"],
+  "$comment": "101 Codecrafts shared access contract (owner: r11 auth). Front end reads it via js/access.js (CCAccess.can / .limit / .gate); the backend mirrors it in backend/data/access-policy.json + lib/access.ts and RLS. Action keys are <area>.<verb>. 'roles' = who may; 'plans' (optional) = plans a learner/tutor must hold (staff bypass plans); 'minor' = 'deny' blocks under-18s always, 'consent' blocks them until a guardian has verified. Limits are DEFAULTS only: the server overrides them from admin-edited plan settings (GET /api/v1/auth/session -> limits). null = unlimited/not set. | round-11 integrate: auth base + plans/admin/dash/profile keys (dotted limit keys).",
+  "version": 2,
+  "roles": [
+    "visitor",
+    "guest",
+    "learner",
+    "tutor",
+    "admin",
+    "root_admin"
+  ],
+  "plans": [
+    "free",
+    "standard",
+    "plus",
+    "pro"
+  ],
+  "staff": [
+    "admin",
+    "root_admin"
+  ],
   "root_email": "101codecrafts@gmail.com",
   "home": {
     "visitor": "/index.html",
@@ -16,83 +31,688 @@
   "auth_route": "/auth.html",
   "pages": {
     "$comment": "page (file name without .html) -> action needed to open it; unlisted pages are public. Denied visitor -> auth_route?next=; denied signed-in user -> their home (never the same page).",
-    "dashboard": "dashboard.learner", "tutor": "dashboard.tutor", "admin": "dashboard.admin", "guest": "guest.home",
-    "courses": "course.browse", "course": "course.browse", "learn": "course.browse", "article": "course.browse",
-    "practice": "practice.use", "problem": "practice.use", "ide": "practice.use", "contests": "practice.use", "contest": "practice.use", "interview": "practice.use",
-    "resources": "resource.open", "ai-tools": "ai.chat",
-    "marketplace": "market.browse", "product-item": "market.browse", "cart": "market.buy", "checkout": "market.buy", "orders": "market.buy", "rfq": "market.buy", "seller": "market.sell",
-    "projects": "shell.full", "launchpad": "shell.full", "testing": "shell.full", "competitions": "shell.full", "sessions": "shell.full", "session": "shell.full",
-    "whiteboard": "shell.full", "card": "shell.full", "cards": "shell.full", "groups": "community.post",
-    "announcements": "shell.app", "settings-apps": "shell.app", "profile": "shell.app"
+    "dashboard": "dashboard.learner_view",
+    "tutor": "dashboard.tutor_view",
+    "admin": "dashboard.admin",
+    "guest": "guest.home",
+    "courses": "course.browse",
+    "course": "course.browse",
+    "learn": "course.browse",
+    "article": "course.browse",
+    "practice": "practice.use",
+    "problem": "practice.use",
+    "ide": "practice.use",
+    "contests": "practice.use",
+    "contest": "practice.use",
+    "interview": "practice.use",
+    "resources": "resource.open",
+    "ai-tools": "ai.chat",
+    "marketplace": "market.browse",
+    "product-item": "market.browse",
+    "cart": "market.buy",
+    "checkout": "market.buy",
+    "orders": "market.buy",
+    "rfq": "market.buy",
+    "seller": "market.sell",
+    "projects": "shell.full",
+    "launchpad": "shell.full",
+    "testing": "shell.full",
+    "competitions": "shell.full",
+    "sessions": "shell.full",
+    "session": "shell.full",
+    "whiteboard": "shell.full",
+    "card": "shell.full",
+    "cards": "shell.full",
+    "groups": "community.post",
+    "announcements": "shell.app",
+    "settings-apps": "shell.app",
+    "builder": "course.build",
+    "upgrade": "plan.upgrade",
+    "settings": "shell.app"
   },
-  "plans_route": "/settings-apps.html#plan",
+  "plans_route": "/pricing.html",
   "guardian_route": "/settings-apps.html#guardian",
   "actions": {
-    "page.public":          { "roles": ["visitor", "guest", "learner", "tutor", "admin", "root_admin"] },
-    "news.read":            { "roles": ["visitor", "guest", "learner", "tutor", "admin", "root_admin"] },
-    "event.browse":         { "roles": ["visitor", "guest", "learner", "tutor", "admin", "root_admin"] },
-
-    "shell.app":            { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "shell.full":           { "roles": ["learner", "tutor", "admin", "root_admin"] },
-    "guest.home":           { "roles": ["guest"] },
-    "dashboard.learner":    { "roles": ["learner"] },
-    "dashboard.tutor":      { "roles": ["tutor"] },
-    "dashboard.admin":      { "roles": ["admin", "root_admin"] },
-    "demo.view":            { "roles": ["admin", "root_admin"] },
-
-    "course.browse":        { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "course.take_external": { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "course.take_free":     { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "course.take_tutor":    { "roles": ["learner", "tutor", "admin", "root_admin"], "minor": "consent" },
-    "course.take_premium":  { "roles": ["learner", "tutor", "admin", "root_admin"], "plans": ["standard", "plus", "pro"], "minor": "consent" },
-    "course.create":        { "roles": ["tutor", "admin", "root_admin"] },
-    "course.set_price":     { "roles": ["tutor", "admin", "root_admin"] },
-    "course.set_free":      { "roles": ["admin", "root_admin"] },
-    "course.rate":          { "roles": ["learner", "tutor"], "minor": "consent", "$comment": "server also requires an enrolment or completed use" },
-
-    "resource.open":        { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "resource.rate":        { "roles": ["learner", "tutor"], "minor": "consent" },
-    "practice.use":         { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "ai.chat":              { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-
-    "market.browse":        { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "market.buy":           { "roles": ["guest", "learner", "tutor", "admin", "root_admin"], "minor": "consent" },
-    "market.sell":          { "roles": ["learner", "tutor"], "minor": "deny" },
-
-    "project.create":       { "roles": ["learner", "tutor"], "minor": "consent" },
-    "session.book":         { "roles": ["learner", "tutor"], "minor": "consent" },
-    "session.host":         { "roles": ["tutor"] },
-    "event.register":       { "roles": ["learner", "tutor", "admin", "root_admin"], "minor": "consent" },
-    "community.post":       { "roles": ["learner", "tutor", "admin", "root_admin"], "minor": "consent" },
-    "message.send":         { "roles": ["learner", "tutor", "admin", "root_admin"], "minor": "consent" },
-    "profile.public":       { "roles": ["learner", "tutor", "admin", "root_admin"], "minor": "deny" },
-
-    "profile.edit":         { "roles": ["guest", "learner", "tutor", "admin", "root_admin"] },
-    "account.upgrade":      { "roles": ["guest"] },
-    "plan.upgrade":         { "roles": ["learner", "tutor"] },
-    "payout.manage":        { "roles": ["tutor"], "minor": "deny" },
-    "guardian.manage":      { "roles": ["guest", "learner"] },
-
-    "approvals.review":     { "roles": ["admin", "root_admin"] },
-    "users.manage":         { "roles": ["admin", "root_admin"] },
-    "plans.edit":           { "roles": ["admin", "root_admin"] },
-    "flags.edit":           { "roles": ["admin", "root_admin"] },
-    "audit.read":           { "roles": ["admin", "root_admin"] },
-    "admin.add":            { "roles": ["root_admin"] },
-    "admin.remove":         { "roles": ["root_admin"] }
+    "page.public": {
+      "roles": [
+        "visitor",
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "news.read": {
+      "roles": [
+        "visitor",
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "event.browse": {
+      "roles": [
+        "visitor",
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "shell.app": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "shell.full": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "guest.home": {
+      "roles": [
+        "guest"
+      ]
+    },
+    "dashboard.learner": {
+      "roles": [
+        "learner"
+      ]
+    },
+    "dashboard.tutor": {
+      "roles": [
+        "tutor"
+      ]
+    },
+    "dashboard.admin": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "demo.view": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "course.browse": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "course.take_external": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "course.take_free": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "course.take_tutor": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "minor": "consent"
+    },
+    "course.take_premium": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "plans": [
+        "standard",
+        "plus",
+        "pro"
+      ],
+      "minor": "consent"
+    },
+    "course.create": {
+      "roles": [
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "course.set_price": {
+      "roles": [
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "$comment": "tutor = request only (admin approval queue)"
+    },
+    "course.set_free": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "course.rate": {
+      "roles": [
+        "learner",
+        "tutor"
+      ],
+      "minor": "consent",
+      "$comment": "server also requires an enrolment or completed use"
+    },
+    "resource.open": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "resource.rate": {
+      "roles": [
+        "learner",
+        "tutor"
+      ],
+      "minor": "consent"
+    },
+    "practice.use": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "ai.chat": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "market.browse": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "market.buy": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "minor": "consent"
+    },
+    "market.sell": {
+      "roles": [
+        "learner",
+        "tutor"
+      ],
+      "minor": "deny",
+      "$comment": "listings go to admin approval; count capped by listings.active"
+    },
+    "project.create": {
+      "roles": [
+        "learner",
+        "tutor"
+      ],
+      "minor": "consent"
+    },
+    "session.book": {
+      "roles": [
+        "learner",
+        "tutor"
+      ],
+      "minor": "consent"
+    },
+    "session.host": {
+      "roles": [
+        "tutor"
+      ]
+    },
+    "event.register": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "minor": "consent"
+    },
+    "community.post": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "minor": "consent"
+    },
+    "message.send": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "minor": "consent"
+    },
+    "profile.public": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "minor": "deny"
+    },
+    "profile.edit": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "account.upgrade": {
+      "roles": [
+        "guest"
+      ]
+    },
+    "plan.upgrade": {
+      "roles": [
+        "learner",
+        "tutor"
+      ]
+    },
+    "payout.manage": {
+      "roles": [
+        "tutor"
+      ],
+      "minor": "deny"
+    },
+    "guardian.manage": {
+      "roles": [
+        "guest",
+        "learner"
+      ]
+    },
+    "approvals.review": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "users.manage": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "plans.edit": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "flags.edit": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "audit.read": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ]
+    },
+    "admin.add": {
+      "roles": [
+        "root_admin"
+      ]
+    },
+    "admin.remove": {
+      "roles": [
+        "root_admin"
+      ]
+    },
+    "course.enroll": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "minor": "consent",
+      "$comment": "enrol in a 101 course; server applies courses.active + tutor students.max (can_enroll). Alias of the owner's course.take_tutor."
+    },
+    "lesson.view_locked": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "plans": [
+        "standard",
+        "plus",
+        "pro"
+      ],
+      "$comment": "lessons past lessons.free_per_course or with min_plan>free. Server: app.can_view_lesson (RLS on lessons)."
+    },
+    "rating.create": {
+      "roles": [
+        "learner",
+        "tutor"
+      ],
+      "minor": "consent",
+      "$comment": "any rating; server requires verified use (enrolment / delivered order / attended session / recorded use)"
+    },
+    "payment.provider_manage": {
+      "roles": [
+        "root_admin"
+      ],
+      "$comment": "switch payment providers (stubs can never be enabled)"
+    },
+    "course.build": {
+      "roles": [
+        "tutor"
+      ],
+      "$comment": "the course builder (builder.html) and tutor course APIs"
+    },
+    "course.submit": {
+      "roles": [
+        "tutor"
+      ]
+    },
+    "course.preview": {
+      "roles": [
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "$comment": "course.html?preview=<id>: owner sees drafts; admins preview submissions"
+    },
+    "course.review": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ],
+      "$comment": "approve / reject course submissions"
+    },
+    "dashboard.learner_view": {
+      "roles": [
+        "learner",
+        "admin",
+        "root_admin"
+      ],
+      "$comment": "r11/dash: dashboard.html page gate; staff only see it with ?demo=1 (js/dash-common.js staffGuard), others go home"
+    },
+    "dashboard.tutor_view": {
+      "roles": [
+        "tutor",
+        "admin",
+        "root_admin"
+      ],
+      "$comment": "r11/dash: tutor.html page gate; staff only with ?demo=1"
+    },
+    "profile.view_own": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "profile.share": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "account.billing": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "account.payouts": {
+      "roles": [
+        "tutor"
+      ]
+    },
+    "account.guardian": {
+      "roles": [
+        "guest",
+        "learner"
+      ]
+    },
+    "account.export": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "account.delete": {
+      "roles": [
+        "guest",
+        "learner",
+        "tutor",
+        "admin"
+      ]
+    },
+    "settings.connected_apps": {
+      "roles": [
+        "learner",
+        "tutor",
+        "admin",
+        "root_admin"
+      ]
+    },
+    "admin.scopes": {
+      "roles": [
+        "root_admin"
+      ],
+      "$comment": "r11/admin: edit another admin's scopes"
+    },
+    "admin.suspend": {
+      "roles": [
+        "root_admin"
+      ],
+      "$comment": "r11/admin"
+    },
+    "support.view": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ],
+      "$comment": "r11/admin: read-only support view (server scope support_view)"
+    },
+    "stats.read": {
+      "roles": [
+        "admin",
+        "root_admin"
+      ],
+      "$comment": "r11/admin"
+    },
+    "review.submit": {
+      "roles": [
+        "learner",
+        "tutor"
+      ],
+      "minor": "consent",
+      "$comment": "r11/admin: send something to the approval queue"
+    }
   },
   "limits": {
     "learner": {
-      "free":     { "courses.active": 1, "lessons.preview_only": true, "sessions.per_month": 0 },
-      "standard": { "courses.active": null, "lessons.preview_only": false, "sessions.per_month": null },
-      "plus":     { "courses.active": null, "lessons.preview_only": false, "sessions.per_month": null },
-      "pro":      { "courses.active": null, "lessons.preview_only": false, "sessions.per_month": null }
+      "free": {
+        "courses.active": 1,
+        "lessons.free_per_course": 3,
+        "ai.daily": 10,
+        "projects.active": 2,
+        "listings.active": 3,
+        "seller.fee_pct": 15,
+        "certificates": false,
+        "offline": false,
+        "sessions.discount_pct": 0,
+        "sessions.included_monthly": 0,
+        "sessions.per_month": 0
+      },
+      "standard": {
+        "courses.active": 3,
+        "lessons.free_per_course": null,
+        "ai.daily": 50,
+        "projects.active": 5,
+        "listings.active": 10,
+        "seller.fee_pct": 12,
+        "certificates": true,
+        "offline": false,
+        "sessions.discount_pct": 0,
+        "sessions.included_monthly": 0,
+        "sessions.per_month": null
+      },
+      "plus": {
+        "courses.active": 10,
+        "lessons.free_per_course": null,
+        "ai.daily": 200,
+        "projects.active": 20,
+        "listings.active": 25,
+        "seller.fee_pct": 10,
+        "certificates": true,
+        "offline": true,
+        "sessions.discount_pct": 10,
+        "sessions.included_monthly": 0,
+        "sessions.per_month": null
+      },
+      "pro": {
+        "courses.active": null,
+        "lessons.free_per_course": null,
+        "ai.daily": 1000,
+        "projects.active": null,
+        "listings.active": 100,
+        "seller.fee_pct": 8,
+        "certificates": true,
+        "offline": true,
+        "sessions.discount_pct": 15,
+        "sessions.included_monthly": 1,
+        "sessions.per_month": null
+      }
     },
     "tutor": {
-      "free":     { "students.max": 2, "courses.published": null },
-      "standard": { "students.max": null, "courses.published": null },
-      "plus":     { "students.max": null, "courses.published": null },
-      "pro":      { "students.max": null, "courses.published": null }
+      "free": {
+        "students.max": 2,
+        "courses.published": 1,
+        "sessions.per_month": 4,
+        "commission.pct": 30,
+        "price.max_ugx": 50000,
+        "listings.active": 3,
+        "seller.fee_pct": 15,
+        "coupons": false,
+        "featured.monthly": 0,
+        "payout.min_ugx": 50000,
+        "courses.active": 1,
+        "lessons.free_per_course": 3
+      },
+      "standard": {
+        "students.max": 25,
+        "courses.published": 3,
+        "sessions.per_month": 20,
+        "commission.pct": 20,
+        "price.max_ugx": 150000,
+        "listings.active": 10,
+        "seller.fee_pct": 12,
+        "coupons": true,
+        "featured.monthly": 0,
+        "payout.min_ugx": 20000,
+        "courses.active": 3,
+        "lessons.free_per_course": null
+      },
+      "plus": {
+        "students.max": 150,
+        "courses.published": 10,
+        "sessions.per_month": 60,
+        "commission.pct": 15,
+        "price.max_ugx": 300000,
+        "listings.active": 25,
+        "seller.fee_pct": 10,
+        "coupons": true,
+        "featured.monthly": 1,
+        "payout.min_ugx": 10000,
+        "courses.active": 10,
+        "lessons.free_per_course": null
+      },
+      "pro": {
+        "students.max": null,
+        "courses.published": null,
+        "sessions.per_month": null,
+        "commission.pct": 10,
+        "price.max_ugx": 500000,
+        "listings.active": 100,
+        "seller.fee_pct": 8,
+        "coupons": true,
+        "featured.monthly": 3,
+        "payout.min_ugx": 10000,
+        "courses.active": null,
+        "lessons.free_per_course": null
+      }
+    },
+    "guest": {
+      "free": {
+        "courses.active": 1,
+        "lessons.free_per_course": 3,
+        "ai.daily": 5,
+        "listings.active": 0
+      }
     }
-  }
+  },
+  "checkout_route": "/upgrade.html"
 }

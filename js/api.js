@@ -215,15 +215,14 @@
   const fetchTutorOverview = async () => (await tryChain(() => backend("/tutor/overview"))) || T();
   const requestPayout = (amount, method) => post("/tutor/payouts", { amount, method });
 
-  /* ---------- Payments: Flutterwave Inline (test mode stub) ----------
-     Loads https://checkout.flutterwave.com/v3.js on demand. The PUBLIC key comes from CC_CONFIG.flwPublicKey
-     (set it at deploy time; never commit secret keys). Without a key the call only logs what it would do. */
-  function flutterwaveCheckout({ amount, currency = "UGX", email, name, title, txRef }) {
-    const key = window.CC_CONFIG && window.CC_CONFIG.flwPublicKey;
-    if (!key) { alert(`Flutterwave test checkout (stub)\n${title}: ${currency} ${amount.toLocaleString()}\nSet CC_CONFIG.flwPublicKey (FLWPUBK_TEST-…) to open the real test modal.`); return; }
-    const run = () => window.FlutterwaveCheckout({ public_key: key, tx_ref: txRef || "cc-" + Date.now(), amount, currency, payment_options: "mobilemoneyuganda,card", customer: { email, name }, customizations: { title: "101 Codecrafts", description: title } });
-    if (window.FlutterwaveCheckout) return run();
-    const s = document.createElement("script"); s.src = "https://checkout.flutterwave.com/v3.js"; s.onload = run; document.head.appendChild(s);
+  /* ---------- Payments (round 11): the browser NEVER names an amount (SR-17) ----------
+     Every checkout is priced by the server (POST /api/v1/checkout, /api/v1/billing/checkout, /api/v1/marketplace/checkout)
+     which returns the provider's hosted checkout URL. This helper only opens that server-issued URL (sandbox in this build). */
+  function flutterwaveCheckout(opts) {
+    const url = opts && opts.checkoutUrl;
+    if (url && /^https:\/\//.test(url)) { location.href = url; return true; }
+    console.warn("[101] Payments open only from a server-issued checkout URL; client amounts are never sent (SR-17).");
+    return false;
   }
 
   /* ---------- Launchpad / testing / competitions / groups / projects ---------- */

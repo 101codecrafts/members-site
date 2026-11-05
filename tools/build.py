@@ -226,6 +226,15 @@ def loader(a):
     return (f'<{tag} class="ccl ccl-in{over}" role="status" aria-live="polite" aria-busy="true"><span class="ccl-d" aria-hidden="true"><i></i><i></i><i></i></span>'
             f'<span class="ccl-t">Loading {html.escape(a.get("label", "content"))}…</span></{tag}>')
 
+# Shared access contract: inline src/data/access-policy.json into js/access.js between /*POLICY*/ and /*END*/ (r11)
+_acc = root / 'js/access.js'
+if _acc.exists():
+    _pol = json.dumps(json.loads((root / 'src/data/access-policy.json').read_text()), separators=(',', ':'))
+    _acc.write_text(re.sub(r'/\*POLICY\*/.*?/\*END\*/', lambda m: '/*POLICY*/' + _pol + '/*END*/', _acc.read_text(), count=1, flags=re.S))
+
+# Plans fallback catalogue (r11 plans): src/data/plans.json -> js/plans-data.js (the live catalogue comes from GET /api/v1/plans)
+(root / 'js/plans-data.js').write_text('/* GENERATED from src/data/plans.json by tools/build.py: offline fallback only */\nwindow.CC_PLANS_DEFAULT = ' + json.dumps(json.loads((root / 'src/data/plans.json').read_text()), separators=(',', ':')) + ';\n')
+
 THEME_LINK = '<link rel="stylesheet" href="css/bundle-theme.css">'
 for f in (root / 'src').glob('*.html'):
     s = css_links(f.read_text()); name = f.name
@@ -237,6 +246,7 @@ for f in (root / 'src').glob('*.html'):
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
     s = re.sub(r'\{\{TOPBAR(.*?)\}\}', lambda m: topbar(attrs(m.group(1)), name), s)
     s = re.sub(r'\{\{LOADER(.*?)\}\}', lambda m: loader(attrs(m.group(1))), s)
+    s = s.replace('{{LOCK_ICON}}', '<svg aria-hidden="true"><use href="#i-shieldc"/></svg>')   # r11 plans: sandbox notes
     if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')

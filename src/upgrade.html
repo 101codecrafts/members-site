@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD title="Upgrade your plan · 101 Codecrafts" desc="Upgrade your 101 Codecrafts plan with MTN Mobile Money, Airtel Money or card." path="upgrade.html" noindex}}
+<link rel="stylesheet" href="css/brutal.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/plans.css">
+</head>
+<body class="flow" data-role="learner" data-page="upgrade">
+<a class="skip" href="#main">Skip to content</a>
+{{ICONS}}
+<div class="shell">
+{{SIDEBAR role="learner" active="Settings"}}
+<div class="main">
+{{TOPBAR role="learner" name="Guest" label="Learner"}}
+<main id="main" class="content pl-wrap">
+<div class="page-h"><div><div class="kicker">Plans</div><h1>UPGRADE</h1><p>Your total comes from 101, never from this page. You'll approve it on your phone or card.</p></div><a class="btn" href="pricing.html">All plans</a></div>
+<div class="pl-sandbox" role="note">{{LOCK_ICON}}<span><b>Test mode.</b> This checkout runs in the payment provider's sandbox. No real money moves. Use the test numbers and cards the checkout shows.</span></div>
+<div id="up-main">
+<form class="up-split" id="up-form" novalidate>
+ <div class="grid" style="gap:18px">
+  <section class="card up-step" aria-labelledby="up-h-plan"><h2 id="up-h-plan"><i>1</i> YOUR PLAN</h2>
+   <p><b id="up-plan">101 plan</b> · <span id="up-int">Monthly</span></p><ul class="pl-feats" id="up-feats" style="margin-top:10px"></ul>
+   <p class="pl-note" id="up-current" style="margin-top:10px"></p><p style="margin-top:8px"><a id="up-swap" href="pricing.html">Pay yearly</a></p></section>
+  <section class="card up-step" aria-labelledby="up-h-pay"><h2 id="up-h-pay"><i>2</i> HOW YOU PAY</h2>
+   <div class="up-methods" role="radiogroup" aria-labelledby="up-h-pay">
+    <label class="up-method" data-method="mtn_momo"><input type="radio" name="method" value="mtn_momo"><span class="up-logo mtn" aria-hidden="true">MTN</span><span><b>MTN Mobile Money</b><small>Approve the prompt on your phone</small></span></label>
+    <label class="up-method" data-method="airtel_money"><input type="radio" name="method" value="airtel_money"><span class="up-logo airtel" aria-hidden="true">airtel</span><span><b>Airtel Money</b><small>Approve the prompt on your phone</small></span></label>
+    <label class="up-method" data-method="card"><input type="radio" name="method" value="card"><span class="up-logo card" aria-hidden="true">VISA·MC</span><span><b>Card</b><small>Visa or Mastercard on a secure page</small></span></label>
+   </div>
+   <label class="field" id="up-phone-wrap" style="margin-top:12px">Mobile Money number<input id="up-phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX" pattern="^(\+?256|0)7\d{8}$"></label>
+   <p class="up-warn" id="up-netwarn" role="status" hidden style="margin-top:10px"></p>
+   <p class="pl-note" style="margin-top:10px">101 never sees your PIN or card number.</p></section>
+ </div>
+ <aside class="card up-sum" aria-labelledby="up-h-sum"><h2 class="mini-h" id="up-h-sum">SUMMARY</h2>
+  <dl><dt>Plan price</dt><dd id="up-price">…</dd><dt class="up-total">Total</dt><dd class="up-total" id="up-total-v"><span id="up-confirmed" hidden>Confirmed by 101 · </span>calculated by 101</dd></dl>
+  <button class="btn or lg" type="submit" id="up-pay" style="width:100%">Continue to payment</button>
+  <a class="btn" id="up-go" hidden href="#" style="width:100%;margin-top:10px">Open the test checkout</a>
+  <p class="up-msg" id="up-msg" role="status" aria-live="polite" style="margin-top:10px"></p>
+  <p class="pl-note">Your plan starts when the payment provider confirms the payment to 101. Closing this page before then changes nothing.</p></aside>
+</form>
+</div>
+</main>
+{{FOOTER}}
+</div></div>
+{{SCRIPTS}}
+<script src="js/plans-data.js" defer></script>
+<script src="js/plans.js" defer></script>
+</body></html>

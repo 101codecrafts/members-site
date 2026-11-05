@@ -367,13 +367,18 @@
     },
     /* ---------------- Course player ---------------- */
     async course() {
-      const c = await API.fetchCourse(q.get("id") || "web-basics"); const done = new Set(JSON.parse(localStorage.getItem("cc_done_" + c.id) || "null") || c.lessons.filter(l => l.done).map(l => l.id));
+      const c = await API.fetchCourse(q.get("id") || "web-basics");
+      /* r11 plans: lesson locks + rating gate (UI only; RLS on lessons is the authority). Never in ?static mockups. */
+      const P = !STATIC && window.CC_PLANS;
+      if (P) { await Promise.race([window.CCAccess && window.CCAccess.ready, new Promise(r => setTimeout(r, 2500))]); P.mergeSyllabus(c, await P.syllabus(c.id)); }
+      const locked = i => !!(P && P.lessonLocked(c, c.lessons[i], i));
+      const done = new Set(JSON.parse(localStorage.getItem("cc_done_" + c.id) || "null") || c.lessons.filter(l => l.done).map(l => l.id));
       let cur = Math.max(0, c.lessons.findIndex(l => l.id === q.get("lesson")) ); if (!q.get("lesson")) cur = Math.max(0, c.lessons.findIndex(l => !done.has(l.id)));
       $("#c-path").textContent = c.path; $("#c-title").textContent = c.title.toUpperCase();
       $("#c-meta").innerHTML = `${levelBadge(c.level)}<span class="tagx">Tutor: ${esc(c.tutor)}</span><span class="tagx">${c.lessons.length} lessons</span>`;
       const lite = () => document.documentElement.classList.contains("lite");
       const progress = () => { const p = Math.round(done.size / c.lessons.length * 100); $("#c-pct").textContent = `${p}% complete · ${done.size}/${c.lessons.length} lessons`; $("#c-bar").style.width = p + "%"; };
-      const list = () => { $("#c-lessons").innerHTML = c.lessons.map((l, i) => `<li><a href="?lesson=${l.id}" data-i="${i}" ${i === cur ? 'aria-current="true"' : ""}><span class="tick ${done.has(l.id) ? "on" : ""}" role="img" aria-label="${done.has(l.id) ? "Completed" : "Not completed"}">${done.has(l.id) ? ico("check") : i + 1}</span><span>${esc(l.title)}</span></a></li>`).join(""); };
+      const list = () => { $("#c-lessons").innerHTML = c.lessons.map((l, i) => { const lk = locked(i); return `<li><a href="?lesson=${l.id}" data-i="${i}" ${i === cur ? 'aria-current="true"' : ""}${lk ? ' class="is-locked"' : ""}><span class="tick ${done.has(l.id) ? "on" : ""}" role="img" aria-label="${lk ? "Locked on your plan" : done.has(l.id) ? "Completed" : "Not completed"}">${lk ? ico("lock") : done.has(l.id) ? ico("check") : i + 1}</span><span>${esc(l.title)}</span></a></li>`; }).join(""); };
       const video = l => {
         if (!l.yt) { $("#c-video").innerHTML = `<div class="facade"><div class="thumb-ph">${ico("clipboard")}</div><span class="play-lbl">Hands-on lesson · no video</span></div>`; return; }
         /* facade: only the thumbnail loads until the learner presses play (saves data); Lite mode uses the small thumbnail */
@@ -381,7 +386,8 @@
         $("#c-video").innerHTML = `<button class="facade" type="button" aria-label="Play video: ${esc(l.title)}"><img src="${th}" alt="" loading="lazy" decoding="async"><span class="play">▶</span><span class="play-lbl">${lite() ? "Data saver on · tap to load video" : "Play lesson"}</span></button>`;
         $("#c-video .facade").onclick = () => { $("#c-video").innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${l.yt}?autoplay=1&rel=0&modestbranding=1" title="${esc(l.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`; };
       };
-      const show = () => { const l = c.lessons[cur]; $("#c-ltitle").textContent = `${cur + 1}. ${l.title}`; video(l); list(); progress();
+      const show = () => { const l = c.lessons[cur]; $("#c-ltitle").textContent = `${cur + 1}. ${l.title}`; if (locked(cur)) $("#c-video").innerHTML = P.lockPanel(l, cur); else video(l); list(); progress();
+        $("#c-done").disabled = locked(cur);
         $("#c-done").setAttribute("aria-pressed", done.has(l.id)); $("#c-done").lastChild.textContent = done.has(l.id) ? "Completed" : "Mark complete";
         $("#c-next").disabled = cur === c.lessons.length - 1;
         $("#p-ov").innerHTML = `<p>${esc(c.overview)}</p><p class="muted" style="margin-top:8px">Lesson ${cur + 1} of ${c.lessons.length}${l.quiz ? " · includes a short quiz" : ""}. Videos open from YouTube in privacy-enhanced mode.</p>`;
@@ -396,6 +402,7 @@
       const disc = () => $("#c-disc").innerHTML = c.discussion.map(d => `<div class="li"><span class="date">${esc(d.who.split(" ").map(w => w[0]).join(""))}</span><div class="grow"><b>${esc(d.who)}</b><small>${esc(d.t)} · ${esc(d.ago)} ago${d.replies ? " · " + d.replies + " replies" : ""}</small></div></div>`).join("");
       $("#c-dform").onsubmit = async e => { e.preventDefault(); const t = e.target.text.value.trim(); if (!t) return; c.discussion.unshift({ who: "You", t, ago: "now", replies: 0 }); disc(); e.target.reset(); await API.postDiscussion(c.id, t); };
       disc(); show();
+      if (P) P.ratingCard(c, !!(c.enrolled || done.size));
     },
     /* ---------------- /go/<id> → original source ----------------
        Open-redirect guard: the id is looked up in our own catalogue (never a URL from the query string); the stored
