@@ -14,7 +14,15 @@
   const STATIC = /[?&]static/.test(location.search) || location.protocol === "file:";
   const listeners = [];
   const AUTH = window.CC_AUTH = { user: null, ready: false, clerk: null, unread: null, onChange: f => { listeners.push(f); if (AUTH.ready) f(AUTH.user); },
-    signOut: async () => { try { localStorage.removeItem("cc_auth_draft"); } catch (e) {} if (AUTH.clerk) await AUTH.clerk.signOut(); location.href = "/index.html"; } };
+    signOut: async () => { forgetUser(); if (AUTH.clerk) await AUTH.clerk.signOut(); location.href = "/index.html"; } };
+  /* r13 guest-leaks: a shared phone must not show the next person what the last one did. Signing out drops every
+     per-user key this site keeps in the browser (drafts, tickets, saved items, cached user, BYOK keys, IDE code);
+     site settings (theme, language, lite mode, cookie choice, sidebar state) stay. */
+  const USER_KEYS = /^(cc_auth_draft|cc_user|cc_ext_drafts|cc_social_draft|cc_seller_drafts|cc_ev_(tickets|going|pending)|cc_opp_(pending|remind)|cc_saved|cc_reminders|cc_done_|cc_ide_|cc_pv_badges|cc_byok_|cc_cart|cc_wish|cc_orders?|cc_order_state|cc_rfq|cc_ann_read|cc_ann_local|101-sessions-stub)/;
+  function forgetUser() {
+    [localStorage, sessionStorage].forEach(st => { try { for (let i = st.length - 1; i >= 0; i--) { const k = st.key(i); if (k && USER_KEYS.test(k)) st.removeItem(k); } } catch (e) {} });
+  }
+  AUTH.forgetUser = forgetUser;
   if (STATIC) return;
 
   const $$ = s => [...document.querySelectorAll(s)];

@@ -11,7 +11,7 @@ test('events.html: visitors get "Sign in to submit an event" → /auth.html?next
   assert.match(h, /<form class="grid g2 sub-form" id="ev-form"[^>]*\shidden>/);
   assert.match(h, /<div class="ev-hp" aria-hidden="true"><label>[^<]*<input name="website" type="text" tabindex="-1" autocomplete="off">/);
   const css = rd('css/feed.css'); assert.ok(css.includes('#ev-form[hidden],#ev-signin[hidden]{display:none!important}')); assert.match(css, /\.ev-hp\{position:absolute!important;left:-10000px/);
-  const js = rd('js/events.js'); assert.ok(js.includes('CCAccess.onChange(evGate)')); assert.ok(js.includes('CCAccess.role !== "visitor"'));
+  const js = rd('js/events.js'); assert.ok(js.includes('CCAccess.onChange(evGate)')); assert.ok(js.includes('A.can("community.post")'), 'r13: only roles that may post see the form (guests get the upgrade prompt)');
 });
 
 function load(fetchImpl) {

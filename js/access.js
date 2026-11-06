@@ -106,6 +106,7 @@
     d.classList.toggle("is-minor", !!A.minor);
     d.dataset.role = A.role;
     [].forEach.call(document.querySelectorAll("[data-can]"), function (el) { A.gate(el, el.getAttribute("data-can")); });
+    guestNav();
     // sidebar: guests get a limited shell (only what they can open); visitors get none (CSS hides it)
     [].forEach.call(document.querySelectorAll(".sbar .sb-nav a[href]"), function (a) {
       var act = A.pageAction(a.getAttribute("href")); a.hidden = !!(act && !A.can(act));
@@ -113,6 +114,19 @@
     [].forEach.call(document.querySelectorAll(".sbar .sb-sec"), function (s) { s.hidden = !s.querySelector("a:not([hidden])"); });
     [].forEach.call(document.querySelectorAll(".acct-role"), function (e) { e.textContent = LABEL[A.role] || "Member"; });
     upgradeCta();
+  }
+  /* r13 guest-leaks: one sidebar per role. Pages are built with the learner/tutor/admin sidebar; a guest gets the guest
+     navigation from the inert <template id="sb-nav-guest"> next to it (tools/build.py), never the other role's links. */
+  function guestNav() {
+    var nav = document.querySelector(".sbar .sb-nav"), tpl = document.querySelector("#sb-nav-guest");
+    if (!nav || !tpl || A.role !== "guest" || nav.dataset.navRole === "guest") return;
+    var here = location.pathname.replace(/^.*\//, "") || "index.html";
+    nav.innerHTML = tpl.innerHTML; nav.dataset.navRole = "guest";
+    [].forEach.call(nav.querySelectorAll("a[href]"), function (a) {
+      var h = (a.getAttribute("href") || "").split("#")[0];
+      if (h === here) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    try { document.dispatchEvent(new CustomEvent("cc:nav", { detail: "guest" })); } catch (e) {}
   }
   function upgradeCta() {
     var nav = document.querySelector(".sbar .sb-nav"); if (!nav) return;
@@ -125,7 +139,10 @@
   }
   /* page guard: never redirect to the page we're on (no loops), never from the auth page itself */
   function guardPage() {
-    var page = (document.body && document.body.dataset.page) || pathPage(location.href) || "";
+    /* r13 guest-leaks: the file name decides first. ai-tools.html carries data-page="aitools", which is not a policy key,
+       so the old body-first lookup found no gate and visitors were never sent to sign in there. */
+    var byPath = pathPage(location.href) || "", byBody = (document.body && document.body.dataset.page) || "";
+    var page = A.pageAction("/" + byPath + ".html") ? byPath : (byBody || byPath);
     var act = A.pageAction("/" + page + ".html"); if (!act || A.can(act)) return;
     if (/[?&]static/.test(location.search)) return;
     var to = A.role === "visitor" ? A.authUrl(location.pathname + location.search + location.hash) : A.denyTarget(act) || A.home();

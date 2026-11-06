@@ -178,9 +178,15 @@
     /* submit an event: signed-in members only (r12 QA fix 3). Visitors see "Sign in to submit an event" (→ auth, back here).
        CCAccess.onChange also fires when the server's answer arrives late, so a member never stays on the sign-in prompt.
        ?static=1 design shots keep the form as drawn. */
+    /* r13 guest-leaks: guests may browse events but not submit them (community.post: learners, tutors, staff; the server
+       refuses them too). A guest sees "Become a learner to submit an event" instead of the form. */
     const evGate = () => { const f = $("#ev-form"), p = $("#ev-signin"); if (!f || !p) return;
-      const inn = document.documentElement.classList.contains("static") || !!(window.CCAccess && CCAccess.resolved && CCAccess.role && CCAccess.role !== "visitor");
-      f.hidden = !inn; p.hidden = inn; };
+      const A = window.CCAccess, resolved = !!(A && A.resolved);
+      const inn = document.documentElement.classList.contains("static") || (resolved && A.can("community.post"));
+      f.hidden = !inn; p.hidden = inn;
+      const a = p.querySelector("a"); if (!a || inn) return;
+      if (resolved && A.role === "guest") { a.textContent = "Become a learner to submit an event"; a.setAttribute("href", A.authUrl("/events.html", "upgrade=1")); }
+      else { a.textContent = "Sign in to submit an event"; a.setAttribute("href", "/auth.html?next=/events.html"); } };
     evGate(); if (window.CCAccess && CCAccess.onChange) CCAccess.onChange(evGate);
     $("#ev-form").onsubmit = async e => { e.preventDefault(); const f = e.target; if (!f.checkValidity()) { f.reportValidity(); return; }
       const o = Object.fromEntries(new FormData(f)); o.start = new Date(o.start + ":00+03:00").toISOString(); o.end = new Date((o.end || f.start.value) + ":00+03:00").toISOString(); o.price = Number(o.price || 0);
