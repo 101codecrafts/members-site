@@ -1,8 +1,8 @@
 import { route, preflight, unwrap } from '@/lib/http';
-import { requireMember } from '@/lib/auth';
+import { requireMember, requireMemberCan } from '@/lib/auth';
 import { uuid } from '@/lib/validation';
 export const POST = route<{ id: string }>(async ({ params }) => {
-  const s = await requireMember();
+  const s = await requireMemberCan('event.register');
   return unwrap(await s.db.from('event_registrations').insert({ event_id: uuid.parse(params.id), user_id: s.userId }).select('id, status').single());
 });
 export const DELETE = route<{ id: string }>(async ({ params }) => {

@@ -1,6 +1,6 @@
 import { route, preflight } from '@/lib/http';
 import { LIMITS } from '@/lib/ratelimit';
-import { requireMember } from '@/lib/auth';
+import { requireMemberCan } from '@/lib/auth';
 import { uuid } from '@/lib/validation';
 import type { Session } from '@/lib/auth';
 
@@ -22,7 +22,7 @@ async function state(s: Session, postId: string): Promise<{ liked: boolean; like
 }
 
 export const POST = route<{ id: string }>(async ({ params }) => {
-  const s = await requireMember();
+  const s = await requireMemberCan('community.post');
   const postId = uuid.parse(params.id);
   const { error } = await s.db.from('reactions').upsert(
     { post_id: postId, user_id: s.userId, emoji: 'like' },
@@ -33,7 +33,7 @@ export const POST = route<{ id: string }>(async ({ params }) => {
 }, { rateLimit: LIMITS.write });
 
 export const DELETE = route<{ id: string }>(async ({ params }) => {
-  const s = await requireMember();
+  const s = await requireMemberCan('community.post');
   const postId = uuid.parse(params.id);
   const { error } = await s.db.from('reactions').delete().eq('post_id', postId).eq('user_id', s.userId).eq('emoji', 'like');
   if (error) throw error;

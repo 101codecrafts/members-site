@@ -1,6 +1,6 @@
 import { route, preflight, body, query, unwrap } from '@/lib/http';
 import { z } from 'zod';
-import { requireUser, requireMember } from '@/lib/auth';
+import { requireMemberCan } from '@/lib/auth';
 import { LIMITS } from '@/lib/ratelimit';
 import { uuid } from '@/lib/validation';
 
@@ -15,7 +15,7 @@ const listQuery = z.object({
 });
 
 export const GET = route<{ id: string }>(async ({ req, params }) => {
-  const s = await requireUser();
+  const s = await requireMemberCan('shell.full');
   const q = query(req, listQuery);
   let sel = s.db.from('post_comments')
     .select('id, author_id, parent_id, body, created_at, author:profiles!post_comments_author_id_fkey(display_name, avatar_url)')
@@ -28,7 +28,7 @@ export const GET = route<{ id: string }>(async ({ req, params }) => {
 });
 
 export const POST = route<{ id: string }>(async ({ req, params }) => {
-  const s = await requireMember();
+  const s = await requireMemberCan('community.post');
   const b = await body(req, z.object({ text: z.string().trim().min(1).max(2000), parent_id: uuid.optional() }));
   return unwrap(await s.db.from('post_comments')
     .insert({ post_id: uuid.parse(params.id), author_id: s.userId, body: b.text, parent_id: b.parent_id ?? null })
