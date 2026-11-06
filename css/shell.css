@@ -140,13 +140,13 @@ html:not(.static) .acct{min-height:44px}
 .acct-id b{font:600 14px/1.15 var(--body);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acct-id small{font:500 12px/1.2 var(--cond);color:var(--sh-mut);letter-spacing:.4px;text-transform:uppercase}
 .acct-chev{width:16px;height:16px;color:var(--sh-mut)}
-.acct-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:1000;min-width:240px;background:#fff;color:var(--sh-navy);border:2px solid var(--sh-navy);box-shadow:5px 5px 0 var(--sh-or);padding:6px 0}
+.acct-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:1000;min-width:240px;background:var(--surface-1);color:var(--sh-navy);border:2px solid var(--sh-navy);box-shadow:5px 5px 0 var(--sh-or);padding:6px 0}
 .acct-menu[hidden]{display:none}
 .am-head{display:flex;flex-direction:row;align-items:center;gap:12px;padding:10px 14px 12px;border-bottom:1px solid #DDE2EE;margin-bottom:4px}
 .am-head .am-av{width:44px;height:44px;font-size:16px;border:2px solid var(--sh-navy)}
 .am-who{display:flex;flex-direction:column;gap:2px;min-width:0}
 .am-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.am-chips i{font:700 11px/1 var(--mono,monospace);font-style:normal;letter-spacing:.8px;text-transform:uppercase;padding:4px 6px;border:1.5px solid var(--sh-navy);color:var(--sh-navy);background:#fff}
+.am-chips i{font:700 11px/1 var(--mono,monospace);font-style:normal;letter-spacing:.8px;text-transform:uppercase;padding:4px 6px;border:1.5px solid var(--sh-navy);color:var(--sh-navy);background:var(--surface-1)}
 .am-chips .am-plan{background:var(--sh-cy,#05e6f2);border-color:var(--sh-navy)}
 .am-chips i[hidden]{display:none}
 .acct-menu{width:min(320px,calc(100vw - 16px));max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px);overflow-y:auto;overscroll-behavior:contain}
@@ -244,7 +244,7 @@ html:not(.static) .cc-toolbar.in-drawer select{background:transparent;color:inhe
    links and Sign in / Join. Guests get a limited sidebar (js/access.js hides what they can't open) plus an upgrade CTA. */
 html.role-visitor .shell{grid-template-columns:minmax(0,1fr)}
 html.role-visitor .shell .sbar,html.role-visitor .sb-scrim,html.role-visitor .topbar .tb-nav,html.role-visitor .topbar .tb-bell{display:none!important}
-.shell .sb-nav .sb-upgrade{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:10px;margin:4px 0 12px;padding:10px;background:#fc8c0c;color:#0B1236;border:2px solid #0B1236;box-shadow:3px 3px 0 #000;font-weight:700;text-decoration:none;height:auto}
+.shell .sb-nav .sb-upgrade{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:10px;margin:4px 0 12px;padding:10px;background:#fc8c0c;color:#0B1236;border:2px solid var(--border-strong);box-shadow:3px 3px 0 #000;font-weight:700;text-decoration:none;height:auto}
 .shell .sb-nav .sb-upgrade svg{width:20px;height:20px;color:#0B1236}
 .shell .sb-nav .sb-upgrade:hover{background:#fc8c0c;color:#0B1236;transform:translate(-1px,-1px)}
 html.sb-collapsed .shell .sb-nav .sb-upgrade span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}

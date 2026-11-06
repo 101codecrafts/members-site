@@ -1,7 +1,7 @@
 /* Sign in / sign up: split screen (navy brand panel + form) on desktop, compact brand header + full-width form on
    mobile. One surface only (no card inside a card); Clerk is themed via `appearance` in js/auth.js, these .cl-* rules
    are a fallback in case a Clerk release renames an element key. */
-body.auth-page{margin:0;background:#fff;color:var(--ink);font:500 var(--step-0)/1.5 var(--body)}
+body.auth-page{margin:0;background:var(--surface-1);color:var(--ink);font:500 var(--step-0)/1.5 var(--body)}
 .auth-page .skip{position:absolute;left:-9999px}.auth-page .skip:focus{left:12px;top:12px;z-index:9;background:var(--or);color:var(--ink);padding:8px 12px;border:2px solid var(--ink)}
 .auth{display:grid;grid-template-columns:minmax(360px,5fr) 7fr;min-height:100vh;min-height:100dvh}
 
@@ -33,7 +33,7 @@ body.auth-page{margin:0;background:#fff;color:var(--ink);font:500 var(--step-0)/
 /* native fallback form (shown until / unless Clerk loads) */
 .auth-form :is(#si,#su){display:grid;gap:14px}
 .auth-form :is(#si,#su) .field{display:grid;gap:6px;font:700 var(--step--1) var(--body);color:var(--ink)}
-.auth-form :is(#si,#su) input:not([type=checkbox]){width:100%;box-sizing:border-box;min-height:48px;padding:0 14px;border:2px solid var(--ink);border-radius:0;background:#fff;color:var(--ink);font:500 16px var(--body)}
+.auth-form :is(#si,#su) input:not([type=checkbox]){width:100%;box-sizing:border-box;min-height:48px;padding:0 14px;border:2px solid var(--ink);border-radius:0;background:var(--surface-1);color:var(--ink);font:500 16px var(--body)}
 .auth-form :is(#si,#su) input:focus-visible{outline:3px solid var(--color-focus);outline-offset:1px}
 .auth-form :is(#si,#su) .btn{min-height:48px;font-size:var(--step-0)}   /* = .btn.lg (one button system: round5 audit) */
 .auth-form :is(#si,#su) .btn.or{color:var(--ink)}
