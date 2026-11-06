@@ -226,7 +226,8 @@
       const eq = $("#ev-review"); if (!eq || !F.pendingEvents) return;
       const drawE = () => { const p = F.pendingEvents(); eq.innerHTML = p.map(o => `<div class="li" data-id="${esc(o.id)}"><div class="grow"><b>Event · ${esc(o.title)}</b><small>${esc(o.venue)} · ${o.start ? new Date(o.start).toLocaleString("en-GB", { timeZone: "Africa/Kampala", dateStyle: "medium", timeStyle: "short" }) + " EAT" : ""} · <a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">check source ↗</a></small></div><button class="btn sm ok" data-ok>Approve</button><button class="btn sm no" data-no>Reject</button></div>`).join("");
         $("#opp-review-n").textContent = F.pendingOpportunities().length + p.length; };
-      eq.onclick = async e => { const li = e.target.closest("[data-id]"); if (!li) return; const ok = !!e.target.closest("[data-ok]"); if (!ok && !e.target.closest("[data-no]")) return; await F.reviewEvent(li.dataset.id, ok); toast(ok ? "Event approved" : "Event rejected"); drawE(); };
+      eq.onclick = async e => { const li = e.target.closest("[data-id]"); if (!li) return; const ok = !!e.target.closest("[data-ok]"); if (!ok && !e.target.closest("[data-no]")) return; const why = ok ? "" : (window.prompt("Reason for rejecting (sent to the submitter, 3 to 300 characters):") || ""); if (!ok && !why.trim()) return;
+        const r = await F.reviewEvent(li.dataset.id, ok, why); toast(r && r.ok === false ? r.message : ok ? "Event approved" : "Event rejected"); drawE(); };
       drawE();
     }
   };

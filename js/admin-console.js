@@ -252,6 +252,85 @@
     const r = e.target.closest("[data-recheck]"); if (r) { if (DEMO) return toast("Demo: nothing was saved"); r.disabled = true; const v = await act(() => post(`/admin/approvals/${r.dataset.recheck}/recheck`), "Links checked again."); if (v) { closeDrawer(); approvals(); } r.disabled = false; }
   });
 
+  /* ==================================================== EVENTS TO REVIEW */
+  /* Member-submitted events (POST /v1/events/external) wait as pending_review. GET /admin/events/pending (scope approvals);
+     POST /admin/events/:id/approve {reason?} and /reject {reason: 3..300}. The server audits and notifies the submitter. */
+  const EV = { offset: 0, limit: 20, items: [], total: 0 };
+  const EV_REASON_MAX = 300;
+  const ORG_LABEL = { google_gdg: "Google / GDG", microsoft: "Microsoft", openai: "OpenAI", anthropic: "Anthropic", hugging_face: "Hugging Face", alibaba_cloud: "Alibaba Cloud", aws: "AWS", mlh: "MLH", "101": "101 Codecrafts", other: "Other" };
+  const safeLink = u => { try { const x = new URL(u); return x.protocol === "https:" ? x.href : null; } catch (e) { return null; } };
+  function evDates(it) {
+    if (!it.starts_at) return "—";
+    const a = when(it.starts_at), b = it.ends_at ? when(it.ends_at) : "";
+    return b && b !== a ? `${a} → ${b} EAT` : `${a} EAT`;
+  }
+  function evCard(it) {
+    const link = safeLink(it.link), who = it.submitter && (it.submitter.display_name || (it.submitter.username ? "@" + it.submitter.username : "")) || (it.submitter ? "member" : "imported feed");
+    const where = [it.mode && it.mode !== "physical" ? it.mode : "", it.venue, it.city].filter(Boolean).join(" · ");
+    const extra = [it.event_type ? `<span class="ac-pill">${esc(it.event_type)}</span>` : "", it.price_text ? `<span class="ac-pill">${esc(it.price_text)}</span>` : ""].join("");
+    return `<article class="ac-item ac-ev" data-ev="${esc(it.id)}">
+      <div class="ac-item-main"><span class="ac-kind">${esc(ORG_LABEL[it.organiser] || it.organiser_name || it.organiser || "Event")}</span>
+        <h3>${esc(it.title)}${extra}</h3>
+        <p><b>When</b> ${esc(evDates(it))}${where ? ` · ${esc(where)}` : ""}</p>
+        <p class="ac-ev-link">${link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer nofollow">${esc(link)}</a>` : `<span class="ac-flag l-high">link is not https</span>`}</p>
+        ${it.description ? `<p class="ac-ev-desc">${esc(it.description)}</p>` : ""}
+        <p class="muted">by <b>${esc(who)}</b>${it.contact_email ? ` · <a href="mailto:${esc(it.contact_email)}">${esc(it.contact_email)}</a>` : ""} · sent ${esc(when(it.submitted_at))} EAT</p></div>
+      <div class="ac-item-side ac-ev-btns">
+        <button class="btn sm ok" type="button" data-ev-approve="${esc(it.id)}">${icon("check")}Approve</button>
+        <button class="btn sm no" type="button" data-ev-reject="${esc(it.id)}" aria-expanded="false" aria-controls="evr-${esc(it.id)}">${icon("xmark")}Reject</button></div>
+      <form class="ac-ev-reject" id="evr-${esc(it.id)}" data-ev-reject-form="${esc(it.id)}" hidden novalidate>
+        <label class="field"><span>Reason (sent to the submitter, ${EV_REASON_MAX} characters max)</span>
+          <textarea name="reason" rows="2" maxlength="${EV_REASON_MAX}" required minlength="3" placeholder="e.g. The link is not an event page."></textarea></label>
+        <div class="ac-row"><button class="btn sm no" type="submit">Reject event</button><button class="btn sm" type="button" data-ev-cancel>Cancel</button><small class="ac-ev-count" aria-live="polite">0 / ${EV_REASON_MAX}</small></div>
+        <p class="ac-msg" role="status"></p></form>
+    </article>`;
+  }
+  async function eventsReview() {
+    const list = $("#ev-list"); if (!list) return;
+    const d = await act(() => api("/admin/events/pending" + qs({ limit: EV.limit, offset: EV.offset })));
+    if (!d) { list.innerHTML = `<p class="ac-empty" role="alert">${failed("Events to review could not load.")}</p>`; return; }
+    EV.items = d.items || []; EV.total = Number(d.total || 0);
+    const n = $("#n-events"); if (n) { n.hidden = !EV.total; n.textContent = EV.total ? num(EV.total) : ""; }
+    if (!EV.items.length && EV.offset > 0) { EV.offset = Math.max(0, EV.offset - EV.limit); return eventsReview(); }
+    list.innerHTML = EV.items.length ? EV.items.map(evCard).join("")
+      : `<div class="ac-empty-card"><b>No events waiting for review.</b><span class="ac-eg">e.g. "Kampala AI meetup" · Google / GDG · 12 Dec 2026 · sent by a member</span></div>`;
+    if (d.details_available === false && EV.items.length) list.insertAdjacentHTML("afterbegin", `<p class="muted ac-note">Type, description and contact email are not stored yet on this server (database update pending). Check the link for the details.</p>`);
+    pager($("#ev-pager"), EV.total, EV, eventsReview);
+  }
+  async function decideEvent(id, decision, reason, btns) {
+    if (DEMO) { toast("Demo: nothing was saved"); return; }
+    btns.forEach(b => b.disabled = true);
+    const ok = await act(() => post(`/admin/events/${encodeURIComponent(id)}/${decision}`, decision === "reject" ? { reason } : {}),
+      decision === "approve" ? "Approved: the event is live on Events and the submitter was told." : "Rejected: the submitter was told why.");
+    if (ok) { eventsReview(); return true; }
+    btns.forEach(b => b.disabled = false);
+    if (/already reviewed|not found/i.test(LAST_ERR)) eventsReview();   // someone else decided first: refresh the list
+    return false;
+  }
+  document.addEventListener("click", async e => {
+    if (e.target.closest("[data-ev-reload]")) return eventsReview();
+    const a = e.target.closest("[data-ev-approve]");
+    if (a) { const card = a.closest("[data-ev]"); return decideEvent(a.dataset.evApprove, "approve", null, $$("button", card)); }
+    const r = e.target.closest("[data-ev-reject]");
+    if (r) { const f = $(`[data-ev-reject-form="${CSS.escape(r.dataset.evReject)}"]`); if (!f) return; f.hidden = !f.hidden; r.setAttribute("aria-expanded", String(!f.hidden)); if (!f.hidden) f.reason.focus(); return; }
+    const c = e.target.closest("[data-ev-cancel]");
+    if (c) { const f = c.closest("[data-ev-reject-form]"); f.hidden = true; f.reset(); f.querySelector(".ac-msg").textContent = ""; const b = $(`[data-ev-reject="${CSS.escape(f.dataset.evRejectForm)}"]`); if (b) { b.setAttribute("aria-expanded", "false"); b.focus(); } }
+  });
+  document.addEventListener("input", e => {
+    const t = e.target; if (!t.closest || !t.closest("[data-ev-reject-form]") || t.name !== "reason") return;
+    t.form.querySelector(".ac-ev-count").textContent = `${t.value.length} / ${EV_REASON_MAX}`;
+  });
+  document.addEventListener("submit", async e => {
+    const f = e.target.closest && e.target.closest("[data-ev-reject-form]"); if (!f) return; e.preventDefault();
+    const reason = f.reason.value.trim(), msg = f.querySelector(".ac-msg");
+    if (reason.length < 3) { msg.textContent = "Write a reason (3+ characters) so the submitter knows why."; f.reason.setAttribute("aria-invalid", "true"); f.reason.focus(); return; }
+    if (reason.length > EV_REASON_MAX) { msg.textContent = `Keep the reason to ${EV_REASON_MAX} characters.`; f.reason.focus(); return; }
+    f.reason.removeAttribute("aria-invalid"); msg.textContent = "";
+    const card = f.closest("[data-ev]");
+    const ok = await decideEvent(f.dataset.evRejectForm, "reject", reason, $$("button", card));
+    if (!ok && LAST_ERR) msg.textContent = LAST_ERR;
+  });
+
   /* =============================================================== USERS */
   const US = { q: "", role: "", status: "", minor: "", offset: 0, limit: 25, items: [] };
   const roleName = r => ({ root_admin: "Root admin", admin: "Admin", tutor: "Tutor", learner: "Learner", guest: "Guest" }[r] || r);
@@ -507,7 +586,7 @@
     support();
   });
 
-  const PANELS = { overview, approvals, users, admins, plans: () => { plans(); coursePricing(""); }, flags, audit, support, tools: () => {} };
+  const PANELS = { overview, approvals, events: eventsReview, users, admins, plans: () => { plans(); coursePricing(""); }, flags, audit, support, tools: () => {} };
 
   /* ================================================================= DEMO */
   const DEMO_DATA = {
@@ -516,6 +595,9 @@
     "/admin/approvals": { total: 2, counts: { course: 1, link: 1 }, items: [
       { id: "00000000-0000-4000-8000-000000000001", kind: "link", title: "DEMO · Free JavaScript book", summary: "Sample row", status: "pending", risk_level: "high", urls: ["https://bit.ly/demo"], risk_flags: [{ url: "https://bit.ly/demo", code: "shortener", level: "high", detail: "hides the real destination" }], version: 1, payload: { note: "demo" }, created_at: new Date().toISOString(), submitter: { display_name: "Demo Learner" } },
       { id: "00000000-0000-4000-8000-000000000002", kind: "course", title: "DEMO · Intro to Python", summary: "Sample row", status: "pending", risk_level: "low", urls: ["https://www.youtube.com/watch?v=rfscVS0vtbw"], risk_flags: [{ url: "https://www.youtube.com/watch?v=rfscVS0vtbw", code: "youtube_ok", level: "low" }], version: 1, payload: { modules: 3, lessons: 12 }, created_at: new Date().toISOString(), submitter: { display_name: "Demo Tutor" } }] },
+    "/admin/events/pending": { total: 1, limit: 20, offset: 0, details_available: true, items: [
+      { id: "00000000-0000-4000-8000-0000000000e1", title: "DEMO · Kampala AI meetup", organiser: "other", mode: "physical", venue: "Sample venue", city: "Kampala", starts_at: new Date(Date.now() + 7 * 864e5).toISOString(), ends_at: null,
+        link: "https://example.org/demo-event", price_text: "Free", event_type: "meetup", description: "Sample row", contact_email: null, submitted_at: new Date().toISOString(), status: "pending_review", submitter: { id: "user_demo", display_name: "Demo Learner" } }] },
     "/admin/people": { total: 1, items: [{ id: "user_demo", display_name: "Demo Learner", email: "demo@example.com", role: "learner", roles: ["learner"], account_status: "active", is_minor: false, learner_plan: "free", tutor_plan: "free", created_at: new Date().toISOString() }] },
     "/admin/admins": { admins: [{ user_id: "user_root", display_name: "101 Codecrafts", email: "101codecrafts@gmail.com", is_root: true, scopes: [], status: "active" }], invites: [] },
     "/admin/plans": { available: false }, "/admin/courses/pricing": [], "/admin/flags": [], "/admin/audit-log": { total: 0, items: [] },
@@ -564,5 +646,6 @@
     addEventListener("hashchange", route);
   }
   window.CCAdminErrors = { describe };   // unit tests (tests/admin-errors.test.mjs)
+  window.CCAdminEvents = { card: evCard, dates: evDates, REASON_MAX: EV_REASON_MAX };   // unit tests (tests/r12-events-review.test.mjs)
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true }); else boot();
 })();

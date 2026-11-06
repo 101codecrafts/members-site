@@ -155,7 +155,15 @@
      The form's org keys map to the backend enum; region "online" → mode online. Each refusal gets an honest message. */
   const EV_ORG = { gdg: "google_gdg", microsoft: "microsoft", openai: "openai", anthropic: "anthropic", huggingface: "hugging_face", alibaba: "alibaba_cloud", aws: "aws", mlh: "mlh", "101": "101" };
   const eventBody = o => { const b = { title: o.title, organiser: EV_ORG[o.org] || "other", mode: o.region === "online" ? "online" : "physical", starts_at: o.start, source_url: o.url, website: o.website || "" };
-    if (o.end) b.ends_at = o.end; if (o.venue) b.venue = String(o.venue).slice(0, 200); if (o.region === "kampala") b.city = "Kampala"; return b; };
+    if (o.end) b.ends_at = o.end; if (o.venue) b.venue = String(o.venue).slice(0, 200); if (o.region === "kampala") b.city = "Kampala";
+    /* r12 events review: the fields the server used to drop (stored once its database update is applied) */
+    if (EV_TYPES.includes(o.type)) b.event_type = o.type;
+    const pr = Number(o.price); if (o.price !== undefined && o.price !== "" && Number.isFinite(pr) && pr >= 0) b.price = pr;
+    if (["UGX", "USD", "KES"].includes(o.currency)) b.currency = o.currency;
+    const desc = String(o.desc || o.description || "").trim(); if (desc) b.description = desc.slice(0, 400);
+    const mail = String(o.contact || o.contact_email || "").trim(); if (mail) b.contact_email = mail.slice(0, 254);
+    return b; };
+  const EV_TYPES = ["hackathon", "meetup", "conference", "workshop", "webinar", "study jam"];
   async function submitEvent(o) {
     if (!STATIC && location.protocol !== "file:") {
       let r = null, j = null;
@@ -172,7 +180,17 @@
     const q = ls.get("cc_ev_pending", []); const item = { id: "evs" + Date.now(), status: "pending", submittedAt: new Date().toISOString(), ...o }; q.unshift(item); ls.set("cc_ev_pending", q); return { ...item, offline: true };
   }
   const pendingEvents = () => ls.get("cc_ev_pending", []);
-  function reviewEvent(id, approve) { ls.set("cc_ev_pending", pendingEvents().filter(o => o.id !== id)); return soft(post(`/events/${encodeURIComponent(id)}/${approve ? "approve" : "reject"}`, {})); }
+  /* r12: admin decision on a member-submitted event → POST /v1/admin/events/:id/approve | reject (reason 3..300, required to
+     reject). Ids that are not server ids (offline-preview items kept in this browser) are only removed locally. */
+  const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  async function reviewEvent(id, approve, reason) {
+    const why = String(reason || "").trim();
+    if (!approve && (why.length < 3 || why.length > 300)) return { ok: false, message: "Write a reason (3 to 300 characters) to reject an event." };
+    if (!UUID.test(String(id))) { ls.set("cc_ev_pending", pendingEvents().filter(o => o.id !== id)); return { ok: true, local: true }; }
+    try { await post(`/admin/events/${encodeURIComponent(id)}/${approve ? "approve" : "reject"}`, approve ? {} : { reason: why }); }
+    catch (e) { return { ok: false, message: "Not saved: the server did not accept the decision. Open the admin console (Events to review) and try again." }; }
+    ls.set("cc_ev_pending", pendingEvents().filter(o => o.id !== id)); return { ok: true };
+  }
 
   /* go.html lookup: news + opportunities ids → original source url */
   window.CC_FEED_GO = () => [...(D() ? D().news.concat(D().opportunities) : []), ...(ED() ? ED().events : []), ...(window.__ccFeedNews || [])];

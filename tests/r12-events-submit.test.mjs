@@ -29,7 +29,7 @@ test('submitEvent posts the backend shape to /v1/events/external (honeypot passe
   const { F, calls } = load(() => res(200, { data: { id: 'e1', status: 'pending_review' } }));
   const r = await F.submitEvent(form); assert.equal(r.status, 'pending_review'); assert.ok(!r.notSent);
   assert.equal(calls[0][0], '/api/v1/events/external');
-  assert.deepEqual(calls[0][1], { title: 'Kampala Python meetup', organiser: 'hugging_face', mode: 'physical', starts_at: '2026-12-01T11:00:00.000Z', source_url: 'https://example.org/e', website: '', venue: 'Kampala', city: 'Kampala' });
+  assert.deepEqual(calls[0][1], { title: 'Kampala Python meetup', organiser: 'hugging_face', mode: 'physical', starts_at: '2026-12-01T11:00:00.000Z', source_url: 'https://example.org/e', website: '', venue: 'Kampala', city: 'Kampala', event_type: 'meetup', price: 0, currency: 'UGX', description: 'x' });
   assert.equal(F._eventBody({ ...form, region: 'online', org: 'community' }).mode, 'online');
   assert.equal(F._eventBody({ ...form, org: 'community' }).organiser, 'other');
 });

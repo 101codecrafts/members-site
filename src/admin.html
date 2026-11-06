@@ -28,6 +28,7 @@
   <nav class="ac-tabs" aria-label="Admin sections" id="ac-tabs">
     <a href="#overview" data-tab="overview">Overview</a>
     <a href="#approvals" data-tab="approvals" data-scope="approvals">Approvals <i class="ac-n" id="n-approvals" hidden></i></a>
+    <a href="#events" data-tab="events" data-scope="approvals">Events to review <i class="ac-n" id="n-events" hidden></i></a>
     <a href="#users" data-tab="users" data-scope="users">Users &amp; roles</a>
     <a href="#admins" data-tab="admins">Admins</a>
     <a href="#plans" data-tab="plans" data-scope="plans">Plans &amp; pricing</a>
@@ -61,6 +62,14 @@
     <p class="muted ac-note">Nothing a learner or tutor sends is public until it is approved here. Links are checked automatically (static checks, YouTube oEmbed, Google Web Risk when configured). Riskiest first.</p>
     <div class="ac-list" id="ap-list">{{LOADER label="queue"}}</div>
     <div class="ac-pager" id="ap-pager"></div>
+  </section>
+
+  <!-- ====================================================== EVENTS TO REVIEW -->
+  <section class="ac-panel" id="events" data-panel="events" aria-labelledby="ev-h" hidden>
+    <div class="ac-row"><h2 class="ac-h" id="ev-h">EVENTS TO REVIEW</h2><button class="btn sm" type="button" data-ev-reload>Refresh</button></div>
+    <p class="muted ac-note">Events members send from the Events page wait here. Open the link and check it is a real event before approving: approved events go live on Events, and the submitter is told either way. Oldest first. Times in EAT.</p>
+    <div class="ac-list" id="ev-list">{{LOADER label="events"}}</div>
+    <div class="ac-pager" id="ev-pager"></div>
   </section>
 
   <!-- =============================================================== USERS -->
