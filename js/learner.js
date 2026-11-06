@@ -57,10 +57,36 @@
         <div class="prog" role="progressbar" aria-valuenow="${pct(e)}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(e.title)} progress"><i style="width:${pct(e)}%"></i></div>
         <small class="muted">${pct(e)}% · ${num(e.lessons_done || 0)} of ${num(e.lessons_total || 0)} lessons</small></div>
       <a class="btn or lg" href="${nextOf(e)}">${ico("play")}Continue</a></div>`;
-  } else {
+  } else if (firstSteps()) {
+    /* r13 flows: a new learner's zero state is a task list (GOV.UK "complete multiple tasks"), not a lone button.
+       "Hide these steps" falls back to the plain empty state below. */
+    document.addEventListener("cc:firststeps-hidden", e => { if (e.detail !== "learner") return; const h = document.querySelector("#continue .sec-title h2"); if (h) h.textContent = "CONTINUE LEARNING"; emptyContinue(); });
+  } else emptyContinue();
+  function emptyContinue() {
     $("#l-continue").innerHTML = empty({ key: "continue", examples: [["Web Development Basics · Lesson 3", "40%"]], title: (c.completed ? "All caught up" : "Start your first course"),
       body: c.completed ? "You've finished everything you enrolled in. Pick something new." : "Free courses from 101 tutors and partners like freeCodeCamp and Cisco NetAcad are ready to start.",
       action: { href: "courses.html", label: c.completed ? "Find another course" : "Browse courses", icon: "cap" } });
+  }
+
+  /* r13 flows: first steps for a fresh learner (real data only; a step we can't measure is never ticked) */
+  function firstSteps() {
+    const F = window.CCFirstSteps; if (!F || F.static || source !== "api") return false;
+    const minor = !!A.minor, waiting = minor && !A.consent;
+    const html = F.html({ key: "learner", label: "First steps",
+      intro: waiting ? "Your parent or guardian has an email from us. Until they approve, you can read and take free courses." : "A few steps to your first certificate.",
+      welcome: F.welcome(),
+      items: [
+        { label: "Create your account", status: "done" },
+        minor ? { label: "Parent or guardian approves", hint: waiting ? "We emailed them a link. It works for 7 days." : "", status: waiting ? "waiting" : "done", href: "settings.html#guardian" } : null,
+        { label: "Enrol in your first course", hint: "Free courses from 101 tutors and partners are ready to start.", status: (+c.enrolled || 0) > 0 ? "done" : "todo", href: "courses.html" },
+        { label: "Save something for later", hint: "Bookmark an article, problem or course; it shows on this page.", status: (+c.saved || 0) > 0 ? "done" : "optional", href: "learn.html" },
+        { label: "Finish a course to earn a certificate", hint: "Anyone can verify it with its code.", status: (+c.certificates || 0) > 0 ? "done" : (+c.enrolled || 0) > 0 ? "todo" : "blocked" }
+      ] });
+    if (!html) return false;
+    const h = document.querySelector("#continue .sec-title h2"); if (h) h.textContent = F.welcome() ? "YOU'RE IN. START HERE" : "GET STARTED";
+    $("#l-continue").innerHTML = html;
+    if (F.welcome()) { const p = document.querySelector(".page-h p"); if (p) p.textContent = "Your account is ready. Your first steps are below; this page fills up as you learn."; }
+    return true;
   }
 
   /* ---------- plan ---------- */

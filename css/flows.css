@@ -1,0 +1,39 @@
+/* r13 flows: first-steps task list (js/first-steps.js) + seller readiness + tutor verification states.
+   Brutalist 101: hard 2px borders, square corners, offset shadow on the NEXT task only, mono status labels.
+   Uses theme tokens only (light + dark). Nothing here renders in ?static=1 (the JS never inserts it there). */
+.fs{display:grid;gap:12px}
+.fs-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.fs-head h3{margin:0;font:400 var(--step-1)/1.15 var(--disp,"Archivo Black",sans-serif);text-transform:uppercase;color:var(--text)}
+.fs-count{font:700 var(--step--2)/1.2 var(--mono,"JetBrains Mono",monospace);letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted)}
+.fs-intro{margin:0;color:var(--text-muted);font-size:var(--step--1)}
+.fs-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:none}
+.fs-item{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:12px;align-items:start;padding:10px 12px;border:2px solid var(--border-subtle);background:var(--surface-1,transparent)}
+.fs-n{display:grid;place-items:center;width:28px;height:28px;border:2px solid var(--border-strong);font:700 13px/1 var(--mono,"JetBrains Mono",monospace);color:var(--text)}
+.fs-name{display:grid;gap:4px;min-width:0}
+.fs-name>a,.fs-name>span{font:700 var(--step-0)/1.3 var(--body);color:var(--text)}
+.fs-name>a{text-decoration:underline;text-decoration-color:var(--accent,#fc8c0c);text-decoration-thickness:3px;text-underline-offset:3px}
+.fs-name small{color:var(--text-muted);font:500 var(--step--1)/1.4 var(--body)}
+.fs-cta{justify-self:start;margin-top:4px}
+.fs-st{white-space:nowrap;padding:3px 8px;border:2px solid var(--border-strong);font:700 11px/1.5 var(--mono,"JetBrains Mono",monospace);text-transform:uppercase;letter-spacing:.4px;color:var(--text)}
+/* the next task is the loud one; done tasks go quiet (GOV.UK: completed = plain text, no colour) */
+.fs-item.is-next{border-color:var(--border-strong);box-shadow:4px 4px 0 var(--border-strong)}
+.fs-item.is-next .fs-st{background:var(--accent,#fc8c0c);color:var(--on-accent,#0B1236);border-color:var(--on-accent,#0B1236)}
+.fs-item.is-done .fs-n{background:var(--success-subtle);border-color:var(--success-border);color:var(--success-text)}
+.fs-item.is-done .fs-st{border-color:transparent;color:var(--success-text)}
+.fs-item.is-done .fs-name>span{font-weight:600;color:var(--text-muted)}
+.fs-item.is-waiting .fs-st{border-style:dashed}
+.fs-item.is-blocked{border-style:dashed}
+.fs-item.is-blocked .fs-name>span,.fs-item.is-blocked .fs-st{color:var(--text-muted)}
+.fs-item.is-blocked .fs-st{border-color:transparent}
+.fs-item.is-optional .fs-st{border-color:transparent;color:var(--text-muted)}
+.fs-hide{justify-self:start;background:none;border:0;padding:6px 0;color:var(--text);font:700 var(--step--1) var(--body);text-decoration:underline;text-decoration-color:var(--accent,#fc8c0c);text-decoration-thickness:3px;text-underline-offset:3px;cursor:pointer}
+.fs-hide:focus-visible,.fs-name>a:focus-visible{outline:3px solid var(--focus,#00758A);outline-offset:2px}
+.fs-gone{margin:0;color:var(--text-muted);font-size:var(--step--1)}
+@media (max-width:520px){.fs-item{grid-template-columns:28px minmax(0,1fr)}.fs-st{grid-column:2;justify-self:start}}
+
+/* verification / readiness notes inside a card (tutor pending, rejected; seller KYC) */
+.fl-note{margin:0 0 12px;padding:10px 12px;border:2px solid var(--border-strong);background:var(--surface-2);color:var(--text);font:500 var(--step--1)/1.45 var(--body)}
+.fl-note b{font-weight:700}
+.fl-note.err{border-color:var(--danger-border)}
+.btn[aria-disabled=true].fl-locked{opacity:.6;cursor:not-allowed;box-shadow:none;transform:none}
+.sl-ready{display:grid;gap:4px;padding-bottom:18px;margin-bottom:18px;border-bottom:2px dashed var(--border-subtle)}

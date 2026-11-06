@@ -27,7 +27,16 @@
 
   /* adapter + mode banner */
   try { await C.adapter(); }
-  catch (e) { root.innerHTML = D.errorBox(e.status === 401 || e.status === 403 ? "Your tutor account couldn't be verified. Sign in again, or ask an admin to verify your tutor profile." : e.message); return; }
+  catch (e) {
+    /* r13 flows: a 403 for a tutor still waiting for verification is not an error to retry: say where they are, link home */
+    const tv = window.CC_AUTH && window.CC_AUTH.session && window.CC_AUTH.session.tutor;
+    if (e.status === 403 && tv && tv.status !== "verified") {
+      root.innerHTML = `<div class="dash-empty" data-empty="builder-locked"><div class="msg"><b>${tv.status === "rejected" ? "Your tutor application wasn't approved" : "The builder opens when you're verified"}</b><p>${tv.status === "rejected" ? (tv.note ? "Reason: " + D.esc(tv.note) + "." : "An admin reviewed your application.") : "An admin checks every new tutor's credentials first. We'll email you when it's done."}</p><div class="row"><a class="btn or" href="tutor.html">Back to my dashboard</a></div></div></div>`;
+      return;
+    }
+    root.innerHTML = D.errorBox(e.status === 401 ? "Your session ended. Sign in again to keep building." : e.status === 403 ? "Your account can't use the course builder. If you're a new tutor, an admin needs to verify you first." : e.message);
+    return;
+  }
   const modeBar = () => C.mode === "local" ? bar("local", `${ico("info")}<span><b>Saved on this device.</b> The course server isn't connected here${C.why === "qa" ? " (test session)" : ""}, so your drafts live in this browser. Use the same browser to keep working.</span>`) : "";
 
   const id = q.get("id");
