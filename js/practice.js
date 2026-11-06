@@ -119,7 +119,7 @@
     }
     if (pg.empty) { $("#cscore").innerHTML = `<div class="sec-title"><h2>Coding score</h2></div><p class="muted">0 points so far. Solve a problem to start your score and rank.</p>`; $("#rings").innerHTML = `<div class="sec-title"><h2>Progress by topic</h2></div><p class="muted">Nothing solved yet. Your progress by topic appears here.</p>`; }
     else {
-    const bd = pg.byDifficulty, clr = { Easy: "var(--color-success)", Medium: "var(--or)", Hard: "#b42318" };
+    const bd = pg.byDifficulty, clr = { Easy: "var(--success-text)", Medium: "var(--or)", Hard: "var(--danger-text)" };
     $("#cscore").innerHTML = `<div class="sec-title"><h2>Coding score</h2>${pg.rank ? `<span class="tagx">Rank #${num(pg.rank)}</span>` : ""}</div><div class="cscore"><div class="row" style="align-items:flex-end;gap:16px"><span class="big">${pg.codingScore}</span><span class="muted"><b style="color:var(--ink)">${pg.solved}</b> solved${pg.attempted != null ? ` · ${pg.attempted} attempted` : ""}${pg.institute && pg.institute.rank ? `<br>#${pg.institute.rank} at ${esc(pg.institute.name)}` : ""}</span></div>
       <div class="dbars">${Object.entries(bd).map(([k, v]) => `<div class="dbar"><span class="${dcls(k)}">${k}</span><div class="prog" role="progressbar" aria-label="${k} solved" aria-valuemin="0" aria-valuemax="${v.total || v.solved}" aria-valuenow="${v.solved}"><i style="width:${v.total ? (v.solved / v.total * 100).toFixed(1) : 100}%;background:${clr[k]}"></i></div><span>${v.total ? `${v.solved}/${v.total}` : v.solved}</span></div>`).join("")}</div></div>`;
     const C = 2 * Math.PI * 26;

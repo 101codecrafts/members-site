@@ -128,7 +128,7 @@ html:not(.static) .ck-sk.f{height:44px;width:40%;margin-top:auto}
 
 /* ---------------------------------------------------------------- empty + error */
 html:not(.static) .ck.ck--empty{border-style:dashed!important;box-shadow:none;align-items:flex-start;background:var(--surface-2)}
-html:not(.static) .ck.ck--error{--ck-line:var(--color-danger,#d93636);box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--color-danger,#d93636)}
+html:not(.static) .ck.ck--error{--ck-line:var(--danger-border);box-shadow:var(--ck-sh) var(--ck-sh) 0 var(--danger-border)}
 html:not(.static) .ck.ck--error .ck-eyebrow{color:var(--text)}
 html:not(.static) :is(.ck--empty,.ck--error) .ck-ic{width:40px;height:40px;display:grid;place-items:center;border:var(--ck-bw) solid currentColor;font:700 20px/1 var(--body)}
 :root[data-theme=dark] .ck.ck--error{--ck-line:#FF8A8A}

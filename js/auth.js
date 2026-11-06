@@ -117,7 +117,7 @@
       colorPrimary: ORANGE, colorTextOnPrimaryBackground: NAVY, colorPrimaryForeground: NAVY,
       colorText: NAVY, colorForeground: NAVY, colorTextSecondary: "#3e5d74", colorMutedForeground: "#3e5d74",
       colorBackground: "#ffffff", colorInputBackground: "#ffffff", colorInput: "#ffffff", colorInputText: NAVY, colorInputForeground: NAVY,
-      colorNeutral: NAVY, colorBorder: NAVY, colorRing: "#00b9e6", colorDanger: "#d93636", colorSuccess: "#0f7a45",
+      colorNeutral: NAVY, colorBorder: NAVY, colorRing: "#00758A", colorDanger: "#B42318", colorSuccess: "#0f7a45",
       fontFamily: FONT, fontFamilyButtons: FONT, fontSize: "16px", borderRadius: "0px", spacingUnit: "1rem"
     },
     elements: {

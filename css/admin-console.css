@@ -1,7 +1,7 @@
 /* 101 admin console (round 11). Neo-brutalist: flat fills, 2px ink outlines, hard offset shadows, square corners.
    Colours come only from the role tokens in css/theme.css (they flip for dark), so no dark mapping is needed.
    Orange is a FILL only (navy text on it), never text on white. */
-.ac { --ac-or: #fc8c0c; --ac-cy: #2BE0DA; --ac-ok: #0f7a45; --ac-no: #d93636; }
+.ac { --ac-or: #fc8c0c; --ac-cy: #2BE0DA; --ac-ok: var(--success-solid); --ac-no: var(--danger-solid); }
 .ac .ac-head { align-items: flex-end; }
 .ac-me { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 .ac-role { display: inline-flex; align-items: center; gap: 6px; font: 400 13px/1 var(--font-brand-display, "Archivo Black", sans-serif); letter-spacing: .06em;

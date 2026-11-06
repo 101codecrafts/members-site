@@ -10,7 +10,7 @@
 .dash-bar svg{width:18px;height:18px;flex:none}
 .dash-bar.demo{background:var(--accent);color:var(--on-accent);border-color:var(--on-accent);position:sticky;top:0;z-index:5;font-family:var(--mono, "JetBrains Mono", monospace);letter-spacing:.4px;text-transform:uppercase}
 .dash-bar.local{border-style:dashed}
-.dash-bar.err{border-color:var(--color-danger);color:var(--text)}
+.dash-bar.err{border-color:var(--danger-border);color:var(--text)}
 .dash-bar .sp{flex:1}
 
 /* ---------- KPIs (zeros are real values, not placeholders) ---------- */
@@ -32,7 +32,7 @@
 .dash-empty .msg{display:grid;gap:8px;justify-items:start}
 .dash-empty .msg b{font:400 var(--step-1)/1.15 var(--disp)}
 .dash-empty .msg p{color:var(--text-muted);font-size:var(--step--1);max-width:60ch}
-.dash-err{border:2px solid var(--color-danger);padding:14px;display:grid;gap:8px;justify-items:start}
+.dash-err{border:2px solid var(--danger-border);padding:14px;display:grid;gap:8px;justify-items:start}
 .dash-err b{color:var(--text)}
 
 /* ---------- status chips ---------- */
@@ -41,10 +41,10 @@
 .st.draft{color:var(--text-muted)}
 .st.review{color:var(--on-accent);background:var(--accent);border-color:var(--on-accent)}
 .st.review::before{background:var(--on-accent)}
-.st.approved{color:var(--color-success)}
-.st.rejected{color:var(--color-danger)}
+.st.approved{color:var(--success-text)}
+.st.rejected{color:var(--danger-text)}
 .st.archived{color:var(--text-muted);border-style:dashed}
-.st-reason{display:block;margin-top:4px;font-size:var(--step--2);color:var(--color-danger);max-width:48ch}
+.st-reason{display:block;margin-top:4px;font-size:var(--step--2);color:var(--danger-text);max-width:48ch}
 
 /* ---------- tables + lists ---------- */
 .dash-t td .row-acts{display:flex;gap:6px;flex-wrap:wrap}
@@ -100,7 +100,7 @@
 .kind-pick button[aria-pressed=true]{background:var(--accent);color:var(--on-accent)}
 .ed{display:grid;gap:12px}
 .ed .help{font-size:var(--step--2);color:var(--text-muted);font-weight:500}
-.ed .ferr{color:var(--color-danger);font:700 var(--step--2) var(--body)}
+.ed .ferr{color:var(--danger-text);font:700 var(--step--2) var(--body)}
 .ed textarea{font-family:var(--mono, "JetBrains Mono", monospace);min-height:220px}
 .qz{display:grid;gap:10px}
 .qz fieldset{border:2px solid var(--border-strong);padding:10px;display:grid;gap:8px;margin:0}
@@ -112,7 +112,7 @@
 .chk{display:grid;gap:6px;list-style:none;padding:0;margin:0}
 .chk li{display:flex;gap:8px;align-items:center;font:600 var(--step--1) var(--body)}
 .chk li::before{content:"";width:16px;height:16px;border:2px solid var(--border-strong);flex:none}
-.chk li.ok::before{background:var(--color-success);border-color:var(--color-success)}
+.chk li.ok::before{background:var(--success-solid);border-color:var(--success-border)}
 .chk li.no{color:var(--text-muted)}
 .price-opts{display:flex;gap:10px;flex-wrap:wrap}
 .price-opts label{display:flex;gap:8px;align-items:center;padding:10px 12px;border:2px solid var(--border-strong);cursor:pointer;font-weight:700}
@@ -135,5 +135,5 @@
 .book-card img{width:96px;aspect-ratio:2/3;object-fit:cover;border:2px solid var(--border-strong);background:var(--surface-3)}
 .qz-run .q{border:2px solid var(--border-strong);padding:12px;display:grid;gap:8px}
 .qz-run label{display:flex;gap:8px;align-items:center;font-weight:600;cursor:pointer;min-height:36px}
-.qz-run .good{color:var(--color-success);font-weight:700}
-.qz-run .bad{color:var(--color-danger);font-weight:700}
+.qz-run .good{color:var(--success-text);font-weight:700}
+.qz-run .bad{color:var(--danger-text);font-weight:700}

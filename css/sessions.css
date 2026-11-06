@@ -10,7 +10,7 @@
 .ses-pill{display:inline-block;border:2px solid var(--color-ink,#10181f);padding:2px 8px;font:700 var(--step--2)/1.3 var(--cond);letter-spacing:.06em;text-transform:uppercase;background:#fff}
 .ses-pill.ok{background:var(--color-cyan,#05e6f2)}
 .ses-def{font-size:var(--step--1);display:flex;gap:6px;align-items:center}
-.ses-msg{margin:10px 0 0;font-size:var(--step--1)}.ses-msg.bad{color:var(--color-danger,#d93636)}
+.ses-msg{margin:10px 0 0;font-size:var(--step--1)}.ses-msg.bad{color:var(--danger-text)}
 .ses-empty{color:var(--color-muted,#3e5d74)}
 .ses-li{text-decoration:none;color:inherit}
 .ses-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}

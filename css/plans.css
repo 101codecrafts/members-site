@@ -55,7 +55,7 @@
 .up-sum dt{color:var(--mut)}.up-sum dd{font-weight:700;text-align:right}
 .up-sum .up-total{border-top:2px solid var(--ink);padding-top:8px;font:400 var(--step-1) var(--disp)}
 .up-msg{min-height:1.4em;font-weight:700}
-.up-msg.err{color:var(--color-danger)}
+.up-msg.err{color:var(--danger-text)}
 .up-warn{border:2px solid var(--ink);background:var(--or);color:var(--ink);padding:8px 10px;font-weight:700;font-size:var(--step--1)}
 /* locked lesson */
 .lk-tick{background:#fff}
