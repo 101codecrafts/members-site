@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css + touch.css + era.css + cards.css + interact.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css + touch.css + era.css + cards.css + interact.css + ds.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -40,6 +40,7 @@
   --size-xl: 24px;
   --size-2xl: 32px;
   --size-3xl: 48px;
+  --space-0: 0px;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -49,6 +50,9 @@
   --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
   --radius-none: 0px;
   --radius-sm: 3px;
   --radius-md: 4px;
@@ -67,6 +71,49 @@
   --motion-ease: cubic-bezier(.2,.8,.2,1);
   --breakpoint-mobile: 760px;
   --breakpoint-tablet: 1100px;
+  --bp-compact: 0px;
+  --bp-medium: 761px;
+  --bp-expanded: 1100px;
+  --bp-wide: 1440px;
+  --grid-cols-compact: 4;
+  --grid-cols-medium: 8;
+  --grid-cols-expanded: 12;
+  --grid-margin-compact: 16px;
+  --grid-margin-medium: 24px;
+  --grid-margin-expanded: 32px;
+  --grid-gutter-compact: 16px;
+  --grid-gutter-medium: 24px;
+  --grid-gutter-expanded: 24px;
+  --grid-container-app: 1480px;
+  --grid-container-content: 1200px;
+  --grid-container-prose: 45rem;
+  --grid-card-min-sm: 192px;
+  --grid-card-min-md: 256px;
+  --grid-card-min-lg: 320px;
+  --elev-0: none;
+  --elev-1: 2px 2px 0 var(--shadow-ink, #0B1236);
+  --elev-2: 4px 4px 0 var(--shadow-ink, #0B1236);
+  --elev-3: 8px 8px 0 var(--shadow-ink, #0B1236);
+  --elev-accent: 4px 4px 0 var(--accent, #fc8c0c);
+  --bw-hair: 1px;
+  --bw-base: 2px;
+  --bw-focus: 3px;
+  --dur-instant: 100ms;
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-slow: 300ms;
+  --dur-loop: 600ms;
+  --ease-standard: cubic-bezier(.2,0,0,1);
+  --ease-emphasized: cubic-bezier(.2,.8,.2,1);
+  --ease-exit: cubic-bezier(.4,0,1,1);
+  --z-base: 0;
+  --z-raised: 2;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-drawer: 900;
+  --z-overlay: 1000;
+  --z-toast: 1100;
+  --z-skip: 9999;
   --step--2: clamp(0.75rem, 0.7309rem + 0.085vw, 0.8125rem);
   --step--1: clamp(0.875rem, 0.8559rem + 0.085vw, 0.9375rem);
   --step-0: clamp(1rem, 0.9617rem + 0.1701vw, 1.125rem);
@@ -2312,3 +2359,122 @@ html:not(.static) a.hc-stat:active{transform:translate(var(--press,2px),var(--pr
   html:not(.static) .page>:is(a[class*="btn"],a.hov,button.hov):active:not([aria-disabled=true]),
   html:not(.static) a.hc-stat:active{transform:none;opacity:.82}
 }
+
+/* =====================================================================================
+   101 Codecrafts design-system layer (round 13) — the CSS half of DESIGN.md (repo root).
+   Loaded LAST in bundle-app / bundle-dashboard / bundle-landing (before the page's own css and bundle-theme).
+   Every rule is scoped html:not(.static): ?static=1 (the pixel-matched mockups) never changes.
+   What it does:
+     1. ONE set of colour names: the legacy aliases (--mut, --line, --bg, --surface, --color-muted, …) point at the
+        theme roles (css/theme.css), so the 8 overlapping token schemes resolve to one palette.
+     2. ONE spacing scale: --s-N = N×4 px exactly (was fluid clamp values like 17.84 px / 39.35 px).
+     3. ONE responsive grid: 4 / 8 / 12 columns, margins 16 / 24 / 32, gutters 16 / 24 / 24 at
+        compact (<761) / medium (761–1099) / expanded (≥1100) — tokens --page-pad, --gutter, --cols.
+     4. ONE elevation scale in brutalist terms (hard offset shadows, no blur): 2 / 4 / 8 px.
+     5. Layout primitives for new markup (.ds-container .ds-grid .ds-auto .ds-stack .ds-cluster .ds-split .ds-sidebar).
+     6. The page frame + card grids of the main app/public pages, on that grid.
+   ===================================================================================== */
+
+/* ---------------------------------------------------------------- 1. colour aliases -> roles (theme-safe)
+   Only aliases that css/theme.css ALSO re-points in dark mode are listed (dark wins by specificity :root[data-theme=dark]
+   = 0,2,0 > 0,1,1), so dark mode is unchanged. --ink stays the brand navy in both themes on purpose (it is used as a
+   fill/border colour by components that have no dark mapping); new CSS uses --text / --fill-inverse / --border-strong. */
+html:not(.static){
+  --bg:#F3F5F8;                                   /* page background: one value (was #f7f8f8 app, #f3f6f7 landing, #F3F5F8 system) */
+  --color-page:var(--bg); --color-page-landing:var(--bg); --surface-alt:var(--bg);
+  --surface:var(--surface-1); --surface-sunk:var(--surface-3);
+  --color-surface:var(--surface-2); --color-surface-2:var(--surface-3);
+  --mut:var(--text-muted); --color-muted:var(--text-muted); --ink-muted:var(--text-muted);   /* was #3e5d74 and #4A5578 */
+  --line:var(--border-subtle); --color-line:var(--border-subtle); --hairline:var(--border-subtle); /* was #e0e6ea and #D5DBE5 */
+  --color-orange-text:var(--accent-text); --color-orange-text-large:var(--accent-text); --accent-ink:var(--accent-text);
+  --color-cyan-text:var(--accent-2-text); --accent-2-ink:var(--accent-2-text);
+  --border-c:var(--border-strong);
+}
+
+/* ---------------------------------------------------------------- 2-4. scale, grid, elevation, motion (both themes)
+   html:root:not(.static) = 0,2,1 so these also beat the :root[data-theme=dark] block (values reference --shadow-ink,
+   which flips per theme). */
+html:root:not(.static){
+  /* spacing scale: 4-pt base, 8-pt rhythm */
+  --s-0:0px; --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px; --s-8:32px;
+  --s-10:40px; --s-12:48px; --s-16:64px; --s-20:80px; --s-24:96px;
+  /* semantic spacing (compact values; medium/expanded below) */
+  --page-pad:var(--grid-margin-compact,16px);     /* outer margin of every page */
+  --gutter:var(--grid-gutter-compact,16px);       /* between columns and between cards */
+  --cols:var(--grid-cols-compact,4);
+  --pad-card:var(--s-4);                          /* inside every card */
+  --gap-card:var(--gutter);
+  --gap-stack:var(--s-2);                         /* between lines inside a card */
+  --gap-ctl:var(--s-2);                           /* between buttons / chips in a row */
+  --gap-sec:var(--s-6); --gap-section:var(--gap-sec);   /* between page sections */
+  --card-min:var(--grid-card-min-md,256px);
+  /* elevation: hard offset shadows only (no blur, no radius) */
+  --sh:4px;
+  --shadow:var(--sh) var(--sh) 0 var(--shadow-ink);
+  --shadow-brutal-sm:4px 4px 0 var(--shadow-ink);     /* resting card = elevation 2 (was 3px here, 4px on .ck cards) */
+  --ck-sh:4px;
+  /* motion */
+  --motion-fast:var(--dur-fast,150ms); --motion-base:var(--dur-base,200ms);
+  --ck-dur:var(--dur-fast,150ms); --sh-dur:var(--dur-base,200ms);
+}
+@media (min-width:761px){            /* medium: --bp-medium */
+  html:root:not(.static){--page-pad:var(--grid-margin-medium,24px);--gutter:var(--grid-gutter-medium,24px);--cols:var(--grid-cols-medium,8);--gap-sec:var(--s-8)}
+}
+@media (min-width:1100px){           /* expanded: --bp-expanded */
+  html:root:not(.static){--page-pad:var(--grid-margin-expanded,32px);--gutter:var(--grid-gutter-expanded,24px);--cols:var(--grid-cols-expanded,12);--pad-card:var(--s-6);--gap-sec:var(--s-10)}
+}
+
+/* ---------------------------------------------------------------- 5. layout primitives (use these in new markup) */
+html:not(.static) .ds-container{width:100%;max-width:var(--grid-container-content,1200px);margin-inline:auto;padding-inline:var(--page-pad)}
+html:not(.static) .ds-container--app{max-width:var(--grid-container-app,1480px)}
+html:not(.static) .ds-container--prose{max-width:calc(var(--grid-container-prose,45rem) + 2 * var(--page-pad))}
+/* column grid: children span with .ds-span-N (N of 12 on expanded; clamps to the columns available) */
+html:not(.static) .ds-grid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--gutter)}
+html:not(.static) .ds-grid>*{grid-column:1/-1;min-width:0}
+@media (min-width:761px){
+  html:not(.static) .ds-grid>.ds-span-m-4{grid-column:span 4} html:not(.static) .ds-grid>.ds-span-m-8{grid-column:span 8}
+}
+@media (min-width:1100px){
+  html:not(.static) .ds-grid>.ds-span-3{grid-column:span 3} html:not(.static) .ds-grid>.ds-span-4{grid-column:span 4}
+  html:not(.static) .ds-grid>.ds-span-5{grid-column:span 5} html:not(.static) .ds-grid>.ds-span-6{grid-column:span 6}
+  html:not(.static) .ds-grid>.ds-span-7{grid-column:span 7} html:not(.static) .ds-grid>.ds-span-8{grid-column:span 8}
+  html:not(.static) .ds-grid>.ds-span-9{grid-column:span 9} html:not(.static) .ds-grid>.ds-span-12{grid-column:1/-1}
+}
+/* card / block grid: as many columns as fit, every card at least --card-min wide */
+html:not(.static) .ds-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--card-min)),1fr));gap:var(--gutter)}
+html:not(.static) .ds-auto--sm{--card-min:var(--grid-card-min-sm,192px)} html:not(.static) .ds-auto--lg{--card-min:var(--grid-card-min-lg,320px)}
+/* vertical rhythm / inline rows */
+html:not(.static) .ds-stack{display:flex;flex-direction:column;gap:var(--ds-gap,var(--gap-stack))}
+html:not(.static) .ds-stack--section{--ds-gap:var(--gap-sec)}
+html:not(.static) .ds-cluster{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ds-gap,var(--gap-ctl))}
+/* split screen (two equal halves, stacks on compact) and sidebar layout (fixed side + fluid main) */
+html:not(.static) .ds-split{display:grid;gap:var(--gutter);grid-template-columns:minmax(0,1fr)}
+@media (min-width:761px){html:not(.static) .ds-split{grid-template-columns:repeat(2,minmax(0,1fr))}}
+html:not(.static) .ds-sidebar{display:grid;gap:var(--gutter);grid-template-columns:minmax(0,1fr)}
+@media (min-width:1100px){
+  html:not(.static) .ds-sidebar{grid-template-columns:minmax(0,1fr) var(--rail-w,clamp(300px,24vw,380px))}
+  html:not(.static) .ds-sidebar--start{grid-template-columns:var(--ds-side,16rem) minmax(0,1fr)}
+}
+
+/* ---------------------------------------------------------------- 6. page frames on the grid
+   App pages (.shell > .main > .content): margin = --page-pad, 24 px top (16 compact), 64 px bottom, sections --gap-sec apart. */
+html:not(.static) .shell>.main>.content{padding:var(--s-6) var(--page-pad) var(--s-16);gap:var(--gap-sec);row-gap:var(--gap-sec);max-width:var(--grid-container-app,1480px)}
+@media (max-width:760px){html:not(.static) .shell>.main>.content{padding-top:var(--s-4)}}
+/* public pages with their own wrapper: pricing, about (content container 1200, same margins as the app) */
+html:not(.static) .pl-page{padding-inline:var(--page-pad)}
+html:not(.static) :is(.ab-page,.cm-page){--ab-pad:var(--page-pad)}
+/* card grids share one gutter; standard card grids share one minimum width (256 = 32 × 8) */
+html:not(.static) .content :is(.grid,.rgrid,.cgrid,.agrid,.fgrid,.ctgrid,.mk-grid,.cogrid,.related){gap:var(--gutter)}
+html:not(.static) .content :is(.rgrid,.agrid){grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--grid-card-min-md,256px)),1fr))}
+html:not(.static) .content :is(.fgrid,.ctgrid){grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--grid-card-min-lg,320px)),1fr))}
+html:not(.static) .content .cgrid{padding:var(--pad-card)}
+/* section heads sit --s-3 above their content (system.css density pass), titles and eyebrows on the 4-pt grid */
+html:not(.static) .sec-title{gap:var(--s-3);margin-bottom:var(--s-3)}
+html:not(.static) .sec-title h2{gap:var(--s-3)}
+
+/* ---------------------------------------------------------------- components on the scale
+   buttons 44 px (48 large), 16 px side padding (24 large); fields 44 px with 12 px side padding; chips 44 px. */
+html:not(.static) .btn{padding-inline:var(--s-4);gap:var(--s-2)}
+html:not(.static) .btn.lg{min-height:var(--s-12);padding-inline:var(--s-6)}
+html:not(.static) .field{gap:var(--s-2)}
+html:not(.static) .field :is(input,select,textarea){padding:var(--s-2) var(--s-3)}

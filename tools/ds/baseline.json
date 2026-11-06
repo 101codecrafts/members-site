@@ -1,0 +1,137 @@
+{
+ "$note": "design-system ratchet: counts may only go down (DESIGN.md \"Do's and Don'ts\")",
+ "total": {
+  "hex": 839,
+  "off4": 811
+ },
+ "files": {
+  "about.css": {
+   "hex": 0,
+   "off4": 18
+  },
+  "account.css": {
+   "hex": 51,
+   "off4": 46
+  },
+  "activity.css": {
+   "hex": 0,
+   "off4": 3
+  },
+  "admin-console.css": {
+   "hex": 48,
+   "off4": 79
+  },
+  "app.css": {
+   "hex": 100,
+   "off4": 129
+  },
+  "auth-flow.css": {
+   "hex": 113,
+   "off4": 35
+  },
+  "auth.css": {
+   "hex": 9,
+   "off4": 12
+  },
+  "bg.css": {
+   "hex": 0,
+   "off4": 0
+  },
+  "brutal.css": {
+   "hex": 7,
+   "off4": 7
+  },
+  "card.css": {
+   "hex": 0,
+   "off4": 1
+  },
+  "cards.css": {
+   "hex": 5,
+   "off4": 2
+  },
+  "courses.css": {
+   "hex": 14,
+   "off4": 10
+  },
+  "dash.css": {
+   "hex": 2,
+   "off4": 43
+  },
+  "dashboard.css": {
+   "hex": 80,
+   "off4": 16
+  },
+  "ds.css": {
+   "hex": 0,
+   "off4": 0
+  },
+  "era.css": {
+   "hex": 7,
+   "off4": 2
+  },
+  "feed.css": {
+   "hex": 24,
+   "off4": 45
+  },
+  "go.css": {
+   "hex": 3,
+   "off4": 8
+  },
+  "interact.css": {
+   "hex": 17,
+   "off4": 3
+  },
+  "landing.css": {
+   "hex": 45,
+   "off4": 39
+  },
+  "loaders.css": {
+   "hex": 14,
+   "off4": 13
+  },
+  "loops.css": {
+   "hex": 10,
+   "off4": 0
+  },
+  "market.css": {
+   "hex": 35,
+   "off4": 104
+  },
+  "pages.css": {
+   "hex": 4,
+   "off4": 10
+  },
+  "plans.css": {
+   "hex": 38,
+   "off4": 25
+  },
+  "practice.css": {
+   "hex": 43,
+   "off4": 87
+  },
+  "sessions.css": {
+   "hex": 19,
+   "off4": 8
+  },
+  "shell.css": {
+   "hex": 43,
+   "off4": 57
+  },
+  "system.css": {
+   "hex": 16,
+   "off4": 8
+  },
+  "theme.css": {
+   "hex": 82,
+   "off4": 0
+  },
+  "touch.css": {
+   "hex": 10,
+   "off4": 1
+  },
+  "type.css": {
+   "hex": 0,
+   "off4": 0
+  }
+ }
+}
