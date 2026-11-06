@@ -253,7 +253,7 @@
     },
     async product() {
       const p = await API.fetchProduct(q.get("id") || "");
-      if (!p) { $("#p-head").innerHTML = emptyBox("We couldn't find that launch", offlineNote("this launch"), "launchpad.html", "Back to the Launchpad"); ["#p-shots", "#p-log", "#p-comments"].forEach(x => { const el = $(x); if (el) el.innerHTML = ""; }); const cf = $("#p-cform"); if (cf) cf.hidden = true; return; }
+      if (!p) { $("#p-head").innerHTML = emptyBox("We couldn't find that launch", offlineNote("this launch"), "launchpad.html", "Back to the Launchpad", "h1"); ["#p-shots", "#p-log", "#p-comments"].forEach(x => { const el = $(x); if (el) el.innerHTML = ""; }); const cf = $("#p-cform"); if (cf) cf.hidden = true; return; }
       document.title = p.name + " · Launchpad · 101 Codecrafts";
       $("#p-head").innerHTML = `<span class="plogo big" aria-hidden="true">${esc(p.name.slice(0, 2).toUpperCase())}</span><div class="grow"><div class="kicker">Launchpad</div><h1>${esc(p.name)}</h1><p>${esc(p.tagline)}</p><div class="row">${levelBadge(p.level)}<span class="stage s-${p.stage}">${p.stage}</span>${avatars(p.makers)}</div></div>
         <div class="row">${p.demo ? `<a class="btn or" href="${esc(p.demo)}" target="_blank" rel="noopener noreferrer">Live demo ↗</a>` : ""}${p.repo ? `<a class="btn ink" href="${esc(p.repo)}" target="_blank" rel="noopener noreferrer">${ico("gh")}Repo ↗</a>` : ""}<button class="vote big" type="button" aria-pressed="false">▲<b>${p.votes}</b></button><a class="btn" data-wa-share="Check out ${esc(p.name)} on 101 Launchpad:" href="#">${ico("wa")}Share</a></div>`;

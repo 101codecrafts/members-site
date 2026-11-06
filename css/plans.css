@@ -1,7 +1,9 @@
 /* Round 11 plans: pricing, upgrade/checkout, locked lessons, rating gate.
    101 Neo-Brutalist only: flat fills, 2px navy borders, hard offset shadows (no blur), square corners,
    no gradients or glows. Orange is a FILL with navy text, never orange text on white. */
-.pl-wrap{display:grid;gap:24px}
+/* r12 type-layout: minmax(0,1fr), not the implicit auto track: the compare table's min-content widened the whole column after
+   the plans loaded (sandbox note 379 -> 390 px at 412, past the 16 px margin, and a 0.17 layout shift) */
+.pl-wrap{display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
 .pl-sandbox{display:flex;gap:10px;align-items:flex-start;background:var(--cy);color:var(--ink);border:2px solid var(--ink);padding:10px 14px;font:700 var(--step--1) var(--body);box-shadow:var(--shadow-brutal-sm)}
 .pl-sandbox svg{width:18px;height:18px;flex:none;margin-top:2px}
 .pl-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
@@ -9,20 +11,20 @@
 .pl-seg button{min-height:var(--touch-min-target);padding:0 16px;border:0;background:transparent;color:var(--ink);font:700 var(--step--1) var(--body);cursor:pointer}
 .pl-seg button+button{border-left:2px solid var(--ink)}
 .pl-seg button[aria-pressed=true]{background:var(--ink);color:#fff}
-.pl-save{display:inline-block;margin-left:6px;padding:1px 6px;background:var(--or);color:var(--ink);font:700 11px var(--body);border:2px solid var(--ink)}
+.pl-save{display:inline-block;margin-left:6px;padding:1px 6px;background:var(--or);color:var(--ink);font:700 var(--step--2) var(--body);border:2px solid var(--ink)}
 .pl-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));align-items:stretch}
 .pl-card{position:relative;display:flex;flex-direction:column;gap:12px;background:#fff;color:var(--ink);border:2px solid var(--ink);padding:18px;box-shadow:var(--shadow-brutal-sm)}
 .pl-card.is-hl{box-shadow:6px 6px 0 var(--ink);outline:4px solid var(--or);outline-offset:-6px}
 .pl-card.is-need{outline:4px solid var(--cy);outline-offset:-6px}
 .pl-card.is-current{background:var(--color-surface-2,#f3f5fb)}
-.pl-flag{position:absolute;top:-12px;left:14px;padding:2px 8px;background:var(--or);color:var(--ink);border:2px solid var(--ink);font:700 11px var(--cond);letter-spacing:1px;text-transform:uppercase}
+.pl-flag{position:absolute;top:-12px;left:14px;padding:2px 8px;background:var(--or);color:var(--ink);border:2px solid var(--ink);font:700 var(--step--2) var(--cond);letter-spacing:var(--tracking-label,.08em);text-transform:uppercase}
 .pl-flag.cy{background:var(--cy)}
 .pl-name{font:400 var(--step-2)/1 var(--disp);letter-spacing:.3px;text-transform:uppercase}
 .pl-tag{color:var(--mut);font-size:var(--step--1);min-height:2.4em}
 .pl-price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 .pl-price b{font:400 var(--step-3)/1 var(--disp)}
 .pl-price small{font:700 var(--step--2) var(--body);color:var(--mut)}
-.pl-sugg{display:inline-block;padding:1px 6px;border:2px dashed var(--ink);font:700 11px var(--mono,monospace)}
+.pl-sugg{display:inline-block;padding:1px 6px;border:2px dashed var(--ink);font:700 var(--step--2) var(--mono,monospace)}
 .pl-feats{display:grid;gap:8px;margin:0;padding:0;list-style:none;font-size:var(--step--1)}
 .pl-feats li{display:grid;grid-template-columns:18px 1fr;gap:8px}
 .pl-feats li::before{content:"";width:12px;height:12px;margin-top:4px;background:var(--ink)}
@@ -99,3 +101,11 @@
 .pl-h2{font:400 var(--step-2)/1.1 var(--disp);margin-bottom:12px}
 /* r12 design: nothing on the site is set below 12px (the "2 months free" and "Suggested price" tags were 11px) */
 html:not(.static) .pl-save,html:not(.static) .pl-sugg{font-size:12px}
+/* r12 type-layout: on phones the plan cards stack far past one screen; the inline loader holds a full screen (as news/courses do),
+   so the compare heading below never jumps when the cards arrive */
+@media (max-width:767px){html:not(.static) #pl-grid>.ccl-in{min-height:100svh}}
+html:not(.static) .pl-hero p{max-width:var(--measure-body)}   /* r12 type-layout: 62ch of Plex Sans = ~83 characters; the token holds ~67 */
+/* r12 type-layout: wider screens, the loader holds the measured height of the plan cards (2 rows at 768-1199, 1 row from 1200;
+   evidence/plgrid.json: 757-768 / 426-432 px), so the compare table heading does not jump when they arrive */
+@media (min-width:768px) and (max-width:1199px){html:not(.static) #pl-grid>.ccl-in{min-height:47rem}}
+@media (min-width:1200px){html:not(.static) #pl-grid>.ccl-in{min-height:26.5rem}}

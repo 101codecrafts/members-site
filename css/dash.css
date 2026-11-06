@@ -137,3 +137,6 @@
 .qz-run label{display:flex;gap:8px;align-items:center;font-weight:600;cursor:pointer;min-height:36px}
 .qz-run .good{color:var(--success-text);font-weight:700}
 .qz-run .bad{color:var(--danger-text);font-weight:700}
+/* r12 type-layout: the 2x2 key-number tiles on phones/tablets measure 231-235 px (evidence/kpis.json); the loader holds that, so
+   "Your plan" and the cards below do not jump 85 px when they arrive (dashboard CLS 0.06 at 412) */
+@media (max-width:1023.98px){html:not(.static) #l-kpis>.ccl-in{min-height:14.5rem}}

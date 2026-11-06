@@ -426,9 +426,10 @@ html:not(.static) .flow-foot .socials{flex-wrap:wrap}
 .about-steps li{counter-increment:st;display:flex;gap:12px;align-items:flex-start}
 .about-steps li::before{content:counter(st);flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);border:2px solid var(--brand-navy,#0B1236);font-weight:800}
 .about-cta{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
-/* cards round: reserve the launch bar's height before first paint (EARLY script adds html.promo-space; js/ads.js releases it) -> no layout shift */
-html.promo-space:not(.static) body:not(:has(>.promo-bar)){padding-top:var(--promo-h,45px)}
-@media (max-width:767px){html.promo-space:not(.static){--promo-h:var(--promo-h-m,70px)}}
+/* r12 type-layout (Q11): the launch bar is in the HTML (tools/build.py PROMO_BAR) and shown before first paint by EARLY
+   (html.promo-on) -> no late insert, no guessed reservation, no layout shift. ?static=1 never shows it (0 px vs the mockup). */
+.promo-bar[data-promo]{display:none}
+html.promo-on:not(.static) .promo-bar[data-promo]{display:flex}
 /* cards round: launchpad list + sidebar stack on phones (the inline 1fr|280px grid left the product rows 80px wide) */
 @media (max-width:767px){html:not(.static) #lp-wrap{grid-template-columns:minmax(0,1fr)!important}}
 /* round5 integration — 360px: the wider mono chip labels made two rows overflow the viewport.

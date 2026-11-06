@@ -359,3 +359,6 @@ html:not(.static) .mk-top:empty{min-height:116px}
 html:not(.static) .mk-slides:empty{min-height:312px}
 @media (min-width:768px) and (max-width:1279px){html:not(.static) .mk-slides:empty{min-height:359px}}
 @media (max-width:767px){html:not(.static) .mk-slides:empty{min-height:291px}}
+/* r12 type-layout (Q11 cart 0.12): the cart loader holds the height of what replaces it (the empty-cart box measures 217-233 px at
+   360-1440, evidence/kpis.json), so the order summary below it on phones does not jump */
+html:not(.static) #cart-lines>.ccl-in{min-height:14rem}

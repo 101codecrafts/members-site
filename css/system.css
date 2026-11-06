@@ -461,7 +461,7 @@ html:not(.static) .ed-bar{flex-wrap:wrap;row-gap:var(--s-1)}
    one empty state: every list / grid that comes back empty shows the same dashed panel (card-system --empty look) */
 html:not(.static) :is(.empty-state,.mk-empty),html:not(.static) body:not([data-page=courses]) p.muted.empty{grid-column:1/-1;display:grid;gap:var(--s-3);justify-items:start;align-content:start;margin:0;padding:var(--s-6) var(--pad-card);border:var(--bw) dashed var(--border-strong);background:var(--surface-2);color:var(--text-muted);text-align:left;box-shadow:none;max-width:none}
 html:not(.static) .mk-empty h3{margin:0}
-html:not(.static) :is(.empty-state,.mk-empty) p{margin:0;max-width:60ch}
+html:not(.static) :is(.empty-state,.mk-empty) p{margin:0;max-width:var(--measure-body)}
 /* form fields: one height (44px) for every single-line control; textareas keep their rows */
 html:not(.static) .field>:is(input:not([type=checkbox],[type=radio],[type=range]),select){box-sizing:border-box;height:var(--tap);min-height:var(--tap)}
 html:not(.static) .field>input[type=file]{padding-block:0;line-height:calc(var(--tap) - 2 * var(--bw))}

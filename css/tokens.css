@@ -100,8 +100,8 @@
   --space-fluid-l: clamp(2rem, 1.8469rem + 0.6803vw, 2.5rem);
   --space-fluid-xl: clamp(3rem, 2.7704rem + 1.0204vw, 3.75rem);
   --space-fluid-2xl: clamp(4rem, 3.6173rem + 1.7007vw, 5.25rem);
-  --measure-body: 68ch;
-  --measure-narrow: 45ch;
-  --measure-min: 60ch;
-  --measure-max: 75ch;
+  --measure-body: 50ch;
+  --measure-narrow: 34ch;
+  --measure-min: 45ch;
+  --measure-max: 56ch;
 }
