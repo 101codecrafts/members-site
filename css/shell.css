@@ -116,6 +116,8 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
 
 /* account area: skeleton -> guest buttons or member menu */
 .acct{position:relative;display:flex;align-items:center;flex:none;min-height:40px;padding-left:12px;margin-left:2px;border-left:1px solid var(--sh-line)}
+/* r12 type-layout: the loading skeleton holds the 44px the resolved chip (Sign in / Join buttons or the account button) takes */
+html:not(.static) .acct{min-height:44px}
 .acct-sk{display:flex;align-items:center;gap:10px}
 .acct-sk i,.acct-sk b{display:block;background:linear-gradient(90deg,var(--sh-navy-2),var(--sh-navy-3),var(--sh-navy-2));background-size:200% 100%;animation:sh-sk 1.2s linear infinite}
 .acct-sk i{width:32px;height:32px}

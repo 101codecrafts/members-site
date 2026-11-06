@@ -104,12 +104,12 @@
       b.innerHTML = `<span class="ab-ic">${ico("megaphone")}</span><p><b>${esc(pin.title)}</b> <span>${esc(pin.body)}</span></p>${pin.link ? `<a class="btn sm ink" href="${esc(pin.link)}">Open</a>` : ""}<a class="btn sm" href="announcements.html">All announcements</a><button type="button" class="btn sm" aria-label="Hide pinned announcement">✕</button>`;
       b.querySelector("button").onclick = () => { localStorage.setItem("cc_ann_hide", pin.id); F.markRead([pin.id]); b.remove(); };
       const slot = $("[data-ann-slot]"), host = $(".content") || $("#main");   // the slot reserves the banner's height before first paint (no layout shift)
-      try { localStorage.removeItem("cc_ann_none"); } catch (e) {}
+      try { localStorage.removeItem("cc_ann_none"); localStorage.setItem("cc_ann_pin", pin.id); } catch (e) {}   // r12 type-layout: next load reserves the slot (EARLY)
       if (slot) slot.replaceWith(b); else page === "dashboard" ? $("#main").parentNode.insertBefore(b, $("#main")) : host.insertBefore(b, host.firstChild);
     } else {
       /* no pinned announcement: release the reserved slot, and remember it so the EARLY script (tools/build.py) skips the
          reservation on the next load (html.ann-off) instead of collapsing a painted 72px gap every time (CLS) */
-      if (!pin && !STATIC) { try { localStorage.setItem("cc_ann_none", "1"); } catch (e) {} }
+      if (!STATIC && !$(".ann-banner")) { try { localStorage.removeItem("cc_ann_pin"); if (!pin) localStorage.setItem("cc_ann_none", "1"); } catch (e) {} }
       const slot = $("[data-ann-slot]"); if (slot) slot.remove();
     }
     /* bell */

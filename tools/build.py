@@ -34,7 +34,17 @@ TEAM = json.loads((root / 'src/data/team.json').read_text())['leaders']   # abou
 ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "@id": SITE + "/#org", "name": "101 Codecrafts", "url": SITE + "/", "logo": SITE + "/assets/icons/icon-512.png",
           "slogan": "Start at 101. Craft your way up.", "sameAs": [x['url'] for x in SOCIAL_LIVE]}
 
-EARLY = '''<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{if(!localStorage.cc_promo_dismissed)d.classList.add("promo-space");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");var u=(document.cookie.match(/(?:^|; )__client_uat=(\\d+)/)||[])[1];d.classList.add(u&&u!=="0"?"role-pending":"role-visitor");if(localStorage.cc_ann_hide||localStorage.cc_ann_none)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>'''
+EARLY = '''<script>/* early: lite/data-saver + theme before first paint (stored choice, else the system setting; never in ?static) */(function(d){try{var c=navigator.connection;if(localStorage.lite==="1"||(c&&c.saveData&&localStorage.lite!=="0"))d.classList.add("lite");if(/[?&]static/.test(location.search))d.classList.add("static");else{var pe=Date.parse(PROMO_END);if(PROMO_ON&&(isNaN(pe)||Date.now()<pe)&&localStorage.cc_promo_dismissed!==PROMO_END)d.classList.add("promo-on");var t=localStorage.theme;if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)){d.dataset.theme="dark";d.style.colorScheme="dark"}if(localStorage["cc.sidebar"]==="collapsed")d.classList.add("sb-collapsed");var u=(document.cookie.match(/(?:^|; )__client_uat=(\\d+)/)||[])[1];d.classList.add(u&&u!=="0"?"role-pending":"role-visitor");var ap=localStorage.cc_ann_pin;if(!ap||ap===localStorage.cc_ann_hide)d.classList.add("ann-off");}}catch(e){}})(document.documentElement)</script>'''
+# r12 type-layout (Q11): the launch bar is rendered in the HTML (PROMO_BAR, first child of <body>) and shown before first
+# paint by EARLY (html.promo-on) when the offer runs and was not dismissed, so it never pushes the page down after load.
+# Config is read from js/ads.js LAUNCH_PROMO so there is one source of truth.
+_ads = (root / 'js/ads.js').read_text() if (root / 'js/ads.js').exists() else ''
+_pm = re.search(r'LAUNCH_PROMO\s*=\s*\{\s*enabled:\s*(true|false),\s*endsAt:\s*"([^"]*)"', _ads)
+PROMO_ON, PROMO_END = (_pm.group(1), _pm.group(2)) if _pm else ('false', '')
+EARLY = EARLY.replace('PROMO_END', json.dumps(PROMO_END)).replace('PROMO_ON', PROMO_ON)
+PROMO_BAR = ('<div class="promo-bar" data-promo role="region" aria-label="Launch offer"><p><b>Launch month:</b> everything on 101 is free — no ads. '
+             '<span class="promo-cd">ends one month after launch</span></p><button type="button" aria-label="Dismiss launch offer banner">✕</button></div>')
+
 
 def head(a, page):
     # placeholder attributes may carry HTML entities (title="Events &amp; Meetups"): decode once, escape once (r12 QA: no literal &amp;amp;)
@@ -262,6 +272,7 @@ for f in (root / 'src').glob('*.html'):
     if 'js/bg.js' not in s: s = s.replace('</body>', '<script src="js/bg.js" defer></script>\n</body>', 1)
     # round 11: any page with the account chip gets the access policy + account menu runtime (hand-listed script pages too)
     if 'data-acct' in s and 'js/account.js' not in s: s = s.replace('</body>', '<script src="js/access.js" defer></script>\n<script src="js/account.js" defer></script>\n</body>', 1)
+    if 'js/ads.js' in s and 'class="promo-bar"' not in s: s = re.sub(r'(<body\b[^>]*>)', lambda m: m.group(1) + '\n' + PROMO_BAR, s, count=1)
     if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')

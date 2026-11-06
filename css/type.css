@@ -15,6 +15,12 @@
    the swap from system font to web font keeps line boxes and line breaks, so no layout shift. -R = Android (Roboto). */
 @font-face{font-family:"CC Sans Fallback";src:local("Arial"),local("ArialMT"),local("Liberation Sans"),local("Arimo"),local("Helvetica");size-adjust:101.57%;ascent-override:100.92%;descent-override:27.07%;line-gap-override:0%}
 @font-face{font-family:"CC Sans Fallback R";src:local("Roboto"),local("Roboto-Regular");size-adjust:101.03%;ascent-override:101.45%;descent-override:27.22%;line-gap-override:0%}
+/* r12 type-layout: bold faces for the sans fallbacks. body sets font-synthesis-weight:none, so before IBM Plex arrives a 600/700
+   label used to render in the REGULAR Roboto/Arial face: ~4% narrower than Plex Bold, so bold lines re-wrapped on swap (pricing
+   test-mode note 96 -> 78 px, a layout shift). Widths from work/round12/ui-skills/type-layout/tools/fallback_metrics.py
+   (Plex wght 700 vs Roboto Bold / Arimo Bold); ascent/descent keep Plex's 1025/275 line box after size-adjust. */
+@font-face{font-family:"CC Sans Fallback";src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("Arimo Bold"),local("Helvetica Bold");font-weight:600 900;size-adjust:97.95%;ascent-override:104.65%;descent-override:28.08%;line-gap-override:0%}
+@font-face{font-family:"CC Sans Fallback R";src:local("Roboto Bold"),local("Roboto-Bold");font-weight:600 900;size-adjust:103.91%;ascent-override:98.64%;descent-override:26.47%;line-gap-override:0%}
 @font-face{font-family:"CC Display Fallback";src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("Arimo Bold");size-adjust:115.43%;ascent-override:76.06%;descent-override:18.19%;line-gap-override:0%}
 @font-face{font-family:"CC Display Fallback R";src:local("Roboto Black"),local("Roboto-Black");size-adjust:121.88%;ascent-override:72.04%;descent-override:17.23%;line-gap-override:0%}
 @font-face{font-family:"CC Mono Fallback";src:local("Courier New"),local("CourierNewPSMT"),local("Liberation Mono"),local("Cousine"),local("Roboto Mono"),local("Droid Sans Mono"),local("DejaVu Sans Mono");size-adjust:100%;ascent-override:102.02%;descent-override:30%;line-gap-override:0%}

@@ -601,9 +601,10 @@ html:not(.static) .flow-foot .socials{flex-wrap:wrap}
 .about-steps li{counter-increment:st;display:flex;gap:12px;align-items:flex-start}
 .about-steps li::before{content:counter(st);flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);border:2px solid var(--brand-navy,#0B1236);font-weight:800}
 .about-cta{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
-/* cards round: reserve the launch bar's height before first paint (EARLY script adds html.promo-space; js/ads.js releases it) -> no layout shift */
-html.promo-space:not(.static) body:not(:has(>.promo-bar)){padding-top:var(--promo-h,45px)}
-@media (max-width:767px){html.promo-space:not(.static){--promo-h:var(--promo-h-m,70px)}}
+/* r12 type-layout (Q11): the launch bar is in the HTML (tools/build.py PROMO_BAR) and shown before first paint by EARLY
+   (html.promo-on) -> no late insert, no guessed reservation, no layout shift. ?static=1 never shows it (0 px vs the mockup). */
+.promo-bar[data-promo]{display:none}
+html.promo-on:not(.static) .promo-bar[data-promo]{display:flex}
 /* cards round: launchpad list + sidebar stack on phones (the inline 1fr|280px grid left the product rows 80px wide) */
 @media (max-width:767px){html:not(.static) #lp-wrap{grid-template-columns:minmax(0,1fr)!important}}
 /* round5 integration — 360px: the wider mono chip labels made two rows overflow the viewport.
@@ -629,6 +630,12 @@ html:not(.static) :is(.foot,.lfoot,.flow-foot) .socials{flex-wrap:wrap;max-width
    the swap from system font to web font keeps line boxes and line breaks, so no layout shift. -R = Android (Roboto). */
 @font-face{font-family:"CC Sans Fallback";src:local("Arial"),local("ArialMT"),local("Liberation Sans"),local("Arimo"),local("Helvetica");size-adjust:101.57%;ascent-override:100.92%;descent-override:27.07%;line-gap-override:0%}
 @font-face{font-family:"CC Sans Fallback R";src:local("Roboto"),local("Roboto-Regular");size-adjust:101.03%;ascent-override:101.45%;descent-override:27.22%;line-gap-override:0%}
+/* r12 type-layout: bold faces for the sans fallbacks. body sets font-synthesis-weight:none, so before IBM Plex arrives a 600/700
+   label used to render in the REGULAR Roboto/Arial face: ~4% narrower than Plex Bold, so bold lines re-wrapped on swap (pricing
+   test-mode note 96 -> 78 px, a layout shift). Widths from work/round12/ui-skills/type-layout/tools/fallback_metrics.py
+   (Plex wght 700 vs Roboto Bold / Arimo Bold); ascent/descent keep Plex's 1025/275 line box after size-adjust. */
+@font-face{font-family:"CC Sans Fallback";src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("Arimo Bold"),local("Helvetica Bold");font-weight:600 900;size-adjust:97.95%;ascent-override:104.65%;descent-override:28.08%;line-gap-override:0%}
+@font-face{font-family:"CC Sans Fallback R";src:local("Roboto Bold"),local("Roboto-Bold");font-weight:600 900;size-adjust:103.91%;ascent-override:98.64%;descent-override:26.47%;line-gap-override:0%}
 @font-face{font-family:"CC Display Fallback";src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("Arimo Bold");size-adjust:115.43%;ascent-override:76.06%;descent-override:18.19%;line-gap-override:0%}
 @font-face{font-family:"CC Display Fallback R";src:local("Roboto Black"),local("Roboto-Black");size-adjust:121.88%;ascent-override:72.04%;descent-override:17.23%;line-gap-override:0%}
 @font-face{font-family:"CC Mono Fallback";src:local("Courier New"),local("CourierNewPSMT"),local("Liberation Mono"),local("Cousine"),local("Roboto Mono"),local("Droid Sans Mono"),local("DejaVu Sans Mono");size-adjust:100%;ascent-override:102.02%;descent-override:30%;line-gap-override:0%}
@@ -1347,6 +1354,8 @@ html.sb-ready .shell{transition:grid-template-columns var(--sh-dur) var(--sh-eas
 
 /* account area: skeleton -> guest buttons or member menu */
 .acct{position:relative;display:flex;align-items:center;flex:none;min-height:40px;padding-left:12px;margin-left:2px;border-left:1px solid var(--sh-line)}
+/* r12 type-layout: the loading skeleton holds the 44px the resolved chip (Sign in / Join buttons or the account button) takes */
+html:not(.static) .acct{min-height:44px}
 .acct-sk{display:flex;align-items:center;gap:10px}
 .acct-sk i,.acct-sk b{display:block;background:linear-gradient(90deg,var(--sh-navy-2),var(--sh-navy-3),var(--sh-navy-2));background-size:200% 100%;animation:sh-sk 1.2s linear infinite}
 .acct-sk i{width:32px;height:32px}
@@ -1511,7 +1520,7 @@ a,button,input,select,textarea,label,summary,[role=button],[role=tab],.btn,.opt{
 html:not(.static) .shell .topbar{border-top:var(--safe-t) solid transparent;height:calc(var(--tb-h) + var(--safe-t));min-height:calc(var(--tb-h) + var(--safe-t));
   border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
 html:not(.static) body>.promo-bar:first-child{border-top:var(--safe-t) solid transparent;border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
-html:not(.static) body:not(:has(>.promo-bar)) .page>.hdr{border-top:var(--safe-t) solid transparent}
+html:not(.static) body:not(:has(>.promo-bar)) .page>.hdr,html:not(.static):not(.promo-on) .page>.hdr{border-top:var(--safe-t) solid transparent}
 html:not(.static) .page>.hdr{border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
 @media (max-width:1023.98px){
   html:not(.static) .shell .sbar{padding:var(--safe-t) 0 var(--safe-b) var(--safe-l)}

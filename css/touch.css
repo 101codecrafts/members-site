@@ -29,7 +29,7 @@ a,button,input,select,textarea,label,summary,[role=button],[role=tab],.btn,.opt{
 html:not(.static) .shell .topbar{border-top:var(--safe-t) solid transparent;height:calc(var(--tb-h) + var(--safe-t));min-height:calc(var(--tb-h) + var(--safe-t));
   border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
 html:not(.static) body>.promo-bar:first-child{border-top:var(--safe-t) solid transparent;border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
-html:not(.static) body:not(:has(>.promo-bar)) .page>.hdr{border-top:var(--safe-t) solid transparent}
+html:not(.static) body:not(:has(>.promo-bar)) .page>.hdr,html:not(.static):not(.promo-on) .page>.hdr{border-top:var(--safe-t) solid transparent}
 html:not(.static) .page>.hdr{border-left:var(--safe-l) solid transparent;border-right:var(--safe-r) solid transparent}
 @media (max-width:1023.98px){
   html:not(.static) .shell .sbar{padding:var(--safe-t) 0 var(--safe-b) var(--safe-l)}
