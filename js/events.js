@@ -73,7 +73,7 @@
   function ticketView(host, t, e) {
     host.innerHTML = `<div class="ticket"><div class="tk-h"><span class="obadge" style="--ob:#fc8c0c;--of:#0B1236">101</span><b>${esc(e.title)}</b></div><div class="tk-qr"></div>
       <dl class="facts"><div><dt>Name</dt><dd>${esc(t.name)}</dd></div><div><dt>When</dt><dd>${when(e)}</dd></div><div><dt>Where</dt><dd>${esc(e.venue)}</dd></div></dl>
-      <p class="muted">Show this QR at the door for check-in. A copy is in “My tickets”.${t.offline ? " (Offline preview — the ticket syncs when the backend is live.)" : ""}</p></div>`;
+      <p class="muted">Show this QR at the door for check-in. A copy is in “My tickets”.${t.offline ? " (Preview ticket: 101 didn't issue it, so it won't work at the door.)" : ""}</p></div>`;
     qrInto($(".tk-qr", host), t.code);
   }
 
@@ -136,7 +136,7 @@
       host.addEventListener("click", async ev => {
         const c = ev.target.closest("[data-id]"); if (!c) return; const e = all.find(x => x.id === c.dataset.id); if (!e) return;
         const sBtn = ev.target.closest("[data-save]"); if (sBtn) { const on = F.toggleSave("event", e.id); sBtn.setAttribute("aria-pressed", on); sBtn.setAttribute("aria-label", on ? "Saved" : "Save"); toast(on ? "Saved to your events" : "Removed from saved"); }
-        const rBtn = ev.target.closest("[data-remind]"); if (rBtn) { const on = F.remind(e.id, 1); rBtn.setAttribute("aria-pressed", on); rBtn.querySelector("span").textContent = on ? "Reminder set" : "Remind me"; toast(on ? "We'll remind you the day before (in-app + email)" : "Reminder removed"); }
+        const rBtn = ev.target.closest("[data-remind]"); if (rBtn) { const on = F.remind(e.id, 1); rBtn.setAttribute("aria-pressed", on); rBtn.querySelector("span").textContent = on ? "Reminder set" : "Remind me"; toast(on ? "Reminder saved in this browser" : "Reminder removed"); }
         if (ev.target.closest("[data-ics]")) { ics(e); toast("Calendar file downloaded"); }
         const gBtn = ev.target.closest("[data-going]"); if (gBtn) { const on = F.toggleGoing(e.id); e.me = on; e.going += on ? 1 : -1; gBtn.setAttribute("aria-pressed", on); gBtn.querySelector("span").textContent = on ? "You're going" : "I'm going"; $("[data-gn]", c).textContent = e.going.toLocaleString("en-US"); }
         if (ev.target.closest("[data-rsvp]")) rsvpForm(e);
@@ -184,7 +184,7 @@
     evGate(); if (window.CCAccess && CCAccess.onChange) CCAccess.onChange(evGate);
     $("#ev-form").onsubmit = async e => { e.preventDefault(); const f = e.target; if (!f.checkValidity()) { f.reportValidity(); return; }
       const o = Object.fromEntries(new FormData(f)); o.start = new Date(o.start + ":00+03:00").toISOString(); o.end = new Date((o.end || f.start.value) + ":00+03:00").toISOString(); o.price = Number(o.price || 0);
-      const r = await F.submitEvent(o); $("#ev-msg").textContent = r.notSent ? r.message : r.offline ? "Thanks! Saved for admin review (offline preview — syncs when the backend is live)." : "Thanks! An admin will review it before it appears."; if (!r.notSent) f.reset(); };
+      const r = await F.submitEvent(o); $("#ev-msg").textContent = r.notSent ? r.message : r.offline ? "Saved in this browser only: this preview has no 101 server, so nothing was sent. Submit it again on the live site." : "Sent. An admin reviews it before it appears."; if (!r.notSent) f.reset(); };
 
     bindCard($("#ev-list")); draw(); drawTickets(); if (hosted.length) drawOrg();
     if (location.hash && all.some(e => e.id === location.hash.slice(1))) setTimeout(() => { const el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }, 50);

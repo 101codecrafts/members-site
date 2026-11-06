@@ -86,7 +86,7 @@
     host.addEventListener("click", e => {
       const card = e.target.closest("[data-id]"); if (!card) return; const id = card.dataset.id;
       const s = e.target.closest("[data-save]"); if (s) { const on = F.toggleSave("opportunity", id); s.setAttribute("aria-pressed", on); s.setAttribute("aria-label", on ? "Saved" : "Save"); s.querySelector("span").textContent = on ? "Saved" : "Save"; toast(on ? "Saved" : "Removed from saved"); }
-      const r = e.target.closest("[data-remind]"); if (r) { const on = F.remind(id, 3); r.setAttribute("aria-pressed", on); r.querySelector("span").textContent = on ? "Reminder set" : "Remind me"; toast(on ? "We'll remind you 3 days before it closes (in-app + email)" : "Reminder removed"); }
+      const r = e.target.closest("[data-remind]"); if (r) { const on = F.remind(id, 3); r.setAttribute("aria-pressed", on); r.querySelector("span").textContent = on ? "Reminder set" : "Remind me"; toast(on ? "Reminder saved in this browser" : "Reminder removed"); }
     });
   }
   const tickCountdowns = () => setInterval(() => $$("[data-deadline]").forEach(el => { const l = left(el.dataset.deadline); el.className = "fcd " + l.cls; el.lastChild.textContent = l.t; }), 60000);
@@ -190,7 +190,7 @@
       bindOppActions(grid); draw(); tickCountdowns();
       $("#opp-form").onsubmit = async e => { e.preventDefault(); const f = e.target; if (!f.checkValidity()) { f.reportValidity(); return; }
         const o = Object.fromEntries(new FormData(f)); o.remote = !!o.remote; o.deadline = new Date(o.deadline + "T23:59:00+03:00").toISOString();
-        const r = await F.submitOpportunity(o); $("#opp-msg").textContent = r.notSent ? r.message : r.offline ? "Thanks! Saved for admin review (offline preview — it will sync when the backend is live)." : "Thanks! An admin will review it before it appears."; f.reset(); };
+        const r = await F.submitOpportunity(o); $("#opp-msg").textContent = r.notSent ? r.message : r.offline ? "Saved in this browser only: this preview has no 101 server, so nothing was sent. Submit it again on the live site." : "Sent. An admin reviews it before it appears."; f.reset(); };
     },
 
     async dashboard() {

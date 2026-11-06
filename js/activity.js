@@ -136,7 +136,7 @@
       if (!live) { c.pending = false; persist(); renderList(); return; }
       c.pending = true; c.failed = false; renderList();
       try { var r = await call("POST", encodeURIComponent(id) + "/comments", { text: c.text }); c.id = (r && r.id) || c.id; c.t = Date.parse(r && r.created_at) || c.t; c.pending = false; }
-      catch (e) { c.pending = false; c.failed = true; st.comments = Math.max(0, st.comments - 1); paint(); if (e.status === 401) showGate(); else toast(e.status === 403 ? "Comments open once your membership is active." : "Couldn't post your comment."); }
+      catch (e) { c.pending = false; c.failed = true; st.comments = Math.max(0, st.comments - 1); paint(); if (e.status === 401) showGate(); else toast(e.status === 403 ? "Comments open once your membership is active." : "Couldn't post your comment. Check your connection and try again."); }
       renderList();
     }
     form.addEventListener("submit", async function (e) {

@@ -100,7 +100,7 @@
         else if (when.getTime() < Date.now() - 6e4) FE(form.starts_at, "Pick a time in the future.");
         var bad = form.querySelector("[aria-invalid=true]"); if (bad) { bad.focus(); return toast(msg, "Check the details marked above.", true); }
         var input = { title: form.title.value.trim().slice(0, 140), description: form.description.value.trim().slice(0, 2000), starts_at: when.toISOString(), duration_min: Math.min(480, Math.max(15, Number(form.duration_min.value) || 60)), capacity: Math.min(500, Math.max(1, Number(form.capacity.value) || 30)), provider: form.provider.value, whiteboard: form.whiteboard.checked };
-        A.create(input).then(function (r) { toast(msg, "Session scheduled."); form.reset(); draw(); if (r.session) setTimeout(function () { location.href = "session.html?id=" + encodeURIComponent(r.session.id); }, 600); }, function (err) { toast(msg, err.message || "Couldn't schedule.", true); });
+        A.create(input).then(function (r) { toast(msg, "Session scheduled."); form.reset(); draw(); if (r.session) setTimeout(function () { location.href = "session.html?id=" + encodeURIComponent(r.session.id); }, 600); }, function (err) { toast(msg, err.message || "Couldn't schedule the session. Check the details and try again.", true); });
       });
     }
     draw();
