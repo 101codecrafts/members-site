@@ -39,7 +39,7 @@ fi
 git ls-files | grep -E '(^|/)\.env($|\.)' | grep -v '\.env\.example$' && bad ".env file tracked"
 
 step "6. no secrets in the diff vs base"
-if git diff "$BASE" --unified=0 -- . ':!*.lock' ':!package-lock.json' 2>/dev/null | grep -E '^\+' | grep -qE '(sk_live_|sk_test_[A-Za-z0-9]{20,}|FLWSECK-|FLWSECK_TEST-[A-Za-z0-9]{10,}|re_[A-Za-z0-9]{24,}|sk-or-v1-[a-f0-9]{20,}|eyJhbGciOiJIUzI1Ni[A-Za-z0-9._-]{60,}|AKIA[0-9A-Z]{16})'; then
+if git diff "$BASE" --unified=0 -- . ':!*.lock' ':!package-lock.json' ':!tools/agent-check.sh' 2>/dev/null | grep -E '^\+' | grep -qE '(sk_live_|sk_test_[A-Za-z0-9]{20,}|FLWSECK-|FLWSECK_TEST-[A-Za-z0-9]{10,}|re_[A-Za-z0-9]{24,}|sk-or-v1-[a-f0-9]{20,}|eyJhbGciOiJIUzI1Ni[A-Za-z0-9._-]{60,}|AKIA[0-9A-Z]{16})'; then
   bad "a key-shaped string was added (check the diff; never commit secrets)"; fi
 
 step "7. unit tests"
