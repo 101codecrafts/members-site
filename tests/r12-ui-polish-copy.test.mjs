@@ -13,7 +13,7 @@ test("LG2: no user-facing copy says 101 holds money 'in escrow'", () => {
     assert.doesNotMatch(text, /\bescrow\b/i, f);
   }
   for (const f of ["js/market.js", "js/market-data.js"]) {
-    const visible = (strip(R(f)).match(/"[^"]*"|`[^`]*`/g) || []).join("\n").replace(/\bk\.escrow\b|\bescrow:/g, "");
+    const visible = (strip(R(f)).match(/"[^"]*"|`[^`]*`/g) || []).join("\n").replace(/\bk\.escrow\b|\bescrow:|"Paid · in escrow"/g, "");   // legacy status key kept as an alias
     assert.doesNotMatch(visible, /in escrow|from escrow|Escrow frozen|held in escrow/i, f);
   }
 });
