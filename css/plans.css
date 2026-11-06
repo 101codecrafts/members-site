@@ -105,3 +105,7 @@ html:not(.static) .pl-save,html:not(.static) .pl-sugg{font-size:12px}
    so the compare heading below never jumps when the cards arrive */
 @media (max-width:767px){html:not(.static) #pl-grid>.ccl-in{min-height:100svh}}
 html:not(.static) .pl-hero p{max-width:var(--measure-body)}   /* r12 type-layout: 62ch of Plex Sans = ~83 characters; the token holds ~67 */
+/* r12 type-layout: wider screens, the loader holds the measured height of the plan cards (2 rows at 768-1199, 1 row from 1200;
+   evidence/plgrid.json: 757-768 / 426-432 px), so the compare table heading does not jump when they arrive */
+@media (min-width:768px) and (max-width:1199px){html:not(.static) #pl-grid>.ccl-in{min-height:47rem}}
+@media (min-width:1200px){html:not(.static) #pl-grid>.ccl-in{min-height:26.5rem}}
