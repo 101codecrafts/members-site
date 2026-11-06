@@ -28,7 +28,7 @@
   /* ------------------------------------------------------------------ state */
   var S = { email: "", mode: "", path: null, step: null, data: {}, session: null, sending: false, resendAt: 0, flow: null };
   var FLOWS = {
-    guest: ["consent"],
+    guest: ["age", "consent"],   /* r13 flows: every account gives a DOB (DPPA s.8 + Reg 11, BUS L31/LG4); under 18 -> learner + guardian */
     learner: ["about", "guardian", "contact", "level", "interests", "goals", "heard", "review"],
     tutor: ["about", "teach", "experience", "credentials", "payout", "heard", "review"]
   };
@@ -170,7 +170,7 @@
       '<div class="af-form"><button type="button" class="af-btn google" data-google><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>Continue with Google</button>' +
       '<p class="af-or">or</p>' +
       '<form class="af-form" data-email novalidate>' + field("email", "Email", input("email", "email", 'autocomplete="email" inputmode="email" required autofocus'), { hint: "No temporary or disposable addresses." }) +
-      '<button type="submit" class="af-btn full" data-next>Continue</button></form></div>', "#f-email");
+      '<button type="submit" class="af-btn full" data-next>Continue</button></form></div>' + helpSignin(), "#f-email");
     if (S.email) $("#f-email").value = S.email;
     $("[data-google]").addEventListener("click", google);
     $("[data-email]").addEventListener("submit", onEmail);
@@ -223,6 +223,45 @@
     showCode();
   }
 
+  /* ------------------------------------------------------------------ r13 flows: recovery ("can't sign in?") help.
+     101 has no passwords (email code or Google), so "forgot password" becomes: no code arrived / wrong address /
+     signed up with Google / lost the mailbox / too many tries / under-18 waiting for a guardian (NN/g error-message
+     guidelines: say what happened and the next step; GOV.UK confirm-an-email: show the address, let them resend). */
+  function helpSignin() {
+    return '<details class="af-help" data-af-help><summary>Can\'t sign in?</summary><ul>' +
+      "<li><b>No password needed.</b> We email you a 6-digit code every time you sign in. Nothing to remember or reset.</li>" +
+      "<li><b>Joined with Google?</b> Use <i>Continue with Google</i> with the same Google account.</li>" +
+      "<li><b>Not sure which email you used?</b> Try the one you use for school or work. A new address starts a new account.</li>" +
+      "<li><b>Under 18 and waiting?</b> You can sign in now. Some things stay locked until your parent or guardian approves; you can change their email in Settings.</li>" +
+      '<li><b>Lost access to that email?</b> Write to <a href="mailto:privacy@101codecrafts.org">privacy@101codecrafts.org</a> from any address with your name and the old email. We check it\'s you before changing anything.</li>' +
+      "</ul></details>";
+  }
+  function helpCode() {
+    return '<details class="af-help" data-af-help><summary>Didn\'t get the code?</summary><ul>' +
+      "<li>Check <b>Spam</b> and, in Gmail, the <b>Promotions</b> or <b>Updates</b> tab. It comes from 101 Codecrafts.</li>" +
+      "<li>It can take a minute. After 30 seconds you can send a new one; only the newest code works.</li>" +
+      "<li>Typo in your email? Choose <i>Use a different email</i>.</li>" +
+      '<li>Still nothing? <button type="button" class="af-link" data-help-google>Continue with Google instead</button> if that address is a Google account.</li>' +
+      "</ul></details>";
+  }
+  function helpTotp() {
+    return '<details class="af-help" data-af-help><summary>Lost your authenticator?</summary><ul>' +
+      "<li>Codes change every 30 seconds. Make sure your phone's time is set automatically.</li>" +
+      '<li>Lost the phone? Write to <a href="mailto:privacy@101codecrafts.org">privacy@101codecrafts.org</a> from the account\'s email. We check it\'s you before turning two-step sign-in off.</li>' +
+      "</ul></details>";
+  }
+  /* live countdown on "Send a new code" (was a silent 30 s wait that only spoke after a tap) */
+  function tickResend(btn) {
+    clearInterval(tickResend.t);
+    var paint = function () {
+      if (!document.body.contains(btn)) return clearInterval(tickResend.t);
+      var w = Math.ceil((S.resendAt - Date.now()) / 1000);
+      if (w > 0) { btn.textContent = "Send a new code (" + w + " s)"; btn.setAttribute("aria-disabled", "true"); }
+      else { btn.textContent = "Send a new code"; btn.removeAttribute("aria-disabled"); clearInterval(tickResend.t); }
+    };
+    paint(); tickResend.t = setInterval(paint, 1000);
+  }
+
   /* ------------------------------------------------------------------ step 2: code */
   function showCode(msg, kind) {
     kind = kind || S.mode;
@@ -231,11 +270,12 @@
     view('<h1 class="af-h" id="af-h">' + title + '</h1><p class="af-sub">' + sub + "</p>" + (msg ? '<p class="af-note">' + msg + "</p>" : "") +
       '<form class="af-form" data-code novalidate>' + field("code", "Code", '<input name="code" id="f-code" class="af-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required aria-describedby="m-code">') +
       '<button type="submit" class="af-btn full" data-next>Continue</button>' +
-      '<div class="af-actions"><button type="button" class="af-link" data-change>Use a different email</button>' + (kind === "totp" ? "" : '<button type="button" class="af-link" data-resend>Send a new code</button>') + "</div></form>", "#f-code");
+      '<div class="af-actions"><button type="button" class="af-link" data-change>Use a different email</button>' + (kind === "totp" ? "" : '<button type="button" class="af-link" data-resend>Send a new code</button>') + "</div></form>" + (kind === "totp" ? helpTotp() : helpCode()), "#f-code");
     var f = $("[data-code]");
     $("#f-code").addEventListener("input", function (e) { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6); if (e.target.value.length === 6) f.requestSubmit ? f.requestSubmit() : null; });
     $("[data-change]").addEventListener("click", function () { S.flow = null; showEmail(); });
-    var rs = $("[data-resend]"); if (rs) rs.addEventListener("click", resend);
+    var rs = $("[data-resend]"); if (rs) { rs.addEventListener("click", resend); tickResend(rs); }
+    $$("[data-help-google]").forEach(function (b) { b.addEventListener("click", function () { S.flow = null; showEmail(); var g = $("[data-google]"); if (g) g.focus(); }); });
     f.addEventListener("submit", function (e) { e.preventDefault(); verify(kind); });
   }
   async function resend(e) {
@@ -289,8 +329,30 @@
     var act = A().pageAction(n);
     return !act || A().can(act, { role: role, plan: (S.session && S.session.plan) || "free", minor: S.session && S.session.minor, consent: S.session ? S.session.consent : true }) ? n : "";
   }
+  function homeOf(s) { return s.redirect && s.redirect.indexOf("/auth") !== 0 ? s.redirect : (A() ? A().home(s.role) : "/index.html"); }
+  /* r13 flows: ?next= named a page this role can't open -> say so and offer the real way in, instead of silently
+     landing home (the user never learns why the page they wanted didn't open). */
+  function showNotForRole(s, want) {
+    var why = A() ? A().why(A().pageAction(want) || "page.public", { role: s.role, plan: s.plan || "free", minor: s.minor, consent: s.consent !== false }) : "role";
+    var page = want.replace(/^\//, "").replace(/\.html.*$/, "").replace(/-/g, " ") || "that page";
+    var home = homeOf(s), up = s.role === "guest";
+    var msg = why === "consent" ? "That page opens once your parent or guardian approves your account." :
+      why === "minor" ? "That page is for members aged 18 and over." :
+      why === "plan" ? "That page needs a paid plan." :
+      up ? "That page is for learners and tutors. You're signed in as a guest." : "Your account type can't open that page.";
+    view('<h1 class="af-h" id="af-h">You\'re signed in</h1><p class="af-sub">You asked for <b>' + esc(page) + "</b>.</p>" +
+      '<p class="af-note warn" role="status">' + esc(msg) + "</p>" +
+      '<div class="af-actions af-stack">' +
+      (up ? '<a class="af-btn" href="/auth.html?upgrade=1&amp;next=' + encodeURIComponent(want) + '">Become a learner or tutor</a>' :
+        why === "plan" ? '<a class="af-btn" href="' + esc((A() && A().policy.plans_route) || "/pricing.html") + '">See plans</a>' :
+        why === "consent" ? '<a class="af-btn" href="/settings.html#guardian">Check guardian approval</a>' : "") +
+      '<a class="af-btn ghost" href="' + esc(home) + '">Go to my home</a></div>');
+  }
   function land(s) {
-    var to = allowedNext(s.role) || (s.redirect && s.redirect.indexOf("/auth") !== 0 ? s.redirect : (A() ? A().home(s.role) : "/index.html"));
+    var asked = A() ? A().safeNext(params.get("next") || "") : "";
+    if (asked && !allowedNext(s.role) && !LANDED_NEW) return showNotForRole(s, asked);
+    var to = allowedNext(s.role) || homeOf(s);
+    if (LANDED_NEW && !allowedNext(s.role)) to += (to.indexOf("?") < 0 ? "?" : "&") + "welcome=1";   // first visit: home shows "You're in" + first steps
     view('<h1 class="af-h" id="af-h">Welcome' + (s.user && s.user.name ? ", " + esc(s.user.name.split(" ")[0]) : "") + '</h1><p class="af-sub">Taking you to ' + (s.role === "guest" ? "your home" : s.role === "admin" || s.role === "root_admin" ? "the admin console" : "your dashboard") + '…</p><p><a class="af-btn" href="' + esc(to) + '">Continue</a></p>');
     location.replace(to);
   }
@@ -331,7 +393,7 @@
     };
     view('<h1 class="af-h" id="af-h">' + (upgrade ? "Become a learner or tutor" : "How will you use 101?") + '</h1><p class="af-sub">' + (upgrade ? "Unlock your own dashboard, tutor courses, 1:1 sessions and selling on the marketplace." : "Pick one. You can upgrade from Guest later.") + "</p>" +
       '<div class="af-paths">' +
-      card("guest", "user", "Guest", "Just your email. Browse, read the news, take free and external courses, buy on the marketplace.", "Fastest") +
+      card("guest", "user", "Guest", "Just your email and date of birth (18+). Browse, read the news, take free and external courses, buy on the marketplace.", "2 quick steps") +
       card("learner", "cap", "Learner", "Your learner dashboard, tutor and premium courses, 1:1 sessions, projects, sell your work. Free plan available.", "7–8 quick steps") +
       card("tutor", "teacher", "Tutor", "Teach courses, take on learners, run sessions and get paid by Mobile Money. 18+ only; an admin verifies you.", "7 steps") +
       '</div><div class="af-actions"><button type="button" class="af-link" data-signout>Not ' + esc(S.email || "you") + "? Sign out</button></div>");
@@ -359,6 +421,7 @@
     if (i < list.length - 1) go(S.path, list[i + 1]); else submit();
   }
   var STEP = {};
+  var LANDED_NEW = false;   // set when this visit finished onboarding (home gets ?welcome=1)
   function render() {
     var def = STEP[S.path + "." + S.step] || STEP[S.step];
     if (!def) return showPath();
@@ -383,9 +446,24 @@
   var today = function () { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); };
 
   /* guest */
+  STEP["guest.age"] = {
+    title: function () { return "Your date of birth"; },
+    why: function () { return "We ask everyone, to keep under-18s safe. Under 18? You'll join as a learner and a parent or guardian approves your account."; },
+    body: function () { return field("dob", "Date of birth", input("dob", "date", 'autocomplete="bday" required max="' + today() + '" min="1920-01-01"')) + '<div data-af-minor></div>'; },
+    wire: function (form) {
+      form.addEventListener("click", function (e) { var b = e.target.closest("[data-to-learner]"); if (!b) return; S.data = { dob: S.data.dob }; go("learner", stepsFor("learner")[0]); });
+    },
+    validate: function (v) {
+      var e = {}, a = age(v.dob);
+      if (!v.dob) e.dob = "Enter your date of birth."; else if (a === null || a < 5 || a > 100) e.dob = "Enter a real date of birth.";
+      else if (a < 18) { e.dob = "Guest accounts are for 18 and over. Join as a learner instead: it's free, and a parent or guardian approves it.";
+        var m = $("[data-af-minor]", root); if (m) m.innerHTML = '<button type="button" class="af-btn" data-to-learner>Join as a learner instead</button>'; }
+      return e;
+    }
+  };
   STEP["guest.consent"] = {
     title: function () { return "Join as a guest"; },
-    why: function () { return "That's all we need: your verified email <b>" + esc(S.email) + "</b>. You can become a learner or tutor whenever you like."; },
+    why: function () { return "That's all we need: your verified email <b>" + esc(S.email) + "</b> and your date of birth. You can become a learner or tutor whenever you like."; },
     body: function () { return '<p class="af-note">Guests can browse, read the news, take free and external courses and buy on the marketplace. Selling, projects, tutor courses, 1:1 sessions and ratings need a learner or tutor account.</p>' + consentBox(); },
     validate: function (v) { var e = {}; if (!v.terms) e.terms = "Accept the Terms and Privacy Policy to continue."; return e; },
     next: function () { return "Finish"; }
@@ -546,7 +624,7 @@
   /* ------------------------------------------------------------------ submit (server assigns the role) */
   function payload() {
     var d = S.data, consent = { terms: true, version: CONSENT_VERSION }, clean = function (p) { return p ? String(p).replace(/[\s-]/g, "") : undefined; };
-    if (S.path === "guest") return { path: "guest", consent: consent };
+    if (S.path === "guest") return { path: "guest", dob: d.dob, consent: consent };
     if (S.path === "learner") {
       var b = { path: "learner", name: d.name, dob: d.dob, gender: d.gender, level: d.level, interests: d.interests || [], goals: d.goals || [], heard_from: d.heard_from, consent: consent };
       if (d.phone) b.phone = clean(d.phone); if (d.experience) b.experience = d.experience; if (d.goal_note) b.goal_note = d.goal_note;
@@ -562,8 +640,13 @@
   async function submit() {
     var btn = $("[data-next]", root); busy(btn, true);
     try {
-      var r = await api("POST", "/auth/onboarding", payload());
-      clearDraft();
+      var body = payload(), r;
+      try { r = await api("POST", "/auth/onboarding", body); }
+      catch (e1) {   // an API from before r13 rejects the new guest "dob" key (strict schema): send the old shape once
+        if (S.path === "guest" && e1.status === 400 && /dob|unrecognized/i.test(String(e1.message) + JSON.stringify(e1.details || ""))) { delete body.dob; r = await api("POST", "/auth/onboarding", body); }
+        else throw e1;
+      }
+      clearDraft(); LANDED_NEW = true;
       var s = await loadSession().catch(function () { return null; });
       if (r && r.guardian === "pending") return showGuardianPending(s || { role: r.role, user: { email: S.email } });
       land(s || { role: r.role, redirect: r.redirect, user: {} });
@@ -571,6 +654,7 @@
       busy(btn, false);
       var m = $("#m-form", root) || $("#m-terms", root);
       if (m) m.textContent = clerkMsg(err, "Couldn't save your answers. Check your connection and try again.");
+      if (err.details && err.details.path === "learner") { S.data = { dob: S.data.dob, terms: S.data.terms }; return go("learner", stepsFor("learner")[0]); }
       if (err.status === 401) showEmail("Your session ended. Sign in again; your answers are saved.");
     }
   }
@@ -607,8 +691,18 @@
   }
   function sessionExists(err) { var x = err && err.errors && err.errors[0]; return !!x && (x.code === "session_exists" || /already signed in|session.*exist/i.test(x.longMessage || x.message || "")); }
 
+  /* r13 flows: sign-in service didn't load -> say what still works and give one retry, not a dead "reload" line */
+  function showUnavailable(note) {
+    view('<h1 class="af-h" id="af-h">Sign-in isn\'t loading</h1><p class="af-sub">We couldn\'t reach the sign-in service. This is usually a weak connection or a blocker extension.</p>' +
+      (note ? '<p class="af-note">' + note + "</p>" : "") +
+      '<div class="af-actions af-stack"><button type="button" class="af-btn" data-retry>Try again</button><a class="af-btn ghost" href="/news.html">Read the news without an account</a></div>');
+    $("[data-retry]").addEventListener("click", function () { location.reload(); });
+  }
+
   /* ------------------------------------------------------------------ boot */
   async function boot() {
+    /* r13 flows: the side panel's Guest line matches the new 2-step guest path (live only; ?static keeps the mockup) */
+    if (!/[?&]static/.test(location.search)) { var gp = $(".af-points li:first-child span"); if (gp) gp.textContent = "Your email, a code and your date of birth (18+). Browse, read the news, take free courses and buy on the marketplace."; }
     var g = params.get("guardian");
     var note = g === "approved" ? "Thank you. Consent recorded and the account is now active. The learner can sign in." : g === "invalid" ? "That approval link has expired or was already used. Ask the learner to send a new one from Settings." : "";
     var c = await clerk();
@@ -620,7 +714,7 @@
     }
     if (c && c.user && ADD && params.get("sso") !== "1") return showAddAccount(c);
     if (c && c.user) { S.email = (c.user.primaryEmailAddress && c.user.primaryEmailAddress.emailAddress) || ""; return routeAfterAuth(); }
-    if (!c) return showEmail("Sign-in couldn't load. Check your connection, then reload the page." + (note ? "<br>" + note : ""));
+    if (!c) return showUnavailable(note);
     showEmail(note);
   }
   boot();

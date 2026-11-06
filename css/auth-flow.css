@@ -118,3 +118,19 @@ body.af-page{margin:0;min-height:100vh;min-height:100dvh;color:var(--color-ink,#
 [data-theme=dark] .gh-card span{color:var(--text-muted,#AEB8CE)}
 [data-theme=dark] .gh-up{background:var(--surface-2,#192034);color:var(--text,#EEF1F8);border-color:var(--border-strong,#4A557A);box-shadow:5px 5px 0 #000}
 .af-list{margin:12px 0 18px;padding-left:20px;display:grid;gap:6px;line-height:1.5}
+
+/* r13 flows: "Can't sign in?" / "Didn't get the code?" recovery help (native <details>, keyboard + screen-reader ready) */
+.af-help{margin-top:18px;border:2px solid #0B1236;background:#fff}
+.af-help>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:8px 14px;font:700 var(--step--1)/1.3 var(--font-body);color:#0B1236}
+.af-help>summary::-webkit-details-marker{display:none}
+.af-help>summary::after{content:"+";font:700 20px/1 var(--font-mono,monospace)}
+.af-help[open]>summary::after{content:"–"}
+.af-help>summary:focus-visible{outline:3px solid var(--color-focus,#00758A);outline-offset:2px}
+.af-help ul{margin:0;padding:4px 14px 14px 32px;display:grid;gap:8px;font-size:var(--step--1);border-top:2px solid #0B1236}
+.af-help li{padding-top:6px}
+.af-help a{color:#0B1236;font-weight:700;text-decoration:underline;text-decoration-color:#fc8c0c;text-decoration-thickness:3px}
+.af-help .af-link{padding:0;font-size:inherit}
+[data-theme=dark] .af-help{background:var(--surface-2,#192034);border-color:var(--border-control,#6B77A0)}
+[data-theme=dark] :is(.af-help>summary,.af-help a,.af-help .af-link){color:var(--text,#EEF1F8)}
+[data-theme=dark] .af-help ul{border-top-color:var(--border-control,#6B77A0);color:var(--text,#EEF1F8)}
+.af-link[aria-disabled=true]{opacity:.7;cursor:default}

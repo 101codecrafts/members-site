@@ -63,7 +63,31 @@
   const chip = c => { const s = C.statusOf(c, c.subs || (c.pending ? [{ status: "pending" }] : [])); return `<span class="st ${s.key}">${esc(s.label)}</span>${s.key === "rejected" && s.reason ? `<span class="st-reason">Reason: ${esc(s.reason)}</span>` : ""}`; };
   const isDemo = source === "demo";
   const acts = c => isDemo ? `<span class="muted">Demo</span>` : `<div class="row-acts"><a class="btn sm" href="builder.html?id=${encodeURIComponent(c.id)}">Edit</a><a class="btn sm" href="course.html?preview=${encodeURIComponent(c.id)}">Preview</a>${["draft", "rejected"].indexOf(c.status) >= 0 && !c.pending ? `<a class="btn sm or" href="builder.html?id=${encodeURIComponent(c.id)}&tab=review">Submit</a>` : ""}</div>`;
-  $("#t-courses").innerHTML = data.courses.length
+  /* r13 flows: new tutors can't build until an admin verifies them (app.is_tutor()). Say so, show where they are, and
+     lock the builder buttons instead of sending them into a builder that answers 403 (FLOWS.md dead end D1). */
+  const F = window.CCFirstSteps, sess = F && F.session(), tv = sess && sess.tutor ? sess.tutor : null;
+  const tStatus = isDemo ? "verified" : tv ? tv.status : null;   // null = an API from before r13: status unknown, nothing claimed
+  if (tStatus && tStatus !== "verified") {
+    document.querySelectorAll('#t-create-course, #t-create-lesson, #courses .viewall').forEach(a => {
+      a.removeAttribute("data-can"); a.setAttribute("aria-disabled", "true"); a.classList.add("fl-locked");   // data-can off: CCAccess.refresh would re-enable it a.dataset.lockedHref = a.getAttribute("href"); a.setAttribute("href", "#courses");
+      a.title = tStatus === "rejected" ? "Your tutor application wasn't approved" : "Opens when an admin verifies you";
+      if (a.classList.contains("viewall")) a.hidden = true; });
+  }
+  const verifyFirst = () => {
+    if (!F || F.static || !tStatus || tStatus === "verified") return "";
+    const when = tv && tv.applied_at ? fmtDate(tv.applied_at, { day: "numeric", month: "short", year: "numeric" }) : "";
+    if (tStatus === "rejected") return `<p class="fl-note err" role="status"><b>Your tutor application wasn't approved.</b> ${tv.note ? "Reason: " + esc(tv.note) + ". " : ""}You can still learn on 101 with this account.</p>`;
+    return F.html({ key: "tutor", title: F.welcome() ? "Application sent" : "Before you can teach", label: "Tutor verification", welcome: F.welcome(), dismissable: false,
+      intro: "An admin checks every new tutor's credentials before their courses can go live. We'll email you when it's done.",
+      items: [
+        { label: "Send your tutor application", hint: when ? "Sent " + when : "", status: "done" },
+        { label: "Admin verifies your credentials", hint: "No action needed from you.", status: "waiting" },
+        { label: "Build your first course", hint: "Opens when you're verified.", status: "blocked" },
+        { label: "Send it for review", hint: "An admin approves each course before learners see it.", status: "blocked" }
+      ] });
+  };
+  const gate = verifyFirst();
+  $("#t-courses").innerHTML = gate ? gate : data.courses.length
     ? `<div class="tbl-wrap"><table class="t dash-t"><thead><tr><th>Course</th><th>Lessons</th><th>Learners</th><th>Actions</th></tr></thead><tbody>${data.courses.map(c =>
         `<tr><td><b>${esc(c.title)}</b><br>${chip(c)}</td><td>${c.lessons != null ? num(c.lessons) : "—"}</td><td>${num(c.learners || 0)}</td><td>${acts(c)}</td></tr>`).join("")}</tbody></table></div>`
     : empty({ key: "courses", examples: [["Intro to Python · 3 modules", "Draft"], ["Git basics · 5 lessons", "In review"]],
@@ -75,7 +99,8 @@
   $("#t-sessions").innerHTML = ss.length
     ? `<div class="dash-list">${ss.map(s => `<div class="dash-li"><span class="date"><span>${esc(fmtDate(s.starts_at, { month: "short" }))}<br><b>${esc(fmtDate(s.starts_at, { day: "2-digit" }))}</b></span></span><div><b>${esc(s.title)}</b><small>${esc(fmtDate(s.starts_at, { hour: "numeric", minute: "2-digit" }))} EAT · ${num(s.duration_minutes || 60)} min${s.kind === "group" ? " · group" : ""}</small></div><a class="btn sm" href="sessions.html">Open</a></div>`).join("")}</div>`
     : empty({ key: "sessions", examples: [["1:1 · Git branching", "Thu 4 PM"], ["Group Q&A", "Sat 10 AM"]], title: "No sessions scheduled",
-        body: "Offer 1:1 or group sessions. Booked sessions show here with their time in EAT.", action: { href: "sessions.html", label: "Schedule a session", icon: "calendar" } });
+        body: tStatus && tStatus !== "verified" ? "You can offer 1:1 or group sessions once an admin verifies you." : "Offer 1:1 or group sessions. Booked sessions show here with their time in EAT.",
+        action: tStatus && tStatus !== "verified" ? null : { href: "sessions.html", label: "Schedule a session", icon: "calendar" } });
 
   /* ---------- learners ---------- */
   const ls = data.learners || [];
@@ -85,7 +110,7 @@
         return `<tr><td><b>${esc(l.name)}</b></td><td>${esc(l.course)}</td><td><div class="row" style="flex-wrap:nowrap"><div class="prog" style="flex:1" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(l.name)} progress"><i style="width:${p}%"></i></div><b>${p}%</b></div></td><td>${esc(ago(l.last_activity_at))}</td></tr>`; }).join("")}</tbody></table></div>`
     : empty({ key: "learners", examples: [["Learner name · Your course", "40%"], ["Learner name · Your course", "85%"]], title: "No learners yet",
         body: "Learners appear here when they enrol in one of your approved courses, with their progress and when they were last active.",
-        action: data.courses.length ? { href: "builder.html", label: "Finish and submit a course" } : { href: "builder.html", label: "Create your first course" } });
+        action: tStatus && tStatus !== "verified" ? null : data.courses.length ? { href: "builder.html", label: "Finish and submit a course" } : { href: "builder.html", label: "Create your first course" } });
 
   /* ---------- wallet + payouts ---------- */
   const avail = +(data.wallet && data.wallet.available_ugx) || 0;
