@@ -58,10 +58,10 @@
       var c = e.target.closest("[data-conn]"), d = e.target.closest("[data-disc]");
       if (c) A.connect(c.getAttribute("data-conn")).then(function (r) {
         if (r.authorize_url && /^https:\/\//.test(r.authorize_url)) location.href = r.authorize_url; else toast(msg, r.message || "Connection started.");
-      }, function (err) { toast(msg, err.message || "Couldn't connect.", true); });
-      if (d) A.disconnect(d.getAttribute("data-disc")).then(draw, function (err) { toast(msg, err.message || "Couldn't disconnect.", true); });
+      }, function (err) { toast(msg, err.message || "Couldn't connect. Try again in a minute.", true); });
+      if (d) A.disconnect(d.getAttribute("data-disc")).then(draw, function (err) { toast(msg, err.message || "Couldn't disconnect. Try again in a minute.", true); });
     });
-    box.addEventListener("change", function (e) { if (e.target.name === "def") A.setDefault(e.target.value).then(function (r) { if (r && r.ok === false) toast(msg, r.message || "Not saved.", true); else toast(msg, "Default video app saved."); }); });
+    box.addEventListener("change", function (e) { if (e.target.name === "def") A.setDefault(e.target.value).then(function (r) { if (r && r.ok === false) toast(msg, r.message || "Not saved. Try again in a minute.", true); else toast(msg, "Default video app saved."); }); });
     draw();
   }
 
@@ -74,7 +74,7 @@
         list.innerHTML = ss.length ? ss.map(function (s) {
           var d = new Date(s.starts_at);
           return '<a class="li ses-li" href="session.html?id=' + encodeURIComponent(s.id) + '"><span class="date"><span>' + d.toLocaleString("en-GB", { month: "short", timeZone: "Africa/Kampala" }).toUpperCase() + "<br><b>" + d.toLocaleString("en-GB", { day: "numeric", timeZone: "Africa/Kampala" }) + '</b></span></span><div class="grow"><b>' + esc(s.title) + "</b><small>" + esc(fmt(s.starts_at)) + " · " + esc((A.PROVIDERS[s.provider] || {}).label || s.provider) + (s.whiteboard ? " · whiteboard" : "") + '</small></div><span class="ses-pill">Open →</span></a>';
-        }).join("") : '<p class="ses-empty">No sessions yet.</p>';
+        }).join("") : '<p class="ses-empty">No sessions yet. Sessions you book or schedule show up here with their join link.</p>';
       });
     }
     var form = $("#ses-form");
@@ -136,7 +136,7 @@
             window.open(j.url, "_blank", "noopener"); toast(msg, "Opened " + p.label + " in a new tab.");
           } else toast(msg, j.message || "The join link isn't ready yet.", !j.url);
           loadAttendance();
-        }, function (err) { joinBtn.disabled = false; toast(msg, err.message || "Couldn't join.", true); });
+        }, function (err) { joinBtn.disabled = false; toast(msg, err.message || "Couldn't join. Check your connection and try again.", true); });
       });
       function openBoard() {
         board.innerHTML = '<iframe title="Session whiteboard" src="' + wbSrc + '"></iframe>';

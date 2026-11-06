@@ -488,7 +488,7 @@
     box.innerHTML = rows.length ? rows.map(c => `<form class="ac-item sm" data-course="${esc(c.id)}"><div class="ac-item-main"><b>${esc(c.title)}</b> <span class="ac-pill">${esc(c.status)}</span><small class="muted"> · ${num(c.enrollments_count)} learners · now ${c.is_free ? "Free" : ugx(c.price_ugx)}</small></div>
       <div class="ac-item-side ac-row"><label class="ac-check"><input type="radio" name="free-${esc(c.id)}" value="1" ${c.is_free ? "checked" : ""}> Free</label><label class="ac-check"><input type="radio" name="free-${esc(c.id)}" value="0" ${c.is_free ? "" : "checked"}> Paid</label>
       <input name="price" type="number" min="1000" step="500" value="${c.is_free ? "" : esc(c.price_ugx)}" placeholder="UGX" aria-label="Price in UGX"><button class="btn sm ink" type="submit">Save</button></div></form>`).join("")
-      : `<div class="ac-empty-card"><b>No courses found.</b><span class="ac-eg">e.g. Web Foundations · published · Free</span></div>`;
+      : (q ? `<div class="ac-empty-card"><b>No courses match “${esc(q)}”.</b><span>Check the spelling or clear the search to see every course.</span></div>` : `<div class="ac-empty-card"><b>No courses yet.</b><span>Courses appear here once a tutor creates one.</span><span class="ac-eg">e.g. Web Foundations · published · Free</span></div>`);
   }
   $("#pc-form") && $("#pc-form").addEventListener("submit", e => { e.preventDefault(); coursePricing(e.target.q.value.trim()); });
   document.addEventListener("submit", async e => {
@@ -567,7 +567,7 @@
       <div class="ac-person"><span class="ac-av" aria-hidden="true">${esc((p.display_name || "?").slice(0, 1).toUpperCase())}</span><div><h3>${esc(p.display_name || p.username || "")}</h3>
         <p class="muted">${esc(p.email_masked || "")} · ${esc(roleName(d.role))} · ${esc(p.account_status || "")}${p.is_minor ? " · under 18" : ""}</p></div></div>
       <div class="ac-tiles sm">${tile("Learner plan", (d.plans && d.plans.learner) || "free")}${tile("Tutor plan", (d.plans && d.plans.tutor) || "free")}${tile("Unread notices", d.notifications_unread, "0 means all read")}${tile("Guardian", d.guardian ? d.guardian.state : "—")}</div>
-      <div class="ac-grid2"><div><h4>COURSES THEY TAKE</h4>${list(d.enrollments, e => `<li><span>${esc(e.course)}</span><b>${num(e.progress_pct)}%</b></li>`, "No courses yet (a new account shows zeros).")}</div>
+      <div class="ac-grid2"><div><h4>COURSES THEY TAKE</h4>${list(d.enrollments, e => `<li><span>${esc(e.course)}</span><b>${num(e.progress_pct)}%</b></li>`, "Not enrolled in any course yet.")}</div>
         <div><h4>COURSES THEY TEACH</h4>${list(d.courses_taught, c => `<li><span>${esc(c.title)} <small class="muted">${esc(c.status)}</small></span><b>${num(c.learners)}</b></li>`, "None.")}</div></div>
       <h4>THEIR SUBMISSIONS</h4>${list(d.submissions, x => `<li><span>${esc(x.title)} <small class="muted">${esc(x.kind)}</small></span><b>${esc(x.status)}</b></li>`, "None.")}</div>`;
   }

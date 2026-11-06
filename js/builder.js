@@ -22,7 +22,7 @@
   const setUrl = (params) => { const u = new URL(location.href); u.search = new URLSearchParams(params).toString(); history.replaceState(null, "", u.pathname + u.search); };
   const toast = (msg, bad) => { let t = $("#b-toast"); if (!t) { t = document.createElement("div"); t.id = "b-toast"; t.setAttribute("role", "status"); t.className = "dash-bar"; t.style.cssText = "position:fixed;left:16px;bottom:16px;z-index:50;max-width:min(560px,calc(100vw - 32px));margin:0"; document.body.appendChild(t); }
     t.className = "dash-bar" + (bad ? " err" : ""); t.textContent = msg; t.hidden = false; clearTimeout(t._h); t._h = setTimeout(() => t.hidden = true, 4200); };
-  const fail = e => { toast(e && e.message ? e.message : "Something went wrong. Try again.", true); };
+  const fail = e => { toast(e && e.message ? e.message : "Not saved. Check your connection and try again.", true); };
   function busy(btn, on) { if (!btn) return; btn.disabled = on; btn.setAttribute("aria-busy", on ? "true" : "false"); }
 
   /* adapter + mode banner */

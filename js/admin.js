@@ -27,7 +27,7 @@
     list.addEventListener("dragover", e => e.preventDefault());
     list.addEventListener("drop", e => { e.preventDefault(); const row = e.target.closest(".soc-row"); if (!row) return; const to = +row.dataset.i; const [m] = social.splice(from, 1); social.splice(to, 0, m); renderSocial(); });
     list.addEventListener("keydown", e => { const b = e.target.closest(".drag"); if (!b || !["ArrowUp", "ArrowDown"].includes(e.key)) return; e.preventDefault(); const i = +b.closest(".soc-row").dataset.i, j = i + (e.key === "ArrowUp" ? -1 : 1); if (j < 0 || j >= social.length) return; [social[i], social[j]] = [social[j], social[i]]; renderSocial(); $$(".drag", list)[j].focus(); });
-    $("#social-save").onclick = async () => { const bad = social.find(s => s.url && !/^https:\/\//.test(s.url)); if (bad) { $("#social-msg").textContent = `${bad.label}: links must start with https://`; return; } const r = await API.saveSocialLinks(social).catch(() => null); $("#social-msg").textContent = r ? "Saved. Every footer now uses these links." : "Not saved: the backend did not accept it. Try again when it is connected."; };
+    $("#social-save").onclick = async () => { const bad = social.find(s => s.url && !/^https:\/\//.test(s.url)); if (bad) { $("#social-msg").textContent = `${bad.label}: links must start with https://`; return; } const r = await API.saveSocialLinks(social).catch(() => null); $("#social-msg").textContent = r ? "Saved. Every footer now uses these links." : "Links not saved: the server didn't accept them. Try again in a minute."; };
   }
   /* the Tools tab is lazy: build the editor the first time it opens */
   let built = false;

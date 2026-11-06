@@ -172,7 +172,7 @@
       if (r && r.ok) return (j && j.data) || { status: "pending_review" };
       const m = j && j.error && j.error.message;
       if (r && (r.status === 401 || r.status === 403)) return { offline: true, notSent: true, message: "Not sent: sign in to submit an event." };
-      if (r && r.status === 429) return { offline: true, notSent: true, message: m || "Not sent: you can submit up to 5 events a day. Please try again tomorrow." };
+      if (r && r.status === 429) return { offline: true, notSent: true, message: m || "Not sent: you can submit up to 5 events a day. Try again tomorrow." };
       if (r && (r.status === 400 || r.status === 422)) return { offline: true, notSent: true, message: "Not sent: check the details. The official link must start with https:// and the start time must be a real date." };
       if (r && r.status === 409) return { offline: true, notSent: true, message: "Not sent: that event link has already been submitted." };
     }
