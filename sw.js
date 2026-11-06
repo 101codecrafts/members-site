@@ -1,7 +1,7 @@
 /* 101 Codecrafts service worker — cached app shell + offline fallback.
    Strategy: HTML = network-first (falls back to cache, then offline.html); static assets = stale-while-revalidate;
    API and cross-origin requests are never cached here (except CDN libraries pinned by version). Small cache for mobile data. */
-const VERSION = "cc-v27";   // r12 QA fixes on integrate/round12 (AI error codes, honest home, events submit, small fixes)
+const VERSION = "cc-v28";   // r12 events review on integrate/round12 (admin "Events to review", review client, submit sends the form fields)
 const SHELL = ["./", "index.html", "dashboard.html", "offline.html", "404.html", "courses.html", "resources.html", "news.html", "course.html",
   "css/bundle-app.css", "css/bundle-dashboard.css", "css/bundle-landing.css", "css/bundle-theme.css", "css/courses.css", "css/dashboard.fit.css", "css/landing.fit.css",
   "js/data.js", "js/api.js", "js/shell.js", "js/dash-layout.js", "js/activity.js", "js/share.js", "js/ui.js", "js/motion.js", "js/era.js", "js/site-stats.js", "js/site-social.js", "js/pages.js", "js/access.js", "js/account.js", "js/bg.js", "js/bg-paint.js", "js/bg-worker.js", "js/ai.js", "js/ai-float.js", "js/ai-mascot.min.js", "js/ai-voice.min.js", "js/ai-voice-ui.min.js", "js/loops.js", "js/loops/tunnel.js", "js/loops/truchet.js", "js/loops/halftone.js", "js/loops/contour.js", "js/loops/cubes.js", "js/loops/bauhaus.js", "js/loaders.min.js",
