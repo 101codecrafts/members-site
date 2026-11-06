@@ -247,18 +247,25 @@
     let o = $("#cc-search");
     if (!o) {
       o = document.createElement("div"); o.id = "cc-search"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); o.setAttribute("aria-label", "Search 101 Codecrafts");
-      o.innerHTML = `<div class="ccs-box"><form class="ccs-bar" role="search"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search courses, tools, pages…" aria-label="Search" autocomplete="off"><button type="button" class="ccs-x" aria-label="Close search">✕</button></form><ul class="ccs-list" role="listbox"></ul></div>`;
+      o.innerHTML = `<div class="ccs-box"><form class="ccs-bar" role="search"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search courses, tools, pages…" aria-label="Search" autocomplete="off"><button type="button" class="ccs-x" aria-label="Close search">✕</button></form><p class="sr-only" role="status" aria-live="polite"></p><ul class="ccs-list"></ul></div>`;
       document.body.appendChild(o);
       const idx = searchIndex(), inp = $("input", o), list = $(".ccs-list", o);
       const render = () => { const v = inp.value.trim().toLowerCase(); const hits = (v ? idx.filter(x => x.t.toLowerCase().includes(v) || x.k.toLowerCase().includes(v)) : idx.slice(0, 8)).slice(0, 12);
-        list.innerHTML = hits.length ? hits.map(x => `<li><a href="${esc(x.h)}"${x.ext ? ' target="_blank" rel="noopener noreferrer"' : ""}><span>${esc(x.t)}</span><small>${esc(x.k)}</small></a></li>`).join("") : `<li class="ccs-empty">No matches for “${esc(inp.value)}”. Try “python”, “AI” or “events”.</li>`; };
+        list.innerHTML = hits.length ? hits.map(x => `<li><a href="${esc(x.h)}"${x.ext ? ' target="_blank" rel="noopener noreferrer"' : ""}><span>${esc(x.t)}</span><small>${esc(x.k)}</small></a></li>`).join("") : `<li class="ccs-empty">No matches for “${esc(inp.value)}”. Try “python”, “AI” or “events”.</li>`;
+        /* polite count for screen readers (the region exists before its text changes); only once the user has typed */
+        clearTimeout(o._say); if (v) o._say = setTimeout(() => { $("[role=status]", o).textContent = hits.length ? `${hits.length} result${hits.length === 1 ? "" : "s"}` : "No matches"; }, 400); };
       inp.addEventListener("input", render);
       $("form", o).addEventListener("submit", e => { e.preventDefault(); const f = $("a", list); if (f) f.click(); });
-      const close = () => { o.hidden = true; document.body.style.overflow = ""; };
+      /* modal: focus goes back to whatever opened it, and Tab cycles inside the dialog (aria-modal promises that) */
+      const close = () => { o.hidden = true; document.body.style.overflow = ""; const t = o._from; o._from = null; if (t && t.isConnected && t.focus) t.focus(); };
       $(".ccs-x", o).onclick = close; o.addEventListener("click", e => { if (e.target === o) close(); });
       document.addEventListener("keydown", e => { if (e.key === "Escape" && !o.hidden) close(); });
+      o.addEventListener("keydown", e => { if (e.key !== "Tab") return; const f = $$("input, button, a[href]", o).filter(x => x.offsetParent !== null); if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } });
       o._render = render;
     }
+    if (o.hidden !== false || !o._from) o._from = document.activeElement; $("[role=status]", o).textContent = "";
     o.hidden = false; document.body.style.overflow = "hidden"; const inp = $("input", o); inp.value = q; o._render(); setTimeout(() => inp.focus(), 30);
   }
   window.CC_UI.openSearch = openSearch;
