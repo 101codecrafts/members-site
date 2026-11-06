@@ -202,9 +202,9 @@ def bundle(name, parts):
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
 bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css', 'loops.css', 'loaders.css'])   # loops.css: section loop bands (round 9); loaders.css: round-9 loaders + state loops   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
-bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
-bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css'])
-bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css'])
+bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css', 'interact.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
     'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',
@@ -251,7 +251,7 @@ for f in (root / 'src').glob('*.html'):
     s = css_links(f.read_text()); name = f.name
     s = s.replace('</head>', THEME_LINK + '\n</head>', 1) if THEME_LINK not in s else s
     charts = 'data-charts' in s
-    s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts) + (LOOPS_TAG if 'data-loop=' in s else '')).replace('{{FOOTER}}', FOOTER)
+    s = s.replace('{{ICONS}}', icons).replace('{{SCRIPTS}}', scripts(charts) + (LOOPS_TAG if 'data-loop=' in s else '')).replace('{{FOOTER}}', FOOTER.replace(f'<a href="{name}"', f'<a href="{name}" aria-current="page"', 1))   # r12 interface: footer marks the current page
     if '{{TEAM}}' in s or '{{SOCIAL_LIST}}' in s or '{{WA_BUTTON}}' in s: s = s.replace('{{TEAM}}', team_html()).replace('{{SOCIAL_LIST}}', social_list_html()).replace('{{WA_BUTTON}}', wa_button())
     s = re.sub(r'\{\{HEAD(.*?)\}\}', lambda m: head(attrs(m.group(1)), name), s, flags=re.S)
     s = re.sub(r'\{\{SIDEBAR(.*?)\}\}', lambda m: sidebar(attrs(m.group(1))), s)
