@@ -2418,7 +2418,7 @@ html:not(.static) a.hc-stat:active{transform:translate(var(--press,2px),var(--pr
    = 0,2,0 > 0,1,1), so dark mode is unchanged. --ink stays the brand navy in both themes on purpose (it is used as a
    fill/border colour by components that have no dark mapping); new CSS uses --text / --fill-inverse / --border-strong. */
 html:not(.static){
-  --bg:#F3F5F8;                                   /* page background: one value (was #f7f8f8 app, #f3f6f7 landing, #F3F5F8 system) */
+  --bg:var(--surface-2);                          /* page background (#F3F5F8): one value (was #f7f8f8 app, #f3f6f7 landing, #F3F5F8 system) */
   --color-page:var(--bg); --color-page-landing:var(--bg); --surface-alt:var(--bg);
   --surface:var(--surface-1); --surface-sunk:var(--surface-3);
   --color-surface:var(--surface-2); --color-surface-2:var(--surface-3);
