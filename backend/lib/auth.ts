@@ -126,3 +126,16 @@ export async function requireCan(action: string, plan: Plan = 'free'): Promise<S
   if (why) throw new AppError('forbidden', why === 'plan' ? 'Upgrade your plan to use this' : why === 'consent' ? 'A parent or guardian must approve this first' : why === 'minor' ? 'Not available for under-18 accounts' : 'You do not have access to this', { reason: why, action });
   return s;
 }
+
+/**
+ * r13 guest-leaks: an ACTIVE account that may do `action` under the shared access contract.
+ * requireMember() alone is not enough for learner features: a guest account is also `active`
+ * (POST /auth/onboarding path=guest), so every requireMember() route used to serve guests too.
+ * Usage: `const s = await requireMemberCan('shell.full');` (learner/tutor/admin/root only).
+ */
+export async function requireMemberCan(action: string, plan: Plan = 'free'): Promise<Session> {
+  const s = await requireMember();
+  const why = decide(accessCtx(s, plan), action);
+  if (why) throw new AppError('forbidden', why === 'plan' ? 'Upgrade your plan to use this' : why === 'consent' ? 'A parent or guardian must approve this first' : why === 'minor' ? 'Not available for under-18 accounts' : 'Become a learner or tutor to use this', { reason: why, action });
+  return s;
+}

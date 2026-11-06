@@ -16,11 +16,13 @@ export const catalogRepo = {
     return unwrap(await q);
   },
   course: async (db: Db, slug: string) => {
-    const course = unwrapMaybe(await db.from('courses').select('*').eq('slug', slug).maybeSingle());
+    // r13: public columns only. select('*') returned review_note / reviewed_by / requested_price_ugx to anyone (and fails for anon once
+    // 20261107020000 revokes them); the tutor's own draft view uses repositories/course-builder COURSE_COLS.
+    const course = unwrapMaybe(await db.from('courses').select('id, slug, title, summary, description, level, levels, cover_url, tutor_id, status, is_featured, is_free, all_lessons_free, price_ugx, duration_minutes, tags, rating_avg, rating_count, enrollments_count, age_rating, published_at, created_at, updated_at').eq('slug', slug).maybeSingle());
     if (!course) return null;
     const lessons = unwrap(await db.from('lessons').select('id, position, title, duration_minutes, is_preview').eq('course_id', course.id).order('position'));
     const media = unwrap(await db.from('course_media').select('id, lesson_id, kind, provider_id, title, channel, author, duration_seconds, thumbnail_url, source_url, embeddable, position').eq('course_id', course.id).order('position'));
-    return { ...course, search_tsv: undefined, lessons, media };
+    return { ...course, lessons, media };
   },
   tools: async (db: Db, featuredOnly: boolean) => {
     let q = db.from('tools').select('id, slug, name, category, description, website_url, logo_url, pricing, student_offer, tags, is_featured, featured_rank').eq('status', 'published');

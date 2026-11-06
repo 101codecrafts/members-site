@@ -22,7 +22,8 @@ test('per-user cap is 5 per day; the route requires a member, checks the honeypo
   assert.deepEqual({ ...EVENT_SUBMIT_LIMIT }, { name: 'event_submit', max: 5, windowSeconds: 86400 });
   const src = readFileSync(new URL('../app/api/v1/events/external/route.ts', import.meta.url), 'utf8');
   const post = src.slice(src.indexOf('export const POST'));
-  const iMember = post.indexOf('requireMember()'), iBot = post.indexOf('isBot(b)'), iCap = post.indexOf('rateLimit(EVENT_SUBMIT_LIMIT, s.userId)'), iIns = post.indexOf('.insert({ ...base, ...ext })');
+  // r13: member AND a learner/tutor/admin role (guests refused)
+  const iMember = post.indexOf("requireMemberCan('community.post')"), iBot = post.indexOf('isBot(b)'), iCap = post.indexOf('rateLimit(EVENT_SUBMIT_LIMIT, s.userId)'), iIns = post.indexOf('.insert({ ...base, ...ext })');
   assert.ok(iMember > 0 && iMember < iBot && iBot < iCap && iCap < iIns, 'order: member → honeypot → per-user cap → insert');
   assert.match(post, /status: 202/);
 });

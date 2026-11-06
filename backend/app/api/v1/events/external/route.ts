@@ -1,7 +1,7 @@
 import { route, preflight, query, body, unwrap } from '@/lib/http';
 import { z } from 'zod';
 import { NextResponse } from 'next/server';
-import { optionalSession, requireMember } from '@/lib/auth';
+import { optionalSession, requireMemberCan } from '@/lib/auth';
 import { rateLimit } from '@/lib/ratelimit';
 import { AppError } from '@/lib/errors';
 import { eventSubmitSchema, isBot, toInsert, toExtended, contactOf, EVENT_SUBMIT_LIMIT, EVENT_SUBMIT_LIMIT_MSG } from '@/lib/event-submit';
@@ -21,7 +21,7 @@ export const GET = route(async ({ req }) => {
 }, { cacheSeconds: 300 });
 /** Member submission (r12 QA fix 3): sign-in required, honeypot, 5 per user per day + the per-IP write limit. */
 export const POST = route(async ({ req, log }) => {
-  const s = await requireMember();
+  const s = await requireMemberCan('community.post');
   const b = await body(req, eventSubmitSchema);
   if (isBot(b)) { log.info('event_submit_honeypot', {}); return NextResponse.json({ data: { status: 'pending_review' } }, { status: 202 }); }
   try { await rateLimit(EVENT_SUBMIT_LIMIT, s.userId); }

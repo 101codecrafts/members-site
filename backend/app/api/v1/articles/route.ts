@@ -1,6 +1,6 @@
 import { route, preflight, query, body, unwrap } from '@/lib/http';
 import { z } from 'zod';
-import { optionalSession, requireMember } from '@/lib/auth';
+import { optionalSession, requireMemberCan } from '@/lib/auth';
 import { pagination, slug } from '@/lib/validation';
 export const GET = route(async ({ req }) => {
   const { db } = await optionalSession();
@@ -20,7 +20,7 @@ const articleBody = z.object({ slug, title: z.string().min(5).max(160), summary:
   topic_id: z.string().uuid().optional(), tags: z.array(z.string().max(40)).max(10).default([]),
   level: z.enum(['primary', 'o_level', 'a_level', 'university', 'professional']).optional(), status: z.enum(['draft', 'pending_review']).default('draft') });
 export const POST = route(async ({ req }) => {
-  const s = await requireMember();
+  const s = await requireMemberCan('review.submit');
   return unwrap(await s.db.from('articles').insert({ author_id: s.userId, ...(await body(req, articleBody)) }).select().single());
 }, { rateLimit: { name: 'write', max: 30, windowSeconds: 60 } });
 export const OPTIONS = preflight;
