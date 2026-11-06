@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css + touch.css + era.css + cards.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css + touch.css + era.css + cards.css + interact.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -136,9 +136,11 @@ img{display:block}
 .bg-or{background:var(--or)} .bg-cy{background:var(--cy)} .bg-ink{background:var(--ink)}
 
 /* ---------- interactive layer (disabled with ?static=1) ---------- */
-.fx .hov{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.fx .hov{transition:transform .15s ease-out,box-shadow .15s ease-out}   /* r12 interface: 150 ms, hover-capable pointers only (no lift latched after a tap) */
+@media (hover:hover){
 .fx .hov:hover{transform:translate(-3px,-3px);box-shadow:var(--shadow-brutal)}
 .fx .hov.on-dark:hover{box-shadow:var(--shadow-brutal-accent)}
+}
 .fx-canvas{position:absolute!important;inset:0!important;pointer-events:none;z-index:0;width:100%;height:100%}
 
 /* ---------- accessibility ---------- */
@@ -2226,4 +2228,76 @@ html:not(.static) .ck-grid.ck-cv>li{content-visibility:auto;contain-intrinsic-si
 @media (forced-colors:active){
   html:not(.static) :is(.ck,.ck-skin){border-color:CanvasText!important;box-shadow:none}
   html:not(.static) :is(.ck,.ck-skin):has(.ck-link:focus-visible){outline:3px solid Highlight}
+}
+
+/* =====================================================================================
+   101 Codecrafts — interaction layer (r12 ui-interface, better-interface review: work/round12/ui-skills/interface/TARGETS.md)
+   Live site only: every rule is behind html:not(.static), so ?static=1 stays the exact mockup.
+   1. Pause/Play on the always-moving link strips (landing course marquee + headlines), pause on focus too   (TARGETS #1)
+   2. hover lift only on hover-capable pointers, 150 ms (no lift latched after a tap)                        (TARGETS #9)
+   3. hover feedback where there was none: tabs, segmented control, footer nav, FAQ, landing search/footer      (TARGETS #10)
+   4. public header nav (about, pricing): links + Sign in, current page marked                                 (TARGETS #8)
+   5. hit targets: pricing FAQ rows, landing footer links / "View all features"                              (TARGETS #14, #15)
+   6. pressed state on the landing CTAs and hero stat tiles (the shared press in touch.css could not reach them)
+   ===================================================================================== */
+
+/* ---------------------------------------------------------------- 1. moving strips */
+html:not(.static) :is(.e-marq .e-marquee,.marquee){position:relative}
+html:not(.static) :is(.e-marq .e-marquee,.marquee):is(.is-paused,:focus-within) :is(.e-track,.marquee-track){animation-play-state:paused}
+html:not(.static) .mq-toggle{position:absolute;inset-block:0;inset-inline-end:0;z-index:2;display:inline-flex;align-items:center;gap:6px;min-width:44px;min-height:44px;
+  padding:0 12px;border:0;border-inline-start:var(--bw,2px) solid var(--border-strong,#0B1236);background:var(--surface-1,#fff);color:var(--text,#0B1236);
+  font:700 var(--step--1)/1 var(--body);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background-color .15s ease-out,color .15s ease-out}
+html:not(.static) .mq-toggle span{font-size:.8em;letter-spacing:-.1em}
+html:not(.static) .marquee .mq-toggle{background:var(--ink,#10181F);color:#fff;border-inline-start-color:rgba(255,255,255,.35)}
+html:not(.static) .mq-toggle:focus-visible{outline:3px solid var(--focus,#00b9e6);outline-offset:-3px}
+@media (hover:hover){html:not(.static) .mq-toggle:hover{background:var(--accent,#fc8c0c);color:var(--on-accent,#0B1236)}}
+/* nothing moves under reduced motion (brutal.css), so the control would do nothing */
+@media (prefers-reduced-motion:reduce){html:not(.static) .mq-toggle{display:none}}
+html.lite .mq-toggle{display:none}
+
+/* ---------------------------------------------------------------- 2. hover lift: hover-capable pointers only */
+/* .fx .hov is gated at its source (brutal.css). .btn:hover lives in app.css: neutralise its lift on touch here */
+@media (hover:none){html:not(.static) .btn:hover{transform:none}}
+
+/* ---------------------------------------------------------------- 3. hover feedback */
+@media (hover:hover){
+  html:not(.static) .tabs [role=tab]:not([aria-selected=true]):hover,
+  html:not(.static) .pl-seg button:not([aria-pressed=true]):hover{background:var(--surface-2,#EEF1F8);box-shadow:inset 0 -3px 0 var(--accent,#fc8c0c)}
+  html:not(.static)[data-theme=dark] .tabs [role=tab]:not([aria-selected=true]):hover,
+  html:not(.static)[data-theme=dark] .pl-seg button:not([aria-pressed=true]):hover{background:rgba(255,255,255,.08)}
+  html:not(.static) .flow-foot nav a:hover,html:not(.static) .lfoot>a:hover,html:not(.static) .pl-faq summary:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+  html:not(.static) .hdr .hsearch:hover{background:rgba(255,255,255,.12)}
+  html:not(.static) .topbar .brandbar:hover b{text-decoration:underline;text-decoration-thickness:3px;text-decoration-color:var(--accent,#fc8c0c);text-underline-offset:5px}
+}
+html:not(.static) :is(.tabs [role=tab],.pl-seg button){transition:background-color .15s ease-out}
+html:not(.static) .flow-foot nav a[aria-current=page]{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:var(--accent,#fc8c0c)}
+
+/* ---------------------------------------------------------------- 4. public header nav (about.html, pricing.html) */
+.pub-nav,.pub-signin{display:none}
+html:not(.static) .pub-nav{display:flex;align-items:stretch;gap:4px;margin-inline-start:12px}
+html:not(.static) .pub-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font:700 var(--step--1)/1 var(--body);letter-spacing:.04em;text-transform:uppercase;
+  color:var(--text,#0B1236);text-decoration:none;box-shadow:inset 0 -3px 0 transparent;transition:box-shadow .15s ease-out,background-color .15s ease-out}
+html:not(.static) .pub-nav a[aria-current=page]{box-shadow:inset 0 -3px 0 var(--accent,#fc8c0c)}
+@media (hover:hover){html:not(.static) .pub-nav a:not([aria-current=page]):hover{background:var(--surface-2,#EEF1F8);box-shadow:inset 0 -3px 0 var(--border-strong,#0B1236)}
+  html:not(.static)[data-theme=dark] .pub-nav a:not([aria-current=page]):hover{background:rgba(255,255,255,.08);box-shadow:inset 0 -3px 0 #fff}}
+html.role-visitor:not(.static) .pub-signin{display:inline-flex}   /* signed-in members (role-pending → their role) never see it */
+html:not(.static) .topbar .pub-old{display:none}           /* the old lone "About" button: About is in the nav now */
+@media (max-width:899.98px){html:not(.static) .pub-nav{display:none}}   /* phones: Sign in + Join stay; the footer carries the site nav */
+@media (max-width:419.98px){html:not(.static) .topbar:has(.pub-signin){gap:8px;padding-inline:12px}
+  html:not(.static) .topbar:has(.pub-signin) .brandbar b{display:none}}
+
+/* ---------------------------------------------------------------- 5. hit targets */
+html:not(.static) .pl-faq details:not([open]){padding-bottom:0}
+html:not(.static) .pl-faq summary{margin:-12px -14px 0;padding:12px 14px;min-height:44px}
+html:not(.static) .lfoot>a{display:inline-flex;align-items:center;min-height:44px}
+html:not(.static) .page>a[href="about.html"]{min-height:44px}
+
+/* ---------------------------------------------------------------- 6. pressed state where the shared one could not reach
+   landing.css pins every .page>* to translate:none!important (reflow), which silently cancelled touch.css's press on the
+   landing CTAs; the hero stat tiles were never in the press list. Same 2px push, via transform. */
+html:not(.static) .page>:is(a[class*="btn"],a.hov,button.hov):active:not([aria-disabled=true]),
+html:not(.static) a.hc-stat:active{transform:translate(var(--press,2px),var(--press,2px))}
+@media (prefers-reduced-motion:reduce){
+  html:not(.static) .page>:is(a[class*="btn"],a.hov,button.hov):active:not([aria-disabled=true]),
+  html:not(.static) a.hc-stat:active{transform:none;opacity:.82}
 }

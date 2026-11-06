@@ -27,9 +27,11 @@ img{display:block}
 .bg-or{background:var(--or)} .bg-cy{background:var(--cy)} .bg-ink{background:var(--ink)}
 
 /* ---------- interactive layer (disabled with ?static=1) ---------- */
-.fx .hov{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.fx .hov{transition:transform .15s ease-out,box-shadow .15s ease-out}   /* r12 interface: 150 ms, hover-capable pointers only (no lift latched after a tap) */
+@media (hover:hover){
 .fx .hov:hover{transform:translate(-3px,-3px);box-shadow:var(--shadow-brutal)}
 .fx .hov.on-dark:hover{box-shadow:var(--shadow-brutal-accent)}
+}
 .fx-canvas{position:absolute!important;inset:0!important;pointer-events:none;z-index:0;width:100%;height:100%}
 
 /* ---------- accessibility ---------- */
