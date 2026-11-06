@@ -27,7 +27,7 @@
     let late = true; await Promise.race([A.ready.then(() => { late = false; }), new Promise(r => setTimeout(r, 2500))]);
     await draw(); if (late) A.ready.then(() => draw());
   };
-  const emptyBox = (title, body, href, label) => `<div class="card dash-empty" role="status" style="padding:24px"><b class="h3" style="display:block;margin-bottom:6px">${esc(title)}</b><p class="muted">${esc(body)}</p>${href ? `<p><a class="btn or sm" href="${esc(href)}">${esc(label)}</a></p>` : ""}</div>`;
+  const emptyBox = (title, body, href, label, tag = "b") => `<div class="card dash-empty" role="status" style="padding:24px"><${tag} class="h3" style="display:block;margin:0 0 6px">${esc(title)}</${tag}><p class="muted">${esc(body)}</p>${href ? `<p><a class="btn or sm" href="${esc(href)}">${esc(label)}</a></p>` : ""}</div>`;
   const offlineNote = what => API.lastStatus && (API.lastStatus() === 401 || API.lastStatus() === 403) ? `Sign in to see ${what}.` : `We couldn't load ${what} right now. Check your connection and try again.`;
 
   const R = {
@@ -246,7 +246,7 @@
     },
     async product() {
       const p = await API.fetchProduct(q.get("id") || "");
-      if (!p) { $("#p-head").innerHTML = emptyBox("We couldn't find that launch", offlineNote("this launch"), "launchpad.html", "Back to the Launchpad"); ["#p-shots", "#p-log", "#p-comments"].forEach(x => { const el = $(x); if (el) el.innerHTML = ""; }); const cf = $("#p-cform"); if (cf) cf.hidden = true; return; }
+      if (!p) { $("#p-head").innerHTML = emptyBox("We couldn't find that launch", offlineNote("this launch"), "launchpad.html", "Back to the Launchpad", "h1"); ["#p-shots", "#p-log", "#p-comments"].forEach(x => { const el = $(x); if (el) el.innerHTML = ""; }); const cf = $("#p-cform"); if (cf) cf.hidden = true; return; }
       document.title = p.name + " · Launchpad · 101 Codecrafts";
       $("#p-head").innerHTML = `<span class="plogo big" aria-hidden="true">${esc(p.name.slice(0, 2).toUpperCase())}</span><div class="grow"><div class="kicker">Launchpad</div><h1>${esc(p.name)}</h1><p>${esc(p.tagline)}</p><div class="row">${levelBadge(p.level)}<span class="stage s-${p.stage}">${p.stage}</span>${avatars(p.makers)}</div></div>
         <div class="row">${p.demo ? `<a class="btn or" href="${esc(p.demo)}" target="_blank" rel="noopener noreferrer">Live demo ↗</a>` : ""}${p.repo ? `<a class="btn ink" href="${esc(p.repo)}" target="_blank" rel="noopener noreferrer">${ico("gh")}Repo ↗</a>` : ""}<button class="vote big" type="button" aria-pressed="false">▲<b>${p.votes}</b></button><a class="btn" data-wa-share="Check out ${esc(p.name)} on 101 Launchpad:" href="#">${ico("wa")}Share</a></div>`;
@@ -335,7 +335,7 @@
     async course() {
       if (q.has("preview")) return;   // tutor/admin preview of a draft: js/course-preview.js renders it (round 11)
       const c = await API.fetchCourse(q.get("id") || "");
-      if (!c) { const m = $("#main"); if (m) m.innerHTML = emptyBox("We couldn't open this course", q.get("id") ? offlineNote("this course") : "Pick a course from the catalogue to start learning.", "courses.html", "Browse courses"); return; }
+      if (!c) { const m = $("#main"); if (m) m.innerHTML = emptyBox("We couldn't open this course", q.get("id") ? offlineNote("this course") : "Pick a course from the catalogue to start learning.", "courses.html", "Browse courses", "h1"); return; }
       /* r11 plans: lesson locks + rating gate (UI only; RLS on lessons is the authority). Never in ?static mockups. */
       const P = !STATIC && window.CC_PLANS;
       if (P) { await Promise.race([window.CCAccess && window.CCAccess.ready, new Promise(r => setTimeout(r, 2500))]); P.mergeSyllabus(c, await P.syllabus(c.id)); }

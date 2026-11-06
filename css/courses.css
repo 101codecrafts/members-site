@@ -75,7 +75,7 @@ html:not(.static) [data-page=courses] .xp-go{margin-top:0!important;padding-top:
 
 /* ---------------------------------------------------------------- Add external course by link: a form panel, not a card */
 html:not(.static) [data-page=courses] .add-ext{container:add/inline-size}
-html:not(.static) [data-page=courses] .xc-lead{margin:0 0 12px;max-width:70ch}
+html:not(.static) [data-page=courses] .xc-lead{margin:0 0 12px;max-width:var(--measure-max)}
 html:not(.static) [data-page=courses] .xc-url{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end;margin:0}
 html:not(.static) [data-page=courses] .xc-url .btn,html:not(.static) [data-page=courses] .xc-actions .btn{min-height:44px;padding:0 20px}
 html:not(.static) [data-page=courses] .xc-note{margin:6px 0 0;font-size:var(--step--1);color:var(--text-muted)}

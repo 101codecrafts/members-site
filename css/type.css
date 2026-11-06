@@ -37,7 +37,9 @@ html:not(.static) body{font-family:var(--font-sans);
   font-variant-ligatures:no-contextual;font-synthesis-weight:none;text-rendering:optimizeLegibility}
 html:not(.static) :where(h1,h2,h3,h4){text-wrap:balance;overflow-wrap:break-word}
 html:not(.static) :where(p,li,dd,blockquote){text-wrap:pretty;overflow-wrap:break-word}
-/* running text: body leading + readable measure (60-75ch; --measure-body = 68ch) */
+/* running text: body leading + readable measure, 60-75 characters a line. r12 type-layout: --measure-body is 50ch (~67 characters):
+   ch is the width of '0' (0.6 em in IBM Plex Sans) and running text averages 0.449 em a character, so 1ch = 1.34 characters;
+   the old 68ch gave ~91 characters a line (about, legal pages, pricing FAQ). Measured with work/round12/ui-skills/type-layout/tools/cls.py (longp). */
 html:not(.static) :where(main,.content,article,.prose,.below) :where(p,li,dd,blockquote){line-height:var(--leading-0)}
 html:not(.static) :where(main,.content,article,.prose,.below) :where(p){max-width:var(--measure-body)}
 html:not(.static) :where(.prose,article) :where(li,dd,blockquote){max-width:var(--measure-body)}

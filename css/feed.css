@@ -185,3 +185,4 @@ body[data-page=dashboard]>.ann-banner{max-width:1536px;margin:0 auto;box-shadow:
 .ev-hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
 /* r12 QA: the Organiser view button is hidden unless the visitor organises an event (.btn display must not override [hidden]) */
 html:not(.static) #org-btn[hidden]{display:none!important}
+html:not(.static) .fnote{max-width:var(--measure-max)}   /* r12 type-layout: 70ch = ~94 characters in Plex Sans; --measure-max = ~75 */

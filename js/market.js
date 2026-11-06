@@ -341,7 +341,7 @@
     const S = await A.fetchSellerOverview(), k = S.kpis;
     { const h = $("#seller-name"), me = S.me && D.marketSellers && D.marketSellers[S.me];   // never a seed shop name on a real account (BUS Q9)
       if (h) h.textContent = (S.store && S.store.name) || (me && me.name) || (S.empty ? "NAME YOUR SHOP" : "YOUR SHOP"); }
-    $("#overview").innerHTML = [["Revenue · 30 days", ugx(k.revenue30), "or"], ["Orders · 30 days", k.orders30, ""], ["Conversion", k.conversion, "cy"], ["Shop rating", S.empty ? "–" : "★ " + k.rating, "ink"]].map(([l, v, c]) => `<div class="kpi ck-skin ${c}"><small>${l}</small><b>${v}</b></div>`).join("");
+    $("#overview").innerHTML = [["Revenue · 30 days", ugx(k.revenue30), "or"], ["Orders · 30 days", k.orders30, ""], ["Conversion", k.conversion, "cy"], ["Shop rating", S.empty ? "–" : "★ " + k.rating, "ink"]].map(([l, v, c]) => `<div class="kpi ck-skin ${c}"><small>${l}</small><b>${v}</b></div>`).join(""); $("#overview").removeAttribute("aria-busy");   // r12 type-layout: same 4 tiles as the HTML placeholder (– values), so nothing below moves
     $("#sl-cat").innerHTML = D.marketCategories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join("");
     // images preview
     $("#sl-imgs").onchange = e => { const fs = [...e.target.files].slice(0, 8); $("#sl-prev").innerHTML = fs.map((f, i) => `<figure><img src="${URL.createObjectURL(f)}" alt="Upload ${i + 1}: ${esc(f.name)}" width="88" height="88">${i === 0 ? "<figcaption>Cover</figcaption>" : ""}</figure>`).join(""); };

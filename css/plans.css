@@ -104,3 +104,4 @@ html:not(.static) .pl-save,html:not(.static) .pl-sugg{font-size:12px}
 /* r12 type-layout: on phones the plan cards stack far past one screen; the inline loader holds a full screen (as news/courses do),
    so the compare heading below never jumps when the cards arrive */
 @media (max-width:767px){html:not(.static) #pl-grid>.ccl-in{min-height:100svh}}
+html:not(.static) .pl-hero p{max-width:var(--measure-body)}   /* r12 type-layout: 62ch of Plex Sans = ~83 characters; the token holds ~67 */
