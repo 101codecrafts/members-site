@@ -48,7 +48,13 @@
       const [c101, ext] = await Promise.all([API.fetchCourses101(), API.fetchExternalCourses()]);
       const P = D.providers, ACC = ["Free", "Free audit", "Free trial", "Free until", "Financial aid"];
       const st = { q: "", cat: "", prov: "", acc: "", level: "" };
-      const prov = k => P[k] || { name: "Other", short: "↗", bg: "#0B1236", fg: "#fff" };
+      /* Q12: the API sends display names ("edX", "freeCodeCamp"); the logos and the provider table use lowercase keys
+         (assets/img/courses/edx.svg). Normalise once so logos, badges and the provider filter all match; an unknown
+         provider keeps its own name and gets no logo request (the card's text placeholder shows instead of a 404). */
+      const PALIAS = { khanacademy: "khan", microsoftlearn: "microsoft", cisconetacad: "cisco", netacad: "cisco" }, RAWNAME = {};
+      const provKey = k => { const s = String(k || "").toLowerCase().replace(/[^a-z0-9]/g, ""); return PALIAS[s] || s; };
+      (Array.isArray(ext) ? ext : []).forEach(x => { if (!x) return; const k = provKey(x.provider); if (!P[k] && x.provider) RAWNAME[k] = String(x.provider); x.provider = k; });
+      const prov = k => P[k] || { name: RAWNAME[k] || "Other", short: "↗", bg: "#0B1236", fg: "#fff" };
       /* offer end dates are stored in EAT (+03:00); show them on the Kampala calendar so the day never shifts */
       const fmtDate = (iso, year) => { try { return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: year ? "numeric" : undefined, timeZone: "Africa/Kampala" }); } catch (e) { return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: year ? "numeric" : undefined }); } };
       const parts = iso => { const ms = Date.parse(iso) - Date.now(); return ms <= 0 ? null : { d: Math.floor(ms / 864e5), h: Math.floor(ms % 864e5 / 36e5), m: Math.floor(ms % 36e5 / 6e4) }; };
@@ -60,7 +66,7 @@
       const accLabel = x => x.access === "Free until" && x.free_until ? `Free until ${fmtDate(x.free_until)}` : x.access;
       const accCls = a => ({ "Free": "a-free", "Free audit": "a-audit", "Free trial": "a-trial", "Free until": "a-until", "Financial aid": "a-aid" }[a] || "a-free");
       const stars = r => `<span class="rating" aria-label="Rated ${r} out of 5">${ico("star")}<b>${r.toFixed(1)}</b></span>`;
-      const cover = (src, label, bg) => `<div class="cthumb ck-media" style="--pbg:${bg}"><span class="cph" aria-hidden="true">${esc(label)}</span><img class="heavy" src="${esc(src)}" alt="" width="640" height="360" loading="lazy" decoding="async" onerror="this.remove()">`;
+      const cover = (src, label, bg) => `<div class="cthumb ck-media" style="--pbg:${bg}"><span class="cph" aria-hidden="true">${esc(label)}</span>${src ? `<img class="heavy" src="${esc(src)}" alt="" width="640" height="360" loading="lazy" decoding="async" onerror="this.remove()">` : ""}`;
       const card101 = c => `<article class="ccard c101 ck ck--flush" data-id="${esc(c.id)}">
         ${cover(c.cover, c.category, "#0B1236")}<span class="price ${c.price ? "" : "free"}">${c.price ? ugx(c.price) : "Free"}</span></div>
         <div class="cbody"><h3 class="ck-title"><a class="ck-link" href="course.html?id=${encodeURIComponent(c.id)}">${esc(c.title)}</a></h3><div class="tutor">${ico("teacher")}<span>Tutor: <b>${esc(c.tutor)}</b></span></div>
@@ -71,7 +77,7 @@
          → provider → short description (3 lines) → level / certificate badges → optional end date → action pinned to the bottom */
       const extCard = x => { const p = prov(x.provider), until = x.free_until && Date.parse(x.free_until) > Date.now();
         return `<article class="ccard ext ck ck--flush" data-id="${esc(x.id)}">
-        ${cover(x.cover || `assets/img/courses/${x.provider}.svg`, p.name, p.bg)}<span class="acc ${accCls(x.access)}">${esc(accLabel(x))}</span></div>
+        ${cover(x.cover || (P[x.provider] ? `assets/img/courses/${x.provider}.svg` : ""), p.name, p.bg)}<span class="acc ${accCls(x.access)}">${esc(accLabel(x))}</span></div>
         <div class="cbody"><h3 class="ck-title"><a class="ck-link" href="${API.goHref(x.id)}" target="_blank" rel="noopener noreferrer">${esc(x.title)}<span class="sr-only"> on ${esc(p.name)} (opens in a new tab)</span></a></h3>
           <div class="prov"><span class="pmark" style="background:${p.bg};color:${p.fg}" aria-hidden="true">${esc(p.short)}</span><span>${esc(p.name)}</span></div>
           ${x.desc ? `<p class="ck-body">${esc(x.desc)}</p>` : ""}
@@ -129,7 +135,8 @@
         if (st.topic && !a.length && !b.length) { [a, b] = run(false); none = true; }
         if (tKind) paintChip(none);
         const why = st.topic && !none ? ` for ${esc(st.topic.label)}` : " for these filters";
-        const empty = (what, total) => `<div class="cempty"><p><b>No ${what}${why} yet.</b> ${total} ${what} in total.</p><button type="button" class="btn" data-reset>Show all ${what}</button></div>`;
+        const empty = (what, total) => total ? `<div class="cempty"><p><b>No ${what}${why}.</b> ${total} ${what} in total.</p><button type="button" class="btn" data-reset>Show all ${what}</button></div>`
+          : `<div class="cempty"><p><b>No ${what} yet.</b> Courses appear here once they're approved.</p></div>`;
         $("#g101").innerHTML = a.map(card101).join("") || empty("101 courses", c101.length);
         $("#gfree").innerHTML = b.map(extCard).join("") || empty("free courses", ext.length);
         /* "7 courses" when nothing filters the list, "Showing 3 of 7" when something does */
@@ -216,7 +223,7 @@
         if (!k) { $("#pg-status").textContent = "Paste your own key first."; key.focus(); return; }
         $("#pg-send").disabled = true; $("#pg-status").textContent = "Sending to " + API.BYOK[prov.value].label + "…";
         try { const r = await API.byokChat(prov.value, k, model.value.trim(), $("#pg-prompt").value.trim()); out.hidden = false; out.textContent = r.text; $("#pg-status").textContent = "Reply from " + r.model + (r.usage && r.usage.total_tokens ? " · " + r.usage.total_tokens + " tokens" : ""); }
-        catch (err) { out.hidden = false; out.textContent = "Error: " + (err.name === "AbortError" ? "timed out" : err.message) + "\n\nCheck the key, the model id (free models change), and your free-tier limits. Some providers may block browser requests (CORS)."; $("#pg-status").textContent = ""; }
+        catch (err) { out.hidden = false; out.textContent = (err.name === "AbortError" ? "No reply: the provider took too long." : "No reply: " + err.message) + "\n\nCheck the key, the model id (free models change), and your free-tier limits. Some providers may block browser requests (CORS)."; $("#pg-status").textContent = ""; }
         finally { $("#pg-send").disabled = false; } };
     },
     /* ---------------- News ---------------- */
@@ -266,9 +273,9 @@
           <div class="row" style="justify-content:space-between;margin-top:8px"><small><b>${c.slots - c.taken}</b> tester slots left · ends in ${countdown(c.ends)}</small><small>🎁 ${esc(c.reward)}</small></div>
           <button class="btn or sm" data-join style="margin-top:10px" ${c.slots === c.taken ? "disabled" : ""}>Join this test</button></article>`).join("") || emptyBox("No beta tests open right now", "When a member starts a beta test for their project it shows up here.", signedIn() ? "projects.html" : authUrl(), signedIn() ? "Start one from your projects" : "Sign in to take part");
         $("#bug-product").innerHTML = cs.map(c => `<option>${esc(c.product)}</option>`).join(""); };
-      $("#camp").addEventListener("click", async e => { if (!e.target.closest("[data-join]")) return; const id = e.target.closest("[data-id]").dataset.id; await API.joinCampaign(id); e.target.textContent = "Joined ✓"; e.target.disabled = true; });
-      $("#become").onclick = async () => { await API.becomeTester({}); toast("You're on the tester list. We'll match you to campaigns at your level."); };
-      $("#bug-form").onsubmit = async e => { e.preventDefault(); const fd = new FormData(e.target); const r = await API.submitBugReport(fd); $("#bug-msg").textContent = r ? "Report sent to the makers." : `Saved: "${fd.get("title")}" (${fd.get("severity")}). The reports backend is not connected yet.`; e.target.reset(); };
+      $("#camp").addEventListener("click", async e => { if (!e.target.closest("[data-join]")) return; const id = e.target.closest("[data-id]").dataset.id; const r = await API.joinCampaign(id); if (!r) { toast("Not joined: beta tests aren't connected yet. Nothing was saved."); return; } e.target.textContent = "Joined ✓"; e.target.disabled = true; });
+      $("#become").onclick = async () => { const r = await API.becomeTester({}); toast(r ? "You're on the tester list. Open tests show on this page." : "Not added: tester sign-up isn't connected yet. Nothing was saved."); };
+      $("#bug-form").onsubmit = async e => { e.preventDefault(); const fd = new FormData(e.target); const r = await API.submitBugReport(fd); $("#bug-msg").textContent = r ? "Report sent to the makers." : "Not sent: bug reports aren't connected yet, so nothing was saved. Keep a copy of your report and try again later."; e.target.reset(); };
       const tri = await API.fetchTriage();
       $("#triage").innerHTML = (Object.keys(tri).length ? "" : `<p class="muted">No bug reports to triage yet.</p>`) + Object.entries(tri).map(([col, items]) => `<div class="tcol" data-col="${esc(col)}"><h3>${esc(col)} <small>${items.length}</small></h3>${items.map(b => `<div class="bug sev-${b.sev}" draggable="true" data-id="${b.id}" tabindex="0"><b>${esc(b.t)}</b><small>${b.sev} · @${esc(b.who)}</small></div>`).join("")}</div>`).join("");
       let drag = null; $("#triage").addEventListener("dragstart", e => drag = e.target.closest(".bug")); $("#triage").addEventListener("dragover", e => e.preventDefault());

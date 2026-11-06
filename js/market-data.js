@@ -74,7 +74,7 @@ Object.assign(window.CC_DATA, {
   ],
   marketQA: [
     { q: "Does it come with a charger?", a: "Yes, an original 65W HP charger is included.", by: "Seller", votes: 14 },
-    { q: "Can I pay in instalments?", a: "Not yet. Pay with MoMo, Airtel Money or card; your money is held in escrow until you confirm delivery.", by: "101 Market", votes: 9 },
+    { q: "Can I pay in instalments?", a: "Not yet. Pay with MoMo, Airtel Money or card; our licensed payment provider holds your payment until you confirm delivery.", by: "101 Market", votes: 9 },
     { q: "Delivery to Gulu?", a: "Yes, by courier in 2–4 working days. Fee shows at checkout.", by: "Seller", votes: 4 }
   ],
   marketDelivery: {
@@ -100,7 +100,7 @@ Object.assign(window.CC_DATA, {
     byCategory: { labels: ["Software", "IoT kits", "Services"], values: [52, 31, 17] },
     queue: [
       { id: "ORD-24160", buyer: "Joel M.", item: "37-in-1 sensor kit", qty: 1, total: 125000, delivery: "boda", status: "New", due: "Today 6 PM EAT" },
-      { id: "ORD-24158", buyer: "St. Mary's SS", item: "SchoolDesk licence", qty: 1, total: 600000, delivery: "digital", status: "Paid · in escrow", due: "Send licence key" },
+      { id: "ORD-24158", buyer: "St. Mary's SS", item: "SchoolDesk licence", qty: 1, total: 600000, delivery: "digital", status: "Paid · payment held", due: "Send licence key" },
       { id: "ORD-24151", buyer: "Aisha N.", item: "WhatsApp order bot", qty: 1, total: 90000, delivery: "digital", status: "Delivered", due: "Awaiting buyer confirmation" },
       { id: "ORD-24149", buyer: "Peter W. (Gulu)", item: "37-in-1 sensor kit", qty: 3, total: 375000, delivery: "courier", status: "Shipped", due: "ETA Nov 4" }
     ],

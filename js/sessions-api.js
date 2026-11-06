@@ -50,7 +50,7 @@
     return fetch("/api/v1" + path, Object.assign({ credentials: "include", headers: { "Content-Type": "application/json", Accept: "application/json" } }, opts || {}))
       .then(function (r) {
         if (r.status === 404 || r.status === 501 || r.status === 405) throw { stub: true };
-        return r.json().then(function (j) { if (!r.ok) throw { stub: false, status: r.status, message: (j && (j.message || j.error)) || "Request failed" }; return j; });
+        return r.json().then(function (j) { if (!r.ok) throw { stub: false, status: r.status, message: (j && (j.message || j.error)) || (r.status >= 500 ? "101 can't answer right now. Try again in a minute." : "That didn't go through. Check the details and try again.") }; return j; });
       }, function () { throw { stub: true }; });
   }
   var STATIC = /[?&]static(=|&|$)/.test(location.search), DEMO_URL = /[?&]demo=1(&|$)/.test(location.search);
