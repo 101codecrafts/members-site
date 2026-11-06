@@ -4589,6 +4589,37 @@
         }
       }
     },
+    "/api/v1/health/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "r13 readiness probe: DB round trip, required settings present, job queue depth. 503 when down.  Anyone sees the status of each check; the details (missing setting names, queue counts) need the cron se",
+        "security": [
+          {
+            "cronSecret": []
+          }
+        ],
+        "x-auth": "cron",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/health": {
       "get": {
         "tags": [

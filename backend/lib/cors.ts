@@ -22,7 +22,8 @@ export function corsHeaders(origin: string | null): Record<string, string> {
     h['Access-Control-Allow-Origin'] = origin;
     h['Access-Control-Allow-Credentials'] = 'true';
     h['Access-Control-Allow-Methods'] = 'GET,POST,PATCH,PUT,DELETE,OPTIONS';
-    h['Access-Control-Allow-Headers'] = 'authorization,content-type,x-request-id,idempotency-key';
+    h['Access-Control-Allow-Headers'] = 'authorization,content-type,x-request-id,idempotency-key,x-cc-viewer';   // r13: x-cc-viewer (CDN cache split)
+    h['Access-Control-Expose-Headers'] = 'x-request-id,server-timing,retry-after';   // r13: lets the UI quote the request id in support messages
     h['Access-Control-Max-Age'] = '600';
   }
   return h;
