@@ -1145,6 +1145,119 @@
         }
       }
     },
+    "/api/v1/admin/events/{id}/approve": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Approve a pending member event: it goes live on /events. Optional note (≤300 chars) to the submitter. Audited; the submitter is notified. Scope 'approvals'.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/events/{id}/reject": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Reject a pending member event. Reason required (3–300 chars); it is sent to the submitter and written to the audit log. Scope 'approvals'.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/events/pending": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Events to review: member-submitted events still pending_review, oldest first. Admin / root_admin with scope 'approvals'. Paginated (limit ≤ 100).",
+        "security": [
+          {
+            "clerkSession": []
+          }
+        ],
+        "x-auth": "admin",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/admin/export": {
       "get": {
         "tags": [
