@@ -3,7 +3,7 @@
    a real visit gets the backend's answer or an honest empty state (no fake listings, sellers, orders or success).
    Cart, wishlist, placed orders and RFQs are kept in localStorage until the backend exists.
    Payments: MTN MoMo / Airtel Money / card all go through Flutterwave; the server prices every order and returns the checkout URL (SR-17).
-   Escrow: the buyer's money is held by 101 until "Confirm delivery" (or auto-release 72 h after delivered); disputes freeze it.
+   Buyer protection: the buyer's money is held by the licensed PSP (Flutterwave), never by 101, until "Confirm delivery" (or auto-release 72 h after delivered); disputes freeze it.
    Backend endpoints expected (TODO):
      GET  /market/products?q=&cat=&min=&max=&rating=&seller=&delivery=&condition=&sort=&page=
      GET  /market/products/:id          GET /market/search/suggest?q=

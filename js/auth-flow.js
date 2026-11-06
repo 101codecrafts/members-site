@@ -55,14 +55,23 @@
   async function api(method, path, body) {
     var r = await fetch("/api/v1" + path, { method: method, credentials: "include", headers: await headers(), body: body ? JSON.stringify(body) : undefined });
     var j = null; try { j = await r.json(); } catch (e) {}
-    if (!r.ok) { var err = new Error((j && j.error && j.error.message) || ("Request failed (" + r.status + ")")); err.status = r.status; err.details = j && j.error && j.error.details; throw err; }
+    if (!r.ok) { var err = new Error((j && j.error && j.error.message) || statusMsg(r.status)); err.status = r.status; err.details = j && j.error && j.error.details; throw err; }
     return j && j.data !== undefined ? j.data : j;
+  }
+  /* plain words for an HTTP failure with no server message (never "Request failed (500)") */
+  function statusMsg(st) {
+    if (st === 401) return "Your session ended. Sign in again.";
+    if (st === 403) return "This account can't do that.";
+    if (st === 429) return "Too many tries. Wait a minute, then try again.";
+    if (st >= 500) return "101 can't answer right now. Try again in a minute.";
+    return "That didn't go through. Check your details and try again.";
   }
   function clerkMsg(e, fallback) {
     var x = e && e.errors && e.errors[0];
-    if (!x) return (e && e.message) || fallback;
+    /* a fetch TypeError ("Failed to fetch", "Load failed") is browser jargon: show the caller's plain fallback instead */
+    if (!x) return (e && e.message && !(e instanceof TypeError) && !/failed to fetch|load failed|networkerror/i.test(e.message)) ? e.message : fallback;
     var code = x.code || "";
-    if (/disposable|blocked/i.test(code + " " + (x.longMessage || ""))) return "Temporary or disposable email addresses aren't allowed. Please use your own email.";
+    if (/disposable|blocked/i.test(code + " " + (x.longMessage || ""))) return "Temporary or disposable email addresses aren't allowed. Use your own email address.";
     if (code === "form_code_incorrect") return "That code isn't right. Check the latest email and try again.";
     if (code === "verification_expired") return "That code has expired. Send a new one.";
     if (code === "too_many_requests" || code === "rate_limit_exceeded") return "Too many tries. Wait a minute, then try again.";
@@ -187,7 +196,7 @@
     } catch (err) {
       busy(btn, false);
       if (sessionExists(err)) { var cc = await clerk(); return showAddAccount(cc, "This site keeps one account signed in at a time. Sign out of the current account first, then sign in with " + esc(email) + "."); }
-      setErr("email", clerkMsg(err, err.message || "Something went wrong.")); firstErrorFocus();
+      setErr("email", clerkMsg(err, "Couldn't send the code. Check your connection and try again.")); firstErrorFocus();
     }
   }
   async function startCode(c, email) {
@@ -202,7 +211,7 @@
       if (code !== "form_identifier_not_found") throw err;
       // NEW account: the same backend temp-mail guard as the Clerk webhook (skipped only if the API is unreachable; Clerk blocks disposable domains too)
       try { var v = await api("POST", "/auth/email-check", { email: email });
-        if (v && v.ok === false) throw { errors: [{ code: "email_guard", longMessage: v.reason === "disposable" ? "Temporary or disposable email addresses aren't allowed. Please use your own email." : v.reason === "subaddress" ? "Use your plain email address, without a +tag." : "This email address can't be used. Try another one." }] };
+        if (v && v.ok === false) throw { errors: [{ code: "email_guard", longMessage: v.reason === "disposable" ? "Temporary or disposable email addresses aren't allowed. Use your own email address." : v.reason === "subaddress" ? "Use your plain email address, without a +tag." : "This email address can't be used. Try another one." }] };
       } catch (x) { if (x && x.errors) throw x; if (x && x.status === 429) throw x; }
       var su;
       try { su = await c.client.signUp.create({ emailAddress: email }); }
@@ -249,7 +258,7 @@
       if (kind === "signup") {
         r = await S.flow.attemptEmailAddressVerification({ code: code });
         if (r.status === "missing_requirements" && (r.missingFields || []).indexOf("password") >= 0) r = await r.update({ password: randomPassword() });
-        if (r.status !== "complete") throw { errors: [{ longMessage: "We couldn't finish creating your account (" + esc(r.status) + "). Try again." }] };
+        if (r.status !== "complete") throw { errors: [{ longMessage: "Your account isn't finished yet. Send a new code and try again." }] };
       } else if (kind === "totp" || kind === "second") {
         r = await S.flow.attemptSecondFactor({ strategy: kind === "totp" ? "totp" : "email_code", code: code });
       } else {
@@ -261,7 +270,7 @@
           if (sf.some(function (x) { return x.strategy === "email_code"; })) { await r.prepareSecondFactor({ strategy: "email_code" }); S.mode = "second"; return showCode("For your security we sent one more code.", "second"); }
         }
       }
-      if (r.status !== "complete") throw { errors: [{ longMessage: "Sign-in isn't complete yet (" + esc(r.status) + ")." }] };
+      if (r.status !== "complete") throw { errors: [{ longMessage: "Sign-in didn't finish. Send a new code and try again." }] };
       await c.setActive({ session: r.createdSessionId });
       routeAfterAuth();
     } catch (err) { busy(btn, false); setErr("code", clerkMsg(err, "That didn't work. Try again.")); firstErrorFocus(); }
@@ -291,7 +300,7 @@
     try { s = await loadSession(); }
     catch (err) {
       if (err.status === 401) return showEmail("Your session ended. Sign in again.");
-      return view('<h1 class="af-h" id="af-h">We couldn\'t reach 101</h1><p class="af-err">' + esc(err.message) + '</p><div class="af-actions"><button class="af-btn" data-retry>Try again</button></div>'), $("[data-retry]").addEventListener("click", routeAfterAuth);
+      return view('<h1 class="af-h" id="af-h">We couldn\'t reach 101</h1><p class="af-err">' + esc(clerkMsg(err, "Check your connection, then try again.")) + '</p><div class="af-actions"><button class="af-btn" data-retry>Try again</button></div>'), $("[data-retry]").addEventListener("click", routeAfterAuth);
     }
     S.email = (s.user && s.user.email) || S.email;
     var staff = s.role === "admin" || s.role === "root_admin";
@@ -378,7 +387,7 @@
     title: function () { return "Join as a guest"; },
     why: function () { return "That's all we need: your verified email <b>" + esc(S.email) + "</b>. You can become a learner or tutor whenever you like."; },
     body: function () { return '<p class="af-note">Guests can browse, read the news, take free and external courses and buy on the marketplace. Selling, projects, tutor courses, 1:1 sessions and ratings need a learner or tutor account.</p>' + consentBox(); },
-    validate: function (v) { var e = {}; if (!v.terms) e.terms = "Please accept the Terms and Privacy Policy."; return e; },
+    validate: function (v) { var e = {}; if (!v.terms) e.terms = "Accept the Terms and Privacy Policy to continue."; return e; },
     next: function () { return "Finish"; }
   };
   function consentBox() {
@@ -529,7 +538,7 @@
       rows.push(["Heard about us", label(HEARD, d.heard_from)]);
       return '<dl class="af-review">' + rows.map(function (r) { return "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1] || "—") + "</dd>"; }).join("") + "</dl>" + consentBox() + '<p class="af-msg" id="m-form" role="alert"></p>';
     },
-    validate: function (v) { var e = {}; if (!v.terms) e.terms = "Please accept the Terms and Privacy Policy."; return e; },
+    validate: function (v) { var e = {}; if (!v.terms) e.terms = "Accept the Terms and Privacy Policy to continue."; return e; },
     next: function () { return S.path === "tutor" ? "Submit application" : "Create account"; }
   };
   STEP["learner.review"] = review; STEP["tutor.review"] = review;
@@ -561,7 +570,7 @@
     } catch (err) {
       busy(btn, false);
       var m = $("#m-form", root) || $("#m-terms", root);
-      if (m) m.textContent = err.message || "Couldn't finish. Try again.";
+      if (m) m.textContent = clerkMsg(err, "Couldn't save your answers. Check your connection and try again.");
       if (err.status === 401) showEmail("Your session ended. Sign in again; your answers are saved.");
     }
   }

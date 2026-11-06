@@ -236,7 +236,7 @@
     const tabs = $$("[role=tab]"); const selT = (t, focus) => { tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $("#" + x.getAttribute("aria-controls")).hidden = !on; }); if (focus) t.focus(); };
     tabs.forEach((t, i) => { t.onclick = () => selT(t); t.onkeydown = e => { if (e.key === "ArrowRight") selT(tabs[(i + 1) % tabs.length], 1); if (e.key === "ArrowLeft") selT(tabs[(i + tabs.length - 1) % tabs.length], 1); }; });
     $$("[data-tab]").forEach(a => a.onclick = e => { e.preventDefault(); selT($("#" + a.dataset.tab)); $(".pi-tabs-wrap").scrollIntoView(); });
-    $("#p-desc").innerHTML = `<div class="prose"><p>${esc(p.desc || `${p.title}. Sold by ${s.name}, ${SELLER_T[s.type].toLowerCase()} in ${s.location}.`)}</p><ul><li>Category: ${esc(catName(p.cat))} › ${esc(p.sub)}</li><li>Condition: ${esc(p.condition)}</li><li>Delivery: ${p.delivery.map(x => DELIV_T[x]).join(", ")}</li><li>Covered by 101 Buyer Protection (escrow + 7-day returns)</li></ul></div>`;
+    $("#p-desc").innerHTML = `<div class="prose"><p>${esc(p.desc || `${p.title}. Sold by ${s.name}, ${SELLER_T[s.type].toLowerCase()} in ${s.location}.`)}</p><ul><li>Category: ${esc(catName(p.cat))} › ${esc(p.sub)}</li><li>Condition: ${esc(p.condition)}</li><li>Delivery: ${p.delivery.map(x => DELIV_T[x]).join(", ")}</li><li>Covered by 101 Buyer Protection: payment held by our licensed payment provider until you confirm delivery, 7-day returns</li></ul></div>`;
     const specs = p.specs || { Category: catName(p.cat), Type: p.sub, Condition: p.condition, Seller: s.name };
     $("#p-specs").innerHTML = `<table class="t pi-specs"><caption class="sr-only">Specifications</caption><tbody>${Object.entries(specs).map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</tbody></table>`;
     const revs = await A.fetchReviews(p.id); const dist = [5, 4, 3, 2, 1].map(n => [n, revs.length ? Math.round(revs.filter(r => Math.round(r.stars) === n).length / revs.length * 100) : 0]);
@@ -304,10 +304,10 @@
   }
 
   /* ================= orders.html ================= */
-  const STEPS = ["Order placed", "Paid · held in escrow", "Shipped / dispatched", "Out for delivery", "Delivered", "Confirmed · seller paid"];
+  const STEPS = ["Order placed", "Paid · payment held", "Shipped / dispatched", "Out for delivery", "Delivered", "Confirmed · seller paid"];
   async function orders() {
     let all = await A.fetchOrders(), filter = "all";
-    if (q.get("placed")) $("#ord-placed").innerHTML = `<div class="card mk-ok"><b>Order ${esc(q.get("placed"))} placed.</b> Your payment is held in escrow. We'll notify you as it moves.</div>`;
+    if (q.get("placed")) $("#ord-placed").innerHTML = `<div class="card mk-ok"><b>Order ${esc(q.get("placed"))} placed.</b> Our licensed payment provider holds your payment until you confirm delivery. Track it below.</div>`;
     const draw = () => {
       const L = all.filter(o => filter === "all" || (filter === "done" ? o.status >= 5 : filter === "dispute" ? o.dispute : o.status < 5 && !o.dispute));
       $("#ord-list").innerHTML = L.map(o => {
@@ -317,10 +317,10 @@
           <span class="pill ${o.dispute ? "suspended" : o.status >= 5 ? "paid" : "pending"}">${o.dispute ? "Dispute · " + esc(o.dispute.state) : o.status >= 5 ? "Completed" : esc(STEPS[o.status])}</span><b class="ord-tot">${ugx(o.total)}</b></header>
           <div class="ord-items">${o.items.map(it => { const p = A.product(it.id) || { img: "", title: it.title || it.id }; return `<a href="product-item.html?id=${it.id}"><img src="${img(p.img)}" alt="" width="56" height="56"><span>${esc(p.title)} <small>× ${it.qty}</small></span></a>`; }).join("")}</div>
           <ol class="ord-track" aria-label="Tracking for ${esc(o.id)}">${steps.map((x, i) => `<li class="${x.done ? "done" : ""}${i === o.status && o.status < 5 ? " now" : ""}"><b>${esc(x.s)}</b><small>${x.t ? esc(x.t) + " EAT" : x.done ? "✓" : "—"}</small></li>`).join("")}</ol>
-          <div class="row ord-acts">${canConfirm ? `<button class="btn or" type="button" data-confirm="${o.id}">Confirm delivery</button><small class="muted">Releases ${ugx(o.total)} from escrow to the seller. Auto-release in 72 hours.</small>` : ""}
-          ${o.status >= 5 ? `<span class="muted">Seller paid from escrow.</span> <a class="btn sm" href="product-item.html?id=${o.items[0].id}#p-rev">Write a review</a>` : ""}
+          <div class="row ord-acts">${canConfirm ? `<button class="btn or" type="button" data-confirm="${o.id}">Confirm delivery</button><small class="muted">Releases ${ugx(o.total)} to the seller. Auto-release in 72 hours.</small>` : ""}
+          ${o.status >= 5 ? `<span class="muted">Seller paid.</span> <a class="btn sm" href="product-item.html?id=${o.items[0].id}#p-rev">Write a review</a>` : ""}
           ${canDispute ? `<button class="btn sm" type="button" data-dispute="${o.id}">Return / dispute</button>` : ""}
-          ${o.dispute ? `<span class="muted">Dispute opened ${esc(o.dispute.opened)}: ${esc(o.dispute.reason)} → ${esc(o.dispute.want)}. Escrow frozen.</span>` : ""}</div></article>`; }).join("") || `<p class="muted">No orders here yet.</p>`;
+          ${o.dispute ? `<span class="muted">Dispute opened ${esc(o.dispute.opened)}: ${esc(o.dispute.reason)} → ${esc(o.dispute.want)}. Payment frozen while we review it.</span>` : ""}</div></article>`; }).join("") || `<p class="muted">No orders here yet.</p>`;
       $$("[data-confirm]").forEach(b => b.onclick = async () => { if (!confirm("Confirm you received everything in good condition? This releases payment to the seller.")) return;
         const o = all.find(x => x.id === b.dataset.confirm); const t = [...o.track]; t[5] = new Date(Date.now() + 3 * 36e5).toISOString().slice(0, 16).replace("T", " ");
         if (refused(await A.confirmDelivery(o.id, t))) return; o.status = 5; o.track = t; draw(); });
@@ -351,12 +351,12 @@
     $("#sl-form").onsubmit = async e => { e.preventDefault(); const fd = new FormData(e.target); const body = Object.fromEntries([...fd].filter(([, v]) => !(v instanceof File))); body.delivery = fd.getAll("delivery");
       const r = await A.saveProduct(body); $("#sl-msg").textContent = `Submitted “${body.title}”. Status: ${r.status}.`; };
     // queue
-    const NEXT = { "New": "Accept", "Paid · in escrow": "Send licence", "Shipped": "Mark delivered" };
+    const NEXT = { "New": "Accept", "Paid · payment held": "Send licence", "Paid · in escrow": "Send licence", "Shipped": "Mark delivered" };
     $("#sl-queue tbody").innerHTML = S.queue.map((o, i) => `<tr><td><b>${esc(o.id)}</b></td><td>${esc(o.buyer)}</td><td>${esc(o.item)} × ${o.qty}</td><td>${ugx(o.total)}</td><td>${esc(o.delivery)}</td><td><span class="pill ${o.status === "Delivered" ? "paid" : "pending"}" data-st="${i}">${esc(o.status)}</span></td><td>${esc(o.due)}</td><td>${NEXT[o.status] ? `<button class="btn sm or" type="button" data-adv="${i}">${NEXT[o.status]}</button>` : `<span class="muted">Waiting</span>`}</td></tr>`).join("") || `<tr><td colspan="8" class="muted">No orders yet. New orders for your listings appear here.</td></tr>`;
-    const FLOW = { "New": "Shipped", "Paid · in escrow": "Delivered", "Shipped": "Delivered" };
+    const FLOW = { "New": "Shipped", "Paid · payment held": "Delivered", "Paid · in escrow": "Delivered", "Shipped": "Delivered" };
     $$("[data-adv]").forEach(b => b.onclick = async () => { const o = S.queue[b.dataset.adv]; if (refused(await A.updateOrderStatus(o.id, FLOW[o.status]))) return; o.status = FLOW[o.status]; $(`[data-st="${b.dataset.adv}"]`).textContent = o.status; b.replaceWith(Object.assign(document.createElement("span"), { className: "muted", textContent: "Updated" })); });
     // payouts
-    $("#sl-bal").innerHTML = `<div class="kpi ck-skin or"><small>Available to withdraw</small><b>${ugx(k.available)}</b></div><div class="kpi ck-skin"><small>Held in escrow</small><b>${ugx(k.escrow)}</b><i>Released when buyers confirm delivery</i></div>`;
+    $("#sl-bal").innerHTML = `<div class="kpi ck-skin or"><small>Available to withdraw</small><b>${ugx(k.available)}</b></div><div class="kpi ck-skin"><small>Held until delivery</small><b>${ugx(k.escrow)}</b><i>Held by our payment provider until buyers confirm delivery</i></div>`;
     const pl = () => $("#sl-plist").innerHTML = S.payouts.map(p => `<div class="li"><span class="date"><b>${p.date.slice(8)}</b>${new Date(p.date).toLocaleString("en", { month: "short" })}</span><div class="grow"><b>${ugx(p.amount)}</b><small>${esc(p.to)}</small></div><span class="pill ${p.status === "paid" ? "paid" : "pending"}">${p.status}</span></div>`).join("") || `<p class="muted">No payouts yet.</p>`; pl();
     $("#sl-payout").onsubmit = async e => { e.preventDefault(); const a = +e.target.amount.value; if (a > k.available) { $("#sl-pmsg").textContent = "That is more than your available balance."; return; }
       if (refused(await A.requestSellerPayout(a, e.target.to.value))) return; k.available -= a; S.payouts.unshift({ date: new Date().toISOString().slice(0, 10), amount: a, to: e.target.to.value, status: "pending" }); pl();
@@ -381,7 +381,7 @@
     let data = await A.fetchRFQ();
     const drawMine = () => $("#rfq-mine").innerHTML = data.mine.map(r => `<article class="card rfq" aria-labelledby="r-${r.id}"><header class="ord-h"><div><h3 id="r-${r.id}">${esc(r.title)}</h3><small>${esc(r.id)} · ${r.qty} ${esc(r.unit)} · deliver to ${esc(r.deliverTo)} · quotes by ${esc(r.deadline)}${r.target ? " · target " + ugx(r.target) + "/unit" : ""}</small></div><span class="pill ${r.status === "Accepted" ? "paid" : "pending"}">${esc(r.status)}</span></header>
       ${r.quotes.length ? `<div class="tbl-wrap"><table class="t rfq-q"><caption class="sr-only">Quotes for ${esc(r.title)}</caption><thead><tr><th scope="col">Seller</th><th scope="col">Price / unit</th><th scope="col">Total for ${r.qty}</th><th scope="col">MOQ</th><th scope="col">Lead time</th><th scope="col">Note</th><th scope="col"><span class="sr-only">Action</span></th></tr></thead><tbody>
-      ${r.quotes.slice().sort((a, b) => a.unit - b.unit).map(x => { const s = A.seller(x.seller); return `<tr${x.best ? ' class="best"' : ""}><td><b>${esc(s.name)}</b><small> ★ ${s.rating} · ${esc(SELLER_T[s.type])}</small></td><td><b>${ugx(x.unit)}</b>${r.target && x.unit <= r.target ? ' <span class="mk-tag st-member">≤ target</span>' : ""}</td><td>${ugx(x.unit * r.qty)}</td><td>${x.moq}</td><td>${esc(x.lead)}</td><td>${esc(x.note)}</td><td>${r.status === "Accepted" ? (r.accepted === x.seller ? "<b>Accepted ✓</b>" : "") : `<button class="btn sm or" type="button" data-acc="${r.id}|${x.seller}">Accept</button>`}</td></tr>`; }).join("")}</tbody></table></div>` : `<p class="muted">No quotes yet. Sellers are notified; most quotes arrive within 24 hours.</p>`}</article>`).join("");
+      ${r.quotes.slice().sort((a, b) => a.unit - b.unit).map(x => { const s = A.seller(x.seller); return `<tr${x.best ? ' class="best"' : ""}><td><b>${esc(s.name)}</b><small> ★ ${s.rating} · ${esc(SELLER_T[s.type])}</small></td><td><b>${ugx(x.unit)}</b>${r.target && x.unit <= r.target ? ' <span class="mk-tag st-member">≤ target</span>' : ""}</td><td>${ugx(x.unit * r.qty)}</td><td>${x.moq}</td><td>${esc(x.lead)}</td><td>${esc(x.note)}</td><td>${r.status === "Accepted" ? (r.accepted === x.seller ? "<b>Accepted ✓</b>" : "") : `<button class="btn sm or" type="button" data-acc="${r.id}|${x.seller}">Accept</button>`}</td></tr>`; }).join("")}</tbody></table></div>` : `<p class="muted">No quotes yet. Quotes from sellers appear here.</p>`}</article>`).join("");
     const bind = () => $$("[data-acc]").forEach(b => b.onclick = async () => { const [id, s] = b.dataset.acc.split("|"); if (refused(await A.acceptQuote(id, s))) return; const r = data.mine.find(x => x.id === id); r.status = "Accepted"; r.accepted = s; drawMine(); bind();
       $("#rfq-msg").textContent = ""; });
     drawMine(); bind();
