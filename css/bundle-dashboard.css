@@ -1786,6 +1786,12 @@ html:not(.static) .cc-toolbar.in-drawer select{background:transparent;color:inhe
    links and Sign in / Join. Guests get a limited sidebar (js/access.js hides what they can't open) plus an upgrade CTA. */
 html.role-visitor .shell{grid-template-columns:minmax(0,1fr)}
 html.role-visitor .shell .sbar,html.role-visitor .sb-scrim,html.role-visitor .topbar .tb-nav,html.role-visitor .topbar .tb-bell{display:none!important}
+/* r13 guest-leaks: nothing role-specific paints before the server has said who you are. While a signed-in user's role is
+   pending, the sidebar links stay invisible (their space is kept, so no shift) and pages closed to guests keep <main>
+   invisible; a visitor never sees the body of a gated page while the sign-in redirect is on its way. ?static=1 has no
+   role-* class, so the mockups are untouched. */
+html.role-pending .sbar .sb-nav{visibility:hidden}
+html.role-pending body[data-gate-member] main,html.role-visitor body[data-gate] main{visibility:hidden}
 .shell .sb-nav .sb-upgrade{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:10px;margin:4px 0 12px;padding:10px;background:#fc8c0c;color:#0B1236;border:2px solid #0B1236;box-shadow:3px 3px 0 #000;font-weight:700;text-decoration:none;height:auto}
 .shell .sb-nav .sb-upgrade svg{width:20px;height:20px;color:#0B1236}
 .shell .sb-nav .sb-upgrade:hover{background:#fc8c0c;color:#0B1236;transform:translate(-1px,-1px)}

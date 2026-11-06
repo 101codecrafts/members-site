@@ -85,10 +85,12 @@
     sb.addEventListener("touchend", e => { if (sx === null) return; const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; sx = null; if (dx < -60 && Math.abs(dx) > Math.abs(dy) * 1.5) closeDrawer(); }, { passive: true });
     // tapping a destination in the drawer closes it (Material: selecting a destination dismisses the modal drawer)
     sb.addEventListener("click", e => { const a = e.target.closest("a[href]"); if (a && !desk.matches && drawerOpen() && a.getAttribute("href") !== "#") closeDrawer(false); });
-    $$(".sb-nav a, .sb-foot a, [data-sb-toggle]", sb).forEach(a => {
+    const bindTips = () => $$(".sb-nav a, .sb-foot a, [data-sb-toggle]", sb).forEach(a => {
+      if (a.dataset.tip) return; a.dataset.tip = "1";
       a.addEventListener("mouseenter", () => showTip(a)); a.addEventListener("mouseleave", hideTip);
       a.addEventListener("focus", () => showTip(a)); a.addEventListener("blur", hideTip);
     });
+    bindTips(); document.addEventListener("cc:nav", bindTips);   // r13: js/access.js swaps in the guest navigation
     sb.addEventListener("scroll", () => hideTip(), { passive: true });
     document.addEventListener("keydown", e => {
       if (drawerOpen()) {

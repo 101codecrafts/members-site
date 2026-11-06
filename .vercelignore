@@ -5,3 +5,9 @@ compare/
 tokens/
 *.md
 !README.md
+# r13 guest-leaks: dev/QA pages and folders a visitor must never open on a public build
+docs/
+tests/
+mascot.html
+type.html
+js/mascot-demo.js

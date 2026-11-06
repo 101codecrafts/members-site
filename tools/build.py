@@ -111,6 +111,16 @@ def wa_foot():
     if not re.match(r'^https://chat\.whatsapp\.com/[A-Za-z0-9]{10,}$', WA_INVITE): return '<!-- WhatsApp community link hidden until WA_INVITE is set in tools/build.py -->'
     return f'<div class="sb-foot"><a class="sb-wa" href="{WA_INVITE}" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp community</span></a></div>'
 
+def nav_html(role, act=''):
+    """The sidebar <nav> sections for one role (same markup sidebar() writes)."""
+    secs, cur = [], None
+    for it in NAV[role]:
+        if isinstance(it, str):
+            cur = [it, []]; secs.append(cur); continue
+        n, i, h = it
+        cur[1].append(f'<a href="{h}"{" aria-current=page" if n == act else ""}><svg aria-hidden="true"><use href="#i-{i}"/></svg><span>{html.escape(n)}</span></a>')
+    return ''.join('<div class="sb-sec">' + (f'<h2 class="sb-h">{html.escape(t)}</h2>' if t else '') + ''.join(links) + '</div>' for t, links in secs)
+
 def sidebar(a):
     """App-shell sidebar (js/shell.js + css/shell.css): full width or a 72px icon rail at >=1024px, off-canvas drawer below."""
     role = a.get('role', 'learner'); act = html.unescape(a.get('active', ''))
@@ -121,12 +131,16 @@ def sidebar(a):
         n, i, h = it
         cur[1].append(f'<a href="{h}"{" aria-current=page" if n == act else ""}><svg aria-hidden="true"><use href="#i-{i}"/></svg><span>{html.escape(n)}</span></a>')
     nav = ''.join('<div class="sb-sec">' + (f'<h2 class="sb-h">{html.escape(t)}</h2>' if t else '') + ''.join(links) + '</div>' for t, links in secs)
+    # r13 guest-leaks: one sidebar per role. A guest on a page built with the learner/tutor/admin sidebar gets the guest
+    # navigation (js/access.js swaps it in from this inert template); it never sees the other role's links.
+    if role != 'guest': nav_tpl = '<template id="sb-nav-guest">' + nav_html('guest', act) + '</template>'
+    else: nav_tpl = ''
     return f'''<div class="sbar" id="sbar">
   <div class="sb-head">
     <a class="sb-logo" href="index.html"><img src="assets/img/logo-101-sidebar.webp" srcset="assets/img/logo-101-sidebar.webp 1x, assets/img/logo-101-sidebar@3x.webp 3x" alt="" width="57" height="32"><span class="sb-word"><b>101 Codecrafts</b><small>Build. Learn. Grow.</small></span><span class="sr-only">101 Codecrafts home</span></a>
     <button type="button" class="sb-toggle" data-sb-toggle aria-controls="sbar" aria-expanded="true" aria-label="Collapse sidebar"><svg aria-hidden="true"><use href="#i-panel"/></svg></button>
   </div>
-  <nav class="sb-nav" aria-label="Main">{nav}</nav>
+  <nav class="sb-nav" aria-label="Main" data-nav-role="{role}">{nav}</nav>{nav_tpl}
   {wa_foot()}
 </div>
 <div class="sb-scrim" data-sb-scrim hidden></div>'''
@@ -276,6 +290,13 @@ for f in (root / 'src').glob('*.html'):
     if 'js/ads.js' in s and 'class="promo-bar"' not in s:
         s, n = re.subn(r'(<body\b[^>]*>\s*<a class="skip"[^>]*>.*?</a>)', lambda m: m.group(1) + '\n' + PROMO_BAR, s, count=1, flags=re.S)
         if not n: s = re.sub(r'(<body\b[^>]*>)', lambda m: m.group(1) + '\n' + PROMO_BAR, s, count=1)
+    # r13 guest-leaks: pages the access policy gates carry <body data-gate="<action>">; css/shell.css keeps their <main>
+    # invisible while the role is unknown (html.role-pending) or signed out (html.role-visitor), so nothing role-specific
+    # paints before js/access.js has the server's answer and redirects. ?static=1 has no role-* class: unaffected.
+    _gate = POLICY['pages'].get(name[:-5]) if isinstance(POLICY['pages'].get(name[:-5]), str) else None
+    # data-gate-member: the page is closed to guests too, so it also stays hidden while a signed-in user's role is pending
+    _member = bool(_gate) and 'guest' not in POLICY['actions'].get(_gate, {}).get('roles', [])
+    if _gate and 'data-gate=' not in s: s = re.sub(r'<body\b', f'<body data-gate="{_gate}"' + (' data-gate-member' if _member else ''), s, count=1)
     if 'data-abs' in s: s = rootabs(s)
     (root / name).write_text(s)
 print('built', len(list((root / 'src').glob('*.html'))), 'pages')
