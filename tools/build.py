@@ -8,12 +8,14 @@ import sys; sys.path.insert(0, str(root / 'tools')); import seo   # r13 seo: can
 SITE = seo.SITE   # canonical base: env SITE_URL, else src/data/site.json (a .invalid placeholder until the domain is live)
 icons = (root / 'src/icons.svg').read_text()
 
-LIBS = [  # jsDelivr + SRI (sha384 computed from the exact files)
-    ("https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js", "sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc"),
-    ("https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js", "sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh"),
-    ("https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js", "sha384-xb96EMJeax+NLXMC88ZBa1xAeAW+kn+horHh/zFlbMLG2UPWhMJJSlv7fi57hS+Q"),
-    ("https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js", "sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu"),
-]
+LIBS = {  # jsDelivr + SRI (sha384 computed from the exact files). r13 seo: loaded on demand by js/motion.js (never as page <script> tags);
+          # build writes this map into js/motion.js between /*LIBS*/ and /*END*/. ScrollTrigger dropped (IntersectionObserver does its job).
+    "gsap": ("https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js", "sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc"),
+    "split": ("https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js", "sha384-xb96EMJeax+NLXMC88ZBa1xAeAW+kn+horHh/zFlbMLG2UPWhMJJSlv7fi57hS+Q"),
+    "lenis": ("https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js", "sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu"),
+}
+_mo = root / 'js/motion.js'
+_mo.write_text(re.sub(r'/\*LIBS\*/.*?/\*END\*/', lambda m: '/*LIBS*/' + json.dumps({k: list(v) for k, v in LIBS.items()}, separators=(',', ':')) + '/*END*/', _mo.read_text(), count=1, flags=re.S))
 CHART = ("https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js", "sha384-Sse/HDqcypGpyTDpvZOJNnG0TT3feGQUkF9H+mnRvic+LjR+K1NhTt8f51KIQ3v3")
 
 def attrs(s):
@@ -62,7 +64,7 @@ def head(a, page, body=''):
 <meta name="theme-color" content="#0B1236">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="preload" href="assets/fonts/archivo-black-cc.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 {EARLY}
@@ -70,7 +72,7 @@ def head(a, page, body=''):
 
 def scripts(charts=False):
     tags = ['<script src="js/data.js" defer></script>', '<script src="js/site-social.js" defer></script>', '<script src="js/site-stats.js" defer></script>', '<script src="js/api.js" defer></script>', '<script src="js/access.js" defer></script>', '<script src="js/auth.js" defer></script>', '<script src="js/share.js" defer></script>']
-    libs = LIBS + ([CHART] if charts else [])
+    libs = [CHART] if charts else []   # r13 seo: GSAP/SplitText/Lenis load on demand from js/motion.js
     tags += [f'<script src="{u}" integrity="{h}" crossorigin="anonymous" defer></script>' for u, h in libs]
     tags += ['<script src="js/shell.js" defer></script>', '<script src="js/ui.js" defer></script>', '<script src="js/account.js" defer></script>', '<script src="js/motion.js" defer></script>', '<script src="js/era.js" defer></script>', '<script src="js/ads.js" defer></script>', '<script src="js/bg.js" defer></script>', '<script src="js/ai.js" defer></script>', '<script src="js/loaders.min.js" defer></script>']   # loaders: round-9 route/inline/busy/empty loops   # ai.js: 101 AI floating assistant loader (round 7)
     return '\n'.join(tags)
