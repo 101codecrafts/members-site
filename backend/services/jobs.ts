@@ -7,6 +7,7 @@ import { sendExpoPush } from '@/lib/push';
 import { renderCertificatePdf } from '@/lib/certificate';
 import type { Logger } from '@/lib/logger';
 import { clerkClient } from '@clerk/nextjs/server';
+import { runDueJobs } from '@/services/job-queue';
 
 /** Scheduled work (Vercel Cron, Bearer CRON_SECRET). All service role. */
 
@@ -19,7 +20,9 @@ export async function dailyJobs(log: Logger) {
   const deletions = await processDeletionRequests(log);
   const certs = await renderPendingCertificates(log);
   const promo = await promoEndingReminders(log);
-  return { promo_reminder: promo, maintenance, plans_downgraded: plansDowngraded, emails, deletions, certificates: certs };
+  // r13: erasures above enqueue storage.purge_user jobs; drain them in the same run (short budget: maxDuration 60 s)
+  const queue = await runDueJobs(log, { budgetMs: 15_000 }).catch((err) => { log.warn('jobs_run_failed', { error: err instanceof Error ? err.message.slice(0, 200) : 'error' }); return null; });
+  return { promo_reminder: promo, maintenance, plans_downgraded: plansDowngraded, emails, deletions, certificates: certs, jobs: queue };
 }
 
 /** Reminders for events starting in the next 36 h (once per registration). */

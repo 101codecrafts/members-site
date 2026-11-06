@@ -1,0 +1,22 @@
+# r13 (optional, OFF until the founder sets it up): hourly tick for the job queue worker.
+# Vercel Hobby cron runs once a day (https://vercel.com/docs/cron-jobs/usage-and-pricing); this calls the same
+# CRON_SECRET-protected endpoint every hour from GitHub Actions (free on public repos).
+# Turn on: repo Settings → Variables: WORKER_TICK_URL = https://<api host>/api/v1/cron/jobs ; Secrets: CRON_SECRET.
+# Scheduled workflows only run from the default branch.
+name: worker-tick
+on:
+  schedule: [{ cron: '17 * * * *' }]
+  workflow_dispatch: {}
+permissions: {}
+jobs:
+  tick:
+    if: ${{ vars.WORKER_TICK_URL != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: drain job queue
+        env: { URL: '${{ vars.WORKER_TICK_URL }}', CRON_SECRET: '${{ secrets.CRON_SECRET }}' }
+        run: |
+          code=$(curl -s -o /tmp/out.json -w '%{http_code}' -m 90 -H "Authorization: Bearer $CRON_SECRET" "$URL")
+          echo "status $code"; jq -c '.data // .error' /tmp/out.json || true
+          test "$code" = 200

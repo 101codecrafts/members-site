@@ -3851,6 +3851,37 @@
         }
       }
     },
+    "/api/v1/cron/jobs": {
+      "get": {
+        "tags": [
+          "cron"
+        ],
+        "summary": "r13: drains the Postgres job queue (app.jobs). Vercel cron once a day on Hobby; an external tick (GitHub Actions  .github/workflows/worker-tick.yml, Supabase Cron + pg_net) may call it more often with",
+        "security": [
+          {
+            "cronSecret": []
+          }
+        ],
+        "x-auth": "cron",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
     "/api/v1/cron/link-check": {
       "get": {
         "tags": [
@@ -4570,6 +4601,37 @@
         "summary": "Guardian consent (Uganda DPPA 2019 s.8). Round 11 integrate (audit P1-11):  - GET (the link in the guardian's email) changes NOTHING. Mail scanners and link previews fetch links on their own,    so it",
         "security": [],
         "x-auth": "public",
+        "responses": {
+          "200": {
+            "description": "OK — `{ data }` envelope"
+          },
+          "400": {
+            "description": "`{ error: { code, message, request_id } }`"
+          },
+          "401": {
+            "description": "Sign in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "r13 readiness probe: DB round trip, required settings present, job queue depth. 503 when down.  Anyone sees the status of each check; the details (missing setting names, queue counts) need the cron se",
+        "security": [
+          {
+            "cronSecret": []
+          }
+        ],
+        "x-auth": "cron",
         "responses": {
           "200": {
             "description": "OK — `{ data }` envelope"

@@ -7,6 +7,7 @@ import { createLogger, type Logger } from '@/lib/logger';
 import { corsHeaders } from '@/lib/cors';
 import { rateLimit, type LimitRule } from '@/lib/ratelimit';
 import { captureException } from '@/lib/monitoring';
+import { cachePolicy, etagMatches, hasSessionCredentials, ipHash, mergeVary, pickRateLimit, sanitizeRequestId, weakEtag } from '@/lib/request-context';
 
 export interface Ctx<P = Record<string, string>> {
   req: NextRequest;
@@ -18,7 +19,12 @@ export interface Ctx<P = Record<string, string>> {
 
 type Handler<P> = (ctx: Ctx<P>) => Promise<Response | unknown>;
 
-interface Options { rateLimit?: LimitRule; cacheSeconds?: number }
+/**
+ * rateLimit: a specific rule, or `false` to opt out. Omitted → mutating methods get the default per-IP write guard
+ * (lib/request-context DEFAULT_WRITE_LIMIT); webhook and cron paths are exempt.
+ * cacheSeconds: a public GET whose visitor answer may sit in the Vercel CDN for N s (signed-in callers get private).
+ */
+interface Options { rateLimit?: LimitRule | false; cacheSeconds?: number }
 
 export function clientIp(req: NextRequest): string {
   return req.headers.get('x-real-ip') ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '0.0.0.0';
@@ -31,33 +37,53 @@ export function clientIp(req: NextRequest): string {
  */
 export function route<P = Record<string, string>>(handler: Handler<P>, opts: Options = {}) {
   return async (req: NextRequest, context: { params: Promise<P> }): Promise<Response> => {
-    const requestId = req.headers.get('x-request-id') ?? randomUUID();
+    const requestId = sanitizeRequestId(req.headers.get('x-request-id')) ?? randomUUID();
     const ip = clientIp(req);
-    const log = createLogger({ request_id: requestId, method: req.method, path: req.nextUrl.pathname });
+    const path = req.nextUrl.pathname;
+    const log = createLogger({
+      request_id: requestId, method: req.method, path,
+      ip_hash: ipHash(ip, process.env.HASH_SALT ?? ''), vercel_id: req.headers.get('x-vercel-id') ?? undefined,
+      release: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? undefined,
+    });
     const started = Date.now();
     const cors = corsHeaders(req.headers.get('origin'));
     try {
-      if (opts.rateLimit) await rateLimit(opts.rateLimit, ip);
+      const limit = pickRateLimit(req.method, path, opts.rateLimit);
+      if (limit) await rateLimit(limit, ip);
       const params = (context?.params ? await context.params : {}) as P;
       const result = await handler({ req, params, log, requestId, ip });
-      const res = result instanceof Response ? result : NextResponse.json({ data: result ?? null });
+      const policy = cachePolicy({ method: req.method, status: result instanceof Response ? result.status : 200,
+        cacheSeconds: opts.cacheSeconds, credentialed: hasSessionCredentials(req.headers) });
+      let res: Response;
+      if (result instanceof Response) {
+        res = result;
+      } else {
+        const json = JSON.stringify({ data: result ?? null });
+        const etag = policy.etag ? weakEtag(json) : null;
+        if (etag && etagMatches(req.headers.get('if-none-match'), etag)) {
+          res = new NextResponse(null, { status: 304, headers: { etag } });
+        } else {
+          res = new NextResponse(json, { status: 200, headers: { 'content-type': 'application/json', ...(etag ? { etag } : {}) } });
+        }
+      }
       res.headers.set('x-request-id', requestId);
       for (const [k, v] of Object.entries(cors)) res.headers.set(k, v);
-      if (opts.cacheSeconds && req.method === 'GET' && !res.headers.has('cache-control')) {
-        res.headers.set('cache-control', `public, s-maxage=${opts.cacheSeconds}, stale-while-revalidate=${opts.cacheSeconds * 4}`);
-      } else if (!res.headers.has('cache-control')) {
-        res.headers.set('cache-control', 'no-store');
-      }
-      log.info('request', { status: res.status, ms: Date.now() - started });
+      if (!res.headers.has('cache-control')) res.headers.set('cache-control', policy.cacheControl);
+      if (policy.vary.length) res.headers.set('vary', mergeVary(res.headers.get('vary'), policy.vary));
+      const ms = Date.now() - started;
+      res.headers.set('server-timing', `app;dur=${ms}`);
+      log.info('request', { status: res.status, ms });
       return res;
     } catch (e) {
       const err = toAppError(e);
       const level = err.status >= 500 ? 'error' : 'warn';
-      log[level]('request_failed', { status: err.status, code: err.code, ms: Date.now() - started, cause: e instanceof Error && !(e instanceof AppError) ? e.message : undefined });
-      if (err.status >= 500) await captureException(e, { request_id: requestId, path: req.nextUrl.pathname });
+      const ms = Date.now() - started;
+      log[level]('request_failed', { status: err.status, code: err.code, ms, cause: e instanceof Error && !(e instanceof AppError) ? e.message : undefined });
+      if (err.status >= 500) await captureException(e, { request_id: requestId, path });
       return NextResponse.json(
         { error: { code: err.code, message: err.message, details: err.status < 500 ? err.details : undefined, request_id: requestId } },
-        { status: err.status, headers: { ...cors, 'x-request-id': requestId, 'cache-control': 'no-store' } },
+        { status: err.status, headers: { ...cors, 'x-request-id': requestId, 'cache-control': 'no-store', 'server-timing': `app;dur=${ms}`,
+          ...(err.code === 'rate_limited' ? { 'retry-after': '60' } : {}) } },
       );
     }
   };

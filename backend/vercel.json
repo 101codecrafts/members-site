@@ -32,6 +32,10 @@
     {
       "path": "/api/v1/cron/community",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/v1/cron/jobs",
+      "schedule": "45 2 * * *"
     }
   ]
 }
