@@ -7,12 +7,12 @@ Public pages are listed below. Courses, practice, the library, AI tools and the 
 ## Main pages
 
 - [101 Codecrafts](https://site-url.invalid/): Your IT journey starts here: learning paths, free courses, skill-building workshops, hackathons, mentorship and certification support, in Kampala and online.
-- [About 101 Codecrafts](https://site-url.invalid/about.html): 101 Codecrafts is a tech learning and collaboration community in Kampala, Uganda: coding, AI, data, cybersecurity and cloud, projects, hackathons, mentorship and careers, from Primary to professional.
-- [Community](https://site-url.invalid/community.html): The 101 Codecrafts community: study groups, events and meetups, hackathons, member projects and the Launchpad. Free to join.
-- [Daily Tech News](https://site-url.invalid/news.html): Today in tech: Africa & Uganda, AI, dev and startups — short AI summaries with links to the original sources, curated daily for the 101 community.
-- [Events & Meetups](https://site-url.invalid/events.html): Tech events in Kampala, Uganda, Africa and online: hackathons, GDG DevFest, Microsoft, AWS, Hugging Face and 101 Codecrafts meetups. Times in East Africa Time.
-- [Opportunities](https://site-url.invalid/opportunities.html): Scholarships, internships, jobs, hackathons, grants, fellowships, competitions and bootcamps for students and young techies in Uganda and Africa.
-- [Plans and pricing](https://site-url.invalid/pricing.html): Learner and tutor plans on 101 Codecrafts: Free, Standard, Plus and Pro, in Uganda shillings. Pay with MTN Mobile Money, Airtel Money or card. External courses are always free.
+- [About 101 Codecrafts](https://site-url.invalid/about.html): 101 Codecrafts is a tech learning community in Kampala, Uganda: coding, AI, data, cybersecurity, cloud, projects, hackathons and mentorship for every level.
+- [Community: study groups, meetups and hackathons](https://site-url.invalid/community.html): The 101 Codecrafts community: study groups, events and meetups, hackathons, member projects and the Launchpad. Free to join.
+- [Daily Tech News for Uganda and Africa](https://site-url.invalid/news.html): Today in tech: Africa & Uganda, AI, dev and startups — short AI summaries with links to the original sources, curated daily for the 101 community.
+- [Tech Events & Meetups in Kampala and online](https://site-url.invalid/events.html): Tech events in Kampala, Uganda, Africa and online: hackathons, GDG DevFest, Microsoft, AWS, Hugging Face and 101 Codecrafts meetups. Times in East Africa Time.
+- [Scholarships, internships and tech jobs](https://site-url.invalid/opportunities.html): Scholarships, internships, jobs, hackathons, grants, fellowships, competitions and bootcamps for students and young techies in Uganda and Africa.
+- [Plans and pricing in UGX](https://site-url.invalid/pricing.html): Learner and tutor plans: Free, Standard, Plus and Pro, priced in Uganda shillings. Pay with MTN Mobile Money, Airtel Money or card. External courses stay free.
 
 ## Optional
 
