@@ -23,8 +23,11 @@ const consent = z.object({
   version: z.literal(CONSENT_VERSION),
 }).strict();
 
+/** r13 flows (L31/LG4): guests give a date of birth too (DPPA s.8 + Reg 11 age system). Under 18 is refused on the
+ *  guest path by the server: the browser offers the learner path with a parent or guardian instead. */
 export const guestBody = z.object({
   path: z.literal('guest'),
+  dob,
   consent,
 }).strict();
 
@@ -84,4 +87,16 @@ export const MINOR_DRAFT_KEYS = new Set(['name', 'dob', 'guardian_name', 'guardi
 export function stripForMinor(d: OnboardingDraft): OnboardingDraft {
   const data = Object.fromEntries(Object.entries(d.data ?? {}).filter(([k]) => MINOR_DRAFT_KEYS.has(k)));
   return { ...d, data };
+}
+
+/** r13 flows: a tutor's verification as one word for the dashboard (a verified profile wins; else the latest
+ *  application). null = not a tutor and never applied. Pure so tests import it. */
+export type TutorStatus = { status: 'none' | 'pending' | 'verified' | 'rejected'; note: string | null; applied_at: string | null };
+export function tutorStatus(dbRoles: string[], profile: { verification_status?: string } | null,
+  app: { status?: string; review_note?: string | null; created_at?: string } | null): TutorStatus | null {
+  if (!dbRoles.includes('tutor') && !app) return null;
+  if (profile?.verification_status === 'verified') return { status: 'verified', note: null, applied_at: app?.created_at ?? null };
+  const a = app?.status;
+  const status = a === 'approved' ? 'verified' : a === 'rejected' ? 'rejected' : a === 'pending' ? 'pending' : dbRoles.includes('tutor') ? 'pending' : 'none';
+  return { status, note: status === 'rejected' ? (app?.review_note ?? null) : null, applied_at: app?.created_at ?? null };
 }
