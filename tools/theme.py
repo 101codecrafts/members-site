@@ -21,7 +21,9 @@ AUTO = {'--bg', '--line', '--mut', '--blue', '--color-page', '--color-page-landi
         '--color-muted', '--color-link', '--color-orange-text', '--color-orange-text-large', '--color-cyan-text', '--surface', '--surface-alt',
         '--surface-sunk', '--surface-inv', '--ink-muted', '--accent-ink', '--accent-2-ink', '--link', '--hairline', '--border-c', '--border',
         '--shadow', '--shadow-brutal', '--shadow-brutal-sm', '--border-brutal', '--border-thin', '--text', '--text-muted', '--surface-1',
-        '--surface-2', '--surface-3', '--border-subtle', '--border-strong', '--fill-inverse', '--shadow-ink', '--accent-text'}
+        '--surface-2', '--surface-3', '--border-subtle', '--border-strong', '--fill-inverse', '--shadow-ink', '--accent-text',
+        '--focus', '--border-control', '--danger-text', '--danger-solid', '--danger-border', '--danger-subtle',
+        '--success-text', '--success-solid', '--success-border', '--success-subtle'}   # r12 ui-colors: status + control roles flip in css/theme.css
 SHELL = re.compile(r'^--sh-')
 FLIP_TEXT = {'--nv'}   # landing's navy: css/theme.css flips it to var(--text); only its fill/border/shadow uses are mapped here   # the app shell is navy in both themes: its own tokens stay
 

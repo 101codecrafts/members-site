@@ -11,11 +11,11 @@
   --safe-t:env(safe-area-inset-top,0px); --safe-r:env(safe-area-inset-right,0px);
   --safe-b:env(safe-area-inset-bottom,0px); --safe-l:env(safe-area-inset-left,0px);
   --press:2px;                                   /* the one press distance */
-  --field-err:#B42318;                           /* error text on white / page: 6.1:1 */
+  --field-err:var(--danger-text);                /* error text: the danger role (css/theme.css), 6.2:1 on the light page, 7.0:1+ on dark surfaces */
   --grid-line:rgba(11,18,54,.055);               /* hero grid field */
   --stripe:linear-gradient(90deg,var(--brand-orange,#fc8c0c) 0 34%,var(--brand-cyan,#05e6f2) 34% 67%,#2B3A8C 67% 100%);
 }
-:root[data-theme=dark]{--field-err:#FF9F94; --grid-line:rgba(255,255,255,.045)}
+:root[data-theme=dark]{--grid-line:rgba(255,255,255,.045)}
 
 /* ---------------------------------------------------------------- 1. touch-action */
 a,button,input,select,textarea,label,summary,[role=button],[role=tab],[role=menuitem],.btn,.opt{touch-action:manipulation}

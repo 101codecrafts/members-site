@@ -7,7 +7,7 @@
   function enabled() { return A.enabled(); }
   var CSS = ".aiv-w{position:relative;display:inline-flex}.aiv-w[hidden],.aiv-b[hidden]{display:none}.aiv-b{position:relative;width:44px;height:44px;min-width:44px;display:inline-grid;place-items:center;margin:0;padding:0;cursor:pointer;background:#fff;color:#0B1236;border:2px solid #0B1236;border-radius:0;box-shadow:3px 3px 0 #0B1236;-webkit-tap-highlight-color:transparent;transition:transform .12s,box-shadow .12s}" +
     ".aiv-b svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:square;stroke-linejoin:miter}.aiv-b:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #0B1236}.aiv-b:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #0B1236}" +
-    ".aiv-b:focus-visible{outline:3px solid #00b9e6;outline-offset:2px}.aiv-b[aria-pressed=true]{background:#05e6f2;color:#0B1236}" +
+    ".aiv-b:focus-visible{outline:3px solid var(--focus,#00758A);outline-offset:2px}.aiv-b[aria-pressed=true]{background:#05e6f2;color:#0B1236}" +
     "html[data-theme=dark] .aiv-b{background:#0B1236;color:#F3F5FA;border-color:#E8ECF5;box-shadow:3px 3px 0 #05e6f2}html[data-theme=dark] .aiv-b[aria-pressed=true]{background:#05e6f2;color:#0B1236}" +
     ".aiv-b.aiv-h,html[data-theme=dark] .aiv-b.aiv-h{background:none;color:#fff;border-color:transparent;box-shadow:none;transform:none}.aiv-b.aiv-h:hover{border-color:#05e6f2}.aiv-b.aiv-h[aria-pressed=true]{color:#05e6f2;border-color:#05e6f2}" +
     ".aiv-b.aiv-on,html[data-theme=dark] .aiv-b.aiv-on{background:#fc8c0c;color:#0B1236}.aiv-on::after{content:\"\";position:absolute;inset:-7px;border:2px solid #fc8c0c;pointer-events:none;animation:aivp 1.2s ease-out infinite}" +

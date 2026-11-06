@@ -31,7 +31,7 @@
     ".cm-scroller": { fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace", lineHeight: "1.55" },
     ".cm-gutters": { background: "#f1f4f6", color: "#3e5d74", borderRight: "2px solid #0B1236" },
     ".cm-activeLine": { background: "rgba(5,230,242,.08)" }, ".cm-activeLineGutter": { background: "rgba(252,140,12,.18)", color: "#0B1236" },
-    "&.cm-focused": { outline: "3px solid #00b9e6", outlineOffset: "-3px" }, ".cm-cursor": { borderLeftColor: "#0B1236", borderLeftWidth: "2px" }
+    "&.cm-focused": { outline: "3px solid var(--focus,#00758A)", outlineOffset: "-3px" }, ".cm-cursor": { borderLeftColor: "#0B1236", borderLeftWidth: "2px" }
   });
 
   /* create(host, { value, lang, label, onChange }) -> { get, set, setLang, focus, kind } */

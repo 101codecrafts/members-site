@@ -28,7 +28,6 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .card{background:var(--surface-1);border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .card.dark{background:var(--fill-inverse)}
 :where([data-theme=dark]) .kpi{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
-:where([data-theme=dark]) .kpi i{color:#b1f1d1}
 :where([data-theme=dark]) .kpi.or{color:var(--on-accent)}
 :where([data-theme=dark]) .kpi.cy{color:var(--on-accent)}
 :where([data-theme=dark]) .kpi.ink{background:var(--fill-inverse)}
@@ -37,10 +36,8 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .btn.or{color:var(--on-accent)}
 :where([data-theme=dark]) .btn.ink{background:var(--fill-inverse)}
 :where([data-theme=dark]) .btn.cy{color:var(--on-accent)}
-:where([data-theme=dark]) .btn.no{background:var(--surface-1);color:#e48f8f}
+:where([data-theme=dark]) .btn.no{background:var(--surface-1)}
 :where([data-theme=dark]) .t th{border-bottom:2px solid var(--border-strong)}
-:where([data-theme=dark]) .pill.active,:where([data-theme=dark]) .pill.verified,:where([data-theme=dark]) .pill.paid,:where([data-theme=dark]) .pill.Published{color:#b1f1d1}
-:where([data-theme=dark]) .pill.suspended,:where([data-theme=dark]) .pill.refunded{color:#e48f8f}
 :where([data-theme=dark]) .pill.learner{color:#b3d8ee}
 :where([data-theme=dark]) .pill.tutor{color:#c4a9dc}
 :where([data-theme=dark]) .pill.admin{color:var(--text)}
@@ -86,8 +83,6 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .tcol{background:var(--bg);border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .bug{background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .shot{border:2px solid var(--border-strong);background:var(--fill-inverse)}
-:where([data-theme=dark]) .vok{color:#b1f1d1}
-:where([data-theme=dark]) .vbad{color:#e48f8f}
 :where([data-theme=dark]) .vok p,:where([data-theme=dark]) .vbad p{color:var(--text)}
 :where([data-theme=dark]) .opt{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .opt[aria-pressed=true]{color:var(--on-accent)}
@@ -119,7 +114,6 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .pmark{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .rating svg{color:var(--accent-text)}
 :where([data-theme=dark]) .meta span{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .cert{color:#b1f1d1;background:var(--bg)}
 :where([data-theme=dark]) .aidc{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .expiring{background:var(--fill-inverse);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .expiring h3{color:var(--accent-text)}
@@ -137,9 +131,7 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .sec-note{background:#362b1b;border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .sec-note svg{color:var(--text)}
 :where([data-theme=dark]) .free-tier{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .free-tier b{color:#b1f1d1}
 :where([data-theme=dark]) .ccard .tags span{background:var(--surface-1);color:var(--text)}
-:where([data-theme=dark]) .keynote{color:#e48f8f!important}
 :where([data-theme=dark]) .playground .pg-out{background:var(--fill-inverse);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) #cc-search{background:var(--fill-inverse);color:var(--on-inverse)}
 :where([data-theme=dark]) .ccs-box{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong)}
@@ -150,8 +142,6 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .ccs-empty{color:var(--text-muted)}
 :where([data-theme=dark]) .cc-demo{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .form-msg{border-left:4px solid var(--border-strong);background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .form-msg.err{background:var(--surface-3);color:#f0b7b2}
-:where([data-theme=dark]) .form-msg.ok{background:var(--bg);color:#b5eed3}
 :where([data-theme=dark]) .form-msg.info{background:#362b1b;color:var(--text)}
 :where([data-theme=dark]) .tchip{border:2px solid var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
 :where([data-theme=dark]) .about-steps li::before{border:2px solid var(--border-strong)}
@@ -333,7 +323,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .fw-list{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .fw-list a{color:var(--text)}
 :where([data-theme=dark]) .obadge{background:var(--fill-inverse);border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .ev-price{color:#b1f1d1;background:var(--surface-1)}
+:where([data-theme=dark]) .ev-price{background:var(--surface-1)}
 :where([data-theme=dark]) .ev-price.paid{border-color:var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .cal-d{background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .cal-d.has{background:var(--bg);color:var(--text)}
@@ -341,7 +331,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .cal-ev:hover{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .ev-map{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ticket{border:2px dashed var(--border-strong)}
-:where([data-theme=dark]) .ok-t{color:#b1f1d1}
 @media (max-width:760px){
 :where([data-theme=dark]) .dash-bell.bell-btn{background:var(--surface-1);border:2px solid var(--border-strong);color:var(--text)}
 }
@@ -401,9 +390,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .pi-main{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .pi-thumbs button{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .pi-price{border:2px solid var(--border-strong);background:var(--surface-3);color:var(--text)}
-:where([data-theme=dark]) .pi-tierapplied{color:#b1f1d1}
-:where([data-theme=dark]) .pi-stock .ok{color:#b1f1d1}
-:where([data-theme=dark]) .pi-stock .low{color:#efaea9}
 :where([data-theme=dark]) .stepper input,:where([data-theme=dark]) .stepper span{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) #pi-wish[aria-pressed=true]{background:#361b1b}
 :where([data-theme=dark]) .pi-escrow svg{color:var(--text)}
@@ -425,7 +411,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .co-logo{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .co-logo.card{background:var(--fill-inverse)}
 :where([data-theme=dark]) .co-line img{border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .mk-ok{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .ord-items a{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ord-track li::before{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .ord-track li.done{color:var(--text)}
@@ -444,8 +429,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .mk-card.wide .mk-thumb{border-bottom:2px solid var(--border-strong)}
 }
 /* --- practice.css --- */
-:where([data-theme=dark]) .d-easy{color:#b1f1d1}
-:where([data-theme=dark]) .d-hard{color:#efaea9}
 :where([data-theme=dark]) .stat-row div{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ttree h2{border-bottom:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ttree button{background:var(--surface-1);color:var(--text)}
@@ -491,8 +474,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .ed-bar select{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .ed-ta{color:var(--text);background:var(--surface-1)}
 :where([data-theme=dark]) .res{border-top:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
-:where([data-theme=dark]) .verdict.ok{color:#b1f1d1}
-:where([data-theme=dark]) .verdict.bad{color:#efaea9}
 :where([data-theme=dark]) .vstats b{color:var(--text)}
 :where([data-theme=dark]) .case h4{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .ed-foot{border-top:2px solid var(--border-strong);background:var(--bg);color:var(--text)}
@@ -504,16 +485,12 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .ct.live{background:var(--fill-inverse)}
 :where([data-theme=dark]) .ct.live .timer{color:var(--accent-text)}
 :where([data-theme=dark]) .livedot::before{background:var(--surface-1);color:var(--text)}
-:where([data-theme=dark]) .lb .ac{color:#b1f1d1}
-:where([data-theme=dark]) .lb .wa{color:#efaea9}
 :where([data-theme=dark]) .lb tr.me td{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .lb .r1 b{color:var(--on-accent)}
 :where([data-theme=dark]) .co{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .co[aria-pressed=true]{background:var(--fill-inverse)}
 :where([data-theme=dark]) .qopt{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .qopt .k{border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .qopt.right{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .qopt.wrong{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .qfb{background:var(--bg);color:var(--text)}
 @media (max-width:960px){
 :where([data-theme=dark]) .pane-l{border-bottom:3px solid var(--border-strong)}
@@ -558,7 +535,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .ses-zoom{color:var(--on-accent)}
 :where([data-theme=dark]) .ses-pill{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .ses-pill.ok{color:var(--on-accent)}
-:where([data-theme=dark]) .ses-msg.bad{color:#e48f8f}
 :where([data-theme=dark]) .ses-pane{border:2px solid var(--border-strong);box-shadow:6px 6px 0 var(--shadow-ink);background:var(--fill-inverse);color:var(--on-inverse)}
 :where([data-theme=dark]) .ses-pane iframe{background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) #ses-video iframe{background:var(--fill-inverse);color:var(--on-inverse)}
@@ -577,7 +553,6 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .act-gate{color:var(--text)}
 :where([data-theme=dark]) .act-gate .act-gate-in{color:var(--text)}
 :where([data-theme=dark]) .act-c{color:var(--text)}
-:where([data-theme=dark]) .act-c.is-failed small{color:#e48f8f}
 :where([data-theme=dark]) .act-form input{color:var(--text)}
 
 /* =====================================================================================
@@ -608,7 +583,20 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
   --accent-2:#05e6f2; --on-accent-2:#0B1236;
   --accent-2-text:#00758A;
   --shadow-ink:#0B1236;      /* colour of the hard offset shadow */
-  --focus:#00b9e6;
+  /* r12 ui-colors: focus ring = dark cyan (the --accent-2-text step): 5.4:1 on white, 4.9:1 on the page, 3.8:1 on navy.
+     The old #00b9e6 measured 2.1-2.3:1 on the light page/cards (WCAG 2.4.13 / 1.4.11 need 3:1). Focus never shows in ?static=1. */
+  --focus:#00758A; --color-focus:var(--focus);
+  --border-control:#0B1236;  /* boundary of inputs/selects/textareas: 17.6:1 on white */
+  /* status roles (one hue each, >=15deg of OKLCH hue from the brand orange: danger 29deg, success 155deg, orange 59deg).
+     text = on any light surface; solid = fill under white text; border = edges/rails; subtle = tinted well under --*-text. */
+  --danger-text:#B42318;     /* 6.6:1 white, 6.0:1 page, 5.5:1 --surface-3, 5.7:1 on --danger-subtle */
+  --danger-solid:#B42318;    /* white text 6.6:1 */
+  --danger-border:#B42318;
+  --danger-subtle:#FDECEA;
+  --success-text:#0F7A45;    /* 5.4:1 white, 4.9:1 page, 4.6:1 --surface-3, 4.9:1 on --success-subtle */
+  --success-solid:#0F7A45;   /* white text 5.4:1 */
+  --success-border:#0F7A45;
+  --success-subtle:#E9F7EE;
 }
 /* ---------------------------------------------------------------- dark roles */
 :root[data-theme=dark]{
@@ -620,7 +608,16 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
   --surface-2:#192034;       /* inputs, wells, hover (elevation 2) */
   --surface-3:#222B42;       /* chips, inactive tabs (elevation 3) */
   --border-subtle:#283149;   /* hairlines */
-  --border-strong:#4A557A;   /* brutal outline: 3:1+ against every surface */
+  --border-strong:#4A557A;   /* brutal outline of cards/panels (decorative): 2.4:1 on --surface-1, 2.7:1 on --bg. NOT for controls */
+  --border-control:#6B77A0;  /* r12 ui-colors: input/select/textarea boundary, >=3:1 on every dark surface (bg 4.4, s1 4.0, s2 3.7, s3 3.2:1) */
+  --danger-text:#FF9C94;     /* 7.0:1+ on every dark surface */
+  --danger-solid:#B42318;    /* white text 6.6:1 */
+  --danger-border:#E5675C;   /* 4.3:1+ on every dark surface */
+  --danger-subtle:#3A1D24;   /* --danger-text 7.6:1, --text 13.4:1 on it */
+  --success-text:#6EE7A8;    /* 9.1:1+ on every dark surface */
+  --success-solid:#0F7A45;   /* white text 5.4:1 */
+  --success-border:#3FBF7F;  /* 6.0:1+ on every dark surface */
+  --success-subtle:#12301F;  /* --success-text 9.3:1, --text 12.6:1 on it */
   --fill-inverse:#151E4C;    /* brand navy lifted so blocks read on the dark page */
   --on-inverse:#ffffff;
   --accent:#fc8c0c; --on-accent:#0B1236;
@@ -655,7 +652,7 @@ html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{transition:
 /* SVG/PNG marks drawn in navy on transparent get a light chip so they stay visible */
 [data-theme=dark] img[src*="logo"]:not([src*="white"]):not([src*="light"]):not(.no-chip){background:transparent}
 /* form controls: role surfaces + readable placeholders */
-[data-theme=dark] :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background-color:var(--surface-2);color:var(--text);border-color:var(--border-strong)}
+[data-theme=dark] :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background-color:var(--surface-2);color:var(--text);border-color:var(--border-control)}
 [data-theme=dark] ::placeholder{color:var(--text-muted);opacity:1}
 [data-theme=dark] select option{background:var(--surface-2);color:var(--text)}
 /* tables */
@@ -726,6 +723,13 @@ html[data-theme=dark]:not(.static) .app .qa svg:has(use[href="#i-plusc"]),html[d
    raised surface with the strong border; the plan chip keeps navy on cyan (13:1). */
 [data-theme=dark] .am-chips i{color:var(--text);border-color:var(--border-strong);background:var(--surface-3)}
 [data-theme=dark] .am-chips .am-plan{color:var(--on-accent);background:var(--accent-2);border-color:var(--accent-2)}
+
+/* r12 ui-colors: landing LEARN/BUILD words tile drew its focus ring in --nv, which the dark theme re-points to navy on-accent ink
+   (1.1:1 on the dark page). Dark ring = the focus role. */
+html[data-theme=dark]:not(.static) .page>.words-tile:focus-visible{outline-color:var(--focus)}
+/* r12 ui-colors: the shell's inset cyan ring (#05e6f2, shell.css) is right on the navy app shell, but the public pages' light
+   topbar and the white account menu put it on the light page/orange buttons at 1.45-1.5:1. There the ring takes the focus role. */
+html:not(.static):not([data-theme=dark]) .topbar:not(.shell *) :focus-visible,html:not(.static):not([data-theme=dark]) .acct-menu :focus-visible{outline-color:var(--focus)}
 
 /* Site background (round 6, design variant F; work/ui-pro/round6/design/SPEC.md).
    Light: a static 56px hairline grid (navy 4.5%, major 7% every 4 cells); js/bg.js adds drifting navy glyphs (fix/bg-glyphs).
