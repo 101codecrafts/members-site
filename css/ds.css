@@ -116,3 +116,7 @@ html:not(.static) .btn{padding-inline:var(--s-4);gap:var(--s-2)}
 html:not(.static) .btn.lg{min-height:var(--s-12);padding-inline:var(--s-6)}
 html:not(.static) .field{gap:var(--s-2)}
 html:not(.static) .field :is(input,select,textarea){padding:var(--s-2) var(--s-3)}
+
+/* ---------------------------------------------------------------- a11y on inverse blocks
+   muted text inside navy blocks uses the inverse muted role (10.1:1), never the light-surface grey (axe: #potd .muted was 2.5:1) */
+html:not(.static) :is(.potd,.card.dark,.ck--inv) :is(.muted,small.muted,p.muted){color:var(--ink-inv-muted)}

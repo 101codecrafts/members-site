@@ -55,7 +55,7 @@
           <div class="mk-msubs" id="mk-msubs"></div></div></div>
       <form class="mk-search" role="search" id="mk-sform" action="marketplace.html#browse"><label class="sr-only" for="mk-q">Search the marketplace</label>
         <div class="mk-sbox"><input id="mk-q" name="q" type="search" autocomplete="off" placeholder="Search laptops, ESP32, templates, tutors…" role="combobox" aria-expanded="false" aria-controls="mk-ac" aria-autocomplete="list" value="${esc(q.get("q") || "")}">
-        <ul id="mk-ac" class="mk-ac" role="listbox" hidden></ul></div><button class="btn or" type="submit"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="mk-hide-s">Search</span></button></form>
+        <ul id="mk-ac" class="mk-ac" role="listbox" hidden></ul></div><button class="btn or" type="submit" aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="mk-hide-s">Search</span></button></form>
       <nav class="mk-quick" aria-label="Marketplace"><a href="orders.html" class="mk-ql">Orders</a><a href="rfq.html" class="mk-ql">RFQ</a><a href="cart.html" class="mk-cart"><svg aria-hidden="true"><use href="#i-store"/></svg><span>Cart</span> <i id="mk-cartn">0</i></a></nav>
     </div>
     <nav class="mk-catstrip" aria-label="Categories">${cats.map(c => `<a href="marketplace.html?cat=${c.id}#browse">${esc(c.name)}</a>`).join("")}</nav>`;
