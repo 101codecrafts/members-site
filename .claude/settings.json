@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(git push origin main*)",
+      "Bash(git push * main)",
+      "Bash(git push --force*)",
+      "Bash(vercel promote*)",
+      "Bash(vercel alias*)",
+      "Bash(vercel env*)",
+      "Bash(supabase db push*)",
+      "Bash(psql *staging*)",
+      "Read(./.env*)",
+      "Edit(./js/ai-mascot.js)"
+    ],
+    "ask": ["Bash(git push*)", "Bash(vercel deploy*)"],
+    "allow": [
+      "Bash(python3 tools/build.py)",
+      "Bash(node tools/csp.mjs*)",
+      "Bash(node --test*)",
+      "Bash(bash tools/agent-check.sh*)",
+      "Bash(git status*)", "Bash(git diff*)", "Bash(git log*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh\"" } ] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-tool-use.sh\"" } ] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/post-tool-use.sh\"" } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/stop.sh\"", "timeout": 180 } ] }
+    ]
+  }
+}

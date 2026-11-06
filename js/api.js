@@ -63,12 +63,22 @@
     window.CC_NO_BACKEND = () => absent === true;
   })();
 
+  /* r13 architecture: a signed-in browser tells the API's CDN layer it is a member, so public GETs cached for
+     visitors (s-maxage) are never served to it and its own RLS-scoped answer is never cached (server: private).
+     Same-origin only, so a cross-origin API that predates the header never fails a CORS preflight. */
+  function viewerHeader(url) {
+    try {
+      if (new URL(url, location.href).origin !== location.origin) return {};
+      return /(?:^|;\s*)__session(?:_[\w-]+)?=[^;\s]/.test(document.cookie || "") ? { "X-CC-Viewer": "member" } : {};
+    } catch (e) { return {}; }
+  }
+  window.CC_V1.viewerHeader = viewerHeader;   // exposed for tests/r13-architecture.test.mjs
   async function getJSON(url, opts = {}, ms = 6000) {
     if (STATIC) throw new Error("static mode");
     if (location.protocol === "file:" && url.startsWith("/")) throw new Error("no backend on file://");
     const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
     try {
-      const r = await fetch(url, { ...opts, signal: ctl.signal, headers: { Accept: "application/json", ...(opts.headers || {}) } });
+      const r = await fetch(url, { ...opts, signal: ctl.signal, headers: { Accept: "application/json", ...viewerHeader(url), ...(opts.headers || {}) } });
       if (!r.ok) throw new Error(r.status + " " + url);
       return await r.json();
     } finally { clearTimeout(t); }
