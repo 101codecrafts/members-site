@@ -2276,6 +2276,7 @@ html:not(.static) .ck-grid.ck-cv>li{content-visibility:auto;contain-intrinsic-si
    3. hover feedback where there was none: tabs, segmented control, footer nav, FAQ, landing search/footer      (TARGETS #10)
    4. public header nav (about, pricing): links + Sign in, current page marked                                 (TARGETS #8)
    5. hit targets: pricing FAQ rows, landing footer links / "View all features"                              (TARGETS #14, #15)
+   6. pressed state on the landing CTAs and hero stat tiles (the shared press in touch.css could not reach them)
    ===================================================================================== */
 
 /* ---------------------------------------------------------------- 1. moving strips */
@@ -2328,3 +2329,13 @@ html:not(.static) .pl-faq details:not([open]){padding-bottom:0}
 html:not(.static) .pl-faq summary{margin:-12px -14px 0;padding:12px 14px;min-height:44px}
 html:not(.static) .lfoot>a{display:inline-flex;align-items:center;min-height:44px}
 html:not(.static) .page>a[href="about.html"]{min-height:44px}
+
+/* ---------------------------------------------------------------- 6. pressed state where the shared one could not reach
+   landing.css pins every .page>* to translate:none!important (reflow), which silently cancelled touch.css's press on the
+   landing CTAs; the hero stat tiles were never in the press list. Same 2px push, via transform. */
+html:not(.static) .page>:is(a[class*="btn"],a.hov,button.hov):active:not([aria-disabled=true]),
+html:not(.static) a.hc-stat:active{transform:translate(var(--press,2px),var(--press,2px))}
+@media (prefers-reduced-motion:reduce){
+  html:not(.static) .page>:is(a[class*="btn"],a.hov,button.hov):active:not([aria-disabled=true]),
+  html:not(.static) a.hc-stat:active{transform:none;opacity:.82}
+}
