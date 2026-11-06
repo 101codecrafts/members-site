@@ -70,7 +70,7 @@
 .st-note .row{margin-top:10px}
 .st-danger{border-color:var(--danger-border)!important;box-shadow:5px 5px 0 var(--danger-border)!important}
 .st-danger .sec-title h2{color:var(--danger-text)}
-.btn.st-btn-danger{background:var(--danger-solid);color:#fff;border-color:var(--danger-border)}
+.btn.st-btn-danger{background:var(--danger-solid);color:#fff;border-color:#7A1A12}
 .btn.st-btn-danger:disabled{opacity:.45;cursor:not-allowed}
 html.a11y-underline a{text-decoration:underline!important}
 @media (max-width:1023px){
