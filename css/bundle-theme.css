@@ -727,6 +727,9 @@ html[data-theme=dark]:not(.static) .app .qa svg:has(use[href="#i-plusc"]),html[d
 /* r12 ui-colors: landing LEARN/BUILD words tile drew its focus ring in --nv, which the dark theme re-points to navy on-accent ink
    (1.1:1 on the dark page). Dark ring = the focus role. */
 html[data-theme=dark]:not(.static) .page>.words-tile:focus-visible{outline-color:var(--focus)}
+/* r12 ui-colors: the shell's inset cyan ring (#05e6f2, shell.css) is right on the navy app shell, but the public pages' light
+   topbar and the white account menu put it on the light page/orange buttons at 1.45-1.5:1. There the ring takes the focus role. */
+html:not(.static):not([data-theme=dark]) .topbar:not(.shell *) :focus-visible,html:not(.static):not([data-theme=dark]) .acct-menu :focus-visible{outline-color:var(--focus)}
 
 /* Site background (round 6, design variant F; work/ui-pro/round6/design/SPEC.md).
    Light: a static 56px hairline grid (navy 4.5%, major 7% every 4 cells); js/bg.js adds drifting navy glyphs (fix/bg-glyphs).
