@@ -1,0 +1,16 @@
+{
+  "_note": "r13 seo: site identity for tools/seo.py. site_url is the canonical origin used in canonical, og:url, sitemap, robots and llms.txt. Until the domain is live it is the .invalid placeholder (never a real host). Build with SITE_URL=https://<domain> python3 tools/build.py, or set site_url here once the domain is decided; the combined deploy (backend scripts/copy-static.mjs) replaces the placeholder with its SITE_URL env at build time.",
+  "placeholder": "https://site-url.invalid",
+  "site_url": "https://site-url.invalid",
+  "name": "101 Codecrafts",
+  "alternate_names": ["101", "101CC"],
+  "slogan": "Start at 101. Craft your way up.",
+  "og_alt": "101 Codecrafts: Start at 101. Craft your way up.",
+  "noindex_pages": ["auth.html", "product.html", "profile.html"],
+  "_noindex_note": "Public but kept out of search: auth.html (sign-in form; the sign-in/sign-up URLs redirect to it), product.html and profile.html (templates filled from ?id= / ?u= by script: one URL for every product/person, so no per-item canonical). Index them once they are server-rendered per item.",
+  "draft_marker": "DRAFT — review by a qualified",
+  "sitemap_order": ["index.html", "about.html", "community.html", "news.html", "events.html", "opportunities.html", "pricing.html", "verify.html", "privacy.html", "terms.html"],
+  "llms_optional": ["privacy.html", "terms.html", "verify.html"],
+  "llms_summary": "101 Codecrafts is a tech learning and collaboration community based in Kampala, Uganda: courses and learning paths, coding practice, projects, hackathons, events, mentorship, daily tech news and opportunities, for learners from Primary school to professionals.",
+  "llms_note": "Public pages are listed below. Courses, practice, the library, AI tools and the marketplace open after a free sign-in, so they are not listed. Prices are in Uganda shillings (UGX); payments are by MTN Mobile Money, Airtel Money or card."
+}

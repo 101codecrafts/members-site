@@ -11,6 +11,7 @@
   var HEAD = { Learner: "I'm learning at", Tutor: "I'm teaching at", Mentor: "I'm mentoring at", Volunteer: "I'm volunteering at",
                Builder: "I'm building at", Organizer: "I'm organizing at", Speaker: "I'm speaking at" };
   var canon = ($('link[rel="canonical"]') || {}).href || location.href;
+  if (/\.invalid\//.test(canon)) canon = location.href;              // r13 seo: placeholder origin until the domain is live
   var SITE = new URL(".", canon).href;                                  // canonical site root
   var SITE_TXT = SITE.replace(/^https?:\/\//, "").replace(/\/$/, "");
 

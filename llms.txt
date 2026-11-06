@@ -1,0 +1,19 @@
+# 101 Codecrafts
+
+> 101 Codecrafts is a tech learning and collaboration community based in Kampala, Uganda: courses and learning paths, coding practice, projects, hackathons, events, mentorship, daily tech news and opportunities, for learners from Primary school to professionals.
+
+Public pages are listed below. Courses, practice, the library, AI tools and the marketplace open after a free sign-in, so they are not listed. Prices are in Uganda shillings (UGX); payments are by MTN Mobile Money, Airtel Money or card.
+
+## Main pages
+
+- [101 Codecrafts](https://site-url.invalid/): Your IT journey starts here: learning paths, free courses, skill-building workshops, hackathons, mentorship and certification support, in Kampala and online.
+- [About 101 Codecrafts](https://site-url.invalid/about.html): 101 Codecrafts is a tech learning and collaboration community in Kampala, Uganda: coding, AI, data, cybersecurity and cloud, projects, hackathons, mentorship and careers, from Primary to professional.
+- [Community](https://site-url.invalid/community.html): The 101 Codecrafts community: study groups, events and meetups, hackathons, member projects and the Launchpad. Free to join.
+- [Daily Tech News](https://site-url.invalid/news.html): Today in tech: Africa & Uganda, AI, dev and startups — short AI summaries with links to the original sources, curated daily for the 101 community.
+- [Events & Meetups](https://site-url.invalid/events.html): Tech events in Kampala, Uganda, Africa and online: hackathons, GDG DevFest, Microsoft, AWS, Hugging Face and 101 Codecrafts meetups. Times in East Africa Time.
+- [Opportunities](https://site-url.invalid/opportunities.html): Scholarships, internships, jobs, hackathons, grants, fellowships, competitions and bootcamps for students and young techies in Uganda and Africa.
+- [Plans and pricing](https://site-url.invalid/pricing.html): Learner and tutor plans on 101 Codecrafts: Free, Standard, Plus and Pro, in Uganda shillings. Pay with MTN Mobile Money, Airtel Money or card. External courses are always free.
+
+## Optional
+
+- [Verify a certificate](https://site-url.invalid/verify.html): Check that a 101 Codecrafts certificate is genuine: enter the code printed on it, in the format 101-XXXX-XXXX.
