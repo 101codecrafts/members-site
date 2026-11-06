@@ -3,7 +3,7 @@
    site grid (light) and the animated glyph canvas (dark, js/bg.js type "auth") show on every step; only the card and
    the side panel are solid. Orange is a fill with navy text, never text on white. */
 body.af-page{margin:0;min-height:100vh;min-height:100dvh;color:var(--color-ink,#0B1236);font:500 var(--step-0)/1.5 var(--font-body,"CC Sans",system-ui,sans-serif);background:transparent}
-.af-page .skip{position:absolute;left:-9999px}.af-page .skip:focus{left:12px;top:12px;z-index:20;background:#fc8c0c;color:#0B1236;padding:8px 12px;border:2px solid #0B1236}
+.af-page .skip{position:absolute;left:-9999px}.af-page .skip:focus{left:12px;top:12px;z-index:80;background:#fc8c0c;color:#0B1236;padding:8px 12px;border:2px solid #0B1236}
 .af-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(16px,4vw,48px);background:#0B1236;color:#fff;border-bottom:4px solid #fc8c0c}
 .af-logo{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
 .af-logo img{display:block;width:64px;height:32px}.af-logo b{font:400 var(--step-1)/1 var(--font-display-2,"Archivo Black",sans-serif);letter-spacing:.3px}
@@ -83,7 +83,7 @@ body.af-page{margin:0;min-height:100vh;min-height:100dvh;color:var(--color-ink,#
 .af-points{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:14px}
 .af-points b{display:block;color:#2BE0DA;font:700 var(--step-0)/1.2 var(--font-body)}
 .af-points span{font-size:var(--step--1);color:#d6dcf0}
-.af-legal{margin:0;font-size:12px;color:#c9d2ee}.af-legal a{color:#fff}
+.af-legal{margin:0;font-size:12px;color:#c9d2ee}.af-legal a{color:#fff}html:not(.static) .af-legal a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
 
 @media (max-width:900px){
   .af-main{grid-template-columns:minmax(0,1fr);padding-top:16px}

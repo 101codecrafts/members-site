@@ -65,7 +65,7 @@
 
   /* ---------- plan ---------- */
   const used = +c.enrolled || 0;
-  const meter = maxCourses != null ? `<div class="meter" aria-label="${used} of ${maxCourses} course${maxCourses === 1 ? "" : "s"} used">${Array.from({ length: Math.max(1, maxCourses) }, (_, i) => `<i class="${i < used ? "on" : ""}"></i>`).join("")}</div><small class="muted">${val(num(used))} of ${num(maxCourses)} course${maxCourses === 1 ? "" : "s"} used</small>` : "";
+  const meter = maxCourses != null ? `<div class="meter" aria-hidden="true">${Array.from({ length: Math.max(1, maxCourses) }, (_, i) => `<i class="${i < used ? "on" : ""}"></i>`).join("")}</div><small class="muted">${val(num(used))} of ${num(maxCourses)} course${maxCourses === 1 ? "" : "s"} used</small>` : "";
   const perks = [];
   perks.push(maxCourses != null ? `${num(maxCourses)} active course${maxCourses === 1 ? "" : "s"} at a time` : "Unlimited courses");
   perks.push(previewOnly ? `First ${freePerCourse} lessons of each course (plus previews); the rest are locked` : "Every lesson unlocked");

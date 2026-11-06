@@ -44,9 +44,14 @@
       /* ---- heading reveals ---- */
       document.querySelectorAll(".split").forEach((h, i) => {
         if (window.SplitText) {
-          const s = SplitText.create(h, { type: "chars", charsClass: "ch" });
+          /* aria:"auto" names the host with aria-label, which is prohibited on a plain <div>/<span> (ARIA 1.2). Those hosts get a
+             visually hidden copy of the text while the chars are split and aria-hidden; revert() puts the original text back. */
+          const named = /^(H[1-6]|A|BUTTON)$/.test(h.tagName) || h.hasAttribute("role");
+          let sr = null;
+          if (!named) { sr = document.createElement("span"); sr.className = "sr-only"; sr.textContent = h.textContent.replace(/\s+/g, " ").trim(); h.before(sr); }
+          const s = SplitText.create(h, { type: "chars", charsClass: "ch", aria: named ? "auto" : "hidden" });
           g.from(s.chars, { yPercent: 110, opacity: 0, duration: .7, ease: "power4.out", stagger: .018, delay: .1 + i * .05,
-            scrollTrigger: window.ScrollTrigger ? { trigger: h, start: "top 92%", once: true } : undefined, onComplete: () => s.revert() });
+            scrollTrigger: window.ScrollTrigger ? { trigger: h, start: "top 92%", once: true } : undefined, onComplete: () => { s.revert(); if (sr) { sr.remove(); h.removeAttribute("aria-hidden"); } } });
         }
       });
       /* ---- staggered entrances ---- */
