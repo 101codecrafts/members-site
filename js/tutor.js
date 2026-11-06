@@ -99,7 +99,8 @@
   $("#t-sessions").innerHTML = ss.length
     ? `<div class="dash-list">${ss.map(s => `<div class="dash-li"><span class="date"><span>${esc(fmtDate(s.starts_at, { month: "short" }))}<br><b>${esc(fmtDate(s.starts_at, { day: "2-digit" }))}</b></span></span><div><b>${esc(s.title)}</b><small>${esc(fmtDate(s.starts_at, { hour: "numeric", minute: "2-digit" }))} EAT · ${num(s.duration_minutes || 60)} min${s.kind === "group" ? " · group" : ""}</small></div><a class="btn sm" href="sessions.html">Open</a></div>`).join("")}</div>`
     : empty({ key: "sessions", examples: [["1:1 · Git branching", "Thu 4 PM"], ["Group Q&A", "Sat 10 AM"]], title: "No sessions scheduled",
-        body: "Offer 1:1 or group sessions. Booked sessions show here with their time in EAT.", action: { href: "sessions.html", label: "Schedule a session", icon: "calendar" } });
+        body: tStatus && tStatus !== "verified" ? "You can offer 1:1 or group sessions once an admin verifies you." : "Offer 1:1 or group sessions. Booked sessions show here with their time in EAT.",
+        action: tStatus && tStatus !== "verified" ? null : { href: "sessions.html", label: "Schedule a session", icon: "calendar" } });
 
   /* ---------- learners ---------- */
   const ls = data.learners || [];
