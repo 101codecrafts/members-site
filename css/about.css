@@ -187,3 +187,13 @@ html:not(.static) .prose .ck .ck-link:hover{text-decoration:underline}
    characters, so 62-75ch gave 83-100 characters a line. The measure tokens hold 60-75 characters (css/tokens.css). */
 html:not(.static) .ab-sub,html:not(.static) .ab-story-body p,html:not(.static) .ab-faq details>div p{max-width:var(--measure-body)}
 html:not(.static) .ab-safe p{max-width:var(--measure-max)}
+
+/* ---- r13 landing (round 13): live-only copy pairs, one CTA name ("Join free"), fewer dead tiles, FAQ on the page column ---- */
+html.static .r13-lv{display:none!important}
+html:not(.static) .r13-st{display:none!important}
+html:not(.static) .ab-socials>li:has(>.ab-soc--soon){display:none}
+html:not(.static) .ab-socials>.ab-soon-line{grid-column:1/-1;align-items:center}
+html:not(.static) .ab-socials>.ab-soon-line p{margin:0;padding:var(--s-3) 0;color:var(--text-muted);font-size:var(--step--1)}
+html:not(.static) .ab-socials>.ab-soon-line b{color:var(--text)}
+html:not(.static) .ab-faq-wrap{max-width:var(--ab-max)}
+html:not(.static) .ab-faq-wrap .ab-faq{max-width:900px}

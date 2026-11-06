@@ -1,0 +1,136 @@
+/* =====================================================================================
+   r13 landing (round 13, "landing" area): proven landing-page order + UX laws on the LIVE home page.
+   Order (study: Webofolio, ConversionWise / Oliver Kenyon, Local SEO Hustlers, Subash Chandra / Seative):
+     nav → hero (one value prop, ONE primary CTA, reassurance) → real proof (free-course providers we link; impact
+     numbers only once real) → what you get → how it works (3 steps) → learning paths → skills → community →
+     plans → latest / today in tech → FAQ → final CTA → footer.
+   Hick: 4 nav links (Home on the home page and Resources move to the footer), one action per block.
+   Fitts: primary CTA ≥56px tall and wide, secondary is a quiet link, every target ≥44px.
+   Miller: 3 steps, 2 plan groups, 5 questions; long lists stay chunked.
+   CTA names, one per action, site-wide on public pages: "Join free" (create an account) · "Sign in".
+   Every rule is live-only (html:not(.static)); new blocks are appended after the footer in src/index.html so the
+   ?static=1 mockup and its nth-child tuning (css/landing.fit.css) are untouched. Tokens only (css/tokens.css, theme roles).
+   ===================================================================================== */
+
+/* live/static copy pairs: the mockup text stays for ?static=1, the live site reads the new copy */
+html.static .r13-lv{display:none!important}
+html:not(.static) .r13-st{display:none!important}
+
+/* ---------------------------------------------------------------- header: 4 links, Sign in, Join free */
+html:not(.static) .hdr nav a[href="index.html"],
+html:not(.static) .hdr nav a[href="resources.html"]{display:none!important}
+html:not(.static) .hdr nav .nav-pricing{order:1}
+html:not(.static) .hdr nav a[href="about.html"]{order:2}
+html:not(.static) .hdr nav .nav-login{order:3}
+html:not(.static) .hdr .join{gap:var(--s-2)}
+@media (max-width:899px),(hover:none) and (pointer:coarse) and (max-width:1023px){
+  html:not(.static) .hdr.nav-open nav .nav-pricing{display:flex!important}
+}
+
+/* ---------------------------------------------------------------- hero: one primary action */
+html:not(.static) .page>p .mc-cta{display:none!important}           /* member card: a 3rd hero action; it lives on the dashboard and card.html */
+html:not(.static) .page>.btn-or{min-height:56px!important;font-size:var(--step-0)!important;letter-spacing:.06em;box-shadow:var(--sh,4px) var(--sh,4px) 0 var(--brand-navy);border:var(--bw) solid var(--brand-navy)}
+html:not(.static) .page>.btn-ol{border-color:transparent!important;background:transparent!important;text-decoration:underline;text-decoration-thickness:3px;text-decoration-color:var(--accent);text-underline-offset:6px;min-height:48px!important}
+@media (hover:hover){html:not(.static) .page>.btn-ol:hover{text-decoration-color:currentColor}}
+html:not(.static) .page>.r13-reassure{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-1) var(--s-2);margin:0;font-size:var(--step--1)!important;font-weight:600;color:var(--text)!important;white-space:normal;max-width:none!important}
+html:not(.static) .page>.r13-reassure svg{width:18px;height:18px;flex:none;color:var(--color-success,var(--text))}
+html:not(.static) .page>.r13-reassure span{color:var(--text-muted)}
+
+/* ---------------------------------------------------------------- new sections (share the era92 .e92 frame) */
+html:not(.static) .r13-steps{list-style:none;margin:0 0 var(--space-fluid-m);padding:0;display:grid;gap:var(--gap-card);grid-template-columns:minmax(0,1fr);counter-reset:none}
+@media (min-width:768px){html:not(.static) .r13-steps{grid-template-columns:repeat(3,minmax(0,1fr))}}
+html:not(.static) .page .r13-steps li{position:relative;display:flex;flex-direction:column;gap:var(--s-2);padding:var(--space-fluid-m);background:var(--surface-1);color:var(--text);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh,4px) var(--sh,4px) 0 var(--shadow-ink)}
+html:not(.static) .page .r13-steps .r13-n{display:grid;place-items:center;width:48px;height:48px;font-family:var(--disp);font-size:var(--step-3)!important;line-height:1;background:var(--accent);color:var(--on-accent);border:var(--bw) solid var(--brand-navy)}
+html:not(.static) .page .r13-steps li:nth-child(2) .r13-n{background:var(--accent-2);color:var(--on-accent-2)}
+html:not(.static) .page .r13-steps li:nth-child(3) .r13-n{background:var(--brand-navy);color:#fff}
+@media (min-width:768px){html:not(.static) .page .r13-steps li:not(:last-child)::after{content:"";position:absolute;top:calc(var(--space-fluid-m) + 23px);right:calc(-1 * var(--gap-card) - 2px);width:calc(var(--gap-card) + 2px);height:var(--bw);background:var(--border-strong)}}
+
+html:not(.static) .r13-pgrid{display:grid;gap:var(--gap-card);grid-template-columns:minmax(0,1fr)}
+@media (min-width:768px){html:not(.static) .r13-pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+html:not(.static) .page .r13-pc{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-3);padding:var(--space-fluid-m);background:var(--surface-1);color:var(--text);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh,4px) var(--sh,4px) 0 var(--shadow-ink)}
+html:not(.static) .page .r13-pc.inv{background:var(--fill-inverse);color:var(--on-inverse);box-shadow:var(--sh,4px) var(--sh,4px) 0 var(--accent)}
+html:not(.static) .page .r13-pc h3{font-family:var(--disp);font-weight:400;font-size:var(--step-3)!important;line-height:1.05;text-transform:uppercase}
+html:not(.static) .page .r13-pc .r13-pt{margin-top:calc(-1 * var(--s-2));font-size:var(--step--1)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+html:not(.static) .page .r13-pc.inv .r13-pt{color:var(--ink-inv-muted,#B9C1DA)}
+html:not(.static) .page .r13-pc ul{list-style:none;margin:0 0 var(--s-2);padding:0;display:grid;gap:var(--s-2)}
+html:not(.static) .page .r13-pc li{position:relative;padding-left:22px;font-size:var(--step-0)!important;line-height:1.4}
+html:not(.static) .page .r13-pc li::before{content:"";position:absolute;left:0;top:.45em;width:10px;height:10px;background:var(--accent);border:var(--bw) solid var(--brand-navy)}
+html:not(.static) .page .r13-pc.inv li::before{border-color:var(--on-inverse)}
+html:not(.static) .page .r13-pc .e-btn{margin-top:auto}
+html:not(.static) .page .r13-pay{margin-top:var(--space-fluid-m);color:var(--text)!important;font-size:var(--step--1)!important;font-weight:600}
+
+html:not(.static) .r13-qs{display:grid;gap:var(--s-3);max-width:var(--measure-wide,72ch)}
+html:not(.static) .page .r13-qs details{background:var(--surface-1);color:var(--text);border:var(--bw) solid var(--border-strong);box-shadow:var(--sh,4px) var(--sh,4px) 0 var(--shadow-ink)}
+html:not(.static) .page .r13-qs summary{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);min-height:56px;padding:var(--s-3) var(--s-4);font-weight:700;font-size:var(--step-0)!important;cursor:pointer;list-style:none}
+html:not(.static) .page .r13-qs summary::-webkit-details-marker{display:none}
+html:not(.static) .page .r13-qs summary::after{content:"+";flex:none;display:grid;place-items:center;width:32px;height:32px;font-family:var(--mono,monospace);font-size:var(--step-1);border:var(--bw) solid var(--border-strong)}
+html:not(.static) .page .r13-qs details[open] summary::after{content:"−";background:var(--accent);color:var(--on-accent);border-color:var(--brand-navy)}
+html:not(.static) .page .r13-qs details p{padding:0 var(--s-4) var(--s-4);color:var(--text)}
+html:not(.static) .page .r13-qs details a{color:var(--text);font-weight:700;text-decoration:underline}
+@media (hover:hover){html:not(.static) .page .r13-qs summary:hover{background:var(--surface-2,var(--surface-1))}}
+html:not(.static) .page .r13-qs summary:focus-visible{outline:3px solid var(--focus,#00758A);outline-offset:3px}
+
+html:not(.static) .page .e92 .e-reassure{font-size:var(--step--1)!important;font-weight:600;color:var(--ink-inv-muted,#B9C1DA)}
+
+/* ---------------------------------------------------------------- community band: full width while its numbers are hidden */
+@media (min-width:1024px){
+  html:not(.static) body .page:not(:has(>.tile.stat-real))>.comm{grid-column:2/14}
+  html:not(.static) .page:not(:has(>.tile.stat-real))>.comm{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--space-fluid-l);align-items:center}
+  html:not(.static) .page:not(:has(>.tile.stat-real))>.comm>.eyebrow,
+  html:not(.static) .page:not(:has(>.tile.stat-real))>.comm>.disp{grid-column:1}
+  html:not(.static) .page:not(:has(>.tile.stat-real))>.comm>p{grid-column:2;grid-row:1/4;align-self:center}
+  html:not(.static) .page:not(:has(>.tile.stat-real))>.comm>a{grid-column:2;grid-row:4;justify-self:start;padding-inline:var(--space-fluid-m)!important}
+}
+
+/* ---------------------------------------------------------------- desktop: the page order on the 12-column grid (r13-design-system owns columns) */
+@media (min-width:1024px){
+  /* hero member line drops a row; the reassurance line sits under the CTAs */
+  html:not(.static) body .page>:is(:nth-child(10),:nth-child(11),:nth-child(12),:nth-child(13),:nth-child(14),:nth-child(15),:nth-child(16)){grid-row:9}
+  html:not(.static) body .page>.r13-reassure{grid-column:2/8;grid-row:8;margin-top:var(--space-fluid-xs)!important;margin-bottom:var(--space-fluid-l)!important}
+  html:not(.static) body .page>.btn-or{grid-column:2/5}
+  html:not(.static) body .page>.btn-ol{grid-column:5/8;justify-self:start}
+  html:not(.static) body .page>.e-marq{grid-row:11}
+  html:not(.static) body .page>.e-stats{grid-row:12}
+  html:not(.static) body .page>:nth-child(21){grid-row:13}
+  html:not(.static) body .page>:nth-child(22),html:not(.static) body .page>:nth-child(23){grid-row:14}
+  html:not(.static) body .page>:nth-child(24){grid-row:15}
+  html:not(.static) body .page>:is(:nth-child(25),:nth-child(26),:nth-child(27)){grid-row:16}
+  html:not(.static) body .page>:is(:nth-child(28),:nth-child(29),:nth-child(30),:nth-child(31)){grid-row:17}
+  html:not(.static) body .page>.r13-how{grid-column:1/-1;grid-row:18;margin-top:var(--space-fluid-l)!important}
+  html:not(.static) body .page>.e-paths{grid-row:19;margin-top:0!important}
+  html:not(.static) body .page>.e-skills{grid-row:20}
+  html:not(.static) body .page>:nth-child(32){grid-row:21/23;margin-top:0!important}
+  html:not(.static) body .page>:is(:nth-child(33),:nth-child(34)){grid-row:21;margin-top:0!important}
+  html:not(.static) body .page>:is(:nth-child(36),:nth-child(37)){grid-row:22}
+  html:not(.static) body .page>.r13-plans{grid-column:1/-1;grid-row:23;margin-top:var(--space-fluid-l)!important}
+  html:not(.static) body .page>.e-news{grid-row:24}
+  html:not(.static) body .page>.tit{grid-row:25}
+  html:not(.static) body .page>.r13-faq{grid-column:1/-1;grid-row:26}
+  html:not(.static) body .page>.e-final{grid-row:27}
+  html:not(.static) body .page>.lfoot{grid-row:28}
+}
+
+/* ---------------------------------------------------------------- below 1024: the same order with `order` (the grid follows DOM order) */
+@media (max-width:1023px){
+  html:not(.static) body .page>.hdr{order:-4}
+  html:not(.static) body .page>:is(:nth-child(2),:nth-child(3),:nth-child(4),:nth-child(5),:nth-child(6),:nth-child(7),:nth-child(8),:nth-child(9)){order:-3}
+  html:not(.static) body .page>.r13-reassure{order:-2;grid-column:1/-1}
+  html:not(.static) body .page>:is(:nth-child(10),:nth-child(11),:nth-child(12),:nth-child(13),:nth-child(14),:nth-child(15),:nth-child(16),:nth-child(17),:nth-child(18),:nth-child(19),:nth-child(20)){order:-1}
+  html:not(.static) body .page>.e-marq{order:1}
+  html:not(.static) body .page>.e-stats{order:2}
+  html:not(.static) body .page>:is(:nth-child(21),:nth-child(22),:nth-child(23),:nth-child(24),.feat){order:3}
+  html:not(.static) body .page>.r13-how{order:4}
+  html:not(.static) body .page>.e-paths{order:5}
+  html:not(.static) body .page>.e-skills{order:6}
+  html:not(.static) body .page>:is(.comm,.tile){order:7}
+  html:not(.static) body .page>.r13-plans{order:8}
+  html:not(.static) body .page>.e-news{order:9}
+  html:not(.static) body .page>.tit{order:10}
+  html:not(.static) body .page>.r13-faq{order:11}
+  html:not(.static) body .page>.e-final{order:12}
+  html:not(.static) body .page>.lfoot{order:13}
+  html:not(.static) body .page>.e-marq{margin-top:var(--s-6)!important}
+}
+
+/* dark theme: the community band paints every span in on-accent ink (css/theme.css); its navy button keeps light ink */
+html:not(.static)[data-theme=dark] .comm .btn-nv .r13-lv{color:var(--on-inverse)!important}
