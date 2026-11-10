@@ -108,7 +108,10 @@
       if (t.nodeType === 1 && t.hasAttribute("data-ccbg-t")) t.classList.add("ccbg-cut");
       else if (t.nodeType === 3 && t.textContent.trim()) { var sp = document.createElement("span"); sp.setAttribute("data-ccbg-t", ""); sp.className = "ccbg-cut"; e.insertBefore(sp, t); sp.appendChild(t); } }); });
   }
-  { cut(); addEventListener("load", function () { cut(); setTimeout(cut, 1500); }); }
+  /* r13 seo (Q21 perf): each pass walks every text node with getComputedStyle; run them in idle time so they never sit in
+     the load-time long tasks (same three passes as before: after parse, after load, 1.5 s later for late content). */
+  var idle = function (f) { (window.requestIdleCallback || setTimeout)(f, { timeout: 800 }); };
+  { idle(cut); addEventListener("load", function () { idle(cut); setTimeout(function () { idle(cut); }, 1500); }); }
   window.CC_BG = { info: function () { return { live: live, worker: !!w, text: rl(TXT, 0, 48, 1), occ: OCC.length }; }, sync: sync, mode: mode, set: function (m) { try { localStorage.cc_bg_motion = m; } catch (e) {} sync(); } };
   new MutationObserver(function () { setTimeout(cut, 260); if (live || want()) sync(); }).observe(d, { attributes: true, attributeFilter: ["data-theme"] });
   (rm.addEventListener ? rm.addEventListener.bind(rm, "change") : rm.addListener.bind(rm))(function () { if (live) sync(); });

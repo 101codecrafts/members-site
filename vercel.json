@@ -92,6 +92,21 @@
       ]
     },
     {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<host>.+)\\.vercel\\.app"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
       "source": "/(admin|auth|checkout|settings|settings-apps|tutor|builder|seller|upgrade|cart|orders|verify)(\\.html)?",
       "headers": [
         {

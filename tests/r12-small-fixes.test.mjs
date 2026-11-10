@@ -4,12 +4,12 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 const rd = (f) => readFileSync(new URL('../' + f, import.meta.url), 'utf8');
 
-test('no built page has a double-escaped entity in <title>/<meta>; events title decodes to "Events & Meetups"', () => {
+test('no built page has a double-escaped entity in <title>/<meta>; events title decodes to "Tech Events & Meetups …" (r13 seo title)', () => {
   for (const f of readdirSync(new URL('..', import.meta.url)).filter((f) => f.endsWith('.html'))) {
     const h = rd(f); const head = h.slice(0, h.indexOf('</head>'));
     assert.ok(!/&amp;(amp|lt|gt|quot|#\d+);/.test(head), f);
   }
-  assert.match(rd('events.html'), /<title>Events &amp; Meetups · 101 Codecrafts<\/title>/);
+  assert.match(rd('events.html'), /<title>Tech Events &amp; Meetups in Kampala and online · 101 Codecrafts<\/title>/);   // r13 seo: entity-based title, & still escaped once
 });
 test('auth-flow field(): label holds only the name; hint + error outside it, linked by aria-describedby (hint first)', () => {
   const src = rd('js/auth-flow.js');

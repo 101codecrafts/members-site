@@ -1,4 +1,4 @@
-/* Motion layer: GSAP 3 (+ScrollTrigger, SplitText), Lenis smooth scroll, count-ups, tilt/magnetic hover,
+/* Motion layer: GSAP 3 (+SplitText, loaded on demand), Lenis smooth scroll, count-ups, tilt/magnetic hover,
    canvas grid particles. Final frames equal the static layout, so screenshots after settle match ?static=1.
    Off when: ?static=1, Lite/data-saver mode, or prefers-reduced-motion. */
 (function () {
@@ -27,49 +27,67 @@
   html.classList.add("fx");
 
   function ready(fn) { document.readyState !== "loading" ? fn() : document.addEventListener("DOMContentLoaded", fn); }
+  /* r13 seo (QA Q21, landing Lighthouse 37 / TBT 5.3 s): GSAP + SplitText (+ Lenis on the landing) are no longer four
+     render-path <script> tags on every page. They load here, only when motion is on, and only if the page has something
+     to animate. Entrances are set up lazily: whatever is already on screen when the page opens is shown as it is (no
+     hidden-then-revealed hero), and everything below gets its tween when it comes near the viewport. GSAP reads computed
+     style for every target it starts, and on the landing those reads at load cost 5.5 s of style recalculation at 4x CPU
+     (getComputedStyle inside gsap, perf/profile-before-index.txt); now they happen one section at a time while scrolling.
+     ScrollTrigger is gone (its only job was "start once when visible"; an IntersectionObserver does that). URLs + SRI are
+     written into LIBS by tools/build.py from its LIBS list (single source). */
+  const LIBS = /*LIBS*/{"gsap":["https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js","sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc"],"split":["https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js","sha384-xb96EMJeax+NLXMC88ZBa1xAeAW+kn+horHh/zFlbMLG2UPWhMJJSlv7fi57hS+Q"],"lenis":["https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js","sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu"]}/*END*/;
+  const load = k => new Promise((ok, no) => { const l = LIBS[k]; if (!l) return no(new Error(k));
+    if (document.querySelector(`script[data-lib="${k}"]`)) return ok();
+    const s = document.createElement("script"); s.src = l[0]; s.integrity = l[1]; s.crossOrigin = "anonymous"; s.dataset.lib = k;
+    s.onload = ok; s.onerror = no; document.head.append(s); });
+  const near = (el, fn) => { const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); fn(); } }, { rootMargin: "0px 0px 20% 0px" }); io.observe(el); };
   ready(async () => {
+    const vh = innerHeight, onScreen = el => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < vh && r.width > 0; };
+    const split = [...document.querySelectorAll(".split")].filter(h => !onScreen(h));
+    const groups = (appShell() ? [] : [".tool", ".lp", ".act", ".feat", ".tile", ".path", ".tcard", ".qa", ".feed", ".ev", ".rcard", ".ncard", ".kpi", ".card"])
+      .map(sel => [...document.querySelectorAll(sel)].filter(el => !onScreen(el))).filter(els => els.length);
+    const counts = [...document.querySelectorAll("[data-count]")];
+    const smooth = document.body.dataset.smooth ? document.body.dataset.smooth === "on" : document.body.dataset.page === "landing";
+    if (!split.length && !groups.length && !counts.length && !smooth) return;
+    /* wait for the page to finish loading, then for an idle moment, so none of this competes with first paint */
+    await new Promise(r => document.readyState === "complete" ? r() : addEventListener("load", r, { once: true }));
+    await new Promise(r => (window.requestIdleCallback || setTimeout)(r, { timeout: 1500 }));
+    try { await load("gsap"); if (split.length) await load("split"); if (smooth) await load("lenis"); } catch (e) { return; }
     try { await document.fonts.ready; } catch (e) {}
-    const g = window.gsap;
-    /* ---- count-ups (10K+, 500+, 100+ …): animate to the exact printed value ---- */
-    document.querySelectorAll("[data-count]").forEach(el => {
+    const g = window.gsap; if (!g) return;
+    if (window.SplitText) g.registerPlugin(SplitText);
+    /* ---- count-ups (10K+, 500+, 100+ …): animate to the exact printed value when they come into view ---- */
+    counts.forEach(el => near(el, () => {
       const end = +el.dataset.count, suf = el.dataset.suffix || "", sep = el.dataset.sep;
       const fmt = v => (sep ? Math.round(v).toLocaleString("en-US") : Math.round(v)) + suf;
       const o = { v: 0 };
-      if (g) g.to(o, { v: end, duration: 1.6, ease: "power3.out", delay: .3, onUpdate: () => el.textContent = fmt(o.v), onComplete: () => el.textContent = fmt(end),
-        scrollTrigger: window.ScrollTrigger ? { trigger: el, start: "top 95%", once: true } : undefined });
-    });
-    if (g) {
-      if (window.ScrollTrigger) g.registerPlugin(ScrollTrigger);
-      if (window.SplitText) g.registerPlugin(SplitText);
-      /* ---- heading reveals ---- */
-      document.querySelectorAll(".split").forEach((h, i) => {
-        if (window.SplitText) {
-          /* aria:"auto" names the host with aria-label, which is prohibited on a plain <div>/<span> (ARIA 1.2). Those hosts get a
-             visually hidden copy of the text while the chars are split and aria-hidden; revert() puts the original text back. */
-          const named = /^(H[1-6]|A|BUTTON)$/.test(h.tagName) || h.hasAttribute("role");
-          let sr = null;
-          if (!named) { sr = document.createElement("span"); sr.className = "sr-only"; sr.textContent = h.textContent.replace(/\s+/g, " ").trim(); h.before(sr); }
-          const s = SplitText.create(h, { type: "chars", charsClass: "ch", aria: named ? "auto" : "hidden" });
-          g.from(s.chars, { yPercent: 110, opacity: 0, duration: .7, ease: "power4.out", stagger: .018, delay: .1 + i * .05,
-            scrollTrigger: window.ScrollTrigger ? { trigger: h, start: "top 92%", once: true } : undefined, onComplete: () => { s.revert(); if (sr) { sr.remove(); h.removeAttribute("aria-hidden"); } } });
-        }
-      });
-      /* ---- staggered entrances ---- */
-      const groups = appShell() ? [] : [".tool", ".lp", ".act", ".feat", ".tile", ".path", ".tcard", ".qa", ".feed", ".ev", ".rcard", ".ncard", ".kpi", ".card"];
-      groups.forEach(sel => {
-        const els = [...document.querySelectorAll(sel)]; if (!els.length) return;
-        g.from(els, { y: 26, opacity: 0, duration: .6, ease: "power3.out", stagger: .06, clearProps: "transform,opacity",
-          scrollTrigger: window.ScrollTrigger ? { trigger: els[0], start: "top 95%", once: true } : undefined });
-      });
-    }
+      g.to(o, { v: end, duration: 1.6, ease: "power3.out", delay: .3, onUpdate: () => el.textContent = fmt(o.v), onComplete: () => el.textContent = fmt(end) });
+    }));
+    /* ---- heading reveals (below the first screen only) ---- */
+    split.forEach(h => near(h, () => {
+      if (!window.SplitText || onScreen(h)) return;   // scrolled into view before the library arrived: leave it as it is
+      /* aria:"auto" names the host with aria-label, which is prohibited on a plain <div>/<span> (ARIA 1.2). Those hosts get a
+         visually hidden copy of the text while the chars are split and aria-hidden; revert() puts the original text back. */
+      const named = /^(H[1-6]|A|BUTTON)$/.test(h.tagName) || h.hasAttribute("role");
+      let sr = null;
+      if (!named) { sr = document.createElement("span"); sr.className = "sr-only"; sr.textContent = h.textContent.replace(/\s+/g, " ").trim(); h.before(sr); }
+      const s = SplitText.create(h, { type: "chars", charsClass: "ch", aria: named ? "auto" : "hidden" });
+      g.from(s.chars, { yPercent: 110, opacity: 0, duration: .7, ease: "power4.out", stagger: .018, delay: .1,
+        onComplete: () => { s.revert(); if (sr) { sr.remove(); h.removeAttribute("aria-hidden"); } } });
+    }));
+    /* ---- staggered entrances (below the first screen only) ---- */
+    groups.forEach(els => near(els[0], () => {
+      const todo = els.filter(el => !onScreen(el)); if (!todo.length) return;
+      g.from(todo, { y: 26, opacity: 0, duration: .6, ease: "power3.out", stagger: .06, clearProps: "transform,opacity" });
+    }));
     /* ---- Lenis smooth scroll: the landing only (or a page that opts in with data-smooth="on"). Elsewhere it made
        wheel/keyboard scrolling lag the input on long reading pages (r12 interface). ---- */
-    const smooth = document.body.dataset.smooth ? document.body.dataset.smooth === "on" : document.body.dataset.page === "landing";
     if (window.Lenis && smooth) {
       const lenis = new Lenis({ lerp: .12 });
-      if (g && window.ScrollTrigger) { lenis.on("scroll", ScrollTrigger.update); g.ticker.add(t => lenis.raf(t * 1000)); g.ticker.lagSmoothing(0); }
-      else { const raf = t => { lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf); }
+      g.ticker.add(t => lenis.raf(t * 1000)); g.ticker.lagSmoothing(0);
     }
+  });
+  ready(() => {
     /* ---- tilt hover (pointer devices, marketing pages only). The magnetic pull on buttons was removed in r12: it moved
        the target while the pointer aimed at it and its inline translate cancelled the shared :active press (touch.css). ---- */
     if (matchMedia("(hover:hover)").matches && !appShell()) {
