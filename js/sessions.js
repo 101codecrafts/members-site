@@ -34,13 +34,16 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
   }
 
+  // r13: a signed-out visitor is being redirected to sign-in; a 401/403 is expected then, not an error worth a toast
+  function quiet(box, msg) { return function (err) { if (err && (err.status === 401 || err.status === 403)) return; if (msg) toast(msg, (err && err.message) || "101 can't answer right now. Try again in a minute.", true); }; }
+
   // ------------------------------------------------------ Connected apps ---
   function initApps() {
     var box = $("#apps"); if (!box) return;
     var msg = $("#apps-msg");
     function draw() {
       A.integrations().then(function (r) {
-        box.innerHTML = r.integrations.map(function (i) {
+        box.innerHTML = ((r && r.integrations) || []).map(function (i) {
           var p = A.PROVIDERS[i.provider];
           var right = i.provider === "jitsi"
             ? '<span class="ses-pill ok">On by default · no account needed</span>'
@@ -51,8 +54,8 @@
             (i.provider === "jitsi" ? "Free, open-source video. Rooms embed right inside 101 next to the whiteboard." : "Create " + esc(p.label) + " links automatically when you schedule a session.") +
             "</small></div>" + right + '<label class="ses-def"><input type="radio" name="def" value="' + i.provider + '"' + (i.default ? " checked" : "") + (i.provider !== "jitsi" && !i.connected ? " disabled" : "") + "> Default</label></div>";
         }).join("");
-        if (r.stub) toast(msg, "Preview mode: integrations are simulated until the backend endpoints are live.");
-      });
+        if (r && r.stub) toast(msg, "Preview mode: integrations are simulated until the backend endpoints are live.");
+      }, quiet(box, msg));
     }
     box.addEventListener("click", function (e) {
       var c = e.target.closest("[data-conn]"), d = e.target.closest("[data-disc]");
@@ -61,7 +64,7 @@
       }, function (err) { toast(msg, err.message || "Couldn't connect. Try again in a minute.", true); });
       if (d) A.disconnect(d.getAttribute("data-disc")).then(draw, function (err) { toast(msg, err.message || "Couldn't disconnect. Try again in a minute.", true); });
     });
-    box.addEventListener("change", function (e) { if (e.target.name === "def") A.setDefault(e.target.value).then(function (r) { if (r && r.ok === false) toast(msg, r.message || "Not saved. Try again in a minute.", true); else toast(msg, "Default video app saved."); }); });
+    box.addEventListener("change", function (e) { if (e.target.name === "def") A.setDefault(e.target.value).then(function (r) { if (r && r.ok === false) toast(msg, r.message || "Not saved. Try again in a minute.", true); else toast(msg, "Default video app saved."); }, quiet(box, msg)); });
     draw();
   }
 
@@ -70,22 +73,22 @@
     var list = $("#ses-list"); if (!list) return;
     function draw() {
       A.list().then(function (r) {
-        var ss = (r.sessions || []).slice().sort(function (a, b) { return new Date(a.starts_at) - new Date(b.starts_at); });
+        var ss = ((r && r.sessions) || []).slice().sort(function (a, b) { return new Date(a.starts_at) - new Date(b.starts_at); });
         list.innerHTML = ss.length ? ss.map(function (s) {
           var d = new Date(s.starts_at);
           return '<a class="li ses-li" href="session.html?id=' + encodeURIComponent(s.id) + '"><span class="date"><span>' + d.toLocaleString("en-GB", { month: "short", timeZone: "Africa/Kampala" }).toUpperCase() + "<br><b>" + d.toLocaleString("en-GB", { day: "numeric", timeZone: "Africa/Kampala" }) + '</b></span></span><div class="grow"><b>' + esc(s.title) + "</b><small>" + esc(fmt(s.starts_at)) + " · " + esc((A.PROVIDERS[s.provider] || {}).label || s.provider) + (s.whiteboard ? " · whiteboard" : "") + '</small></div><span class="ses-pill">Open →</span></a>';
         }).join("") : '<p class="ses-empty">No sessions yet. Sessions you book or schedule show up here with their join link.</p>';
-      });
+      }, quiet(list));
     }
     var form = $("#ses-form");
     if (form) {
       A.integrations().then(function (r) {
         var sel = form.provider;
-        sel.innerHTML = r.integrations.map(function (i) {
+        sel.innerHTML = ((r && r.integrations) || []).map(function (i) {
           var p = A.PROVIDERS[i.provider], ok = i.provider === "jitsi" || i.connected;
           return '<option value="' + i.provider + '"' + (ok ? "" : " disabled") + (i.default ? " selected" : "") + ">" + esc(p.label) + (ok ? "" : " — connect in Connected apps") + "</option>";
         }).join("");
-      });
+      }, quiet(form));
       var t = new Date(Date.now() + 864e5); t.setMinutes(0, 0, 0);
       var pad = function (n) { return ("0" + n).slice(-2); };
       form.starts_at.value = t.getFullYear() + "-" + pad(t.getMonth() + 1) + "-" + pad(t.getDate()) + "T" + pad(t.getHours()) + ":00";
@@ -151,10 +154,10 @@
         if (s.role !== "tutor" || !att) return;
         att.parentElement.hidden = false;
         A.attendance(id).then(function (a) {
-          var rows = a.attendance || [];
+          var rows = (a && a.attendance) || [];
           att.innerHTML = rows.length ? rows.map(function (x) { return "<tr><td>" + esc(x.name) + "</td><td>" + esc(x.role || "Learner") + "</td><td>" + esc(x.joined_at ? fmt(x.joined_at) : "—") + "</td></tr>"; }).join("") : '<tr><td colspan="3">Nobody has joined yet.</td></tr>';
           $("#ses-att-count").textContent = rows.length + (s.capacity ? " / " + s.capacity : "");
-        });
+        }, quiet(att));
       }
       loadAttendance();
       if (r.stub) toast($("#ses-stub"), "Preview mode: using local demo data until /api/v1/sessions is live.");

@@ -242,13 +242,13 @@
 
   /* =============================== INTERVIEW =============================== */
   async function interview() {
-    const r = await API.companies(); let co = Q.get("company") || "all";
+    const r0 = await API.companies(); const r = { items: ((r0 && r0.items) || []).map(c => ({ ...c, tags: c.tags || [] })), sets: (r0 && r0.sets) || [] }; let co = Q.get("company") || "all";
     $("#co-grid").innerHTML = `<button class="co" type="button" data-co="all" aria-pressed="false"><b>All</b><small>${r.sets.length} sets</small></button>` + r.items.map(c => `<button class="co" type="button" data-co="${c.id}" aria-pressed="false"><b>${esc(c.name)}</b><small>${c.sets} problems · ${c.mcq} MCQs</small><small>${c.tags.map(esc).join(" · ")}</small></button>`).join("");
     const render = () => { $$(".co").forEach(b => b.setAttribute("aria-pressed", b.dataset.co === co)); const l = r.sets.filter(s => co === "all" || s.company === co);
       $("#sets").innerHTML = l.length ? l.map(s => `<article class="acard ck"><div class="atop ck-eyebrow"><span class="atopic">${esc((r.items.find(c => c.id === s.company) || {}).name)}</span><span class="dpill ${dcls(s.level)}">${s.level}</span></div><h3 class="ck-title"><a class="ck-link" href="practice.html?company=${encodeURIComponent(s.company)}">${esc(s.title)}</a></h3><div class="ameta ck-meta ck-foot"><span>${s.problems} questions</span><span>${s.mins} min</span></div></article>`).join("") : `<p class="muted">No sets for this company yet — the quiz below is a good warm-up.</p>`; };
     $("#co-grid").onclick = e => { const b = e.target.closest(".co"); if (b) { co = b.dataset.co; render(); } }; render();
     const qz = await API.quiz("dsa-basics-1"); let i = 0, score = 0;
-    if (!qz) { $("#qz-title").textContent = "Warm-up quiz"; $("#quiz").innerHTML = `<p class="muted">No quiz is published yet. Check back soon.</p>`; return; }
+    if (!qz || !Array.isArray(qz.questions) || !qz.questions.length) { $("#qz-title").textContent = "Warm-up quiz"; $("#quiz").innerHTML = `<p class="muted">No quiz is published yet. Check back soon.</p>`; return; }
     $("#qz-title").textContent = qz.title;
     const show = () => {
       if (i >= qz.questions.length) { $("#quiz").innerHTML = `<div class="verdict ${score >= 4 ? "ok" : "run"}">You scored ${score}/${qz.questions.length}</div><p class="muted">${score >= 4 ? "Strong! Try a company set next." : "Read the linked tutorials and try again."}</p><div class="row"><button class="btn or" type="button" id="qz-again">Try again</button><a class="btn" href="learn.html?topic=dsa">DSA tutorials</a></div>`; $("#qz-again").onclick = () => { i = 0; score = 0; show(); }; $("#qz-again").focus(); return; }
