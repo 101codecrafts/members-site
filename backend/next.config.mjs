@@ -46,15 +46,22 @@ function strictHeaders() {
     { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' }];
 }
 const STRICT_SOURCE = `/:page(${STRICT_PAGES.join('|')}){.html}?`;
+// r13 seo (QA Q24): search indexing is a deliberate switch. Pages may be indexed only on the PRODUCTION deployment with
+// SITE_INDEXING=on (set it when the domain is live). Everything else (previews, a production build without the flag)
+// sends X-Robots-Tag: noindex on every response. /api is never indexable. Per-page noindex for signed-in pages is in
+// the HTML itself (front end tools/seo.py).
+export const SITE_INDEXING = process.env.VERCEL_ENV === 'production' && process.env.SITE_INDEXING === 'on';
+const NOINDEX = { key: 'X-Robots-Tag', value: 'noindex' };
 
 export default {
   reactStrictMode: true,
   poweredByHeader: false,
   async headers() {
     return [
-      { source: '/api/:path*', headers: securityHeaders },
+      { source: '/api/:path*', headers: [...securityHeaders, NOINDEX] },
       { source: '/((?!api/).*)', headers: pageHeaders },
       { source: STRICT_SOURCE, headers: strictHeaders() },    // after the general rule: Next applies the last match per key
+      ...(SITE_INDEXING ? [] : [{ source: '/:path*', headers: [NOINDEX] }]),   // r13 seo: previews and un-flagged builds stay out of search
     ];
   },
   async redirects() {
