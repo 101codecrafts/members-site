@@ -138,7 +138,7 @@
         var c = cta(t), price = t.tier === "free" ? 0 : (interval === "yearly" ? t.yearly_ugx : t.monthly_ugx);
         var per = t.tier === "free" ? "forever" : interval === "yearly" ? "a year" : "a month";
         var cls = "pl-card" + (t.highlight ? " is-hl" : "") + (need === t.tier ? " is-need" : "") + (c.current && !c.muted ? " is-current" : "");
-        return '<article class="' + cls + '" data-tier="' + esc(t.tier) + '">' + (need === t.tier ? '<span class="pl-flag cy">Unlocks what you need</span>' : t.highlight ? '<span class="pl-flag">Most picked</span>' : "") +
+        return '<article class="' + cls + '" data-tier="' + esc(t.tier) + '">' + (need === t.tier ? '<span class="pl-flag cy">Unlocks what you need</span>' : t.highlight ? '<span class="pl-flag">' + (document.documentElement.classList.contains("static") ? "Most picked" : "Recommended") + '</span>' : "") +
           '<h3 class="pl-name">' + esc(t.name) + '</h3><p class="pl-tag">' + esc(t.tagline || "") + '</p>' +
           '<div class="pl-price">' + (price == null ? '<b>—</b><small>price not set yet</small>' : '<b>' + (price === 0 ? "UGX 0" : esc(ugx(price))) + '</b><small>' + per + '</small>') + '</div>' +
           (t.price_is_suggestion && t.tier !== "free" ? '<span class="pl-sugg" title="Suggested price: the founder confirms final prices">SUGGESTED PRICE</span>' : "") +

@@ -214,7 +214,9 @@ def social_list_html():
                     f'<span class="ab-soc-txt"><b>{html.escape(x["label"])}</b><small>{html.escape(x.get("handle") or hint.get(x["icon"], ""))}</small></span><span class="sr-only"> (opens in a new tab)</span></a></li>' for x in SOCIAL_LIVE)
     soon = ''.join(f'<li><span class="ab-soc ab-soc--soon" role="link" aria-disabled="true"><span class="ab-soc-ic"><svg aria-hidden="true"><use href="#i-{x["icon"]}"/></svg></span>'
                    f'<span class="ab-soc-txt"><b>{html.escape(x["label"])}</b><small>Coming soon</small></span></span></li>' for x in SOCIAL_SOON)
-    return '<ul class="ab-socials" aria-label="101 Codecrafts online">' + items + soon + '</ul>'
+    # r13 landing: live site folds the dead "coming soon" tiles into one line (Hick/Tesler); ?static=1 keeps the tiles
+    soon_line = ('<li class="ab-soon-line r13-lv"><p><b>Coming soon:</b> ' + html.escape(', '.join(x["label"] for x in SOCIAL_SOON)) + '.</p></li>') if SOCIAL_SOON else ''
+    return '<ul class="ab-socials" aria-label="101 Codecrafts online">' + items + soon + soon_line + '</ul>'
 
 def wa_button():
     return f'<a class="btn ab-btn ab-btn-wa" href="{WA_INVITE}" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-wa"/></svg>Join the WhatsApp community<span class="sr-only"> (opens in a new tab)</span></a>' if WA_INVITE else ''
@@ -228,7 +230,7 @@ import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping
 bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css', 'loops.css', 'loaders.css'])   # loops.css: section loop bands (round 9); loaders.css: round-9 loaders + state loops   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
 bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css'])
 bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css'])
-bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css', 'r13-landing.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
     'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',

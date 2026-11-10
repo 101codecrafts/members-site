@@ -123,11 +123,12 @@
     <a href="community.html" data-i18n="nav.community" style="left:492px">COMMUNITY</a>
     <a href="resources.html" data-i18n="nav.resources" style="left:573px">RESOURCES</a>
     <a href="about.html" data-i18n="nav.about" style="left:652px">ABOUT</a>
-    <a class="nav-login" href="auth.html">LOGIN</a>
+    <a class="nav-login" href="auth.html">Sign in</a>
+    <a class="nav-pricing r13-lv" href="pricing.html">PRICING</a>
   </nav>
   <button class="hsearch" type="button" data-search aria-label="Search 101 Codecrafts"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
-  <a class="login hov on-dark" href="auth.html" data-i18n="cta.login">LOGIN</a>
-  <a class="join hov on-dark" href="auth.html?mode=join"><span><span class="jl">JOIN</span><span class="jx"> COMMUNITY</span></span> <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
+  <a class="login hov on-dark" href="auth.html" data-i18n="cta.login"><span class="r13-st">LOGIN</span><span class="r13-lv">Sign in</span></a>
+  <a class="join hov on-dark" href="auth.html?mode=join"><span class="r13-st"><span class="jl">JOIN</span><span class="jx"> COMMUNITY</span></span><span class="r13-lv">Join free</span> <svg class="i" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
   <button class="hburg" type="button" aria-controls="lnav" aria-expanded="false" aria-label="Open menu"><svg class="i ic-open" aria-hidden="true"><use href="#i-menu"/></svg><svg class="i ic-close" aria-hidden="true"><use href="#i-xmark"/></svg></button>
 </header>
 
@@ -137,9 +138,9 @@
 <h1 id="start" tabindex="-1" class="disp split" style="left:33px;top:100px;font-size:46.6px;transform:scaleY(1.208);color:var(--nv)">YOUR IT</h1>
 <div class="disp split" style="left:33px;top:148px;font-size:46.6px;transform:scaleY(1.208);color:var(--nv)">JOURNEY</div>
 <div class="disp split t-or-lg" style="left:33px;top:196px;font-size:46.6px;transform:scaleY(1.208);color:var(--lor)">STARTS HERE</div>
-<p style="left:34px;top:257px;width:385px;font-size:12.6px;line-height:15px;font-weight:500;color:var(--nv)">Join our vibrant community to grow in IT as a programmer, <br>computer scientist, Data Analyst, ethical hacker, software engineer, <br>or other tech professional. We welcome all skill levels to share <br>knowledge, collaborate, and innovate.<a class="mc-cta" href="card.html"><svg aria-hidden="true"><use href="#i-badge"/></svg>Make your member card</a></p>
-<a class="btn-or hov" href="auth.html?mode=join" style="left:33px;top:331px;width:180px;height:35px">JOIN OUR COMMUNITY <svg class="i" style="width:15px;height:15px"><use href="#i-arrow"/></svg></a>
-<a class="btn-ol hov" href="#paths" style="left:228px;top:331px;width:176px;height:35px">EXPLORE LEARNING PATHS</a>
+<p style="left:34px;top:257px;width:385px;font-size:12.6px;line-height:15px;font-weight:500;color:var(--nv)"><span class="r13-st">Join our vibrant community to grow in IT as a programmer, <br>computer scientist, Data Analyst, ethical hacker, software engineer, <br>or other tech professional. We welcome all skill levels to share <br>knowledge, collaborate, and innovate.</span><span class="r13-lv">Learn coding, data, AI and cyber security for free, build real projects, and get help from mentors and peers in Kampala and online. No experience needed.</span><a class="mc-cta" href="card.html"><svg aria-hidden="true"><use href="#i-badge"/></svg>Make your member card</a></p>
+<a class="btn-or hov" href="auth.html?mode=join" style="left:33px;top:331px;width:180px;height:35px"><svg class="i" style="width:15px;height:15px;order:1"><use href="#i-arrow"/></svg><span class="r13-st">JOIN OUR COMMUNITY </span><span class="r13-lv">Join free </span></a><!-- r13: the arrow stays the first child (css/landing.fit.css nudges .page>:nth-child(8)>:nth-child(1)); order:1 draws it last -->
+<a class="btn-ol hov" href="#paths" style="left:228px;top:331px;width:176px;height:35px"><span class="r13-st">EXPLORE LEARNING PATHS</span><span class="r13-lv">Explore learning paths</span></a>
 <img data-stat-gate="members" src="assets/img/avatar-row-1.webp" alt="" style="left:34px;top:383px;width:30px;height:31px">
 <img data-stat-gate="members" src="assets/img/avatar-row-2.webp" alt="" style="left:65px;top:383px;width:30px;height:31px">
 <img data-stat-gate="members" src="assets/img/avatar-row-3.webp" alt="" style="left:96px;top:383px;width:30px;height:31px">
@@ -162,8 +163,7 @@ GROW</div>
 <!-- era92 polish: hero collage (live only; hidden under ?static=1). Overlaps the bento photo at >=1024px, a two-up row below. -->
 <div class="hcol">
   <span class="hc-photo"><img loading="lazy" decoding="async" src="assets/img/dash-hero-photo-800.webp" width="800" height="501" alt="A member at work on a 101 Codecrafts laptop"></span>
-  <!-- TODO(founder): replace with a real member quote (with their consent) and their first name + track. -->
-  <figure class="hc-chip"><blockquote>“Hands-on lessons that got me building real projects in my first month.”</blockquote><figcaption><span class="hc-av" aria-hidden="true">AN</span>101 Codecrafts member</figcaption></figure>
+  <!-- r13: the placeholder member quote chip is gone (no invented testimonials). Add a real quote only with the member's consent. -->
   <a class="hc-stat" href="#paths"><b>6</b><span>learning paths, from first line of code to first job</span></a>
 </div>
 
@@ -188,7 +188,7 @@ GROW</div>
   <div class="disp split" style="left:37px;top:30px;font-family:var(--disp2);font-size:43.4px;transform:scaleY(1.04);color:var(--nv)">MORE THAN A</div>
   <div class="disp split" style="left:37px;top:68px;font-family:var(--disp2);font-size:43.4px;transform:scaleY(1.04);color:var(--nv)">COMMUNITY</div>
   <p class="about-p" style="left:38px;top:117px;width:390px;font-size:12.5px;line-height:16.5px;font-weight:500;color:var(--nv)">We're building a global community of learners, creators, <br>and problem-solvers. Whether you're just starting or leveling up, <br>101 Codecrafts gives you the tools, support, and network <br>to achieve your goals.</p>
-  <a class="btn-nv hov on-dark" href="auth.html?mode=join" style="left:37px;top:191px;width:178px;height:33px">JOIN THE COMMUNITY <svg class="i" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
+  <a class="btn-nv hov on-dark" href="auth.html?mode=join" style="left:37px;top:191px;width:178px;height:33px"><span class="r13-st">JOIN THE COMMUNITY </span><span class="r13-lv">Join free </span><svg class="i" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
 </section>
 <div data-stat-gate="members" class="tile ck-skin" style="left:440px;top:819px;width:226px;height:112px;background:var(--lcy)"><svg style="left:32px;top:21px"><use href="#i-people"/></svg><b style="left:32px;top:60px" data-count="10" data-suffix="K+" data-site-stat="members" data-fmt="short">10K+</b><small style="left:32px;top:88px">ACTIVE MEMBERS</small></div>
 <div data-stat-gate="resources" class="tile on-dark ck-skin" style="left:677px;top:819px;width:277px;height:112px;background:var(--nv);color:#fff"><svg style="left:33px;top:16px;color:var(--lcy)"><use href="#i-openbook"/></svg><b style="left:33px;top:60px;color:var(--lcy)" data-count="50" data-suffix="+" data-site-stat="resources">50+</b><small style="left:33px;top:86px">LEARNING RESOURCES</small></div>
@@ -252,7 +252,7 @@ GROW</div>
 </section>
 
 <section class="e92 e-marq" aria-labelledby="e-marq-h">
-  <div class="e-in"><p class="e-kick" id="e-marq-h">Learn from free courses by</p></div>
+  <div class="e-in"><p class="e-kick" id="e-marq-h">Take free courses from</p></div>
   <div class="e-marquee"><div class="e-track"><ul class="e-set"><li><a class="e-tag " href="/go/p-freecodecamp" target="_blank" rel="noopener noreferrer">freeCodeCamp<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-coursera" target="_blank" rel="noopener noreferrer">Coursera<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-edx" target="_blank" rel="noopener noreferrer">edX<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-khan" target="_blank" rel="noopener noreferrer">Khan Academy<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag " href="/go/p-mitocw" target="_blank" rel="noopener noreferrer">MIT OpenCourseWare<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-google" target="_blank" rel="noopener noreferrer">Google<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-microsoft" target="_blank" rel="noopener noreferrer">Microsoft Learn<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-cisco" target="_blank" rel="noopener noreferrer">Cisco NetAcad<span class="sr-only"> (opens in a new tab)</span></a></li></ul><ul class="e-set" aria-hidden="true"><li><a class="e-tag " href="/go/p-freecodecamp" target="_blank" rel="noopener noreferrer" tabindex="-1">freeCodeCamp<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-coursera" target="_blank" rel="noopener noreferrer" tabindex="-1">Coursera<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-edx" target="_blank" rel="noopener noreferrer" tabindex="-1">edX<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-khan" target="_blank" rel="noopener noreferrer" tabindex="-1">Khan Academy<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag " href="/go/p-mitocw" target="_blank" rel="noopener noreferrer" tabindex="-1">MIT OpenCourseWare<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag or" href="/go/p-google" target="_blank" rel="noopener noreferrer" tabindex="-1">Google<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag cy" href="/go/p-microsoft" target="_blank" rel="noopener noreferrer" tabindex="-1">Microsoft Learn<span class="sr-only"> (opens in a new tab)</span></a></li><li><a class="e-tag inv" href="/go/p-cisco" target="_blank" rel="noopener noreferrer" tabindex="-1">Cisco NetAcad<span class="sr-only"> (opens in a new tab)</span></a></li></ul></div></div>
 </section>
 
@@ -300,7 +300,8 @@ GROW</div>
         <p class="e-kick">Ready when you are</p>
         <h2 id="e-final-h">Start your learning journey today</h2>
         <p>Free courses, real projects and a community that helps you keep going.</p>
-        <div class="e-row"><a class="e-btn or" href="auth.html?mode=join">Join 101 Codecrafts <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="e-btn ghost" href="courses.html">Browse courses</a></div>
+        <div class="e-row"><a class="e-btn or" href="auth.html?mode=join">Join free <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="e-btn ghost" href="courses.html">Browse courses</a></div>
+        <p class="e-reassure">Free account. No card needed.</p>
       </div>
     </div>
   </div>
@@ -313,6 +314,50 @@ GROW</div>
   <a href="index.html" style="left:384px">Home</a><a href="courses.html" style="left:440px">Learn</a><a href="community.html" style="left:493px">Community</a><a href="resources.html" style="left:571px">Resources</a><a href="about.html" style="left:645px">About</a>
   <div class="socials" data-socials><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on YouTube" style="left:798px;width:19px;height:19px"><svg><use href="#i-yt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Instagram" style="left:835px"><svg><use href="#i-ig"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on TikTok" style="left:868px"><svg><use href="#i-tt"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on X" style="left:901px"><svg><use href="#i-x"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on LinkedIn" style="left:933px"><svg><use href="#i-in"/></svg></a><a tabindex="-1" aria-hidden="true" aria-label="101 Codecrafts on Discord" style="left:966px;width:19px;height:19px"><svg><use href="#i-discord"/></svg></a></div>
 </footer>
+
+<!-- ============ r13 landing: live-only blocks, appended last so ?static=1 nth-child tuning (css/landing.fit.css) is untouched.
+     Placed in the live page order by css/r13-landing.css (grid rows ≥1024px, order below). ============ -->
+<p class="r13-reassure r13-lv"><svg aria-hidden="true"><use href="#i-check"/></svg>Free account<span aria-hidden="true">·</span>No card needed<span aria-hidden="true">·</span>All skill levels</p>
+
+<section class="e92 r13-how" id="how" aria-labelledby="r13-how-h">
+  <div class="e-in">
+    <div class="e-head"><div><p class="e-kick">How it works</p><h2 id="r13-how-h">Start in three steps</h2></div></div>
+    <ol class="r13-steps">
+      <li class="e-card"><span class="r13-n" aria-hidden="true">1</span><h3>Join free</h3><p>Create your account with your email. No card, no experience needed.</p></li>
+      <li class="e-card"><span class="r13-n" aria-hidden="true">2</span><h3>Pick a path</h3><p>Choose one of six learning paths, or any free course from freeCodeCamp, Coursera, edX and more.</p></li>
+      <li class="e-card"><span class="r13-n" aria-hidden="true">3</span><h3>Build and grow</h3><p>Make projects you can show, join workshops and study groups, and get help when you are stuck.</p></li>
+    </ol>
+    <a class="e-btn or" href="auth.html?mode=join">Join free <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </div>
+</section>
+
+<section class="e92 r13-plans" id="plans" aria-labelledby="r13-plans-h">
+  <div class="e-in">
+    <div class="e-head"><div><p class="e-kick">Plans</p><h2 id="r13-plans-h">Start free. Upgrade when you need more.</h2></div><a class="e-all" href="pricing.html">Compare plans <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+    <div class="r13-pgrid">
+      <article class="e-card r13-pc"><h3>Free</h3><p class="r13-pt">For everyone, forever</p>
+        <ul><li>Every external course, free</li><li>Your first 101 course: first lessons and previews</li><li>Buy and sell on the marketplace</li><li>AI help, a few messages a day</li></ul>
+        <a class="e-btn or" href="auth.html?mode=join">Join free <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+      <article class="e-card r13-pc inv"><h3>Standard, Plus and Pro</h3><p class="r13-pt">When you want more</p>
+        <ul><li>Every lesson in your 101 courses</li><li>Certificates you can verify</li><li>No ads and more AI help</li><li>Mentor sessions on Pro</li></ul>
+        <a class="e-btn ghost" href="pricing.html">See plans and prices</a></article>
+    </div>
+    <p class="r13-pay">Pay in Uganda shillings with MTN Mobile Money, Airtel Money or card. Cancel any time.</p>
+  </div>
+</section>
+
+<section class="e92 r13-faq" id="faq" aria-labelledby="r13-faq-h">
+  <div class="e-in r13-faq-in">
+    <div class="e-head"><div><p class="e-kick">FAQ</p><h2 id="r13-faq-h">Questions people ask</h2></div><a class="e-all" href="about.html#ab-faq">More answers <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+    <div class="r13-qs">
+      <details><summary>Is 101 Codecrafts free?</summary><p>Joining is free, and the Free plan stays free. During the launch month everything on 101 is free, with no ads. Paid plans unlock every lesson, certificates and no ads; prices are in Uganda shillings and shown before you pay. <a href="pricing.html">See plans</a>.</p></details>
+      <details><summary>Who can join?</summary><p>Anyone learning or working in tech, from Primary and O-Level to A-Level, university and professionals. No experience needed. Under 18? You can join with a parent or guardian’s consent.</p></details>
+      <details><summary>Where is 101 based?</summary><p>In Kampala, Uganda. Courses, the library, news and opportunities are online, so you can learn from anywhere. Members also meet in study groups and at <a href="events.html">events</a>.</p></details>
+      <details><summary>Do I get a certificate?</summary><p>Finish a 101 course on a paid plan to earn a 101 certificate with a code anyone can check on the <a href="verify.html">verify page</a>. Free partner courses, such as freeCodeCamp or Coursera, give their own certificates.</p></details>
+      <details><summary>How do I pay?</summary><p>MTN Mobile Money, Airtel Money, or a Visa or Mastercard card, through a secure checkout. 101 never sees your PIN or card number. Right now every checkout is a test: no real money moves.</p></details>
+    </div>
+  </div>
+</section>
 </div>
 
 <!-- ============ BELOW THE MOCKUP: Today in Tech ============ -->
