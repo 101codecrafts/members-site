@@ -3,7 +3,7 @@
 .app>*{position:absolute}
 
 /* sidebar */
-.side{left:0;top:0;width:244px;height:972px;background:#0B1236;color:#fff;font-family:var(--cond)}
+.side{left:0;top:0;width:244px;height:972px;background:var(--fill-inverse);color:#fff;font-family:var(--cond)}
 .side>*{position:absolute}
 .brand-logo{left:16px;top:16px;width:82px;height:46px}
 .brand-name{left:106px;top:20px;font-family:var(--disp2);font-size:16.3px;line-height:18.5px;color:#fff}
@@ -31,7 +31,7 @@
 .dot{width:8px;height:8px;border-radius:50%;background:var(--or)}
 .vrule{left:1260px;top:14px;width:1px;height:38px;background:#d9dee2}
 .me-av{left:1290px;top:11px;width:46px;height:46px;border-radius:50%;overflow:hidden}
-.me-name{left:1349px;top:16px;font-size:13.5px;font-weight:600;color:#0B1236}
+.me-name{left:1349px;top:16px;font-size:13.5px;font-weight:600;color:var(--text)}
 .me-role{left:1349px;top:34px;font-size:11px;color:#5a6670}
 .toprule{left:245px;top:63px;width:1291px;height:1px;background:#e4e8eb}
 
@@ -43,7 +43,7 @@
 .hero .kick{font-family:var(--cond);left:21px;top:14px;font-size:12px;font-weight:700;color:#141a1f;letter-spacing:.95px}
 .hero h1{left:20px;top:35px;transform:scaleY(1.153);transform-origin:0 0;font-family:var(--disp);font-weight:400;font-size:46.4px;line-height:42px;color:#141a1f;white-space:pre;word-spacing:4.5px}
 .hero p{font-family:var(--cond);left:21px;top:141px;width:350px;font-size:14.5px;line-height:19.8px;font-weight:500;color:#1c1f22}
-.hero .cta{left:22px;top:212px;width:168px;height:36px;background:#0B1236;color:var(--or);font-size:14px;font-weight:600;display:flex;align-items:center;gap:22px;padding-left:18px}
+.hero .cta{left:22px;top:212px;width:168px;height:36px;background:var(--fill-inverse);color:var(--or);font-size:14px;font-weight:600;display:flex;align-items:center;gap:22px;padding-left:18px}
 .cyanp{left:1120px;top:79px;width:105px;height:292px;background:#05e6f1}
 .cyanp>*{position:absolute}
 .cyanp .t{left:14px;top:26px;font-size:20px;line-height:22px;font-weight:700;color:#0B1236;letter-spacing:-.2px}
@@ -55,20 +55,20 @@
 .stat svg{position:absolute;width:36px;height:36px}
 .stat b{position:absolute;font-family:var(--body);font-weight:600;font-size:21px;line-height:22px}
 .stat small{position:absolute;font-size:11px;font-weight:500}
-.s1{left:261px;width:186px;background:#0B1236;color:#fff}
+.s1{left:261px;width:186px;background:var(--fill-inverse);color:#fff}
 .s2{left:462px;width:179px;background:#06e6f1;color:#0B1236}
 .s3{left:656px;width:237px;background:var(--or);color:#0B1236;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
 
 /* section heads */
 .rule{left:260px;width:962px;height:1px;background:#dfe5ea}
 .sec-ic{width:13px;height:12px;background:linear-gradient(var(--or) 0 4px,transparent 4px 8px,var(--or) 8px)}
-.sec-h{font-family:var(--disp);font-size:15.7px;line-height:20px;transform:scaleY(1.115);transform-origin:0 0;color:#0B1236;white-space:nowrap}
+.sec-h{font-family:var(--disp);font-size:15.7px;line-height:20px;transform:scaleY(1.115);transform-origin:0 0;color:var(--text);white-space:nowrap}
 .sec-sub{font-size:12.5px;color:#3e5d74;font-weight:500}
 .viewall{font-size:12.5px;font-weight:500;color:#1b8acb;display:flex;align-items:center;gap:20px}
 .viewall svg{width:14px;height:14px}
 
 /* tool cards */
-.tool{top:495px;width:183px;height:145px;background:#0B1236;border-radius:4px;color:#fff}
+.tool{top:495px;width:183px;height:145px;background:var(--fill-inverse);border-radius:4px;color:#fff}
 .tool>*{position:absolute}
 .tool .ib{left:17px;top:14px;width:46px;height:46px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#0B1236}
 .tool .ib svg{width:28px;height:28px}
@@ -84,8 +84,8 @@
 .lp .ib svg{width:22px;height:22px}
 .lp h4{left:17px;top:55px;font-size:12px;font-weight:600;white-space:nowrap}
 .lp small{left:17px;top:75px;font-size:10px;white-space:nowrap}
-.lp.o{background:var(--or);color:#0B1236}.lp.o .ib{background:#0B1236;color:var(--or)}.lp.o small{color:#5a3606}
-.lp.c{background:#06e6f1;color:#0B1236}.lp.c .ib{background:#0B1236;color:#06e6f1}.lp.c small{color:#15474d}
+.lp.o{background:var(--or);color:#0B1236}.lp.o .ib{background:var(--fill-inverse);color:var(--or)}.lp.o small{color:#5a3606}
+.lp.c{background:#06e6f1;color:#0B1236}.lp.c .ib{background:var(--fill-inverse);color:#06e6f1}.lp.c small{color:#15474d}
 .lp.d{background:#12191f;color:#fff}.lp.d .ib{background:var(--or);color:#0B1236}.lp.d small{color:#d8dee3}
 
 /* activity */
@@ -98,7 +98,7 @@
 .act .ago{left:21px;top:76px;font-size:9.5px;color:#5f6d78}
 .act .meta{top:75px;display:flex;gap:6px;font-size:10px;color:#203040;align-items:center}
 .act .meta svg{width:13px;height:13px}
-.study{left:946px;top:851px;width:276px;height:102px;background:#0B1236;color:#fff;overflow:hidden}
+.study{left:946px;top:851px;width:276px;height:102px;background:var(--fill-inverse);color:#fff;overflow:hidden}
 .study>*{position:absolute}
 
 /* right column */
@@ -111,16 +111,16 @@
 .feed>*{position:absolute}
 .feed .ci{left:5px;top:4px;width:41px;height:41px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .feed .ci svg{width:20px;height:20px}
-.feed b{left:61px;top:5px;font-size:10px;font-weight:500;color:#0B1236}
+.feed b{left:61px;top:5px;font-size:10px;font-weight:500;color:var(--text)}
 .feed small{left:61px;top:21px;font-size:9px;color:#3a6c8f}
 .feed i{right:7px;top:6px;font-size:8px;font-style:normal;color:#7f8a93}
 .ev{left:1252px;width:262px;height:53px}
 .ev>*{position:absolute}
 .ev .d{left:0;top:0;width:53px;height:53px;background:#e5e9eb;border-radius:3px;text-align:center}
-.ev .d small{position:absolute;left:0;right:0;top:7px;font-size:10px;font-weight:600;color:#0B1236}
-.ev .d b{position:absolute;left:0;right:0;top:18px;font-size:20px;font-weight:600;color:#0B1236}
+.ev .d small{position:absolute;left:0;right:0;top:7px;font-size:10px;font-weight:600;color:var(--text)}
+.ev .d b{position:absolute;left:0;right:0;top:18px;font-size:20px;font-weight:600;color:var(--text)}
 .ev .bar{left:62px;top:3px;width:2px;height:36px;background:var(--or)}
-.ev h5{left:77px;top:5px;font-size:11px;font-weight:500;color:#0B1236;white-space:nowrap}
+.ev h5{left:77px;top:5px;font-size:11px;font-weight:500;color:var(--text);white-space:nowrap}
 .ev .tm{left:77px;top:22px;font-size:9.5px;color:#3c6684}
 .ev .on{left:77px;top:38px;font-size:9.5px;color:#1f81b9}
 .brandcard{left:1252px;top:858px;width:258px;height:54px;background:linear-gradient(90deg,#0b1e33,#10161e 70%);border-radius:3px;color:#fff}

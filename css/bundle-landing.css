@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + landing.css + system.css + shell.css + touch.css + era.css + cards.css + interact.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + landing.css + system.css + shell.css + touch.css + era.css + cards.css + interact.css + ds.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -40,6 +40,7 @@
   --size-xl: 24px;
   --size-2xl: 32px;
   --size-3xl: 48px;
+  --space-0: 0px;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -49,6 +50,9 @@
   --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
   --radius-none: 0px;
   --radius-sm: 3px;
   --radius-md: 4px;
@@ -67,6 +71,49 @@
   --motion-ease: cubic-bezier(.2,.8,.2,1);
   --breakpoint-mobile: 760px;
   --breakpoint-tablet: 1100px;
+  --bp-compact: 0px;
+  --bp-medium: 761px;
+  --bp-expanded: 1100px;
+  --bp-wide: 1440px;
+  --grid-cols-compact: 4;
+  --grid-cols-medium: 8;
+  --grid-cols-expanded: 12;
+  --grid-margin-compact: 16px;
+  --grid-margin-medium: 24px;
+  --grid-margin-expanded: 32px;
+  --grid-gutter-compact: 16px;
+  --grid-gutter-medium: 24px;
+  --grid-gutter-expanded: 24px;
+  --grid-container-app: 1480px;
+  --grid-container-content: 1200px;
+  --grid-container-prose: 45rem;
+  --grid-card-min-sm: 192px;
+  --grid-card-min-md: 256px;
+  --grid-card-min-lg: 320px;
+  --elev-0: none;
+  --elev-1: 2px 2px 0 var(--shadow-ink, #0B1236);
+  --elev-2: 4px 4px 0 var(--shadow-ink, #0B1236);
+  --elev-3: 8px 8px 0 var(--shadow-ink, #0B1236);
+  --elev-accent: 4px 4px 0 var(--accent, #fc8c0c);
+  --bw-hair: 1px;
+  --bw-base: 2px;
+  --bw-focus: 3px;
+  --dur-instant: 100ms;
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-slow: 300ms;
+  --dur-loop: 600ms;
+  --ease-standard: cubic-bezier(.2,0,0,1);
+  --ease-emphasized: cubic-bezier(.2,.8,.2,1);
+  --ease-exit: cubic-bezier(.4,0,1,1);
+  --z-base: 0;
+  --z-raised: 2;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-drawer: 900;
+  --z-overlay: 1000;
+  --z-toast: 1100;
+  --z-skip: 9999;
   --step--2: clamp(0.75rem, 0.7309rem + 0.085vw, 0.8125rem);
   --step--1: clamp(0.875rem, 0.8559rem + 0.085vw, 0.9375rem);
   --step-0: clamp(1rem, 0.9617rem + 0.1701vw, 1.125rem);
@@ -165,14 +212,14 @@ img{display:block}
 .cc-toolbar{position:fixed;right:12px;bottom:12px;z-index:900;display:flex;gap:6px;align-items:center;background:var(--ink);color:#fff;padding:6px;border:2px solid var(--ink);box-shadow:var(--shadow-brutal-accent);font:600 12px var(--body)}
 .cc-toolbar label,.cc-toolbar button{display:flex;align-items:center;gap:6px;min-height:var(--touch-min-target);padding:0 10px;background:#1b2630;color:#fff;border:0;font:inherit;cursor:pointer}
 .cc-toolbar select{background:transparent;color:#fff;border:0;font:inherit;min-height:32px}
-.cc-toolbar select option{color:#0B1236}
+.cc-toolbar select option{color:var(--text)}
 .cc-toolbar svg{width:16px;height:16px}
 .cc-toolbar button[aria-pressed=true]{background:var(--or);color:var(--ink)}
-.cc-cookie{position:fixed;left:12px;bottom:12px;z-index:901;max-width:420px;background:#fff;color:var(--ink);border:2px solid var(--ink);box-shadow:var(--shadow-brutal);padding:14px 16px;font:500 13px/1.45 var(--body)}
+.cc-cookie{position:fixed;left:12px;bottom:12px;z-index:901;max-width:420px;background:var(--surface-1);color:var(--ink);border:2px solid var(--ink);box-shadow:var(--shadow-brutal);padding:14px 16px;font:500 13px/1.45 var(--body)}
 .cc-cookie a{text-decoration:underline}
 .cc-cookie div{display:flex;gap:8px;margin-top:10px}
 .btn-line,.btn-solid{min-height:var(--touch-min-target);padding:0 16px;font:700 13px var(--body);border:2px solid var(--ink);cursor:pointer}
-.btn-line{background:#fff;color:var(--ink)} .btn-solid{background:var(--or);color:var(--ink)}
+.btn-line{background:var(--surface-1);color:var(--ink)} .btn-solid{background:var(--or);color:var(--ink)}
 .gh-live{position:absolute;right:12px;top:14px;font:600 10px var(--body);color:#cfd6dc}
 
 /* Flow-layout pages (admin, tutor, library, news, auth, legal, profile, verify, 404, offline).
@@ -228,12 +275,12 @@ body.flow{background:var(--color-page);color:var(--ink);font:500 var(--step-0)/1
 .kpi.or{background:var(--or);border-color:var(--or)}.kpi.or small{color:#5a3606}
 .kpi.cy{background:var(--cy);border-color:var(--cy)}.kpi.cy small{color:#15474d}
 .kpi.ink{background:var(--ink);color:#fff}.kpi.ink small{color:#9fb0bd}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--touch-min-target);padding:0 16px;font:700 var(--step--1) var(--body);border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--touch-min-target);padding:0 16px;font:700 var(--step--1) var(--body);border:2px solid var(--ink);background:var(--surface-1);color:var(--ink);cursor:pointer;transition:transform .15s,box-shadow .15s}
 .btn:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow-brutal-sm)}
 .btn.or{background:var(--or)}.btn.ink{background:var(--ink);color:#fff}.btn.cy{background:var(--cy)}
 .btn.sm{min-height:36px;padding:0 10px;font-size:var(--step--2)}
 .btn.ok{background:var(--success-solid);color:#fff;border-color:var(--success-border)}
-.btn.no{background:#fff;color:var(--danger-text);border-color:var(--danger-border)}
+.btn.no{background:var(--surface-1);color:var(--danger-text);border-color:var(--danger-border)}
 .btn svg{width:16px;height:16px}
 .btn.lg{min-height:48px;padding:0 22px;font-size:var(--step-0)}
 table.t{width:100%;border-collapse:collapse;font-size:var(--step--1)}
@@ -252,7 +299,7 @@ table.t{width:100%;border-collapse:collapse;font-size:var(--step--1)}
 .chip{min-height:40px;padding:0 14px;border:2px solid var(--ink);background:#fff;font:700 var(--step--2) var(--body);cursor:pointer}
 .chip[aria-pressed=true]{background:var(--ink);color:var(--or)}
 .field{display:grid;gap:6px;font:700 var(--step--2) var(--body)}
-.field input,.field select,.field textarea{min-height:var(--touch-min-target);border:2px solid var(--ink);padding:8px 10px;font:500 var(--step-0) var(--body);background:#fff;color:var(--ink);width:100%}
+.field input,.field select,.field textarea{min-height:var(--touch-min-target);border:2px solid var(--ink);padding:8px 10px;font:500 var(--step-0) var(--body);background:var(--surface-1);color:var(--ink);width:100%}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .list{display:grid;gap:10px}
 .li{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);background:#fbfcfc}
@@ -343,7 +390,7 @@ ol.list{list-style:none}
 /* ---------- member feature components ---------- */
 .h3{font:600 var(--step-0)/1.3 var(--body);display:block;margin:8px 0 4px}
 .card p{font-size:var(--step-0)}
-.lvl{display:inline-flex;align-items:center;gap:5px;font:700 var(--step--2) var(--body);padding:2px 8px;border:2px solid var(--lv);color:var(--lv);background:#fff}
+.lvl{display:inline-flex;align-items:center;gap:5px;font:700 var(--step--2) var(--body);padding:2px 8px;border:2px solid var(--lv);color:var(--lv);background:var(--surface-1)}
 .lvl::before{content:"";width:7px;height:7px;background:var(--lv)}
 .rbody .lvl{align-self:flex-start;background:#fff}
 .tagx{font:700 var(--step--2) var(--body);border:2px solid var(--line);background:#f1f4f6;padding:2px 8px}
@@ -424,7 +471,7 @@ ol.list{list-style:none}
 .region-tag{display:inline-block;font:700 var(--step--2) var(--cond);letter-spacing:1.2px;padding:2px 8px;background:var(--or);color:var(--ink)}
 .region-tag.cy{background:var(--ink);color:var(--cy)}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding:20px}
-.ccard{display:flex;flex-direction:column;background:#fff;color:var(--ink);border:2px solid var(--ink);min-width:0;transition:transform .2s,box-shadow .2s}
+.ccard{display:flex;flex-direction:column;background:var(--surface-1);color:var(--ink);border:2px solid var(--ink);min-width:0;transition:transform .2s,box-shadow .2s}
 .cthumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,var(--pbg,#0B1236),#0B1236);border-bottom:2px solid var(--ink)}
 .cthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cph{position:absolute;left:14px;bottom:12px;right:14px;font:400 var(--step-2)/1.1 var(--disp);color:#fff}
@@ -434,7 +481,7 @@ ol.list{list-style:none}
 .acc{left:10px}
 .a-free{background:var(--success-solid);color:#fff;border-color:#fff}
 .a-audit{background:var(--cy);color:var(--ink)}
-.a-trial{background:#fff;color:var(--ink)}
+.a-trial{background:var(--surface-1);color:var(--ink)}
 .a-until{background:var(--or);color:var(--ink)}
 .a-aid{background:var(--ink);color:#fff;border-color:#fff}
 .cbtn{margin:12px 14px 0;width:calc(100% - 28px)}
@@ -504,7 +551,7 @@ ol.list{list-style:none}
 .free-tier{display:grid;gap:2px;background:#f1f4f6;border:1px solid var(--line);padding:8px 10px;font-size:var(--step--2)}
 .free-tier b{font:700 var(--step--2) var(--cond);letter-spacing:.8px;text-transform:uppercase;color:var(--success-text)}
 .free-tier small{color:var(--mut);font-size:var(--step--2)}
-.ccard .tags span{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.ccard .tags span{background:var(--surface-1);border:1px solid var(--line);color:var(--ink)}
 .howto{border-top:2px dashed var(--line);padding-top:8px;margin-top:auto}
 .howto summary{cursor:pointer;font:700 var(--step-0) var(--body);min-height:44px;display:flex;align-items:center;color:var(--color-link)}
 .howto ol{padding-left:20px;display:grid;gap:4px;font-size:var(--step--2);margin:6px 0}
@@ -515,7 +562,7 @@ ol.list{list-style:none}
 /* ---------- site search overlay, demo-data note, form states (js/ui.js, js/pages.js) ---------- */
 #cc-search{position:fixed;inset:0;z-index:1200;background:rgba(6,10,32,.72);display:flex;justify-content:center;align-items:flex-start;padding:min(12vh,96px) 12px 12px}
 #cc-search[hidden]{display:none}
-.ccs-box{width:100%;max-width:620px;background:#fff;color:var(--ink);border:2px solid var(--ink);box-shadow:6px 6px 0 var(--or);max-height:80vh;display:flex;flex-direction:column}
+.ccs-box{width:100%;max-width:620px;background:var(--surface-1);color:var(--ink);border:2px solid var(--ink);box-shadow:6px 6px 0 var(--or);max-height:80vh;display:flex;flex-direction:column}
 .ccs-bar{display:flex;align-items:center;gap:10px;padding:0 6px 0 14px;border-bottom:2px solid var(--ink)}
 .ccs-bar svg{width:20px;height:20px;flex:none}
 .ccs-bar input{flex:1;min-width:0;border:0;outline:0;font:500 var(--step-1) var(--body);padding:14px 0;background:transparent;color:inherit}
@@ -525,7 +572,7 @@ ol.list{list-style:none}
 .ccs-list a:hover,.ccs-list a:focus-visible{background:#fff3e0;outline:0}.ccs-list a:focus-visible{outline:3px solid var(--color-focus);outline-offset:-3px}.ccs-bar:has(input:focus-visible){box-shadow:inset 0 -3px 0 var(--color-focus)}
 .ccs-list small{flex:none;font:700 var(--step--2) var(--body);letter-spacing:.5px;text-transform:uppercase;color:#5a6178}
 .ccs-empty{padding:16px;color:#5a6178;font:500 var(--step--1) var(--body)}
-.cc-demo{position:fixed;left:12px;top:12px;z-index:900;display:flex;align-items:center;gap:6px;background:#fff;color:var(--ink);border:2px solid var(--ink);padding:4px 4px 4px 10px;font:700 var(--step--2) var(--body);letter-spacing:.3px;box-shadow:3px 3px 0 var(--cy);transition:opacity .4s}
+.cc-demo{position:fixed;left:12px;top:12px;z-index:900;display:flex;align-items:center;gap:6px;background:var(--surface-1);color:var(--ink);border:2px solid var(--ink);padding:4px 4px 4px 10px;font:700 var(--step--2) var(--body);letter-spacing:.3px;box-shadow:3px 3px 0 var(--cy);transition:opacity .4s}
 .cc-demo button{width:28px;height:28px;border:0;background:none;cursor:pointer;font:700 var(--step--2) var(--body);color:inherit}
 .cc-demo.min{opacity:0;pointer-events:none}
 .form-msg{margin:4px 0 0;padding:10px 12px;font:600 var(--step--1)/1.4 var(--body);border-left:4px solid var(--ink);background:#f1f3f8}
@@ -588,7 +635,7 @@ html:not(.static) .flow-foot .socials{flex-wrap:wrap}
 /* links-fix: courses.html?path= / ?skill= active filter chip (orange fill, navy ink, hard shadow) */
 .cf-topic{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:12px}
 .cf-topic[hidden]{display:none}
-.tchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 4px 0 14px;border:2px solid var(--brand-navy,#0B1236);background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);font:700 var(--step--1) var(--body);letter-spacing:.02em;box-shadow:3px 3px 0 var(--brand-navy,#0B1236)}
+.tchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 4px 0 14px;border:2px solid var(--brand-navy,var(--border-strong));background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);font:700 var(--step--1) var(--body);letter-spacing:.02em;box-shadow:3px 3px 0 var(--brand-navy,var(--shadow-ink))}
 .tchip b{font-weight:800}
 .tchip-x{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}
 .tchip-x svg{width:16px;height:16px}
@@ -601,7 +648,7 @@ html:not(.static) .flow-foot .socials{flex-wrap:wrap}
 .about-card .ck-cta{color:var(--link,#146c9f)}
 .about-steps{counter-reset:st;list-style:none;padding:0;display:grid;gap:10px}
 .about-steps li{counter-increment:st;display:flex;gap:12px;align-items:flex-start}
-.about-steps li::before{content:counter(st);flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);border:2px solid var(--brand-navy,#0B1236);font-weight:800}
+.about-steps li::before{content:counter(st);flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--accent,#FF8C00);color:var(--on-accent,#0B1236);border:2px solid var(--brand-navy,var(--border-strong));font-weight:800}
 .about-cta{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
 /* r12 type-layout (Q11): the launch bar is in the HTML (tools/build.py PROMO_BAR) and shown before first paint by EARLY
    (html.promo-on) -> no late insert, no guessed reservation, no layout shift. ?static=1 never shows it (0 px vs the mockup). */
@@ -1764,13 +1811,13 @@ html:not(.static) .acct{min-height:44px}
 .acct-id b{font:600 14px/1.15 var(--body);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acct-id small{font:500 12px/1.2 var(--cond);color:var(--sh-mut);letter-spacing:.4px;text-transform:uppercase}
 .acct-chev{width:16px;height:16px;color:var(--sh-mut)}
-.acct-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:1000;min-width:240px;background:#fff;color:var(--sh-navy);border:2px solid var(--sh-navy);box-shadow:5px 5px 0 var(--sh-or);padding:6px 0}
+.acct-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:1000;min-width:240px;background:var(--surface-1);color:var(--sh-navy);border:2px solid var(--sh-navy);box-shadow:5px 5px 0 var(--sh-or);padding:6px 0}
 .acct-menu[hidden]{display:none}
 .am-head{display:flex;flex-direction:row;align-items:center;gap:12px;padding:10px 14px 12px;border-bottom:1px solid #DDE2EE;margin-bottom:4px}
 .am-head .am-av{width:44px;height:44px;font-size:16px;border:2px solid var(--sh-navy)}
 .am-who{display:flex;flex-direction:column;gap:2px;min-width:0}
 .am-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.am-chips i{font:700 11px/1 var(--mono,monospace);font-style:normal;letter-spacing:.8px;text-transform:uppercase;padding:4px 6px;border:1.5px solid var(--sh-navy);color:var(--sh-navy);background:#fff}
+.am-chips i{font:700 11px/1 var(--mono,monospace);font-style:normal;letter-spacing:.8px;text-transform:uppercase;padding:4px 6px;border:1.5px solid var(--sh-navy);color:var(--sh-navy);background:var(--surface-1)}
 .am-chips .am-plan{background:var(--sh-cy,#05e6f2);border-color:var(--sh-navy)}
 .am-chips i[hidden]{display:none}
 .acct-menu{width:min(320px,calc(100vw - 16px));max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px);overflow-y:auto;overscroll-behavior:contain}
@@ -1874,7 +1921,7 @@ html.role-visitor .shell .sbar,html.role-visitor .sb-scrim,html.role-visitor .to
    role-* class, so the mockups are untouched. */
 html.role-pending .sbar .sb-nav{visibility:hidden}
 html.role-pending body[data-gate-member] main,html.role-visitor body[data-gate] main{visibility:hidden}
-.shell .sb-nav .sb-upgrade{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:10px;margin:4px 0 12px;padding:10px;background:#fc8c0c;color:#0B1236;border:2px solid #0B1236;box-shadow:3px 3px 0 #000;font-weight:700;text-decoration:none;height:auto}
+.shell .sb-nav .sb-upgrade{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:10px;margin:4px 0 12px;padding:10px;background:#fc8c0c;color:#0B1236;border:2px solid var(--border-strong);box-shadow:3px 3px 0 #000;font-weight:700;text-decoration:none;height:auto}
 .shell .sb-nav .sb-upgrade svg{width:20px;height:20px;color:#0B1236}
 .shell .sb-nav .sb-upgrade:hover{background:#fc8c0c;color:#0B1236;transform:translate(-1px,-1px)}
 html.sb-collapsed .shell .sb-nav .sb-upgrade span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -2356,3 +2403,126 @@ html:not(.static) a.hc-stat:active{transform:translate(var(--press,2px),var(--pr
   html:not(.static) .page>:is(a[class*="btn"],a.hov,button.hov):active:not([aria-disabled=true]),
   html:not(.static) a.hc-stat:active{transform:none;opacity:.82}
 }
+
+/* =====================================================================================
+   101 Codecrafts design-system layer (round 13) — the CSS half of DESIGN.md (repo root).
+   Loaded LAST in bundle-app / bundle-dashboard / bundle-landing (before the page's own css and bundle-theme).
+   Every rule is scoped html:not(.static): ?static=1 (the pixel-matched mockups) never changes.
+   What it does:
+     1. ONE set of colour names: the legacy aliases (--mut, --line, --bg, --surface, --color-muted, …) point at the
+        theme roles (css/theme.css), so the 8 overlapping token schemes resolve to one palette.
+     2. ONE spacing scale: --s-N = N×4 px exactly (was fluid clamp values like 17.84 px / 39.35 px).
+     3. ONE responsive grid: 4 / 8 / 12 columns, margins 16 / 24 / 32, gutters 16 / 24 / 24 at
+        compact (<761) / medium (761–1099) / expanded (≥1100) — tokens --page-pad, --gutter, --cols.
+     4. ONE elevation scale in brutalist terms (hard offset shadows, no blur): 2 / 4 / 8 px.
+     5. Layout primitives for new markup (.ds-container .ds-grid .ds-auto .ds-stack .ds-cluster .ds-split .ds-sidebar).
+     6. The page frame + card grids of the main app/public pages, on that grid.
+   ===================================================================================== */
+
+/* ---------------------------------------------------------------- 1. colour aliases -> roles (theme-safe)
+   Only aliases that css/theme.css ALSO re-points in dark mode are listed (dark wins by specificity :root[data-theme=dark]
+   = 0,2,0 > 0,1,1), so dark mode is unchanged. --ink stays the brand navy in both themes on purpose (it is used as a
+   fill/border colour by components that have no dark mapping); new CSS uses --text / --fill-inverse / --border-strong. */
+html:not(.static){
+  --bg:var(--surface-2);                          /* page background (#F3F5F8): one value (was #f7f8f8 app, #f3f6f7 landing, #F3F5F8 system) */
+  --color-page:var(--bg); --color-page-landing:var(--bg); --surface-alt:var(--bg);
+  --surface:var(--surface-1); --surface-sunk:var(--surface-3);
+  --color-surface:var(--surface-2); --color-surface-2:var(--surface-3);
+  --mut:var(--text-muted); --color-muted:var(--text-muted); --ink-muted:var(--text-muted);   /* was #3e5d74 and #4A5578 */
+  --line:var(--border-subtle); --color-line:var(--border-subtle); --hairline:var(--border-subtle); /* was #e0e6ea and #D5DBE5 */
+  --color-orange-text:var(--accent-text); --color-orange-text-large:var(--accent-text); --accent-ink:var(--accent-text);
+  --color-cyan-text:var(--accent-2-text); --accent-2-ink:var(--accent-2-text);
+  --border-c:var(--border-strong);
+}
+
+/* ---------------------------------------------------------------- 2-4. scale, grid, elevation, motion (both themes)
+   html:root:not(.static) = 0,2,1 so these also beat the :root[data-theme=dark] block (values reference --shadow-ink,
+   which flips per theme). */
+html:root:not(.static){
+  /* spacing scale: 4-pt base, 8-pt rhythm */
+  --s-0:0px; --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px; --s-8:32px;
+  --s-10:40px; --s-12:48px; --s-16:64px; --s-20:80px; --s-24:96px;
+  /* semantic spacing (compact values; medium/expanded below) */
+  --page-pad:var(--grid-margin-compact,16px);     /* outer margin of every page */
+  --gutter:var(--grid-gutter-compact,16px);       /* between columns and between cards */
+  --cols:var(--grid-cols-compact,4);
+  --pad-card:var(--s-4);                          /* inside every card */
+  --gap-card:var(--gutter);
+  --gap-stack:var(--s-2);                         /* between lines inside a card */
+  --gap-ctl:var(--s-2);                           /* between buttons / chips in a row */
+  --gap-sec:var(--s-6); --gap-section:var(--gap-sec);   /* between page sections */
+  --card-min:var(--grid-card-min-md,256px);
+  /* elevation: hard offset shadows only (no blur, no radius) */
+  --sh:4px;
+  --shadow:var(--sh) var(--sh) 0 var(--shadow-ink);
+  --shadow-brutal-sm:4px 4px 0 var(--shadow-ink);     /* resting card = elevation 2 (was 3px here, 4px on .ck cards) */
+  --ck-sh:4px;
+  /* motion */
+  --motion-fast:var(--dur-fast,150ms); --motion-base:var(--dur-base,200ms);
+  --ck-dur:var(--dur-fast,150ms); --sh-dur:var(--dur-base,200ms);
+}
+@media (min-width:761px){            /* medium: --bp-medium */
+  html:root:not(.static){--page-pad:var(--grid-margin-medium,24px);--gutter:var(--grid-gutter-medium,24px);--cols:var(--grid-cols-medium,8);--gap-sec:var(--s-8)}
+}
+@media (min-width:1100px){           /* expanded: --bp-expanded */
+  html:root:not(.static){--page-pad:var(--grid-margin-expanded,32px);--gutter:var(--grid-gutter-expanded,24px);--cols:var(--grid-cols-expanded,12);--pad-card:var(--s-6);--gap-sec:var(--s-10)}
+}
+
+/* ---------------------------------------------------------------- 5. layout primitives (use these in new markup) */
+html:not(.static) .ds-container{width:100%;max-width:var(--grid-container-content,1200px);margin-inline:auto;padding-inline:var(--page-pad)}
+html:not(.static) .ds-container--app{max-width:var(--grid-container-app,1480px)}
+html:not(.static) .ds-container--prose{max-width:calc(var(--grid-container-prose,45rem) + 2 * var(--page-pad))}
+/* column grid: children span with .ds-span-N (N of 12 on expanded; clamps to the columns available) */
+html:not(.static) .ds-grid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--gutter)}
+html:not(.static) .ds-grid>*{grid-column:1/-1;min-width:0}
+@media (min-width:761px){
+  html:not(.static) .ds-grid>.ds-span-m-4{grid-column:span 4} html:not(.static) .ds-grid>.ds-span-m-8{grid-column:span 8}
+}
+@media (min-width:1100px){
+  html:not(.static) .ds-grid>.ds-span-3{grid-column:span 3} html:not(.static) .ds-grid>.ds-span-4{grid-column:span 4}
+  html:not(.static) .ds-grid>.ds-span-5{grid-column:span 5} html:not(.static) .ds-grid>.ds-span-6{grid-column:span 6}
+  html:not(.static) .ds-grid>.ds-span-7{grid-column:span 7} html:not(.static) .ds-grid>.ds-span-8{grid-column:span 8}
+  html:not(.static) .ds-grid>.ds-span-9{grid-column:span 9} html:not(.static) .ds-grid>.ds-span-12{grid-column:1/-1}
+}
+/* card / block grid: as many columns as fit, every card at least --card-min wide */
+html:not(.static) .ds-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--card-min)),1fr));gap:var(--gutter)}
+html:not(.static) .ds-auto--sm{--card-min:var(--grid-card-min-sm,192px)} html:not(.static) .ds-auto--lg{--card-min:var(--grid-card-min-lg,320px)}
+/* vertical rhythm / inline rows */
+html:not(.static) .ds-stack{display:flex;flex-direction:column;gap:var(--ds-gap,var(--gap-stack))}
+html:not(.static) .ds-stack--section{--ds-gap:var(--gap-sec)}
+html:not(.static) .ds-cluster{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ds-gap,var(--gap-ctl))}
+/* split screen (two equal halves, stacks on compact) and sidebar layout (fixed side + fluid main) */
+html:not(.static) .ds-split{display:grid;gap:var(--gutter);grid-template-columns:minmax(0,1fr)}
+@media (min-width:761px){html:not(.static) .ds-split{grid-template-columns:repeat(2,minmax(0,1fr))}}
+html:not(.static) .ds-sidebar{display:grid;gap:var(--gutter);grid-template-columns:minmax(0,1fr)}
+@media (min-width:1100px){
+  html:not(.static) .ds-sidebar{grid-template-columns:minmax(0,1fr) var(--rail-w,clamp(300px,24vw,380px))}
+  html:not(.static) .ds-sidebar--start{grid-template-columns:var(--ds-side,16rem) minmax(0,1fr)}
+}
+
+/* ---------------------------------------------------------------- 6. page frames on the grid
+   App pages (.shell > .main > .content): margin = --page-pad, 24 px top (16 compact), 64 px bottom, sections --gap-sec apart. */
+html:not(.static) .shell>.main>.content{padding:var(--s-6) var(--page-pad) var(--s-16);gap:var(--gap-sec);row-gap:var(--gap-sec);max-width:var(--grid-container-app,1480px)}
+@media (max-width:760px){html:not(.static) .shell>.main>.content{padding-top:var(--s-4)}}
+/* public pages with their own wrapper: pricing, about (content container 1200, same margins as the app) */
+html:not(.static) .pl-page{padding-inline:var(--page-pad)}
+html:not(.static) :is(.ab-page,.cm-page){--ab-pad:var(--page-pad)}
+/* card grids share one gutter; standard card grids share one minimum width (256 = 32 × 8) */
+html:not(.static) .content :is(.grid,.rgrid,.cgrid,.agrid,.fgrid,.ctgrid,.mk-grid,.cogrid,.related){gap:var(--gutter)}
+html:not(.static) .content :is(.rgrid,.agrid){grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--grid-card-min-md,256px)),1fr))}
+html:not(.static) .content :is(.fgrid,.ctgrid){grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--grid-card-min-lg,320px)),1fr))}
+html:not(.static) .content .cgrid{padding:var(--pad-card)}
+/* section heads sit --s-3 above their content (system.css density pass), titles and eyebrows on the 4-pt grid */
+html:not(.static) .sec-title{gap:var(--s-3);margin-bottom:var(--s-3)}
+html:not(.static) .sec-title h2{gap:var(--s-3)}
+
+/* ---------------------------------------------------------------- components on the scale
+   buttons 44 px (48 large), 16 px side padding (24 large); fields 44 px with 12 px side padding; chips 44 px. */
+html:not(.static) .btn{padding-inline:var(--s-4);gap:var(--s-2)}
+html:not(.static) .btn.lg{min-height:var(--s-12);padding-inline:var(--s-6)}
+html:not(.static) .field{gap:var(--s-2)}
+html:not(.static) .field :is(input,select,textarea){padding:var(--s-2) var(--s-3)}
+
+/* ---------------------------------------------------------------- a11y on inverse blocks
+   muted text inside navy blocks uses the inverse muted role (10.1:1), never the light-surface grey (axe: #potd .muted was 2.5:1) */
+html:not(.static) :is(.potd,.card.dark,.ck--inv) :is(.muted,small.muted,p.muted){color:var(--ink-inv-muted)}

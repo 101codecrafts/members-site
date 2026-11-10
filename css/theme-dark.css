@@ -8,10 +8,9 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .skip{background:var(--fill-inverse)}
 :where([data-theme=dark]) .cc-toolbar{background:var(--fill-inverse);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .cc-toolbar label,:where([data-theme=dark]) .cc-toolbar button{background:var(--fill-inverse)}
-:where([data-theme=dark]) .cc-toolbar select option{color:var(--text)}
-:where([data-theme=dark]) .cc-cookie{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong)}
+:where([data-theme=dark]) .cc-cookie{color:var(--text);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .btn-line,:where([data-theme=dark]) .btn-solid{border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .btn-line{background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .btn-line{color:var(--text)}
 /* --- app.css --- */
 :where([data-theme=dark]) body.flow{color:var(--text)}
 :where([data-theme=dark]) .sbar{background:var(--fill-inverse)}
@@ -31,18 +30,17 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .kpi.cy{color:var(--on-accent)}
 :where([data-theme=dark]) .kpi.ink{background:var(--fill-inverse)}
 :where([data-theme=dark]) .kpi.ink small{color:var(--text-muted)}
-:where([data-theme=dark]) .btn{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .btn{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .btn.or{color:var(--on-accent)}
 :where([data-theme=dark]) .btn.ink{background:var(--fill-inverse)}
 :where([data-theme=dark]) .btn.cy{color:var(--on-accent)}
-:where([data-theme=dark]) .btn.no{background:var(--surface-1)}
 :where([data-theme=dark]) .t th{border-bottom:2px solid var(--border-strong)}
 :where([data-theme=dark]) .pill.learner{color:#b3d8ee}
 :where([data-theme=dark]) .pill.tutor{color:#c4a9dc}
 :where([data-theme=dark]) .pill.admin{color:var(--text)}
 :where([data-theme=dark]) .chip{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .chip[aria-pressed=true]{background:var(--fill-inverse);color:var(--accent-text)}
-:where([data-theme=dark]) .field input,:where([data-theme=dark]) .field select,:where([data-theme=dark]) .field textarea{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .field input,:where([data-theme=dark]) .field select,:where([data-theme=dark]) .field textarea{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .li{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .date{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .prog{background:var(--surface-3);border:1px solid var(--border-strong);color:var(--text)}
@@ -67,7 +65,6 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .brandbar b{color:var(--text)}
 :where([data-theme=dark]) #cc-toast{background:var(--fill-inverse)}
 :where([data-theme=dark]) .social-preview{background:var(--fill-inverse);color:var(--on-inverse)}
-:where([data-theme=dark]) .lvl{background:var(--surface-1)}
 :where([data-theme=dark]) .rbody .lvl{background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .tagx{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .avs i{border:2px solid var(--border-subtle)}
@@ -101,13 +98,13 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .region-h{border-bottom:3px solid var(--border-strong)}
 :where([data-theme=dark]) .r101 .region-h{background:var(--fill-inverse)}
 :where([data-theme=dark]) .region-tag.cy{background:var(--fill-inverse)}
-:where([data-theme=dark]) .ccard{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong)}
+:where([data-theme=dark]) .ccard{color:var(--text);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .cthumb{background:linear-gradient(135deg,var(--fill-inverse),var(--fill-inverse));border-bottom:2px solid var(--border-strong);color:var(--on-inverse)}
 :where([data-theme=dark]) .price,:where([data-theme=dark]) .acc{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .price{background:var(--fill-inverse);color:var(--accent-text)}
 :where([data-theme=dark]) .price.free{border-color:var(--border-subtle)}
 :where([data-theme=dark]) .a-free{border-color:var(--border-subtle)}
-:where([data-theme=dark]) .a-trial{background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .a-trial{color:var(--text)}
 :where([data-theme=dark]) .a-aid{background:var(--fill-inverse);border-color:var(--border-subtle)}
 :where([data-theme=dark]) .tutor svg{color:var(--text)}
 :where([data-theme=dark]) .pmark{border:2px solid var(--border-strong)}
@@ -130,23 +127,20 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .sec-note{background:#362b1b;border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .sec-note svg{color:var(--text)}
 :where([data-theme=dark]) .free-tier{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .ccard .tags span{background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .ccard .tags span{color:var(--text)}
 :where([data-theme=dark]) .playground .pg-out{background:var(--fill-inverse);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) #cc-search{background:var(--fill-inverse);color:var(--on-inverse)}
-:where([data-theme=dark]) .ccs-box{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong)}
+:where([data-theme=dark]) .ccs-box{color:var(--text);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ccs-bar{border-bottom:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ccs-list a{color:var(--text)}
 :where([data-theme=dark]) .ccs-list a:hover,:where([data-theme=dark]) .ccs-list a:focus-visible{background:#362c1b}
 :where([data-theme=dark]) .ccs-list small{color:var(--text-muted)}
 :where([data-theme=dark]) .ccs-empty{color:var(--text-muted)}
-:where([data-theme=dark]) .cc-demo{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong)}
+:where([data-theme=dark]) .cc-demo{color:var(--text);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .form-msg{border-left:4px solid var(--border-strong);background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .form-msg.info{background:#362b1b;color:var(--text)}
-:where([data-theme=dark]) .tchip{border:2px solid var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
-:where([data-theme=dark]) .about-steps li::before{border:2px solid var(--border-strong)}
 /* --- dashboard.css --- */
 :where([data-theme=dark]) .app{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .side{background:var(--fill-inverse)}
 :where([data-theme=dark]) .invite{border:1px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .invite .inv-btn{border:2px solid var(--border-subtle)}
 :where([data-theme=dark]) .search{background:var(--surface-3);color:var(--text)}
@@ -155,40 +149,28 @@ html:where([data-theme=dark]),:where([data-theme=dark]) body{color:var(--text)}
 :where([data-theme=dark]) .tb-ic{color:var(--text)}
 :where([data-theme=dark]) .dot{color:var(--on-accent)}
 :where([data-theme=dark]) .vrule{background:var(--surface-3);color:var(--text)}
-:where([data-theme=dark]) .me-name{color:var(--text)}
 :where([data-theme=dark]) .me-role{color:var(--text-muted)}
 :where([data-theme=dark]) .toprule{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .hero{color:var(--on-accent)}
-:where([data-theme=dark]) .hero .cta{background:var(--fill-inverse)}
 :where([data-theme=dark]) .cyanp{color:var(--on-accent)}
 :where([data-theme=dark]) .blk{background:var(--fill-inverse);color:var(--on-inverse)}
 :where([data-theme=dark]) .blk.o{color:var(--on-accent)}
-:where([data-theme=dark]) .s1{background:var(--fill-inverse)}
 :where([data-theme=dark]) .rule{background:var(--surface-3);color:var(--text)}
-:where([data-theme=dark]) .sec-h{color:var(--text)}
 :where([data-theme=dark]) .sec-sub{color:#c5d3de}
 :where([data-theme=dark]) .viewall{color:#9dcfed}
-:where([data-theme=dark]) .tool{background:var(--fill-inverse)}
 :where([data-theme=dark]) .tool .tag{border:1px solid var(--border-strong);background:var(--fill-inverse)}
-:where([data-theme=dark]) .lp.o .ib{background:var(--fill-inverse)}
-:where([data-theme=dark]) .lp.c .ib{background:var(--fill-inverse)}
 :where([data-theme=dark]) .lp.d{background:var(--surface-1)}
 :where([data-theme=dark]) .act{background:var(--bg);border:1px solid var(--border-subtle);color:var(--text)}
 :where([data-theme=dark]) .act .who{color:var(--text-muted)}
 :where([data-theme=dark]) .act q{color:#c2d3e0}
 :where([data-theme=dark]) .act .ago{color:var(--text-muted)}
 :where([data-theme=dark]) .act .meta{color:var(--text)}
-:where([data-theme=dark]) .study{background:var(--fill-inverse)}
 :where([data-theme=dark]) .panel{background:var(--bg);border:1px solid var(--border-subtle);color:var(--text)}
 :where([data-theme=dark]) .qa-h{background:var(--surface-1)}
-:where([data-theme=dark]) .feed b{color:var(--text)}
 :where([data-theme=dark]) .feed small{color:#bad0e0}
 :where([data-theme=dark]) .feed i{color:var(--text-muted)}
 :where([data-theme=dark]) .ev .d{background:var(--surface-3);color:var(--text)}
-:where([data-theme=dark]) .ev .d small{color:var(--text)}
-:where([data-theme=dark]) .ev .d b{color:var(--text)}
 :where([data-theme=dark]) .ev .bar{color:var(--on-accent)}
-:where([data-theme=dark]) .ev h5{color:var(--text)}
 :where([data-theme=dark]) .ev .tm{color:#bfd2df}
 :where([data-theme=dark]) .ev .on{color:#a6d2ec}
 :where([data-theme=dark]) .brandcard{background:linear-gradient(90deg,var(--fill-inverse),var(--surface-1) 70%)}
@@ -272,9 +254,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .shell .topbar .ib .dot{color:var(--on-accent)}
 :where([data-theme=dark]) .tb-btn.ghost:hover{border-color:var(--border-subtle)}
 :where([data-theme=dark]) .tb-btn.cta:hover{background:var(--surface-1);border-color:var(--border-subtle);color:var(--text)}
-:where([data-theme=dark]) .acct-menu{background:var(--surface-1)}
 :where([data-theme=dark]) .am-head{border-bottom:1px solid var(--border-subtle)}
-:where([data-theme=dark]) .am-chips i{background:var(--surface-1)}
 :where([data-theme=dark]) .am-chips .am-plan{color:var(--on-accent)}
 :where([data-theme=dark]) .am-sep{border-top:1px solid var(--border-subtle)}
 :where([data-theme=dark]) .am-val{color:var(--text-muted)}
@@ -283,12 +263,12 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .acct-menu .am-roles{border-top:1px solid var(--border-subtle)}
 :where([data-theme=dark]) .am-label{color:var(--text-muted)}
 :where([data-theme=dark]) .acct-menu .am-out{border-top:1px solid var(--border-subtle)}
-:where([data-theme=dark]) .shell .sb-nav .sb-upgrade{border:2px solid var(--border-strong);box-shadow:3px 3px 0 var(--shadow-ink)}
+:where([data-theme=dark]) .shell .sb-nav .sb-upgrade{box-shadow:3px 3px 0 var(--shadow-ink)}
 /* --- feed.css --- */
 :where([data-theme=dark]) .ftabs{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
-:where([data-theme=dark]) .ftab{border-right:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .ftab{border-right:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .ftab[aria-selected=true]{background:var(--fill-inverse);color:var(--accent-text)}
-:where([data-theme=dark]) .fcard{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong)}
+:where([data-theme=dark]) .fcard{color:var(--text);border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .fc-meta .src b{color:var(--text)}
 :where([data-theme=dark]) .fbadge{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .fbadge.t-africa,:where([data-theme=dark]) .fbadge.ty-scholarship,:where([data-theme=dark]) .fbadge.ty-grant,:where([data-theme=dark]) .fbadge.ty-fellowship{color:var(--on-accent)}
@@ -304,7 +284,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .facts dd{color:var(--text)}
 :where([data-theme=dark]) .elig{color:var(--text)}
 :where([data-theme=dark]) .atag{border:2px solid var(--border-strong);background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .fcd{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .fcd{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .fcd.warm{color:var(--on-accent)}
 :where([data-theme=dark]) .fcd.closed{background:var(--surface-3);color:var(--text-muted)}
 :where([data-theme=dark]) .closing{background:var(--fill-inverse);border:2px solid var(--border-strong)}
@@ -312,7 +292,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .ann-card.unread h2::after{border:2px solid var(--border-strong);color:var(--on-accent)}
 :where([data-theme=dark]) .ann-banner{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .bell-btn{color:var(--text)}
-:where([data-theme=dark]) .bell-pop{background:var(--surface-1);color:var(--text);border:2px solid var(--border-strong);box-shadow:6px 6px 0 var(--shadow-ink)}
+:where([data-theme=dark]) .bell-pop{color:var(--text);border:2px solid var(--border-strong);box-shadow:6px 6px 0 var(--shadow-ink)}
 :where([data-theme=dark]) .ann-li.unread{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .top-links a{color:var(--text)}
 :where([data-theme=dark]) .aud-fs{border:2px solid var(--border-strong)}
@@ -321,12 +301,11 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .ai-out{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .fw-list{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .fw-list a{color:var(--text)}
-:where([data-theme=dark]) .obadge{background:var(--fill-inverse);border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .ev-price{background:var(--surface-1)}
+:where([data-theme=dark]) .obadge{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ev-price.paid{border-color:var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .cal-d{background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .cal-d.has{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .cal-ev{border-left:4px solid var(--border-strong);background:var(--bg);color:var(--text)}
+:where([data-theme=dark]) .cal-ev{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .cal-ev:hover{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .ev-map{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ticket{border:2px dashed var(--border-strong)}
@@ -337,7 +316,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .isave:hover{border-color:var(--border-strong)}
 :where([data-theme=dark]) .isave[aria-pressed=true]{border-color:var(--border-strong);color:var(--on-accent)}
 /* --- market.css --- */
-:where([data-theme=dark]) .ib-sq{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .ib-sq{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .ib-sq[aria-pressed=true],:where([data-theme=dark]) .ib-sq.cur{background:var(--fill-inverse)}
 :where([data-theme=dark]) .mk-top{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .mk-bar{background:var(--fill-inverse);color:var(--on-inverse)}
@@ -347,7 +326,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .mk-mcat{color:var(--text)}
 :where([data-theme=dark]) .mk-mcat[aria-expanded=true]{color:var(--on-accent)}
 :where([data-theme=dark]) .mk-mpicks a{border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .mk-sbox input{border:2px solid var(--border-subtle);color:var(--text);background:var(--surface-1)}
+:where([data-theme=dark]) .mk-sbox input{border:2px solid var(--border-subtle);color:var(--text)}
 :where([data-theme=dark]) .mk-search .btn{border-color:var(--border-subtle)}
 :where([data-theme=dark]) .mk-ac{background:var(--surface-1);border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .mk-ac li[aria-selected=true],:where([data-theme=dark]) .mk-ac li:hover{color:var(--on-accent)}
@@ -370,33 +349,33 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .mk-card{background:var(--surface-1);border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .mk-thumb{border-bottom:2px solid var(--border-strong)}
 :where([data-theme=dark]) .mk-off{border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .mk-src{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .mk-src{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .mk-src.m101{color:var(--on-accent)}
 :where([data-theme=dark]) .mk-src.amazon{color:var(--on-accent)}
 :where([data-theme=dark]) .mk-src.alibaba{color:var(--on-accent)}
 :where([data-theme=dark]) .mk-src.deal{color:var(--on-accent)}
-:where([data-theme=dark]) .mk-tag{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .mk-tag{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .mk-tag.st-member{background:#1b3536}
 :where([data-theme=dark]) .mk-tag.st-business{background:#362b1b}
 :where([data-theme=dark]) .mk-filters-wrap{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .mk-filters-wrap>summary{border-bottom:2px solid var(--border-strong);background:var(--fill-inverse)}
 :where([data-theme=dark]) .mk-fc{color:var(--accent-text)}
-:where([data-theme=dark]) .mk-filters select,:where([data-theme=dark]) .mk-price input{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .mk-filters select,:where([data-theme=dark]) .mk-price input{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .mk-toolbar{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
-:where([data-theme=dark]) .mk-sort select{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .mk-sort select{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .mk-card.wide .mk-thumb{border-right:2px solid var(--border-strong)}
 :where([data-theme=dark]) .mk-crumbs a{color:var(--text)}
 :where([data-theme=dark]) .pi-main{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .pi-thumbs button{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .pi-price{border:2px solid var(--border-strong);background:var(--surface-3);color:var(--text)}
-:where([data-theme=dark]) .stepper input,:where([data-theme=dark]) .stepper span{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .stepper input,:where([data-theme=dark]) .stepper span{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) #pi-wish[aria-pressed=true]{background:#361b1b}
 :where([data-theme=dark]) .pi-escrow svg{color:var(--text)}
 :where([data-theme=dark]) .pi-escrow b{color:var(--text)}
 :where([data-theme=dark]) .pi-sname .av{border:2px solid var(--border-strong);color:var(--on-accent)}
 :where([data-theme=dark]) .pi-sstats div{border:1.5px solid var(--border-strong)}
 :where([data-theme=dark]) .pi-tabs{border-bottom:2px solid var(--border-strong)}
-:where([data-theme=dark]) .pi-tabs [role=tab]{border-right:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .pi-tabs [role=tab]{border-right:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .pi-tabs [role=tab][aria-selected=true]{background:var(--fill-inverse)}
 :where([data-theme=dark]) .pi-avg{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .pi-dist i{border:1.5px solid var(--border-strong)}
@@ -411,7 +390,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .co-logo.card{background:var(--fill-inverse)}
 :where([data-theme=dark]) .co-line img{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ord-items a{border:2px solid var(--border-strong)}
-:where([data-theme=dark]) .ord-track li::before{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .ord-track li::before{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .ord-track li.done{color:var(--text)}
 :where([data-theme=dark]) .ord-track li.done::before{background:var(--fill-inverse)}
 :where([data-theme=dark]) .ord-track li.done::after{background:var(--fill-inverse);color:var(--on-inverse)}
@@ -430,10 +409,10 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 /* --- practice.css --- */
 :where([data-theme=dark]) .stat-row div{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ttree h2{border-bottom:2px solid var(--border-strong)}
-:where([data-theme=dark]) .ttree button{background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .ttree button{color:var(--text)}
 :where([data-theme=dark]) .ttree button[aria-current=true]{background:var(--fill-inverse)}
 :where([data-theme=dark]) .ttree .subs button{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .acard{background:var(--surface-1);border:2px solid var(--border-strong);color:var(--text)}
+:where([data-theme=dark]) .acard{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .acard .atopic{color:var(--on-accent)}
 :where([data-theme=dark]) .art-nav h2,:where([data-theme=dark]) .art-toc h2{border-bottom:2px solid var(--border-strong)}
 :where([data-theme=dark]) .art-nav a,:where([data-theme=dark]) .art-toc a{color:var(--text)}
@@ -441,9 +420,9 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .art-toc a.on{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .art :not(pre)>code{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .ex{background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .codeblock{border:2px solid var(--border-strong);background:var(--fill-inverse)}
+:where([data-theme=dark]) .codeblock{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .cb-bar{background:var(--surface-1);border-bottom:2px solid var(--border-strong);color:var(--text)}
-:where([data-theme=dark]) .cb-bar [role=tab]{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .cb-bar [role=tab]{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .cb-bar [role=tab][aria-selected=true]{background:var(--fill-inverse);color:var(--accent-text)}
 :where([data-theme=dark]) .ai-box{border:2px solid var(--border-strong);background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .art-foot{border-top:2px solid var(--border-strong)}
@@ -462,7 +441,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .gutter{background:var(--fill-inverse);color:var(--on-inverse)}
 :where([data-theme=dark]) .p-head{border-bottom:2px solid var(--border-strong)}
 :where([data-theme=dark]) .ptabs{border-bottom:2px solid var(--border-strong)}
-:where([data-theme=dark]) .ptabs [role=tab]{background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .ptabs [role=tab]{color:var(--text)}
 :where([data-theme=dark]) .ptabs [role=tab][aria-selected=true]{background:var(--fill-inverse);color:var(--accent-text)}
 :where([data-theme=dark]) .p-body :not(pre)>code{background:var(--bg);color:var(--text)}
 :where([data-theme=dark]) .exbox{border:2px solid var(--border-strong)}
@@ -470,8 +449,8 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .hint{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .hint summary{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .ed-bar{border-bottom:2px solid var(--border-strong);background:var(--bg);color:var(--text)}
-:where([data-theme=dark]) .ed-bar select{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
-:where([data-theme=dark]) .ed-ta{color:var(--text);background:var(--surface-1)}
+:where([data-theme=dark]) .ed-bar select{border:2px solid var(--border-strong);color:var(--text)}
+:where([data-theme=dark]) .ed-ta{color:var(--text)}
 :where([data-theme=dark]) .res{border-top:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .vstats b{color:var(--text)}
 :where([data-theme=dark]) .case h4{background:var(--bg);color:var(--text)}
@@ -479,16 +458,15 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .ide .pane-r{border-left:2px solid var(--border-strong)}
 :where([data-theme=dark]) .io label{background:var(--bg)}
 :where([data-theme=dark]) .io textarea{color:var(--text)}
-:where([data-theme=dark]) .io pre{background:var(--fill-inverse)}
 :where([data-theme=dark]) .ct{background:var(--surface-1);border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .ct.live{background:var(--fill-inverse)}
 :where([data-theme=dark]) .ct.live .timer{color:var(--accent-text)}
 :where([data-theme=dark]) .livedot::before{background:var(--surface-1);color:var(--text)}
 :where([data-theme=dark]) .lb tr.me td{background:var(--surface-3);color:var(--text)}
 :where([data-theme=dark]) .lb .r1 b{color:var(--on-accent)}
-:where([data-theme=dark]) .co{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .co{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .co[aria-pressed=true]{background:var(--fill-inverse)}
-:where([data-theme=dark]) .qopt{border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .qopt{border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .qopt .k{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .qfb{background:var(--bg);color:var(--text)}
 @media (max-width:960px){
@@ -500,7 +478,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) body.solo{color:var(--text)}
 :where([data-theme=dark]) .solo .skip:focus{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .solo-top{background:var(--fill-inverse)}
-:where([data-theme=dark]) .solo-foot{background:var(--surface-1);border-top:2px solid var(--border-strong)}
+:where([data-theme=dark]) .solo-foot{border-top:2px solid var(--border-strong)}
 :where([data-theme=dark]) .solo-foot a{color:var(--text)}
 :where([data-theme=dark]) .slab{background:var(--surface-1);border:3px solid var(--border-strong);box-shadow:10px 10px 0 var(--shadow-ink);color:var(--text)}
 :where([data-theme=dark]) .slab-band{border-bottom:3px solid var(--border-strong)}
@@ -513,7 +491,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 }
 :where([data-theme=dark]) .soon-list li::before{border:2px solid var(--border-strong);color:var(--on-accent)}
 /* --- auth.css --- */
-:where([data-theme=dark]) body.auth-page{background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) body.auth-page{color:var(--text)}
 :where([data-theme=dark]) .auth-page .skip:focus{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .auth-brand{background:var(--fill-inverse)}
 :where([data-theme=dark]) .auth-brand::after{border:4px solid var(--border-subtle);color:var(--on-accent)}
@@ -523,7 +501,7 @@ html:where([data-theme=dark]):not(.static) .kpi:is(.or,.cy) i{color:var(--text)!
 :where([data-theme=dark]) .auth-switch{border-top:2px solid var(--border-strong)}
 :where([data-theme=dark]) .auth-switch a{color:var(--text);text-decoration-color:var(--accent-text)}
 :where([data-theme=dark]) .auth-form :is(#si,#su) .field{color:var(--text)}
-:where([data-theme=dark]) .auth-form :is(#si,#su) input:not([type=checkbox]){border:2px solid var(--border-strong);background:var(--surface-1);color:var(--text)}
+:where([data-theme=dark]) .auth-form :is(#si,#su) input:not([type=checkbox]){border:2px solid var(--border-strong);color:var(--text)}
 :where([data-theme=dark]) .auth-form :is(#si,#su) fieldset{border:2px solid var(--border-strong)}
 :where([data-theme=dark]) .auth-form .cl-formButtonPrimary{border:2px solid var(--border-strong);box-shadow:4px 4px 0 var(--shadow-ink)}
 :where([data-theme=dark]) .auth-form .cl-formFieldInput{border:2px solid var(--border-strong)!important}
