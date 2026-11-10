@@ -23,7 +23,7 @@ import { sendEmails, templates } from '@/lib/email';
 import { checkEmail } from '@/services/email-guard';
 import { rpc } from '@/repositories/rpc';
 import { ADULT_AGE, MIN_AGE, ageOn, contractRoleName, isRootEmail, limitsFor, redirectFor, resolveRole, type Plan, type Role } from '@/lib/access';
-import { CONSENT_VERSION, stripForMinor, type OnboardingDraft, type OnboardingSubmit } from '@/lib/onboarding';
+import { CONSENT_VERSION, stripForMinor, tutorStatus, type TutorStatus, type OnboardingDraft, type OnboardingSubmit } from '@/lib/onboarding';
 
 
 /* ---- pre-migration tolerance -------------------------------------------------------------------------------------
@@ -94,6 +94,10 @@ export interface SessionView {
   role: Role; roles: string[]; plan: Plan; minor: boolean; consent: boolean; status: string | null;
   onboarding: { path: string | null; step: string | null; completed: boolean; draft: OnboardingDraft | null };
   guardian: { status: 'not_needed' | 'pending' | 'verified' };
+  /** r13 flows: what the tutor dashboard needs to explain "pending verification" instead of a dead-end builder. */
+  tutor: TutorStatus | null;
+  /** r13 flows: seller readiness (store + KYC) so the seller centre can say what is missing; null = no store yet. */
+  store: { name: string; kyc_status: string } | null;
   limits: Record<string, number | boolean | null>;
   redirect: string;
 }
@@ -103,13 +107,16 @@ export async function sessionView(s: Session): Promise<SessionView> {
   const id = await clerkIdentity(s.userId);
   const db = serviceClient();
   if (isRootEmail(id.email, id.emailVerified) && !s.roles.includes('super_admin')) await ensureRoot(s.userId, id);
-  const [rolesQ, ob, prof, consentQ, planQ] = await Promise.all([
+  const [rolesQ, ob, prof, consentQ, planQ, tprof, tapp, storeQ] = await Promise.all([
     db.from('user_roles').select('role').eq('user_id', s.userId),
     db.from('onboarding_state').select('path, step, draft, completed_at').eq('user_id', s.userId).maybeSingle()
       .then(async (r) => (r.error && isGap(r.error) ? { data: { path: null, step: null, draft: null, ...((await db.from('onboarding_state').select('completed_at').eq('user_id', s.userId).maybeSingle()).data ?? {}) }, error: null } : r)),
     db.from('profiles').select('account_status, is_minor').eq('id', s.userId).maybeSingle(),
     db.from('guardian_consents').select('verified_at, revoked_at').eq('user_id', s.userId).order('created_at', { ascending: false }).limit(1),
     rpc(s.db, 'my_plan').catch(() => null),
+    db.from('tutor_profiles').select('verification_status').eq('user_id', s.userId).maybeSingle().then((r) => r, () => ({ data: null })),
+    db.from('tutor_applications').select('status, review_note, created_at').eq('user_id', s.userId).order('created_at', { ascending: false }).limit(1).then((r) => r, () => ({ data: null })),
+    db.from('mkt_stores').select('name, kyc_status').eq('owner_id', s.userId).limit(1).then((r) => r, () => ({ data: null })),
   ]);
   const dbRoles = (rolesQ.data ?? []).map((r: { role: string }) => String(r.role));
   const onboarded = Boolean(ob.data?.completed_at);
@@ -120,11 +127,16 @@ export async function sessionView(s: Session): Promise<SessionView> {
   const rawPlan = (planQ as { plan?: string } | null)?.plan;
   const plan: Plan = rawPlan === 'standard' || rawPlan === 'plus' || rawPlan === 'pro' ? rawPlan : 'free';
   void mirrorClerkRole(s.userId, role);
+  const tutor = tutorStatus(dbRoles, (tprof as { data?: { verification_status?: string } | null }).data ?? null,
+    ((tapp as { data?: Array<{ status?: string; review_note?: string | null; created_at?: string }> | null }).data ?? [])[0] ?? null);
+  const st = ((storeQ as { data?: Array<{ name?: string; kyc_status?: string }> | null }).data ?? [])[0];
   return {
     user: { id: s.userId, email: id.email, name: id.name, image: id.image },
     role, roles: dbRoles.map(contractRoleName), plan, minor, consent, status: prof.data?.account_status ?? s.accountStatus,
     onboarding: { path: ob.data?.path ?? null, step: ob.data?.step ?? null, completed: onboarded, draft: (ob.data?.draft as OnboardingDraft | null) ?? null },
     guardian: { status: !minor ? 'not_needed' : consent ? 'verified' : 'pending' },
+    tutor,
+    store: st ? { name: String(st.name ?? ''), kyc_status: String(st.kyc_status ?? 'pending') } : null,
     limits: limitsFor({ role, plan }),
     redirect: redirectFor(role, onboarded || role === 'root_admin'),
   };
@@ -165,6 +177,12 @@ export async function submitOnboarding(s: Session, input: OnboardingSubmit, ipHa
   const consentRow = { consent_version: CONSENT_VERSION, terms_accepted_at: now };
 
   if (input.path === 'guest') {
+    // r13 flows (L31/LG4): DOB for every account. Under 18 cannot be a guest (no guardian path there): join as a learner.
+    const gYears = age(input.dob);
+    if (gYears < ADULT_AGE) throw new AppError('bad_request', 'Under 18: join as a learner so a parent or guardian can approve your account', { field: 'dob', path: 'learner' });
+    const gCur = (await db.from('profile_private').select('date_of_birth').eq('user_id', s.userId).maybeSingle()).data;
+    if (gCur?.date_of_birth && gCur.date_of_birth !== input.dob) throw new AppError('bad_request', 'Your date of birth is already on file. Ask an admin to correct it.');
+    await db.from('profile_private').upsert({ user_id: s.userId, email: id.email, date_of_birth: input.dob }, { onConflict: 'user_id' });
     await grant(s.userId, ['guest']);
     await upsertOnboarding({ user_id: s.userId, path: 'guest', step: 'done', draft: null, completed_at: now, ...consentRow });
     await db.from('profiles').update({ account_status: 'active', joined_at: now }).eq('id', s.userId).eq('account_status', 'pending');
