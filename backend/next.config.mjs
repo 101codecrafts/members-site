@@ -53,6 +53,9 @@ const STRICT_SOURCE = `/:page(${STRICT_PAGES.join('|')}){.html}?`;
 export const SITE_INDEXING = process.env.VERCEL_ENV === 'production' && process.env.SITE_INDEXING === 'on';
 const NOINDEX = { key: 'X-Robots-Tag', value: 'noindex' };
 
+// Old sign-in / sign-up URLs all land on the single auth page (same list as the static repo's vercel.json).
+export const AUTH_ALIASES = ['/signin.html', '/signin', '/signup.html', '/signup', '/onboarding.html', '/onboarding', '/login', '/register'];
+
 export default {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -65,7 +68,11 @@ export default {
     ];
   },
   async redirects() {
-    return [{ source: '/ai.html', destination: '/ai-tools.html', permanent: true }];
+    // Mirrors the static front end's vercel.json redirects (repo/vercel.json); Next keeps the query string by default.
+    return [
+      { source: '/ai.html', destination: '/ai-tools.html', permanent: true },
+      ...AUTH_ALIASES.map((source) => ({ source, destination: '/auth.html', permanent: true })),
+    ];
   },
   async rewrites() {
     // Friendly public URLs → versioned API (deep-link friendly for native apps).
@@ -75,6 +82,7 @@ export default {
       { source: '/u/:username', destination: '/api/v1/portfolio/:username' },
       // session whiteboard iframe target -> branded coming-soon page (static front end)
       { source: '/whiteboard/:id', destination: '/whiteboard.html' },
+      { source: '/auth', destination: '/auth.html' },   // static vercel.json rewrite: pretty URL for the auth page
       { source: '/', destination: '/index.html' },
     ];
   },
