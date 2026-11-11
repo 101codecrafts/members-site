@@ -2598,8 +2598,9 @@ html:not(.static) :is(.flow-foot,.page>.lfoot)>.ftx::after{content:"";position:a
 @keyframes r13i-glint{from{background-position:-60% 0,0 100%,0 0}to{background-position:160% 0,0 100%,0 0}}
 @keyframes r13i-drift{from{transform:translateX(0)}to{transform:translateX(-152px)}}
 @keyframes r13i-type{from{transform:translateX(0)}to{transform:translateX(min(80vw,960px))}}
-html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc{display:flex!important;position:static!important;align-items:center;gap:var(--s-2);flex-basis:100%;margin:0;font:600 var(--step--2)/1.4 var(--font-mono);letter-spacing:.04em;color:var(--on-inverse);opacity:.9}
-html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc::before{content:"";flex:none;width:8px;height:8px;background:var(--accent-2);border:var(--bw) solid var(--on-inverse)}
+html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc{display:block!important;position:static!important;flex-basis:100%;width:auto!important;max-width:100%!important;margin:0;text-wrap:balance;font:600 var(--step--2)/1.4 var(--font-mono);letter-spacing:.04em;color:var(--on-inverse);opacity:.9}
+html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc [data-kla-time]{display:inline;white-space:nowrap}
+html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc::before{content:"";display:inline-block;vertical-align:.1em;margin-right:var(--s-2);width:8px;height:8px;background:var(--accent-2);border:var(--bw) solid var(--on-inverse)}
 html.static :is(.flow-foot,.lfoot) :is(.ftx,.ft-loc){display:none!important}
 
 /* ---------------------------------------------------------------- 7. about: the leaders hang from a cord and sway
@@ -2632,10 +2633,11 @@ html:not(.static) .ab-page .ab-val-t{overflow-wrap:normal;word-break:normal;hyph
    (Inspora: Project card component — progress ring + "3 left"; agent dashboard — done items struck through;
    usage meter — big mono numbers over a segmented bar; sleep dashboard — mono KPIs that lift) */
 html:not(.static) .fs-head{align-items:center}
+html:not(.static) .fs-count{display:inline-flex;align-items:center;gap:var(--s-3)}
+html:not(.static) .fs-ring b{display:none}
 html:not(.static) .fs-ring{--p:0;flex:none;display:inline-grid;place-items:center;width:44px;height:44px;border:var(--bw) solid var(--border-strong);border-radius:50%;
   background:conic-gradient(var(--accent) calc(var(--p) * 1%),var(--surface-2) 0);font:700 11px/1 var(--font-mono);color:var(--text)}
 html:not(.static) .fs-ring::before{content:"";grid-area:1/1;width:28px;height:28px;border-radius:50%;background:var(--surface-1,var(--surface));border:var(--bw) solid var(--border-strong)}
-html:not(.static) .fs-ring b{grid-area:1/1;position:relative;font-weight:700}
 html:not(.static) .fs-left{display:block;margin-top:var(--s-2);font:700 var(--step--2)/1.2 var(--font-mono);letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted)}
 html:not(.static) .fs-item.is-done .fs-name>:is(a,span){text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--accent)}
 html:not(.static) .fs-item.is-next{border-color:var(--border-strong);box-shadow:var(--elev-2)}
@@ -2654,3 +2656,89 @@ html:not(.static) .shell .kpi :is(b,strong,.v,.kpi-v){font-variant-numeric:tabul
   html:not(.static) :is(.hcol .hc-photo,.page .e-skills .e-shot)::after{display:none}
 }
 html.lite:not(.static) :is(.hcol .hc-photo,.page .e-skills .e-shot)::after{display:none}
+
+/* ---------------------------------------------------------------- 10. bolder page tops (founder, 11 Nov: "page tops look nearly unchanged")
+   Inspora patterns: QED's hard-framed hero with visible layout guides; heydamir / DayDream oversized display type over a mono
+   kicker, revealed line by line; brutalist ticker strips; block offset shadows. Applied to four tops only:
+   landing hero, about hero, courses head, dashboard greeting. Ticker words are 101's own (Learn. Build. Collaborate. Grow. +
+   the subjects the site already lists); generated text is silent for screen readers (content: "…" / ""). */
+html:not(.static){--r13t-tick:36px;--r13t-guide:color-mix(in srgb,var(--border-strong) 9%,transparent)}
+/* shared: the ticker strip (a navy band whose text scrolls; static in reduced motion / Lite) */
+html:not(.static) body[data-page="landing"] .page>.lhero::after,
+html:not(.static) body[data-page="about"] .ab-hero::after,
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h::after{
+  content:"LEARN \2726  BUILD \2726  COLLABORATE \2726  GROW \2726  CODING \2726  AI \2726  DATA \2726  CYBER SECURITY \2726  CLOUD \2726  LEARN \2726  BUILD \2726  COLLABORATE \2726  GROW \2726  CODING \2726  AI \2726  DATA \2726  CYBER SECURITY \2726  CLOUD \2726  " / "";
+  position:absolute;left:0;top:0;z-index:1;height:var(--r13t-tick);width:max-content;min-width:200%;box-sizing:border-box;padding-left:var(--s-4);
+  display:flex;align-items:center;white-space:pre;pointer-events:none;
+  font:700 var(--step--2)/1 var(--font-mono);letter-spacing:.12em;color:var(--on-inverse);
+  background:var(--fill-inverse);border-bottom:var(--bw) solid var(--border-strong)}
+@media (prefers-reduced-motion:no-preference){html:not(.static):not(.lite) body[data-page="landing"] .page>.lhero::after,
+html:not(.static):not(.lite) body[data-page="about"] .ab-hero::after,
+html:not(.static):not(.lite) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h::after{animation:r13t-tick 40s linear infinite}
+}
+@keyframes r13t-tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* shared: layout guides (12 hairline columns + a 4-pt baseline) and corner crop marks */html:not(.static) body[data-page="about"] .ab-hero,
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h{
+  background-image:
+    linear-gradient(var(--border-strong),var(--border-strong)) 0 var(--r13t-tick)/16px 2px no-repeat,
+    linear-gradient(var(--border-strong),var(--border-strong)) 0 var(--r13t-tick)/2px 16px no-repeat,
+    linear-gradient(var(--border-strong),var(--border-strong)) 100% 100%/16px 2px no-repeat,
+    linear-gradient(var(--border-strong),var(--border-strong)) 100% 100%/2px 16px no-repeat,
+    repeating-linear-gradient(90deg,var(--r13t-guide) 0 1px,transparent 1px calc(100% / 12)),
+    repeating-linear-gradient(0deg,transparent 0 23px,var(--r13t-guide) 23px 24px)}
+/* shared: staggered line reveal (clip + lift; compositor-only, the box never moves) */
+@media (prefers-reduced-motion:no-preference){html:not(.static):not(.lite) body[data-page="about"] .ab-hero-copy>*,
+html:not(.static):not(.lite) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h>div:first-child>*,
+html:not(.static):not(.lite) body[data-page="landing"] .page>.eyebrow:nth-child(3),
+html:not(.static):not(.lite) body[data-page="landing"] .page>h1#start,
+html:not(.static):not(.lite) body[data-page="landing"] .page>.disp.split:nth-child(5),
+html:not(.static):not(.lite) body[data-page="landing"] .page>.disp.split:nth-child(6),
+html:not(.static):not(.lite) body[data-page="landing"] .page>p:nth-child(7){animation:r13t-rise .6s var(--ease-emphasized) both}html:not(.static):not(.lite) body[data-page="about"] .ab-hero-copy>:nth-child(2),
+html:not(.static):not(.lite) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h>div:first-child>:nth-child(2),
+html:not(.static):not(.lite) body[data-page="landing"] .page>h1#start{animation-delay:80ms}html:not(.static):not(.lite) body[data-page="about"] .ab-hero-copy>:nth-child(3),
+html:not(.static):not(.lite) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h>div:first-child>:nth-child(3),
+html:not(.static):not(.lite) body[data-page="landing"] .page>.disp.split:nth-child(5){animation-delay:160ms}html:not(.static):not(.lite) body[data-page="about"] .ab-hero-copy>:nth-child(4),
+html:not(.static):not(.lite) body[data-page="landing"] .page>.disp.split:nth-child(6){animation-delay:240ms}
+  html:not(.static):not(.lite) body[data-page="landing"] .page>p:nth-child(7){animation-delay:320ms}
+}
+@keyframes r13t-rise{from{clip-path:inset(0 0 100% 0);transform:translateY(.5em)}to{clip-path:inset(-20% -20% -20% -20%);transform:none}}
+
+/* courses head + dashboard greeting: a framed band */html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h{position:relative;overflow:hidden;isolation:isolate;
+  padding:calc(var(--r13t-tick) + var(--s-6)) var(--s-6) var(--s-6);margin-bottom:var(--s-6);
+  background-color:var(--surface-1,var(--surface));border:var(--bw) solid var(--border-strong);box-shadow:var(--elev-3)}html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h h1{font-size:clamp(2.5rem,1.4rem + 4.4vw,6rem);line-height:.92;text-wrap:balance;overflow-wrap:anywhere;
+  text-shadow:.05em .05em 0 var(--accent-2)}
+html:not(.static) body[data-page="dashboard"] main>.page-h h1{font-size:clamp(2.25rem,1.2rem + 3.4vw,4.75rem)}html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h .kicker{display:inline-flex;margin-bottom:var(--s-3);padding:var(--s-1) var(--s-2);border:var(--bw) solid currentColor;font-family:var(--font-mono)}html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h p{font-size:var(--step-0);margin-top:var(--s-3)}html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h .btn{box-shadow:var(--elev-2)}
+
+/* about hero: framed, oversized */
+html:not(.static) body[data-page="about"] .ab-hero{position:relative;overflow:hidden;isolation:isolate;padding-top:calc(var(--r13t-tick) + clamp(32px,6vw,72px))}
+html:not(.static) body[data-page="about"] .ab-h1{font-size:clamp(2.5rem,1.3rem + 4.2vw,5.75rem);line-height:.94}
+html:not(.static) body[data-page="about"] .ab-hero-copy .kicker{display:inline-flex;padding:var(--s-1) var(--s-2);border:var(--bw) solid currentColor;font-family:var(--font-mono)}
+html:not(.static) body[data-page="about"] .ab-hero-tile{box-shadow:var(--s-3) var(--s-3) 0 var(--accent),var(--s-5) var(--s-5) 0 var(--border-strong)}
+
+/* landing hero: the backdrop becomes the frame; oversized three-line title */
+html:not(.static) body[data-page="landing"] .page>.lhero{overflow:hidden}
+@media (max-width:1023px){
+  /* phones / tablets: the backdrop shows as the ticker strip under the header */
+  html:not(.static) body[data-page="landing"] .page>.lhero{display:block!important;height:var(--r13t-tick)!important;margin:0 0 var(--s-2)!important;max-width:100%!important;background:var(--fill-inverse)!important}
+  html:not(.static) body[data-page="landing"] .page>.lhero>.fx-canvas{display:none}html:not(.static) body[data-page="landing"] .page>h1#start,
+html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(5),
+html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(6){font-size:clamp(2.75rem,1.1rem + 7.2vw,4.5rem)!important;line-height:.95!important}
+}
+@media (min-width:1024px){
+  html:not(.static) body[data-page="landing"] .page>.lhero{margin-inline:var(--s-4)!important;max-width:calc(100% - 2 * var(--s-4))!important;border:var(--bw) solid var(--border-strong);box-shadow:var(--elev-3);
+    background:
+      repeating-linear-gradient(90deg,var(--r13t-guide) 0 1px,transparent 1px calc(100% / 14)),
+      repeating-linear-gradient(0deg,transparent 0 23px,var(--r13t-guide) 23px 24px),
+      var(--surface-1,var(--surface))!important}
+  html:not(.static) body[data-page="landing"] .page>.eyebrow:nth-child(3){margin-top:calc(var(--space-fluid-xl) + var(--r13t-tick))!important}
+  html:not(.static) body[data-page="landing"] .page>img.heavy-hero{margin-top:calc(var(--space-fluid-l) + var(--r13t-tick))!important}
+  html:not(.static) body[data-page="landing"] .page>.hcol{margin-top:calc(var(--space-fluid-l) + var(--r13t-tick))!important}html:not(.static) body[data-page="landing"] .page>h1#start,
+html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(5),
+html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(6){font-size:clamp(3rem,.6rem + 4.6vw,5.5rem)!important;line-height:.92!important;white-space:nowrap}
+}html:not(.static) body[data-page="landing"] .page>h1#start,
+html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(5){text-shadow:.05em .05em 0 var(--accent-2)}
+html:not(.static) body[data-page="landing"] .page>.eyebrow:nth-child(3){font-family:var(--font-mono)}
+/* about h1: the accent highlight hugs each line of "Craft your way up." instead of spanning the column once the bigger type wraps */
+html:not(.static) body[data-page="about"] .ab-h1 span{display:inline;width:auto;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+/* landing footer clock: the landing's own ".page p" size rule made it too big for one line at 412 */html:not(.static) body[data-page="landing"] .page>.lfoot .ft-loc,
+html:not(.static) body[data-page="landing"] .page>.lfoot .ft-loc span{font-size:var(--step--1)!important;letter-spacing:.02em;max-width:100%!important}
