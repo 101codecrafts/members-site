@@ -1,4 +1,4 @@
-/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css + touch.css + era.css + cards.css + interact.css + ds.css — edit the sources, then run tools/build.py */
+/* GENERATED bundle: tokens.css + brutal.css + app.css + type.css + dashboard.css + system.css + shell.css + activity.css + touch.css + era.css + cards.css + interact.css + ds.css + r13-inspora.css — edit the sources, then run tools/build.py */
 /* GENERATED from tokens/tokens.json by tools/tokens.py — do not edit by hand */
 :root{
   --color-orange: #fc8c0c;
@@ -2488,3 +2488,169 @@ html:not(.static) .field :is(input,select,textarea){padding:var(--s-2) var(--s-3
 /* ---------------------------------------------------------------- a11y on inverse blocks
    muted text inside navy blocks uses the inverse muted role (10.1:1), never the light-surface grey (axe: #potd .muted was 2.5:1) */
 html:not(.static) :is(.potd,.card.dark,.ck--inv) :is(.muted,small.muted,p.muted){color:var(--ink-inv-muted)}
+
+/* =====================================================================================
+   r13 Inspora pass (founder 11 Nov 2026, msg 9fd62c53 + "all"): patterns studied from the Inspora Web category
+   (study + per-post notes: work/round13/inspora/NOTES.md). Patterns only: no colours, assets or copy of any post.
+   Brutalism stays the anchor (navy, Archivo Black / IBM Plex Sans / JetBrains Mono, hard borders, offset shadows).
+   Rules:  every rule is live-only (html:not(.static)), so ?static=1 stays the 0 px mockup;
+           motion lives in (prefers-reduced-motion: no-preference) and is off in Lite mode (html.lite);
+           transform / clip-path / opacity only (compositor), nothing that moves layout (CLS ~0);
+           tokens only (no hex), spacing on the 4-pt grid (tools/ds/lint.mjs).
+   Loaded last in bundle-app / bundle-dashboard / bundle-landing (tools/build.py).
+   ===================================================================================== */
+
+/* ---------------------------------------------------------------- 1. code kickers: a terminal cursor after section labels
+   (Inspora: DayDream Studio "[01] ABOUT US" / QED mono labels -> 101's own code motif) */
+html:not(.static) .page .e92 .e-kick::after,
+html:not(.static) .ab-page .ab-head .kicker::after{content:"";flex:none;width:.55em;height:1em;margin-left:var(--s-1);background:currentColor;opacity:.85}
+@media (prefers-reduced-motion:no-preference){
+  html:not(.static):not(.lite) .page .e92 .e-kick::after,
+  html:not(.static):not(.lite) .ab-page .ab-head .kicker::after{animation:r13i-blink 1.1s steps(1) infinite}
+}
+@keyframes r13i-blink{50%{opacity:0}}
+
+/* ---------------------------------------------------------------- 2. section heads: measured ruler + accent bar that draws in
+   (Inspora: QED landing page's visible layout guides; DayDream's scroll reveals). The bar draws when js/era.js reveals the head. */
+html:not(.static) .page .e92 .e-head{position:relative;padding-bottom:var(--s-4)}
+html:not(.static) .page .e92 .e-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;pointer-events:none;opacity:.5;
+  background:linear-gradient(currentColor,currentColor) left bottom/100% 1px no-repeat,
+             repeating-linear-gradient(90deg,currentColor 0 1px,transparent 1px 16px) left bottom/100% 4px no-repeat,
+             repeating-linear-gradient(90deg,currentColor 0 2px,transparent 2px 128px) left bottom/100% 8px no-repeat}
+html:not(.static) .page .e92 .e-head h2{position:relative}
+html:not(.static) .page .e92 .e-head h2::after{content:"";display:block;width:clamp(48px,8vw,96px);height:6px;margin-top:var(--s-2);background:var(--accent);border:var(--bw) solid var(--border-strong);transform-origin:left center}
+html:not(.static) .page .e-paths .e-head h2::after,
+html:not(.static) .page .e92 .e-fcopy h2::after{border-color:var(--on-inverse)}
+@media (prefers-reduced-motion:no-preference){
+  html.rv-on:not(.static):not(.lite) .page .e92 .e-head.rv h2::after{transform:scaleX(0);transition:transform .6s steps(6) calc(var(--rv-d,0ms) + 250ms)}
+  html.rv-on:not(.static):not(.lite) .page .e92 .e-head.rv-in h2::after{transform:scaleX(1)}
+}
+
+/* ---------------------------------------------------------------- 3. hero collage photo: blocky "pixel scan" reveal
+   (Inspora: Hero section by heydamir — a pixelated image resolves to sharp). A checker overlay retracts in 8 hard steps.
+   The LCP photo is never covered; only the secondary collage photo (desktop) and the skills photo below the fold. */
+html:not(.static) .hcol .hc-photo::after,
+html:not(.static) .page .e-skills .e-shot::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;clip-path:inset(100% 0 0 0);
+  background:repeating-conic-gradient(var(--brand-navy) 0 25%,color-mix(in srgb,var(--brand-navy) 80%,var(--on-inverse)) 0 50%) 0 0/24px 24px}
+html:not(.static) .page .e-skills .e-stack{z-index:3}
+@media (prefers-reduced-motion:no-preference){
+  html:not(.static):not(.lite) .hcol .hc-photo::after{animation:r13i-scan .9s steps(8) .25s both}
+  @supports (animation-timeline:view()){
+    html:not(.static):not(.lite) .page .e-skills .e-shot::after{animation:r13i-scan linear both;animation-timeline:view();animation-range:entry 10% entry 70%}
+  }
+}
+@keyframes r13i-scan{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(100% 0 0 0)}}
+
+/* ---------------------------------------------------------------- 4. "How it works": a rail that fills as you scroll
+   (Inspora: QED's numbered steps; Feature sections' progress bar under the active item) */
+html:not(.static) .page .r13-how .r13-steps{position:relative}
+@media (min-width:900px){
+  html:not(.static) .page .r13-how .r13-steps::before,
+  html:not(.static) .page .r13-how .r13-steps::after{content:"";position:absolute;left:var(--s-6);right:var(--s-6);top:-20px;height:8px;pointer-events:none}
+  html:not(.static) .page .r13-how .r13-steps::before{border:var(--bw) solid var(--border-strong);background:repeating-linear-gradient(90deg,var(--border-strong) 0 2px,transparent 2px 12px)}
+  html:not(.static) .page .r13-how .r13-steps::after{background:var(--accent);border:var(--bw) solid var(--border-strong);transform-origin:left center}
+  @media (prefers-reduced-motion:no-preference){
+    @supports (animation-timeline:view()){
+      html:not(.static):not(.lite) .page .r13-how .r13-steps::after{animation:r13i-fill linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
+    }
+  }
+}
+@keyframes r13i-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+html:not(.static) .page .r13-how .r13-n{transition:transform var(--dur-base) var(--ease-emphasized),box-shadow var(--dur-base) var(--ease-emphasized)}
+@media (hover:hover){html:not(.static) .page .r13-how .r13-steps>li:hover .r13-n{transform:translate(-2px,-2px) rotate(-6deg);box-shadow:var(--elev-2)}}
+
+/* ---------------------------------------------------------------- 5. learning-path cards: folder tab + lift
+   (Inspora: interactive folder cards — a tab peeks out and the card lifts; portfolio-website clothes rack hover-lift) */
+html:not(.static) .page .e-paths .e-pcard{position:relative;transition:transform var(--dur-base) var(--ease-emphasized),box-shadow var(--dur-base) var(--ease-emphasized)}
+html:not(.static) .page .e-paths .e-pcard::before{content:"";position:absolute;left:calc(-1 * var(--bw));top:-12px;width:40%;height:14px;z-index:-1;background:var(--accent);border:var(--bw) solid var(--border-strong);border-bottom:0;
+  clip-path:polygon(0 100%,0 0,85% 0,100% 100%);transform:translateY(12px);transition:transform var(--dur-base) var(--ease-emphasized)}
+html:not(.static) .page .e-paths .e-pcard:nth-child(even)::before{background:var(--accent-2)}
+html:not(.static) .page .e-paths .e-pcard .e-chip{transition:transform var(--dur-base) var(--ease-emphasized)}
+@media (hover:hover){
+  html:not(.static) .page .e-paths .e-pcard:hover{transform:translate(-4px,-4px)}
+  html:not(.static) .page .e-paths .e-pcard:hover::before{transform:translateY(0)}
+  html:not(.static) .page .e-paths .e-pcard:hover .e-chip{transform:rotate(-8deg) scale(1.06)}
+}
+html:not(.static) .page .e-paths .e-pcard:focus-within::before{transform:translateY(0)}
+
+/* ---------------------------------------------------------------- 6. footer: animated code horizon + Kampala clock
+   (Inspora: Footer design animated — a slow light glint over a landscape; footer section — illustrated horizon band;
+   New personal website — a live local-time status line). 101's horizon is a skyline of code blocks, not a picture. */
+html:not(.static) :is(.flow-foot,.page>.lfoot){position:relative;padding-top:calc(72px + var(--s-4))!important;overflow:hidden}
+html:not(.static) :is(.flow-foot,.page>.lfoot)>.ftx{position:absolute!important;left:0;right:0;top:0;height:64px;display:block!important;pointer-events:none;border-bottom:var(--bw) solid var(--on-inverse);
+  background:
+    linear-gradient(90deg,transparent 0 46%,color-mix(in srgb,var(--on-inverse) 22%,transparent) 50%,transparent 54% 100%) -60% 0/40% 100% no-repeat,
+    repeating-linear-gradient(90deg,transparent 0 6px,color-mix(in srgb,var(--on-inverse) 14%,transparent) 6px 8px) 0 100%/100% 100%,
+    linear-gradient(var(--fill-inverse),var(--fill-inverse))}
+/* the blocks: three staggered rows of bars (pure gradients, tokens only) */
+html:not(.static) :is(.flow-foot,.page>.lfoot)>.ftx::before{content:"";position:absolute;inset:auto 0 0 0;height:100%;
+  background:
+    repeating-linear-gradient(90deg,var(--accent) 0 16px,transparent 16px 72px,var(--accent-2) 72px 80px,transparent 80px 152px) 12px 100%/100% 40% no-repeat,
+    repeating-linear-gradient(90deg,transparent 0 28px,color-mix(in srgb,var(--on-inverse) 70%,transparent) 28px 40px,transparent 40px 96px) 0 100%/100% 64% no-repeat,
+    repeating-linear-gradient(90deg,transparent 0 44px,color-mix(in srgb,var(--on-inverse) 32%,transparent) 44px 68px,transparent 68px 120px) 0 100%/100% 88% no-repeat}
+/* a cursor block "typing" along the horizon */
+html:not(.static) :is(.flow-foot,.page>.lfoot)>.ftx::after{content:"";position:absolute;left:var(--s-6);top:var(--s-3);width:10px;height:18px;background:var(--accent);border:var(--bw) solid var(--on-inverse)}
+@media (prefers-reduced-motion:no-preference){
+  html:not(.static):not(.lite) :is(.flow-foot,.page>.lfoot)>.ftx{animation:r13i-glint 9s linear infinite}
+  html:not(.static):not(.lite) :is(.flow-foot,.page>.lfoot)>.ftx::before{animation:r13i-drift 24s steps(24) infinite}
+  html:not(.static):not(.lite) :is(.flow-foot,.page>.lfoot)>.ftx::after{animation:r13i-type 12s steps(12) infinite,r13i-blink 1.1s steps(1) infinite}
+}
+@keyframes r13i-glint{from{background-position:-60% 0,0 100%,0 0}to{background-position:160% 0,0 100%,0 0}}
+@keyframes r13i-drift{from{transform:translateX(0)}to{transform:translateX(-152px)}}
+@keyframes r13i-type{from{transform:translateX(0)}to{transform:translateX(min(80vw,960px))}}
+html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc{display:flex!important;position:static!important;align-items:center;gap:var(--s-2);flex-basis:100%;margin:0;font:600 var(--step--2)/1.4 var(--font-mono);letter-spacing:.04em;color:var(--on-inverse);opacity:.9}
+html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc::before{content:"";flex:none;width:8px;height:8px;background:var(--accent-2);border:var(--bw) solid var(--on-inverse)}
+html.static :is(.flow-foot,.lfoot) :is(.ftx,.ft-loc){display:none!important}
+
+/* ---------------------------------------------------------------- 7. about: the leaders hang from a cord and sway
+   (Inspora: Hanging Team component — cards on clips that wobble; hover settles them). Real names and roles only. */
+html:not(.static) .ab-page .ab-leads{padding-top:var(--s-10)}
+html:not(.static) .ab-page .ab-leads>li{position:relative}
+html:not(.static) .ab-page .ab-leads>li::before{content:"";position:absolute;left:50%;top:calc(-1 * var(--s-10));width:var(--bw);height:var(--s-10);background:var(--border-strong);transform:translateX(-50%)}
+html:not(.static) .ab-page .ab-lead{position:relative;transform-origin:50% calc(-1 * var(--s-10));transition:transform var(--dur-slow) var(--ease-emphasized)}
+html:not(.static) .ab-page .ab-lead::before{content:"";position:absolute;left:50%;top:-12px;z-index:3;width:28px;height:16px;transform:translateX(-50%);background:var(--accent);border:var(--bw) solid var(--border-strong);box-shadow:var(--elev-1)}
+html:not(.static) .ab-page .ab-leads>li:nth-child(3n+2) .ab-lead::before{background:var(--accent-2)}
+@media (max-width:599px){
+  html:not(.static) .ab-page .ab-leads{padding-top:0}
+  html:not(.static) .ab-page .ab-leads>li::before{display:none}
+  html:not(.static) .ab-page .ab-lead::before{left:56px}
+}
+@media (prefers-reduced-motion:no-preference) and (min-width:600px){
+  html:not(.static):not(.lite) .ab-page .ab-lead{animation:r13i-sway 5.5s var(--ease-standard) infinite alternate}
+  html:not(.static):not(.lite) .ab-page .ab-leads>li:nth-child(2) .ab-lead{animation-duration:6.4s;animation-delay:-2s}
+  html:not(.static):not(.lite) .ab-page .ab-leads>li:nth-child(3) .ab-lead{animation-duration:5s;animation-delay:-3.5s}
+  html:not(.static):not(.lite) .ab-page .ab-leads>li:is(:hover,:focus-within) .ab-lead{animation-play-state:paused}
+}
+@keyframes r13i-sway{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
+@media (hover:hover){html:not(.static) .ab-page .ab-lead:hover .ab-lead-photo{box-shadow:12px 12px 0 var(--accent)}}
+html:not(.static) .ab-page .ab-lead-photo{transition:box-shadow var(--dur-base) var(--ease-emphasized)}
+/* value titles: never break a word mid-letter ("COLLABORAT / E" at 1440) */
+html:not(.static) .ab-page .ab-val-t{overflow-wrap:normal;word-break:normal;hyphens:manual;font-size:clamp(1.125rem,.9rem + .9vw,var(--step-2))}
+@media (min-width:1024px){html:not(.static) .ab-page .ab-val-t{font-size:clamp(1.0625rem,.55rem + .9vw,var(--step-2))}}
+
+/* ---------------------------------------------------------------- 8. dashboard polish
+   (Inspora: Project card component — progress ring + "3 left"; agent dashboard — done items struck through;
+   usage meter — big mono numbers over a segmented bar; sleep dashboard — mono KPIs that lift) */
+html:not(.static) .fs-head{align-items:center}
+html:not(.static) .fs-ring{--p:0;flex:none;display:inline-grid;place-items:center;width:44px;height:44px;border:var(--bw) solid var(--border-strong);border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--p) * 1%),var(--surface-2) 0);font:700 11px/1 var(--font-mono);color:var(--text)}
+html:not(.static) .fs-ring::before{content:"";grid-area:1/1;width:28px;height:28px;border-radius:50%;background:var(--surface-1,var(--surface));border:var(--bw) solid var(--border-strong)}
+html:not(.static) .fs-ring b{grid-area:1/1;position:relative;font-weight:700}
+html:not(.static) .fs-left{display:block;margin-top:var(--s-2);font:700 var(--step--2)/1.2 var(--font-mono);letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted)}
+html:not(.static) .fs-item.is-done .fs-name>:is(a,span){text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--accent)}
+html:not(.static) .fs-item.is-next{border-color:var(--border-strong);box-shadow:var(--elev-2)}
+html:not(.static) .plan-card .meter{gap:4px}
+html:not(.static) .plan-card .meter i{height:16px}
+@media (prefers-reduced-motion:no-preference){
+  html:not(.static):not(.lite) .plan-card .meter i.on{animation:r13i-seg .5s steps(4) both}
+}
+@keyframes r13i-seg{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+html:not(.static) .shell .kpi{transition:transform var(--dur-base) var(--ease-emphasized),box-shadow var(--dur-base) var(--ease-emphasized)}
+@media (hover:hover){html:not(.static) .shell .kpi:hover{transform:translate(-3px,-3px)}}
+html:not(.static) .shell .kpi :is(b,strong,.v,.kpi-v){font-variant-numeric:tabular-nums}
+
+/* ---------------------------------------------------------------- 9. Lite mode / reduced motion: everything above lands in its final state */
+@media (prefers-reduced-motion:reduce){
+  html:not(.static) :is(.hcol .hc-photo,.page .e-skills .e-shot)::after{display:none}
+}
+html.lite:not(.static) :is(.hcol .hc-photo,.page .e-skills .e-shot)::after{display:none}

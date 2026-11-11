@@ -45,9 +45,24 @@ test('css/ds.css is live-only, colour-free and on the 4-pt grid', () => {
   for (const s of sels) for (const part of s.split(/,(?![^()]*\))/)) assert.match(part.trim(), /^html(:root)?:not\(\.static\)/, 'unscoped: ' + part);
 });
 
-test('ds.css is the last part of every app bundle', () => {
+test('ds.css is the last shared part of every app bundle (only live-only r13-* page layers may follow it)', () => {
   const b = rd('tools/build.py');
-  for (const n of ['bundle-app.css', 'bundle-dashboard.css', 'bundle-landing.css']) assert.match(b, new RegExp("bundle\\('" + n.replace('.', '\\.') + "', \\[[^\\]]*'ds\\.css'\\]\\)"));
+  for (const n of ['bundle-app.css', 'bundle-dashboard.css', 'bundle-landing.css']) {
+    const m = b.match(new RegExp("bundle\\('" + n.replace('.', '\\.') + "', \\[([^\\]]*)\\]\\)"));
+    assert.ok(m, n + ' not found');
+    const parts = [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]);
+    const i = parts.indexOf('ds.css');
+    assert.ok(i >= 0, n + ' lacks ds.css');
+    for (const after of parts.slice(i + 1)) assert.match(after, /^r13-[a-z-]+\.css$/, n + ': ' + after + ' after ds.css');
+  }
+});
+
+test('css/r13-inspora.css is live-only (every rule scoped to html:not(.static), or hides itself in html.static)', () => {
+  const css = rd('css/r13-inspora.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  const sels = [...css.matchAll(/([^{}]+)\{/g)].map((m) => m[1].trim()).filter((s) => s && !s.startsWith('@') && !/^(from|to|\d+%)/.test(s));
+  assert.ok(sels.length > 20);
+  for (const s of sels) for (const part of s.split(/,(?![^()]*\))/)) assert.match(part.trim(), /^html(:root)?(\.[a-z-]+)*:not\(\.static\)|^html\.static /, 'unscoped: ' + part);
+  assert.deepEqual(scan(css).hex, 0);
 });
 
 test('hex / off-grid ratchet holds', () => {

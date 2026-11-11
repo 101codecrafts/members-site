@@ -41,9 +41,9 @@
         '<span class="fs-st" id="' + id + '-s">' + esc(LABEL[it.status] || it.status) + "</span></li>";
     };
     return '<section class="fs" data-fs="' + esc(o.key) + '"' + (o.title ? ' aria-labelledby="fs-h-' + esc(o.key) + '"' : ' aria-label="' + esc(o.label || "First steps") + '"') + ">" +
-      '<div class="fs-head">' + (o.title ? '<h3 id="fs-h-' + esc(o.key) + '">' + esc(o.title) + "</h3>" : "") + '<span class="fs-count">' + done + " of " + items.length + " done</span></div>" +
+      '<div class="fs-head">' + (o.title ? '<h3 id="fs-h-' + esc(o.key) + '">' + esc(o.title) + "</h3>" : "") + '<span class="fs-count"><span class="fs-ring" style="--p:' + Math.round(done / Math.max(1, items.length) * 100) + '" aria-hidden="true"><b>' + done + "/" + items.length + "</b></span>" + done + " of " + items.length + " done</span></div>" +
       (o.intro ? '<p class="fs-intro">' + esc(o.intro) + "</p>" : "") +
-      '<ol class="fs-list">' + items.map(row).join("") + "</ol>" +
+      '<ol class="fs-list">' + items.map(row).join("") + "</ol>" + (items.length - done > 0 ? '<span class="fs-left">' + (items.length - done) + " left</span>" : '<span class="fs-left">All done</span>') +
       (o.dismissable === false ? "" : '<button type="button" class="fs-hide" data-fs-hide="' + esc(o.key) + '">Hide these steps</button>') + "</section>";
   }
   document.addEventListener("click", function (e) {

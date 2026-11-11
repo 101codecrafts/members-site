@@ -118,7 +118,7 @@ html.static .r13-lv{display:none!important}
 html:not(.static) .r13-st{display:none!important}
 html:not(.static) .pl-close{margin-top:var(--space-fluid-xl,56px);padding:var(--space-fluid-l,32px);display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-4,16px);background:var(--fill-inverse);color:var(--on-inverse);border:var(--bw,2px) solid var(--border-strong);box-shadow:6px 6px 0 var(--accent)}
 html:not(.static) .pl-close .pl-h2{color:var(--on-inverse);margin:0}
-html:not(.static) .pl-close p{margin:0;max-width:60ch;color:var(--ink-inv-muted,#B9C1DA)}
+html:not(.static) .pl-close p{margin:0;max-width:60ch;color:var(--ink-inv-muted)}
 html:not(.static) .pl-close .pl-close-btn{min-height:56px;padding-inline:var(--s-8,32px);font-size:var(--step-0)}
 html:not(.static) .pl-trust{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--s-2,8px) var(--s-6,24px);font-size:var(--step--1);font-weight:600}
 html:not(.static) .pl-trust li{display:flex;align-items:center;gap:var(--s-2,8px)}

@@ -186,6 +186,7 @@ FOOTER = '''<footer class="flow-foot">
   <span>© <span data-year>2026</span> 101 Codecrafts. All rights reserved.</span>
   <nav aria-label="Footer"><a href="index.html" data-home>Home</a><a href="about.html">About</a><a href="community.html">Community</a><a href="learn.html">Learn</a><a href="ai-tools.html">AI Tools</a><a href="news.html">News</a><a href="opportunities.html">Opportunities</a><a href="events.html">Events</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="verify.html">Verify a certificate</a></nav>
   <div class="socials" data-socials>''' + ''.join(soc_icon(x) for x in SOCIAL_LIVE + SOCIAL_SOON) + '''</div>
+  <div class="ftx" aria-hidden="true"></div><p class="ft-loc">Kampala, Uganda<span data-kla-time></span></p>
 </footer>'''
 
 # about.html blocks, from the two data files above
@@ -225,9 +226,9 @@ def bundle(name, parts):
     (root / 'css' / name).write_text(out)
 import theme as _theme; _theme.build()   # css/theme-dark.css: dark role mapping generated from the component sources
 bundle('bundle-theme.css', ['theme-dark.css', 'theme.css', 'bg.css', 'loops.css', 'loaders.css'])   # loops.css: section loop bands (round 9); loaders.css: round-9 loaders + state loops   # bg.css: site grid + dark glyph canvas layer (round 6)   # loaded LAST on every page (see THEME_LINK)
-bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css'])
-bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css'])
-bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css', 'r13-landing.css'])
+bundle('bundle-app.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css', 'r13-inspora.css'])
+bundle('bundle-dashboard.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'dashboard.css', 'system.css', 'shell.css', 'activity.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css', 'r13-inspora.css'])
+bundle('bundle-landing.css', ['tokens.css', 'brutal.css', 'app.css', 'type.css', 'landing.css', 'system.css', 'shell.css', 'touch.css', 'era.css', 'cards.css', 'interact.css', 'ds.css', 'r13-landing.css', 'r13-inspora.css'])
 CSS_LINKS = {
     'dashboard': '<link rel="stylesheet" href="css/bundle-dashboard.css">',
     'landing': '<link rel="stylesheet" href="css/bundle-landing.css">',

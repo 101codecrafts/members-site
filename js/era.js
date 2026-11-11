@@ -68,7 +68,15 @@
     mq.addEventListener ? mq.addEventListener("change", sync) : mq.addListener(sync);
   }
 
-  const go = () => { try { year(); } catch (e) {} try { landingMenu(); } catch (e) {} try { latest(); } catch (e) {} try { stats(); } catch (e) {} try { reveal(); } catch (e) {} };
+  /* r13 Inspora pass: the footer's live Kampala clock (Africa/Kampala, EAT). Text only; updates once a minute. */
+  function klaTime() {
+    const els = document.querySelectorAll("[data-kla-time]"); if (!els.length) return;
+    let f; try { f = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Kampala" }); } catch (e) { return; }
+    const tick = () => { const t = " \u00b7 " + f.format(new Date()) + " EAT right now"; els.forEach(el => { if (el.textContent !== t) el.textContent = t; }); };
+    tick(); setInterval(tick, 30000);
+  }
+
+  const go = () => { try { klaTime(); } catch (e) {} try { year(); } catch (e) {} try { landingMenu(); } catch (e) {} try { latest(); } catch (e) {} try { stats(); } catch (e) {} try { reveal(); } catch (e) {} };
   /* deferred: wait for DOMContentLoaded so the later deferred data files (site-stats.js, feed-data.js) have run */
   document.readyState === "complete" ? go() : document.addEventListener("DOMContentLoaded", go);
 })();
