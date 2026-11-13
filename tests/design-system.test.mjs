@@ -39,7 +39,7 @@ test('DESIGN.md grid + spacing = tokens.json', () => {
 
 test('css/ds.css is live-only, colour-free and on the 4-pt grid', () => {
   const css = rd('css/ds.css').replace(/\/\*[\s\S]*?\*\//g, '');
-  assert.deepEqual(scan(css), { hex: 0, off4: 0 });
+  assert.deepEqual(scan(css), { hex: 0, off4: 0, rad: 0 });
   const sels = [...css.matchAll(/([^{}@]+)\{[^{}]*\}/g)].map((m) => m[1].trim()).filter(Boolean);
   assert.ok(sels.length > 20);
   for (const s of sels) for (const part of s.split(/,(?![^()]*\))/)) assert.match(part.trim(), /^html(:root)?:not\(\.static\)/, 'unscoped: ' + part);

@@ -332,6 +332,11 @@ rail ≥1100; `--start` puts a 16rem side first).
 
 ## Elevation & Depth
 
+> **r14 premium layer (live only, `css/r14-premium.css`, 13 Nov 2026):** the live site wears a "soft brutalism" finish over this
+> base: 1 px hairlines in a soft navy tint (`--r14-line`), one soft 4 px offset shadow (`--r14-shadow`, 10% navy) on featured
+> blocks only (hero frames, page heads, dialogs, menus, the next onboarding step), warm paper page (`--r14-paper`), no glyph
+> canvas / ticker / code horizon. `?static=1` keeps the base below unchanged.
+
 Brutalist depth: **no blur, no soft shadows, no radius**. Elevation = border + hard offset shadow in `--shadow-ink`
 (flips per theme). `--elev-0` none (flat rows, list items, inputs) · `--elev-1` 2 px (pressed state, small chips) ·
 `--elev-2` 4 px (resting cards, panels, buttons on hover; `--shadow-brutal-sm`, `--ck-sh`) · `--elev-3` 8 px (hover-lifted
@@ -341,6 +346,11 @@ up-left by the same amount its shadow grows (−3 px / +3 px on cards). Dark mod
 200 · `--z-drawer` 900 · `--z-overlay` 1000 · `--z-toast` 1100 · `--z-skip` 9999.
 
 ## Shapes
+
+> **r14 (live only):** corners come from radius tokens only (lint `rad` ratchet): `--radius-card` 14 px (cards, panels,
+> modals, hero frames, footer cards) · `--radius-control` 10 px (buttons, inputs, selects, segmented bars, sidebar and menu
+> items) · `--radius-inner` 8 px (small squares inside cards) · `--radius-pill` 999 px (chips, kickers, tags, badges) ·
+> `--radius-round` 50% (avatars, rings). Structural borders are 1 px (`--bw` 1 px live).
 
 Square: `--radius` 0 on every card, button, input, chip, badge, modal and image. `9999px` only for avatars and status
 dots. Borders: `--bw-base` 2 px (everything structural, in `--border-strong`), `--bw-hair` 1 px (dividers inside a card, in

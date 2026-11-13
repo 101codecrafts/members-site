@@ -14,7 +14,9 @@
   var rm = matchMedia("(prefers-reduced-motion: reduce)"), cv = null, w = null, P = null, L = null, live = false, loaded = false;
   var mode = function () { var m = ""; try { m = localStorage.cc_bg_motion || ""; } catch (e) {} return m === "off" || m === "reduced" ? m : "on"; };
   var still = function () { var c = navigator.connection; return mode() === "reduced" || rm.matches || d.classList.contains("lite") || !!(c && c.saveData); };
-  var want = function () { return loaded && !!TYPE && mode() !== "off"; };
+  /* r14 premium (founder, 13 Nov 2026): the drifting glyph canvas is retired in both themes; the static grid in css/bg.css + css/r14-premium.css stays. */
+  var GLYPHS = false;
+  var want = function () { return GLYPHS && loaded && !!TYPE && mode() !== "off"; };
   var size = function () { return { W: innerWidth, H: innerHeight, dpr: Math.min(devicePixelRatio || 1, 1.5), type: TYPE, still: still(), dark: d.dataset.theme === "dark" }; };
 
   /* text + occluder rects (viewport px). Text sitting straight on the page background is guarded (glyphs fade 20px before it);

@@ -1,0 +1,177 @@
+/* =====================================================================================
+   r14 premium look — "soft brutalism" (founder, 13 Nov 2026): calmer, senior-quality finish over the brutalist base.
+   Warm paper page, 1 px hairlines in a soft navy tint, rounded radius tokens, one soft offset shadow on featured
+   cards only, quiet background (no glyph canvas, no ticker strip, no code horizon), calmer headline rhythm.
+   Brand stays: navy / orange / cyan, Archivo Black / IBM Plex Sans / JetBrains Mono.
+   Rules:  every rule is live-only (html:not(.static) / html:root:not(.static)), so ?static=1 stays the 0 px mockup;
+           tokens only (no hex), spacing on the 4-pt grid (tools/ds/lint.mjs), radius only through the --radius-* tokens;
+           nothing here animates (reduced-motion safe); dark mode keeps its roles, only lines/shadows/radii change.
+   Loaded LAST on every page, at the end of bundle-theme.css (tools/build.py), so it wins over page stylesheets.
+   ===================================================================================== */
+
+/* ---------------------------------------------------------------- 0. tokens */
+html:root:not(.static){
+  /* radius scale (DESIGN.md "Shapes", r14) */
+  --radius-card:14px;       /* cards, panels, modals, hero frames, footer cards */
+  --radius-control:10px;    /* buttons, inputs, selects, segmented bars, sidebar items, dropdown items */
+  --radius-inner:8px;       /* small squares inside cards (step numbers, icon tiles) */
+  --radius-pill:999px;      /* chips, kickers, tags, badges */
+  --radius-round:50%;       /* avatars, rings, round icon buttons */
+  /* hairlines + one soft shadow */
+  --r14-line:color-mix(in srgb,var(--brand-navy) 18%,transparent);
+  --r14-line-2:color-mix(in srgb,var(--brand-navy) 32%,transparent);
+  --r14-shadow:4px 4px 0 color-mix(in srgb,var(--brand-navy) 10%,transparent);
+  --r14-shadow-sm:2px 2px 0 color-mix(in srgb,var(--brand-navy) 8%,transparent);
+  --bw:1px; --bw-base:1px; --bw-hair:1px;
+  --border:var(--bw) solid var(--r14-line);
+  --border-brutal:1px solid var(--r14-line); --border-thin:1px solid var(--border-subtle);
+  --elev-1:var(--r14-shadow-sm); --elev-2:var(--r14-shadow-sm); --elev-3:var(--r14-shadow); --elev-accent:var(--r14-shadow);
+  --shadow:var(--r14-shadow-sm); --shadow-brutal:var(--r14-shadow); --shadow-brutal-sm:var(--r14-shadow-sm); --shadow-brutal-accent:var(--r14-shadow);
+  --ck-sh:var(--r14-shadow-sm);
+  /* calmer section rhythm */
+  --gap-sec:var(--s-12);
+}
+/* light: warm off-white paper, derived from the surface + brand tokens */
+html:root:not(.static):not([data-theme=dark]){
+  --r14-paper:color-mix(in oklab,color-mix(in oklab,var(--surface-1) 95%,var(--accent) 5%) 98%,var(--brand-navy) 2%);
+  --r14-card:color-mix(in oklab,var(--surface-1) 97%,var(--accent) 3%);
+  --bg:var(--r14-paper); --surface-alt:var(--r14-paper); --color-page:var(--r14-paper); --color-page-landing:var(--r14-paper);
+}
+html:root:not(.static)[data-theme=dark]{
+  --r14-line:color-mix(in srgb,var(--text) 14%,transparent);
+  --r14-line-2:color-mix(in srgb,var(--text) 26%,transparent);
+  --r14-shadow:4px 4px 0 color-mix(in srgb,var(--shadow-ink) 70%,transparent);
+  --r14-shadow-sm:2px 2px 0 color-mix(in srgb,var(--shadow-ink) 60%,transparent);
+}
+@media (min-width:1100px){html:root:not(.static){--gap-sec:var(--s-12);--pad-card:var(--s-8)}}
+html:not(.static):not([data-theme=dark]) body{background-color:var(--r14-paper)}
+html:not(.static):not([data-theme=dark]) body[data-page=dashboard]{background-color:var(--r14-paper)}
+
+/* ---------------------------------------------------------------- 1. background: faint static grid only, no glyphs */
+html:not(.static) #ccbg{display:none!important}
+html:not(.static) body::before{
+  --ccbg-l:color-mix(in srgb,var(--brand-navy) 3%,transparent);
+  background-image:linear-gradient(var(--ccbg-l) 1px,transparent 1px),linear-gradient(90deg,var(--ccbg-l) 1px,transparent 1px)!important;
+  background-size:64px 64px,64px 64px!important;background-position:0 0,calc(50% + 32px) 0!important;
+  -webkit-mask-image:linear-gradient(to bottom,currentColor,transparent 85%);mask-image:linear-gradient(to bottom,currentColor,transparent 85%)}
+html[data-theme=dark]:not(.static) body::before{--ccbg-l:color-mix(in srgb,var(--text) 3.5%,transparent)}
+/* section loop bands that sit on the page (contour / halftone / cubes): barely there */
+html:not(.static) :is([data-loop=halftone],[data-loop=contour],[data-loop=cubes])>.lp-cv{opacity:.07!important}
+html:not(.static) :is([data-loop=tunnel],[data-loop=truchet],[data-loop=bauhaus])>.lp-cv{opacity:.14!important}
+
+/* ---------------------------------------------------------------- 2. no ticker strip, no layout guides, no code horizon */
+html:not(.static){--r13t-tick:0px;--r13t-guide:transparent}
+html:not(.static) body[data-page="landing"] .page>.lhero::after,
+html:not(.static) body[data-page="about"] .ab-hero::after,
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h::after{content:none!important;animation:none!important}
+html:not(.static) body[data-page="about"] .ab-hero,
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h{background-image:none}
+@media (max-width:1023px){html:not(.static) body[data-page="landing"] .page>.lhero{display:none!important}}
+/* footer: the animated code skyline goes; the Kampala clock line stays */
+html:not(.static) :is(.flow-foot,.page>.lfoot)>.ftx{display:none!important}
+html:not(.static) :is(.flow-foot,.page>.lfoot){padding-top:var(--s-12)!important}
+html:not(.static) :is(.flow-foot,.page>.lfoot) .ft-loc::before{border:0;border-radius:var(--radius-round)}
+/* section heads: one hairline instead of the measured ruler; a short rounded accent bar */
+html:not(.static) .page .e92 .e-head::after{height:1px;opacity:1;background:var(--r14-line)}
+html:not(.static) .page .e92 .e-head h2::after{height:4px;border:0;border-radius:var(--radius-pill)}
+/* code-cursor after kickers: removed (quiet) */
+html:not(.static) .page .e92 .e-kick::after,
+html:not(.static) .ab-page .ab-head .kicker::after{content:none}
+/* learning-path folder tab: removed */
+html:not(.static) .page .e-paths .e-pcard::before{content:none}
+/* about leaders: no cord, clip or sway */
+html:not(.static) .ab-page .ab-leads{padding-top:0}
+html:not(.static) .ab-page .ab-leads>li::before,
+html:not(.static) .ab-page .ab-lead::before{content:none}
+html:not(.static) .ab-page .ab-lead{animation:none!important}
+
+/* ---------------------------------------------------------------- 3. cards, panels, modals, hero frames: hairline + radius */
+html:not(.static) :is(.card,.ck,.panel,.panel-x,.kpi,.region,.feat,.e-card,.about-card,.tcard,.tile,.words-tile,.hero-badge,.hc-stat,
+  .dash-empty,.cempty,.ab-soc,.ab-contact,.ab-safe,.ab-hero-tile,.ab-lead-photo,.ab-final .ab-wrap,.page-h,.pl-sandbox,.pl-close,.pl-card,.pl-tbl,
+  .st-nav,.st-rows,.st-tablewrap,.ttree,.cm-wa,.potd,.e-shot,.e-fbox,.af-card,.af-side,.af-path,.pf-dlg,.video,.cc-cookie,.cc-toolbar,
+  .menu,.dropdown,.acct-menu,.am-panel,[role=menu],[role=dialog],dialog,.modal,.sheet,.popover,.toast){
+  border-width:1px!important;border-color:var(--r14-line)!important;border-radius:var(--radius-card)!important}
+html:not(.static) :is(.card,.ck,.panel,.kpi,.region,.feat,.e-card,.about-card,.tcard,.dash-empty,.cempty,.ab-soc,.ab-contact,.ab-safe,
+  .ab-lead-photo,.pl-sandbox,.st-nav,.ttree,.cm-wa,.potd,.e-shot,.af-path,.cc-cookie,.cc-toolbar,.tile,.words-tile,.hero-badge,.hc-stat){box-shadow:none!important}
+/* dark fills keep their own edge (a navy card with a navy hairline reads as a soft step) */
+html:not(.static) :is(.card,.ck,.e-card,.feat,.kpi,.region,.af-side,.ab-hero-tile):is(.inv,.ink,.ck--inv,.on-dark){border-color:color-mix(in srgb,var(--on-inverse) 14%,transparent)!important}
+/* the one soft offset shadow: featured blocks only */
+html:not(.static) :is(.lhero,.page-h,.ab-hero-tile,.af-card,.af-side,.pl-close,.fs-item.is-next,.e-fbox,.pf-dlg,dialog,[role=dialog],.menu,.acct-menu,[role=menu]){box-shadow:var(--r14-shadow)!important}
+/* images that are the card: corners follow */
+html:not(.static) :is(img.heavy-hero,.hc-photo,.ab-lead-photo img,.e-shot img){border-radius:var(--radius-card)}
+html:not(.static) :is(img.heavy-hero,.hc-photo){border-width:1px!important;border-color:var(--r14-line)!important;box-shadow:none!important}
+html:not(.static) :is(.ab-lead-photo,.e-shot,.hc-photo,.region,.page-h){overflow:hidden}
+/* landing hero frame (desktop): one hairline frame, softly rounded */
+@media (min-width:1024px){
+  html:not(.static) body[data-page="landing"] .page>.lhero{border:1px solid var(--r14-line)!important;border-radius:var(--radius-card)!important}
+}
+/* FAQ details and list rows */
+html:not(.static) :is(details,.fs-item,.ph-row,.st-empty,.ccl-eh){border-width:1px!important;border-color:var(--r14-line)!important;border-radius:var(--radius-control)!important}
+html:not(.static) details{box-shadow:none!important}
+html:not(.static) .fs-item:not(.is-next){box-shadow:none!important}
+/* bands that span the page: hairline top/bottom only, no radius */
+html:not(.static) :is(.ab-sec.ab-alt,.ab-final,.e-marquee,.marquee,.band,.region-h){border-width:1px 0!important;border-color:var(--r14-line)!important;border-radius:0!important}
+html:not(.static) .region-h{border-top:0!important}
+
+/* nested plan card (dashboard "Your plan"): flat, the meter becomes a rounded segmented bar */
+html:not(.static) .plan-card{border:0!important;box-shadow:none!important;background:none!important;padding:0!important}
+html:not(.static) .plan-card .meter i{border-width:1px!important;border-color:var(--r14-line-2)!important;border-radius:var(--radius-pill)}
+/* about / community page tokens: hairline rules, soft 4 px shadow */
+html:not(.static) :is(.ab-page,.cm-page){--ab-bw:1px;--ab-sh:4px}
+html:not(.static) :is(.ab-hero,.ab-alt){border-color:var(--r14-line)!important}
+
+/* ---------------------------------------------------------------- 4. controls: buttons, inputs, selects, search, segmented bars */
+html:not(.static) :is(.btn,.e-btn,.btn-or,.btn-ol,.btn-nv,.btn-line,.btn-solid,.tb-btn,.ab-btn,.e-all,.ftab,.pl-close-btn,.st-btn-danger,.mc-cta,.cta.btn,.ib,.ic-open,.ic-close,.hburg,.page .hdr :is(.join,.login,.nav-login)){
+  border-width:1px!important;border-radius:var(--radius-control)!important;box-shadow:none!important}
+html:not(.static) :is(.btn,.e-btn,.btn-or,.btn-ol,.btn-nv,.ab-btn,.tb-btn,.mc-cta):not(.or):not(.btn-or):not(.cy):not(.ink):not(.no):not(.ok){border-color:var(--r14-line-2)!important}
+html:not(.static) :is(.btn.or,.e-btn.or,.btn-or,.mc-cta){border-color:color-mix(in srgb,var(--brand-navy) 40%,var(--accent))!important}
+html:not(.static) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea,.search,.csearch,.tb-search,.hsearch){
+  border-width:1px!important;border-radius:var(--radius-control)!important;box-shadow:none!important}
+html:not(.static) .csearch input,html:not(.static) .search input,html:not(.static) .tb-search input{border-radius:var(--radius-control)!important}
+html:not(.static) :is(.pl-seg,.st-seg,.ftabs,.role-tabs,.seg,.filters){border-width:1px!important;border-radius:var(--radius-control)!important;border-color:var(--r14-line)!important}
+html:not(.static) :is(.pl-seg,.st-seg,.ftabs,.role-tabs,.seg)>:is(button,a,label){border-radius:var(--radius-inner)!important}
+html:not(.static) :is(input[type=checkbox]){border-radius:var(--radius-inner)}
+/* sidebar + dropdown items: rounded hit areas */
+html:not(.static) :is(.sb-nav a,.sbar nav a,.sb-wa,.am-item,.acct-menu a,.acct-menu button,[role=menu] :is(a,button),.menu :is(a,button)){border-radius:var(--radius-control)}
+html:not(.static) .sb-wa{border-width:1px!important}
+html:not(.static) .sb-nav a[aria-current]{box-shadow:none}
+
+/* ---------------------------------------------------------------- 5. pills, kickers, tags, badges; round avatars */
+html:not(.static) :is(.chip,.pill,.tagx,.e-chip,.e-tag,.badge,.pl-save,.pl-sugg,.pl-flag,.fs-st,.e-kick,.kicker,.eyebrow:not(.page>.eyebrow),.region-n,.region-tag,.soc-soon,.st-nav-danger,.ab-lead-gh){
+  border-width:1px!important;border-radius:var(--radius-pill)!important;box-shadow:none!important}
+html:not(.static) :is(.fs-n,.r13-n,.ab-val-n,.ab-soc-ic){border-width:1px!important;border-radius:var(--radius-inner)!important;box-shadow:none!important}
+html:not(.static) :is(.socials a,.socials .soc-soon,.st-av,.pf-av,.avatar,.av,.avs>*,.acct-av,.tb-av,.fs-ring){border-width:1px!important;border-radius:var(--radius-round)!important;box-shadow:none!important}
+html:not(.static) .fs-ring::before{border-width:1px}
+/* kicker chips: small, letter-spaced mono labels */
+html:not(.static) :is(.kicker,.e-kick){font-family:var(--font-mono);letter-spacing:var(--tracking-label)}
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h .kicker,
+html:not(.static) body[data-page="about"] .ab-hero-copy .kicker{padding:var(--s-1) var(--s-3);border-color:var(--r14-line-2)!important}
+
+/* ---------------------------------------------------------------- 6. type rhythm: calmer display sizes, quiet headline shadows */
+html:not(.static) :is(h1,h2,h3,.disp,.ab-h1,.ab-h2){text-shadow:none!important}
+html:not(.static) body[data-page="landing"] .page>h1#start,
+html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(5){text-shadow:.025em .025em 0 color-mix(in srgb,var(--accent-2) 55%,transparent)!important}
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h{padding:var(--s-8);margin-bottom:0}
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h h1{font-size:clamp(2.25rem,1.5rem + 2.6vw,4rem);line-height:1}
+html:not(.static) body[data-page="dashboard"] main>.page-h h1{font-size:clamp(2rem,1.4rem + 2vw,3.25rem)}
+html:not(.static) body:is([data-page="courses"],[data-page="dashboard"]) main>.page-h p{color:var(--text-muted);max-width:var(--measure-max)}
+html:not(.static) body[data-page="about"] .ab-h1{font-size:clamp(2.25rem,1.4rem + 3.2vw,4.75rem);line-height:1}
+html:not(.static) body[data-page="about"] .ab-hero{padding-top:clamp(48px,7vw,96px)}
+@media (min-width:1024px){
+  html:not(.static) body[data-page="landing"] .page>h1#start,
+  html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(5),
+  html:not(.static) body[data-page="landing"] .page>.disp.split:nth-child(6){font-size:clamp(2.75rem,.8rem + 3.8vw,4.75rem)!important;line-height:.98!important}
+}
+/* more air between blocks */
+html:not(.static) :is(.ab-sec){padding-block:clamp(56px,8vw,112px)}
+html:not(.static) .shell>.main>.content{gap:var(--gap-sec);row-gap:var(--gap-sec)}
+html:not(.static) :is(.card,.ck,.region>:not(.region-h)){line-height:var(--leading-0)}
+
+/* ---------------------------------------------------------------- 7. hover: a quiet lift, no hard shadow growth */
+@media (hover:hover){
+  html:not(.static) :is(.btn,.e-btn,.btn-or,.btn-ol,.ab-btn):hover{box-shadow:var(--r14-shadow-sm)!important}
+  html:not(.static) :is(.ck,.e-card,.feat,.about-card,.kpi):hover{box-shadow:var(--r14-shadow)!important}
+}
+html:not(.static) .ab-page .ab-lead:hover .ab-lead-photo{box-shadow:var(--r14-shadow)!important}
+
+@media print{html:not(.static) body::before{display:none}}
